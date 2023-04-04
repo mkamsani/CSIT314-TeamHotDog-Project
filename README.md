@@ -7,5 +7,7 @@ Within each portion we can also break them down into segments of tasks to be com
 Tasks to be completed this week.
 1. Meet up and discuss strengths
 2. Figure out the project requirements and specifications
-3. Assign each person to their strengths and start breaking down tasks
-4. Set up all relevant agile methodology tools required 
+3. Determine the coding languages to be used
+4. Assign each person to their strengths and start breaking down tasks
+5. Set up all relevant agile methodology tools required e.g github-Projects/Jira/taiga
+6. Set up relevant tools for hosting our project and facilitate CICD e.g github-pages/circleCI
