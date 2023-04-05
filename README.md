@@ -12,8 +12,6 @@ Tasks to be completed this week.
 5. Set up all relevant agile methodology tools required e.g github-Projects/Jira/taiga
 6. Set up relevant tools for hosting our project and facilitate CICD e.g github-pages/circleCI
 
----
-
 ## Deliverables (23rd May 2023)
 
 1. Final Deliverables (35 marks)
@@ -21,8 +19,6 @@ Tasks to be completed this week.
 	[ ] LiveDemo.mp4 (15 min)
 	[ ] Source code
 2. Final presentation (5 marks)
-
----
 
 ## Stack
 
