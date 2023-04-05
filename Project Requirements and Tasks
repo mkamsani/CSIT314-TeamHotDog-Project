@@ -17,4 +17,25 @@ purchase food and drinks.
   -
 6. Generate different kind of relevant reports for cinema managers.
   -
+  
+Logins
+1. System Admin(root user), more of a tech guy that controls the entire system
+  - More to control the entire system
+  - Add and delete movie
+  - Make changes to theatres
+2. Manager
+  - Checking revenue reports
+  - Focusing more on sales and expenses
+3. Staff
+  - Sales of food and drinks
+4. Customer
+  - Pre-purchase of food and drinks
+  
+  
+  Thinking of whether manager frontend and database should be different users
+focus on getting use case diagram
 
+
+Test Cases thinking to be written
+1. For each use case between actor and system, there needs to be one test case
+  - In terms of buying sales of food
