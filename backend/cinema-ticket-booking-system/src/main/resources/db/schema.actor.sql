@@ -1,74 +1,43 @@
-create user u_unprivileged with password 'uu';
+CREATE USER u_unprivileged WITH PASSWORD 'uu';
 -- The default user postgres is a superuser.
-create role r_owner with password 'ro';
-create role r_manager with password 'rm';
-create role r_customer with password 'rc';
+CREATE ROLE r_owner WITH PASSWORD 'ro';
+CREATE ROLE r_manager WITH PASSWORD 'rm';
+CREATE ROLE r_customer WITH PASSWORD 'rc';
+-- Import extension for uuid_generate_v4()
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
-create table user_account
+CREATE TABLE movie
 (
-    id              int primary key,
-    username        varchar(255) not null,
-    role            varchar(255) not null,
-    first_name      varchar(255) not null,
-    last_name       varchar(255) not null,
-    email           varchar(255) not null unique,
-    phone           varchar(255) not null unique,
-    address         varchar(255) not null,
-    time_created    timestamp    not null,
-    time_last_login timestamp    not null
+    id           SMALLSERIAL PRIMARY KEY,
+    title        VARCHAR(255)   NOT NULL,
+    description  VARCHAR(255)   NOT NULL,
+    release_date DATE           NOT NULL,
+    rating       VARCHAR(255)   NOT NULL,
+    price        NUMERIC(10, 2) NOT NULL,
+    imdb_url     VARCHAR(255) UNIQUE,
+    CONSTRAINT enum_rating CHECK (rating IN ('g', 'pg', 'pg13', 'nc16', 'm18', 'r21'))
 );
 
-create table user_password
+CREATE TABLE movie_session
 (
-    id                  int primary key,
-    password            varchar(255) not null,
-    time_last_attempt   timestamp    not null,
-    status_last_attempt boolean      not null,
-    CONSTRAINT fk_id FOREIGN KEY (id) REFERENCES user_account (id)
+    id        SERIAL PRIMARY KEY,
+    movie_id  INT       NOT NULL,
+    show_time TIMESTAMP NOT NULL,
+    CONSTRAINT fk_movie_id FOREIGN KEY (movie_id) REFERENCES movie (id)
 );
 
-create table user_profile
+CREATE TABLE seat
 (
-    -- TODO: Figure out what to put here
-    -- TODO: add user profile fields
+    id     SERIAL PRIMARY KEY,
+    row    INT NOT NULL,
+    number INT NOT NULL,
+    CONSTRAINT seat_unique UNIQUE (row, number)
 );
 
-create table owner
+CREATE TABLE loyalty_points
 (
-    id int primary key,
-    CONSTRAINT fk_id FOREIGN KEY (id) REFERENCES user_account (id)
+    id      SERIAL PRIMARY KEY,
+    user_id INT NOT NULL,
+    points  INT NOT NULL,
+    CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES user_account (numeric_id)
 );
-
-CREATE TABLE manager
-(
-    id         INTEGER PRIMARY KEY,
-    user_id    INTEGER NOT NULL UNIQUE,
-    department VARCHAR(50),
-    FOREIGN KEY (user_id) REFERENCES user_account (id) ON DELETE CASCADE
-);
-
-CREATE TABLE child
-(
-    id          INTEGER PRIMARY KEY,
-    customer_id INTEGER NOT NULL UNIQUE,
-    parent_id   INTEGER NOT NULL,
-    age         INTEGER,
-    FOREIGN KEY (customer_id) REFERENCES customer (id) ON DELETE CASCADE,
-    FOREIGN KEY (parent_id) REFERENCES customer (id) ON DELETE CASCADE
-);
-
-CREATE TABLE adult
-(
-    id          INTEGER PRIMARY KEY,
-    customer_id INTEGER NOT NULL UNIQUE,
-    FOREIGN KEY (customer_id) REFERENCES customer (id) ON DELETE CASCADE
-);
-
-CREATE TABLE elderly
-(
-    id               INTEGER PRIMARY KEY,
-    customer_id      INTEGER NOT NULL UNIQUE,
-    health_condition VARCHAR(50),
-    FOREIGN KEY (customer_id) REFERENCES customer (id) ON DELETE CASCADE
-);
-
