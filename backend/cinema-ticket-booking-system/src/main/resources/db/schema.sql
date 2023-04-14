@@ -1,63 +1,92 @@
 /* TODO
+ *  User Stories:
  *  [x] user_account
  *  [ ] user_profile
  *  [ ] tickets
  *  [ ] cinema_room
- *  [ ] seats
  *  [ ] movie_screening
  *  [ ] food_order
  *  [ ] reports
  *  [ ] ratings
  *  [ ] reviews
  *  [ ] loyalty_points
+ *  Non-user stories:
+ *  [ ] seats (not a user story)
  */
 
 DROP SCHEMA IF EXISTS public CASCADE;
 CREATE SCHEMA public;
 -- Import extension for uuid_generate_v4()
+-- Use gen_random_uuid() if not importing uuid-ossp.
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
+/* Docs:
+https://www.postgresql.org/docs/current/datatype.html#DATATYPE-TABLE
+*/
+
+CREATE TABLE user_profile
+(
+    uuid      Uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_type VARCHAR(255) NOT NULL, -- Only these 4: ('customer', 'manager', 'owner', 'admin')
+
+    -- these role types should not be for generalized names like 'staff' or 'employee'
+    role_type VARCHAR(255),          -- Examples: (e.g. 'senior manager', 'senior admin', 'intern manager')
+    CHECK (user_type IN ('customer', 'manager', 'owner', 'admin')),
+    -- check that if it is customer, then role_type is null
+    CHECK (user_type != 'customer' AND role_type IS NOT NULL
+        OR user_type = 'customer' AND role_type IS NULL)
+);
 
 CREATE TABLE user_account
 (
     --  Not visible to user:
-    id              SERIAL PRIMARY KEY,
-    username        VARCHAR(255) NOT NULL UNIQUE,
-    account_type    VARCHAR(255) NOT NULL DEFAULT 'customer',
-    password_hash   VARCHAR(72)  NOT NULL DEFAULT crypt('password' || 'optional_pepper', gen_salt('bf')),
+    uuid            Uuid PRIMARY KEY                  DEFAULT uuid_generate_v4(),
+    password_hash   VARCHAR(72)              NOT NULL,
+    user_profile    Uuid                     NOT NULL,
 
     --  Visible to user:
-    first_name      VARCHAR(255) NOT NULL,
-    last_name       VARCHAR(255) NOT NULL,
-    email           VARCHAR(255) NOT NULL UNIQUE,
-    address         VARCHAR(255) NOT NULL,
-    time_created    TIMESTAMP    NOT NULL DEFAULT NOW(),
-    time_last_login TIMESTAMP    NOT NULL DEFAULT NOW(),
-    CHECK (account_type IN ('customer', 'manager', 'owner', 'admin')),
+    username        VARCHAR(255)             NOT NULL UNIQUE,
+    first_name      VARCHAR(255)             NOT NULL,
+    last_name       VARCHAR(255)             NOT NULL,
+    email           VARCHAR(255)             NOT NULL UNIQUE,
+    address         VARCHAR(255)             NOT NULL,
+    time_created    TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    time_last_login TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    date_of_birth   DATE                     NOT NULL,
+    -- date from now minus date of birth to obtain age, for ticket types.
 
     -- Java String.toLowerCase()
     CHECK (username = LOWER(username)),
-    CHECK (email = LOWER(email))
+    CHECK (email = LOWER(email)),
+    FOREIGN KEY (user_profile) REFERENCES user_profile (uuid) ON DELETE CASCADE
 );
 
-CREATE TABLE customer
+CREATE TABLE loyalty_points
 (
-    id             INTEGER PRIMARY KEY,
+    uuid            Uuid PRIMARY KEY,
     -- TRUE if customer is active, FALSE if customer is deactivated.
-    account_status BOOLEAN NOT NULL DEFAULT TRUE,
-    FOREIGN KEY (id) REFERENCES user_account (id) ON DELETE CASCADE
+    user_type       VARCHAR(255) NOT NULL,
+    points_redeemed INTEGER      NOT NULL DEFAULT 0,
+    points_total    INTEGER      NOT NULL DEFAULT 0,
+    CHECK (points_redeemed >= 0),
+    CHECK (points_total >= 0),
+    FOREIGN KEY (uuid) REFERENCES user_account (uuid) ON DELETE CASCADE,
+    FOREIGN KEY (user_type) REFERENCES user_profile (user_type) ON DELETE CASCADE,
+    CHECK (user_type IN ('customer'))
 );
 
 CREATE TABLE movie
 (
     id             SERIAL PRIMARY KEY,
-    title          VARCHAR(255)   NOT NULL,
-    description    VARCHAR(255)   NOT NULL, -- wikipedia
-    release_date   DATE           NOT NULL, -- wikipedia
-    content_rating VARCHAR(255)   NOT NULL, -- .toLowerCase()
-    price          NUMERIC(10, 2) NOT NULL,
-    imdb_url       VARCHAR(255) UNIQUE,     -- wikipedia
+    title          VARCHAR(255) NOT NULL,
+    genre          VARCHAR(255) NOT NULL, -- .toLowerCase()
+    description    VARCHAR(255) NOT NULL, -- wikipedia
+    release_date   DATE         NOT NULL, -- wikipedia
+    content_rating VARCHAR(255) NOT NULL, -- .toLowerCase()
+    created_by     INTEGER      NOT NULL,
     CHECK (content_rating IN ('g', 'pg', 'pg13', 'nc16', 'm18', 'r21'))
+    -- for future consideration, pull actual ratings from rotten tomatoes or other sites.
+    -- with an external api.
 );
 
 CREATE TABLE cinema_room
@@ -66,8 +95,9 @@ CREATE TABLE cinema_room
     capacity INTEGER NOT NULL,
     CHECK (capacity >= 0),
     CHECK (id > 0 AND id <= 8)
+    --  For future consideration:
+    --  status BOOLEAN NOT NULL DEFAULT TRUE, -- FALSE if room is under maintenance.
 );
-
 
 CREATE TABLE movie_session
 (
@@ -80,13 +110,12 @@ CREATE TABLE movie_session
     FOREIGN KEY (cinema_room) REFERENCES cinema_room (id)
 );
 
-
 CREATE TABLE seats
 (
     id            SERIAL PRIMARY KEY,
     cinema_room   INTEGER      NOT NULL,
-    seat_row      CHAR(1)      NOT NULL,
-    seat_column   INTEGER      NOT NULL,
+    seat_row      CHAR(1)      NOT NULL, -- Max. A to J
+    seat_column   INTEGER      NOT NULL, -- Max. 20
     status        VARCHAR      NOT NULL DEFAULT 'available',
     seat_type     VARCHAR(255) NOT NULL,
     seat_category VARCHAR(255) NOT NULL,
@@ -94,18 +123,39 @@ CREATE TABLE seats
     FOREIGN KEY (cinema_room) REFERENCES cinema_room (id),
     CHECK (status IN ('available', 'booked', 'pending', 'unavailable')),
     CHECK (seat_type IN ('normal', 'wheelchair', 'disabled')),
-    CHECK (seat_category IN ('normal', 'gold'))
+    CHECK (seat_category IN ('normal', 'gold')),
+    CHECK (seat_row >= 'A' AND seat_row <= 'J'),
+    CHECK (seat_column >= 1 AND seat_column <= 20)
 );
 
-CREATE TABLE loyalty_points
+CREATE TABLE ticket_types
 (
-    id              SERIAL PRIMARY KEY,
-    user_id         INTEGER NOT NULL,
-    points_redeemed INTEGER NOT NULL DEFAULT 0,
-    points_total    INTEGER NOT NULL DEFAULT 0,
-    FOREIGN KEY (user_id) REFERENCES user_account (id),
-    CHECK (points_redeemed >= 0),
-    CHECK (points_total >= 0)
+    type_name    VARCHAR(255) PRIMARY KEY,
+    type_price   NUMERIC(10, 2)           NOT NULL,
+    last_updated TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    updated_by   INTEGER                  NOT NULL,
+    CHECK (type_name IN ('Adult', 'Student', 'Child', 'Senior')),
+    CHECK (type_price >= 0)
+    -- For consideration, should we allow the changing of prices,
+    -- or allow a discount system.
+    -- A discount system would mean that all four types will have fixed prices.
+    -- then, the discount will modify the price value.
+);
+
+CREATE TABLE tickets
+(
+    id            SERIAL PRIMARY KEY,
+    customer      Uuid                     NOT NULL,
+    ticket_type   VARCHAR(255)             NOT NULL,
+    movie_session INTEGER                  NOT NULL,
+    seat          INTEGER                  NOT NULL,
+    purchase_date TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    FOREIGN KEY (customer) REFERENCES loyalty_points (uuid),
+    FOREIGN KEY (movie_session) REFERENCES movie_session (id),
+    FOREIGN KEY (seat) REFERENCES seats (id),
+    FOREIGN KEY (ticket_type) REFERENCES ticket_types (type_name),
+    -- The seat and movie_session must be in the same cinema_room.
+    CONSTRAINT UNIQUE (seat, movie_session)
 );
 
 -- There are only five different food combos.
@@ -114,118 +164,69 @@ CREATE TABLE food_combo
     id          INTEGER PRIMARY KEY,
     description VARCHAR(255)   NOT NULL, -- e.g. "Popcorn and Coke"
     price       NUMERIC(10, 2) NOT NULL, -- e.g. 10.00
-    CHECK ( id > 0 AND id <= 5)
+    CHECK (id > 0 AND id <= 5)
 );
 
 CREATE TABLE food_order
 (
     id           SERIAL PRIMARY KEY,
-    user_id      INTEGER   NOT NULL,
-    combo_number INTEGER   NOT NULL,
-    order_time   TIMESTAMP NOT NULL DEFAULT NOW(),
-    FOREIGN KEY (user_id) REFERENCES user_account (id),
-    FOREIGN KEY (combo_number) REFERENCES food_combo (id)
-);
-
-CREATE TABLE tickets
-(
-    id            SERIAL PRIMARY KEY,
-    movie_session INTEGER   NOT NULL,
-    cinema_room   INTEGER   NOT NULL,
-    seat          INTEGER   NOT NULL,
-    purchase_date TIMESTAMP NOT NULL DEFAULT NOW(),
-    FOREIGN KEY (movie_session) REFERENCES movie_session (id),
-    FOREIGN KEY (cinema_room) REFERENCES cinema_room (id),
-    FOREIGN KEY (seat) REFERENCES seats (id)
-);
-
-CREATE TABLE ticket_adult
-(
-    ticket_id INTEGER        NOT NULL,
-    price     NUMERIC(10, 2) NOT NULL,
-    FOREIGN KEY (ticket_id) REFERENCES tickets (id)
-);
-
-CREATE TABLE ticket_student
-(
-    ticket_id INTEGER        NOT NULL,
-    price     NUMERIC(10, 2) NOT NULL,
-    FOREIGN KEY (ticket_id) REFERENCES tickets (id)
-);
-
-
-CREATE TABLE ticket_senior
-(
-    ticket_id INTEGER        NOT NULL,
-    price     NUMERIC(10, 2) NOT NULL,
-    FOREIGN KEY (ticket_id) REFERENCES tickets (id)
-);
-
-CREATE TABLE ticket_child
-(
-    ticket_id INTEGER        NOT NULL,
-    price     NUMERIC(10, 2) NOT NULL,
-    FOREIGN KEY (ticket_id) REFERENCES tickets (id)
-);
-
-CREATE TABLE ratings
-(
-    id           SERIAL PRIMARY KEY,
-    movie        INTEGER NOT NULL,
     user_account INTEGER NOT NULL,
-    rating       INTEGER NOT NULL,
-    FOREIGN KEY (movie) REFERENCES movie (id),
-    FOREIGN KEY (user_account) REFERENCES user_account (id),
-    CHECK (rating IN (1, 2, 3, 4, 5))
+    combo_number INTEGER NOT NULL,
+    ticket       INTEGER NOT NULL,
+    FOREIGN KEY (user_account) REFERENCES user_account (uuid),
+    FOREIGN KEY (combo_number) REFERENCES food_combo (id),
+    FOREIGN KEY (ticket) REFERENCES tickets (id)
+    -- For consideration, no ideas for functionalities with order_time yet:
+    -- order_time   TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
 );
 
-CREATE TABLE reviews
+CREATE TABLE rating_review
 (
-    id      SERIAL PRIMARY KEY,
-    movie   INTEGER NOT NULL,
-    user_id INTEGER NOT NULL,
-    review  TEXT    NOT NULL,
-    FOREIGN KEY (movie) REFERENCES movie (id)
-
-    -- TODO: Which user_id to use?
-    --  FOREIGN KEY (user_id) REFERENCES user_account (numeric_id)
-    --  FOREIGN KEY (user_id) REFERENCES customer (id)
+    uuid     uuid PRIMARY KEY,
+    rating INTEGER NOT NULL,
+    review TEXT    NOT NULL,
+    CHECK (rating IN (1, 2, 3, 4, 5)),
+    FOREIGN KEY (uuid) REFERENCES loyalty_points (uuid)
 );
 
+-- Only 'R' in 'CRUD' is implemented.
 CREATE VIEW monthly_revenue_report AS
-SELECT tickets.purchase_date::DATE AS date,
-       SUM(ticket_adult.price)     AS adult_revenue,
-       SUM(ticket_student.price)   AS student_revenue,
-       SUM(ticket_senior.price)    AS senior_revenue,
-       SUM(ticket_child.price)     AS child_revenue,
-       SUM(ticket_adult.price +
-           ticket_student.price +
-           ticket_senior.price +
-           ticket_child.price)     AS total_revenue
+SELECT tickets.purchase_date::DATE  AS date,
+       tickets.ticket_type          AS type,
+       ticket_types.type_price      AS price,
+       SUM(ticket_types.type_price) AS total_revenue, -- pick one
+       COUNT(tickets.ticket_type)   AS total_tickets  -- of these two
 FROM tickets
-         JOIN ticket_adult ON tickets.id = ticket_adult.ticket_id
-         JOIN ticket_student ON tickets.id = ticket_student.ticket_id
-         JOIN ticket_senior ON tickets.id = ticket_senior.ticket_id
-         JOIN ticket_child ON tickets.id = ticket_child.ticket_id
+         JOIN ticket_types ON tickets.ticket_type = ticket_types.type_name
 WHERE tickets.purchase_date::DATE > NOW() - INTERVAL '1 month'
-GROUP BY tickets.purchase_date::DATE
-ORDER BY tickets.purchase_date::DATE;
+GROUP BY tickets.purchase_date::DATE, tickets.ticket_type, ticket_types.type_price
+ORDER BY tickets.purchase_date::DATE DESC;
+/*
+reasons:
+ 1
+ for not implementing as a table/ java entity:
+ owner should not change the values in the report.
+ ^ justify why we use a view when asked in class.
+ 2
+*/
 
-CREATE VIEW yearly_revenue_report AS
-SELECT EXTRACT(YEAR FROM tickets.purchase_date) AS year,
-       SUM(ticket_adult.price)                  AS adult_revenue,
-       SUM(ticket_student.price)                AS student_revenue,
-       SUM(ticket_senior.price)                 AS senior_revenue,
-       SUM(ticket_child.price)                  AS child_revenue,
-       SUM(ticket_adult.price +
-           ticket_student.price +
-           ticket_senior.price +
-           ticket_child.price)                  AS total_revenue
-FROM tickets
-         JOIN ticket_adult ON tickets.id = ticket_adult.ticket_id
-         JOIN ticket_student ON tickets.id = ticket_student.ticket_id
-         JOIN ticket_senior ON tickets.id = ticket_senior.ticket_id
-         JOIN ticket_child ON tickets.id = ticket_child.ticket_id
-WHERE tickets.purchase_date::DATE > NOW() - INTERVAL '1 year'
-GROUP BY EXTRACT(YEAR FROM tickets.purchase_date)
-ORDER BY EXTRACT(YEAR FROM tickets.purchase_date);
+-- SELECT *
+-- FROM monthly_revenue_report WHERE tickets.purchase_date::DATE > NOW() - INTERVAL '1 week' ;
+-- FROM monthly_revenue_report WHERE tickets.purchase_date::DATE > NOW() - INTERVAL '1 day' ;
+
+/*
+for every ticket bought save the current date
+another table: for every month, check how many tickets are bought, have a counter: in this table or another table
+output this value to put into the report
+person generating can put from month to month, this number will be in the report
+
+purpose:
+- which month has the most customers,
+- knowing which month
+- certain months has lower customer
+- boss can launch promotional events/sales
+- e.g. customer buys more in X month
+
+non-purpose:
+- which movie is most popular
+*/
