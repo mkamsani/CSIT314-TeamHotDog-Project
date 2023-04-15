@@ -65,13 +65,14 @@ CREATE TABLE loyalty_points
 (
     uuid            Uuid PRIMARY KEY,
     -- TRUE if customer is active, FALSE if customer is deactivated.
+    user_profile    Uuid                     NOT NULL,
     user_type       VARCHAR(255) NOT NULL,
     points_redeemed INTEGER      NOT NULL DEFAULT 0,
     points_total    INTEGER      NOT NULL DEFAULT 0,
     CHECK (points_redeemed >= 0),
     CHECK (points_total >= 0),
     FOREIGN KEY (uuid) REFERENCES user_account (uuid) ON DELETE CASCADE,
-    FOREIGN KEY (user_type) REFERENCES user_profile (user_type) ON DELETE CASCADE,
+    FOREIGN KEY (user_profile) REFERENCES user_profile (uuid) ON DELETE CASCADE,
     CHECK (user_type IN ('customer'))
 );
 
@@ -154,8 +155,8 @@ CREATE TABLE tickets
     FOREIGN KEY (movie_session) REFERENCES movie_session (id),
     FOREIGN KEY (seat) REFERENCES seats (id),
     FOREIGN KEY (ticket_type) REFERENCES ticket_types (type_name),
-    -- The seat and movie_session must be in the same cinema_room.
-    CONSTRAINT UNIQUE (seat, movie_session)
+    -- The seat and movie_session must be unique.
+    UNIQUE (seat, movie_session)
 );
 
 -- There are only five different food combos.
@@ -170,7 +171,7 @@ CREATE TABLE food_combo
 CREATE TABLE food_order
 (
     id           SERIAL PRIMARY KEY,
-    user_account INTEGER NOT NULL,
+    user_account uuid NOT NULL,
     combo_number INTEGER NOT NULL,
     ticket       INTEGER NOT NULL,
     FOREIGN KEY (user_account) REFERENCES user_account (uuid),

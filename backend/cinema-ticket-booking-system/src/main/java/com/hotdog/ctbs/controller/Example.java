@@ -24,7 +24,7 @@ public class Example {
         return "Hello, time is " + OffsetDateTime.now();
     }
 
-    @GetMapping("/CRUD/Create/faker")
+   /* @GetMapping("/CRUD/Create/faker")
     public String createUserAccountFake() {
         int currentSize = userAccountRepository.findAll().size();
         UserAccount userAccount = UserAccount.fake(currentSize + 1);
@@ -83,5 +83,5 @@ public class Example {
         }
         userAccountRepository.saveAll(userAccounts);
         return userAccounts.toString();
-    }
+    }*/
 }
