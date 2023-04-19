@@ -15,23 +15,14 @@ target/
 
 ### IntelliJ IDEA ###
 .idea
+!.idea/codeStyles
+!.idea/dataSources.xml
+!.idea/sqldialects.xml
+.jpb
+!.jpb/jpb-settings.xml
 *.iws
 *.iml
 *.ipr
-
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
-
-### VS Code ###
-.vscode/
-
 
 pom.xml.tag
 pom.xml.releaseBackup
@@ -44,6 +35,4 @@ buildNumber.properties
 # https://github.com/takari/maven-wrapper#usage-without-binary-jar
 .mvn/wrapper/maven-wrapper.jar
 
-# Eclipse m2e generated files
-# Eclipse Core
-# JDT-specific (Eclipse Java Development Tools)
+

@@ -4,7 +4,7 @@ import com.hotdog.ctbs.service.CreateAccountSvc;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CreateAccount implements CreateAccountSvc {
+public class CreateAccountImpl implements CreateAccountSvc {
     @Override
     public boolean TODO() {
         return false;

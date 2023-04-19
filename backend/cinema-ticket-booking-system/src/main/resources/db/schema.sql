@@ -1,17 +1,37 @@
-/* TODO
- *  User Stories:
- *  [x] user_account
- *  [ ] user_profile
- *  [ ] tickets
- *  [ ] cinema_room
- *  [ ] movie_screening
- *  [ ] food_order
- *  [ ] reports
- *  [ ] ratings
- *  [ ] reviews
- *  [ ] loyalty_points
- *  Non-user stories:
- *  [ ] seats (not a user story)
+/**
+ * This file is the SSOT (Single Source of Truth) for the application.
+ * It contains the tables for the database, to be converted to Java entities.
+ *
+ * Reference:
+ * https://www.postgresql.org/docs/current/datatype.html#DATATYPE-TABLE
+ * http://www.contrib.andrew.cmu.edu/~shadow/sql/sql1992.txt (4.1  Data types)
+ *
+ * For standardisation of date and time, TIMESTAMP WITH TIME ZONE is used for
+ * for all date and time related fields. Where time is not required, the time
+ * will be truncated in Java.
+ *
+ * All table names are in lowercase:     'ticket',      not 'Ticket'.
+ * All table names are in snake_case:    'ticket_type', not 'ticketType'.
+ * All table names are in singular form: 'ticket_type', not 'ticket_types'.
+ * In Java, the table name will be converted to camelCase: 'ticketType'.
+ *
+ * All CHECK/UNIQUE constraints are also validated in Java.
+ * This is to fulfil the requirement of the project,
+ * which is to handle all logic in the backend.
+ *
+ * user_profile     |  CRUD  |  In progress  |
+ * user_account     |  CRUD  |  Not started  |  Delete = suspend account.
+ * loyalty_point    |   RU   |  Not started  |  No user-interaction on update.
+ * movie            |  CRUD  |  Not started  |
+ * cinema_room      |   RU   |  Not started  |  Create when db is initialised.
+ * movie_session    |  CRUD  |  Not started  |
+ * ticket_type      |  CRUD  |  Not started  |  Create when db is initialised.
+ * ticket           |  CRUD  |  Not started  |
+ * food_combo       |  CRUD  |  Not started  |
+ * food_order       |  CRUD  |  Not started  |
+ * rating_review    |  CRUD  |  Not started  |
+ * report           |   R    |  Not started  |
+ * seat             |   R    |  Not started  |  Create when db is initialised.
  */
 
 DROP SCHEMA IF EXISTS public CASCADE;
@@ -20,22 +40,45 @@ CREATE SCHEMA public;
 -- Use gen_random_uuid() if not importing uuid-ossp.
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
-/* Docs:
-https://www.postgresql.org/docs/current/datatype.html#DATATYPE-TABLE
-*/
+-- Confirm settings made (see schema.sh)
+SHOW TIMEZONE;
+SHOW lc_time;
+SHOW lc_monetary;
 
 CREATE TABLE user_profile
 (
+    /*
+     * uuid_generate_v4() is indicated as a fallback.
+     * In Java, UUID.randomUUID() is used instead.
+     */
     uuid      Uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-    user_type VARCHAR(255) NOT NULL, -- Only these 4: ('customer', 'manager', 'owner', 'admin')
 
-    -- these role types should not be for generalized names like 'staff' or 'employee'
-    role_type VARCHAR(255),          -- Examples: (e.g. 'senior manager', 'senior admin', 'intern manager')
-    CHECK (user_type IN ('customer', 'manager', 'owner', 'admin')),
-    -- check that if it is customer, then role_type is null
-    CHECK (user_type != 'customer' AND role_type IS NOT NULL
-        OR user_type = 'customer' AND role_type IS NULL)
+    privilege VARCHAR(255) NOT NULL,
+    CHECK (privilege IN ('customer', 'manager', 'owner', 'admin')),
+
+    /*
+     * These titles should not be for generalized names like 'staff' or 'employee'.
+     * Use professional titles, like 'senior manager', 'senior admin', 'intern manager'.
+     * However, a user admin can ignore these rules.
+     */
+    title     VARCHAR(255) NOT NULL UNIQUE,
+
+    /*
+     * A customer's title should only be 'Customer'.
+     * Deliberate capitalisation on title is to differentiate from the privilege type.
+     * The information is also passed to frontend in capitalised form.
+     */
+    CHECK (privilege != 'customer' OR title = 'Customer')
 );
+-- Insert default user profiles.
+INSERT INTO user_profile (privilege, title)
+VALUES ('customer', 'Customer'),
+       ('manager', 'Junior Manager'),
+       ('manager', 'Senior Manager'),
+       ('owner', 'Director of Operations'),
+       ('owner', 'Chief Executive Officer'),
+       ('admin', 'Junior Admin'),
+       ('admin', 'Senior Admin');
 
 CREATE TABLE user_account
 (
@@ -61,19 +104,14 @@ CREATE TABLE user_account
     FOREIGN KEY (user_profile) REFERENCES user_profile (uuid) ON DELETE CASCADE
 );
 
-CREATE TABLE loyalty_points
+CREATE TABLE loyalty_point
 (
     uuid            Uuid PRIMARY KEY,
-    -- TRUE if customer is active, FALSE if customer is deactivated.
-    user_profile    Uuid                     NOT NULL,
-    user_type       VARCHAR(255) NOT NULL,
-    points_redeemed INTEGER      NOT NULL DEFAULT 0,
-    points_total    INTEGER      NOT NULL DEFAULT 0,
+    points_redeemed INTEGER NOT NULL DEFAULT 0,
+    points_total    INTEGER NOT NULL DEFAULT 0,
     CHECK (points_redeemed >= 0),
     CHECK (points_total >= 0),
-    FOREIGN KEY (uuid) REFERENCES user_account (uuid) ON DELETE CASCADE,
-    FOREIGN KEY (user_profile) REFERENCES user_profile (uuid) ON DELETE CASCADE,
-    CHECK (user_type IN ('customer'))
+    FOREIGN KEY (uuid) REFERENCES user_account (uuid) ON DELETE CASCADE
 );
 
 CREATE TABLE movie
@@ -100,7 +138,7 @@ CREATE TABLE cinema_room
     --  status BOOLEAN NOT NULL DEFAULT TRUE, -- FALSE if room is under maintenance.
 );
 
-CREATE TABLE movie_session
+CREATE TABLE screening
 (
     id          SERIAL PRIMARY KEY,
     movie_id    INTEGER    NOT NULL,
@@ -111,7 +149,7 @@ CREATE TABLE movie_session
     FOREIGN KEY (cinema_room) REFERENCES cinema_room (id)
 );
 
-CREATE TABLE seats
+CREATE TABLE seat
 (
     id            SERIAL PRIMARY KEY,
     cinema_room   INTEGER      NOT NULL,
@@ -129,7 +167,7 @@ CREATE TABLE seats
     CHECK (seat_column >= 1 AND seat_column <= 20)
 );
 
-CREATE TABLE ticket_types
+CREATE TABLE ticket_type
 (
     type_name    VARCHAR(255) PRIMARY KEY,
     type_price   NUMERIC(10, 2)           NOT NULL,
@@ -143,7 +181,7 @@ CREATE TABLE ticket_types
     -- then, the discount will modify the price value.
 );
 
-CREATE TABLE tickets
+CREATE TABLE ticket
 (
     id            SERIAL PRIMARY KEY,
     customer      Uuid                     NOT NULL,
@@ -151,10 +189,10 @@ CREATE TABLE tickets
     movie_session INTEGER                  NOT NULL,
     seat          INTEGER                  NOT NULL,
     purchase_date TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-    FOREIGN KEY (customer) REFERENCES loyalty_points (uuid),
-    FOREIGN KEY (movie_session) REFERENCES movie_session (id),
-    FOREIGN KEY (seat) REFERENCES seats (id),
-    FOREIGN KEY (ticket_type) REFERENCES ticket_types (type_name),
+    FOREIGN KEY (customer) REFERENCES loyalty_point (uuid),
+    FOREIGN KEY (movie_session) REFERENCES screening (id),
+    FOREIGN KEY (seat) REFERENCES seat (id),
+    FOREIGN KEY (ticket_type) REFERENCES ticket_type (type_name),
     -- The seat and movie_session must be unique.
     UNIQUE (seat, movie_session)
 );
@@ -171,37 +209,37 @@ CREATE TABLE food_combo
 CREATE TABLE food_order
 (
     id           SERIAL PRIMARY KEY,
-    user_account uuid NOT NULL,
+    user_account Uuid    NOT NULL,
     combo_number INTEGER NOT NULL,
     ticket       INTEGER NOT NULL,
     FOREIGN KEY (user_account) REFERENCES user_account (uuid),
     FOREIGN KEY (combo_number) REFERENCES food_combo (id),
-    FOREIGN KEY (ticket) REFERENCES tickets (id)
+    FOREIGN KEY (ticket) REFERENCES ticket (id)
     -- For consideration, no ideas for functionalities with order_time yet:
     -- order_time   TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
 );
 
 CREATE TABLE rating_review
 (
-    uuid     uuid PRIMARY KEY,
+    uuid   Uuid PRIMARY KEY,
     rating INTEGER NOT NULL,
     review TEXT    NOT NULL,
     CHECK (rating IN (1, 2, 3, 4, 5)),
-    FOREIGN KEY (uuid) REFERENCES loyalty_points (uuid)
+    FOREIGN KEY (uuid) REFERENCES loyalty_point (uuid)
 );
 
 -- Only 'R' in 'CRUD' is implemented.
 CREATE VIEW monthly_revenue_report AS
-SELECT tickets.purchase_date::DATE  AS date,
-       tickets.ticket_type          AS type,
-       ticket_types.type_price      AS price,
-       SUM(ticket_types.type_price) AS total_revenue, -- pick one
-       COUNT(tickets.ticket_type)   AS total_tickets  -- of these two
-FROM tickets
-         JOIN ticket_types ON tickets.ticket_type = ticket_types.type_name
-WHERE tickets.purchase_date::DATE > NOW() - INTERVAL '1 month'
-GROUP BY tickets.purchase_date::DATE, tickets.ticket_type, ticket_types.type_price
-ORDER BY tickets.purchase_date::DATE DESC;
+SELECT ticket.purchase_date::DATE  AS date,
+       ticket.ticket_type          AS type,
+       ticket_type.type_price      AS price,
+       SUM(ticket_type.type_price) AS total_revenue, -- pick one
+       COUNT(ticket.ticket_type)   AS total_tickets  -- of these two
+FROM ticket
+         JOIN ticket_type ON ticket.ticket_type = ticket_type.type_name
+WHERE ticket.purchase_date::DATE > NOW() - INTERVAL '1 month'
+GROUP BY ticket.purchase_date::DATE, ticket.ticket_type, ticket_type.type_price
+ORDER BY ticket.purchase_date::DATE DESC;
 /*
 reasons:
  1
