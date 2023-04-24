@@ -13,3 +13,7 @@ SELECT crypt('p', gen_salt('argon2i'));
 
 SELECT *
 FROM pg_catalog.pg_available_extensions;
+
+
+SELECT password_hash FROM user_account WHERE username = 'stonebraker';
+

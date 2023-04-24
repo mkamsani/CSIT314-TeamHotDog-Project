@@ -33,4 +33,3 @@ END;
 $function$;
 -- Call the function to return the data as JSON
 SELECT select_all_as_json();
--- select sha256('password');

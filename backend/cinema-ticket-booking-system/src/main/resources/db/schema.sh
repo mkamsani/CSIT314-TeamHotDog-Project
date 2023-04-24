@@ -57,5 +57,14 @@ schema_file="$(find "$(pwd)" -name "schema.sql" -type f -exec realpath {} \;)"
 # Enter the container and create the schema.
 "$oci" exec -it pg psql -U postgres -f /home/postgres/schema.sql
 
+# See  src/main/java/com/hotdog/ctbs/controller/UserProfileController.java
+# i.e. ../../main/java/com/hotdog/ctbs/controller/UserProfileController.java
+wget -O- --post-data='{"privilege":"admin","title":"Capitalize Of The Text"}' --header="Content-Type: application/json" http://localhost:8080/api/user-profile/create
+wget -O- --post-data='{"privilege":"admin","title":"lowercased of the text"}' --header="Content-Type: application/json" http://localhost:8080/api/user-profile/create
+wget -O- --post-data='{"privilege":"admin","title":"UPPERCASED OF THE TEXT"}' --header="Content-Type: application/json" http://localhost:8080/api/user-profile/create
+wget -O- --post-data='{"privilege":"admin","title":"camelCased of the text"}' --header="Content-Type: application/json" http://localhost:8080/api/user-profile/create
+wget -O- --post-data='{"privilege":"admin","title":"PascalCase Of The Text"}' --header="Content-Type: application/json" http://localhost:8080/api/user-profile/create
+"$oci" exec -it pg psql -U postgres -c "SELECT * FROM user_profile;"
+
 # Unset variables from the environment.
 unset oci schema_file

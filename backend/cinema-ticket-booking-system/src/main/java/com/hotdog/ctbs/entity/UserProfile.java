@@ -1,12 +1,12 @@
 package com.hotdog.ctbs.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.persistence.*;
 import lombok.*;
-import net.datafaker.Faker;
 
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -17,8 +17,10 @@ import java.util.UUID;
 @Setter
 @Entity
 @Table(name = "user_profile")
+@JsonIgnoreProperties({"userAccounts"})
 public class UserProfile {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "uuid", nullable = false)
     private UUID id;
 
@@ -31,69 +33,30 @@ public class UserProfile {
     @OneToMany(mappedBy = "userProfile")
     private Set<UserAccount> userAccounts = new LinkedHashSet<>();
 
-    public UserProfile(String privilege, String title) {
-        this.id = UUID.randomUUID();
-        this.privilege = privilege;
-        this.title = title;
-    }
-
-    public UserProfile(Faker faker) {
-        this.id = UUID.randomUUID();
-        this.privilege = switch (faker.random().nextInt(4)) {
-            case 0 -> "customer";
-            case 1 -> "manager";
-            case 2 -> "owner";
-            default -> "admin";
-        };
-        this.title = this.privilege.equals("customer")
-                ? "Customer"
-                : faker.name().title();
-    }
-
-    public UserProfile(UserProfile userProfile) {
-        this.id = userProfile.id;
-        this.privilege = userProfile.privilege;
-        this.title = userProfile.title;
-    }
-
-    @SneakyThrows
-    public UserProfile(String json) {
-        UserProfile userProfile = new ObjectMapper().registerModule(new JavaTimeModule())
-                                                    .readValue(json, UserProfile.class);
-        this.id = userProfile.id;
-        this.privilege = userProfile.privilege;
-        this.title = userProfile.title;
-    }
-
     /**
-     * Returns a JSON string of the object.
+     * Returns a JSON string of the user profile.
      *
-     * <p>The purpose of registerModule() is to support for Java 8 date types,<br />
-     * as {@code java.time.OffsetDateTime} corresponds to Postgres' {@code timestamptz}.
-     *
-     * @return JSON string of the object.
-     * @see com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-     * @see java.time.OffsetDateTime
+     * @return JSON string of the user profile.
      */
     @SneakyThrows
     @Override
-    public String toString() {
-        return new ObjectMapper().registerModule(new JavaTimeModule())
-                                 .writerWithDefaultPrettyPrinter()
-                                 .writeValueAsString(this);
+    public String toString()
+    {
+        return new ObjectMapper().writeValueAsString(this);
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(Object o)
+    {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        UserProfile that = (UserProfile) o;
-        if (!id.equals(that.id)) return false;
-        return privilege.equals(that.privilege) && title.equals(that.title);
+        if (!(o instanceof UserProfile that)) return false;
+        // Prevent duplicates like "Senior Admin" and "senior admin".
+        return id.equals(that.id) && title.equalsIgnoreCase(that.title);
     }
 
     @Override
-    public int hashCode() {
-        return id.hashCode();
+    public int hashCode()
+    {
+        return Objects.hash(id, title);
     }
 }
