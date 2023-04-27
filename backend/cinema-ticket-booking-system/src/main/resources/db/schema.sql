@@ -34,20 +34,24 @@
  * TO-DO will not contain a hyphen in the actual comments below.
  *
  * TABLE/VIEW             |  CRUD  |  Status       |  Notes
- * user_profile           |  CRUD  |  In progress  |
- * user_account           |  CRUD  |  In progress  |  Delete == is_active FALSE.
+ * user_profile           |  CRUS  |  In progress  |
+ * user_account           |  CRUS  |  In progress  |  Delete == is_active FALSE.
  * loyalty_point          |   RU   |  In progress  |  No user-interaction on update.
+
  * movie                  |  CRUD  |  Not started  |
- * cinema_room            |   RU   |  Not started  |  Create when db is initialised.
- * screening              |  CRUD  |  Not started  |
  * ticket_type            |  CRUD  |  Not started  |  Create when db is initialised.
- * ticket                 |  CRUD  |  Not started  |
  * food_combo             |  CRUD  |  Not started  |
- * food_order             |  CRUD  |  Not started  |
- * rating_review          |  CRUD  |  Not started  |
+
+ * cinema_room            |   RUS  |  Not started  |  Create when db is initialised.
+ * seat                   |   R    |  Not started  |  Create when db is initialised.
+
+ * screening              |  CRUD  |  Not started  | Depends on movie, and cinema_room
+ * ticket                 |  CRUD  |  Not started  | Depends on screening, seat
+ * food_order             |  CRUD  |  Not started  | Depends on ticket
+ * rating_review          |  CRUD  |  Not started  | Depends on user_account/loyalty_point
+
  * monthly_revenue_report |   R    |  Not started  |
  * monthly_rating_report  |   R    |  Not started  |
- * seat                   |   R    |  Not started  |  Create when db is initialised.
  */
 
 DROP SCHEMA IF EXISTS public CASCADE;
@@ -90,10 +94,10 @@ CREATE TABLE user_profile
    */
   title     VARCHAR(255) NOT NULL UNIQUE,
 
+  is_active BOOLEAN NOT NULL DEFAULT TRUE,
+
   /*
-   * A customer's title should only be 'Customer'.
-   * Deliberate capitalisation on title is to differentiate from the privilege type.
-   * The information is also passed to frontend in capitalised form.
+   * Frontend should capitalise what should be capitalised, if they want.
    */
   CHECK (privilege != 'customer' OR title = 'Customer')
 );
@@ -105,7 +109,8 @@ CREATE INDEX ON user_profile (title);
 INSERT INTO user_profile
   (privilege, title)
 VALUES
-  ('customer', 'Customer'),
+    -- todo lowecase all
+  ('customer', 'customer'),
   ('manager', 'Junior Manager'),
   ('manager', 'Senior Manager'),
   ('owner', 'Chief Financial Officer'),
@@ -125,6 +130,11 @@ CREATE TABLE user_account
 
   user_profile    Uuid                     NOT NULL REFERENCES user_profile (uuid) ON DELETE RESTRICT,
 
+  -- ON DELETE RESTRICT          -  prevent it happens
+  -- ON DELETE CASCADE           -  all the children die
+  -- ON DELETE SET DEFAULT NULL  - all the children become NULL
+  -- ON DELETE ???
+
   /*
    * A suspended account (FALSE) will not be able to login.
    * A user_account is suspended (instead of deleted) for the following reasons:
@@ -143,9 +153,7 @@ CREATE TABLE user_account
   -- The columns BELOW are visible to the user.
 
   /*
-   * Both columns are valid inputs for login.
-   * In Java, regex is performed to check if input is an email:
-   * -- username is used if regex on email fails.
+   * Username is used for login.
    * -- username is alphanumeric, hence '.' or '@' is invalid.
    * In Java, String.toLowerCase() is used to convert all usernames and emails to lowercase.
    */
@@ -287,20 +295,22 @@ SELECT EXISTS
 -- (incorrect username / account suspended / incorrect password)
 */
 
+-- Pre-generate 20 movies, allow manager to INSERT into this table
 CREATE TABLE movie
 (
   id             SERIAL PRIMARY KEY,
   title          VARCHAR(255) NOT NULL,
-  genre          VARCHAR(255) NOT NULL, -- .toLowerCase()
-  description    VARCHAR(255) NOT NULL, -- wikipedia
-  release_date   DATE         NOT NULL, -- wikipedia
+  genre          VARCHAR(255) NOT NULL, -- .toLowerCase() wikipedia
+  description    VARCHAR(255) NOT NULL, -- .toLowerCase() wikipedia
+  release_date   DATE         NOT NULL, -- .toLowerCase() wikipedia
+  image_url      VARCHAR(255) DEFAULT 'https://raw.githubusercontent.com/assets/default.jpg', -- .toLowerCase()
   content_rating VARCHAR(255) NOT NULL, -- .toLowerCase()
-  created_by     INTEGER      NOT NULL,
   CHECK (content_rating IN ('g', 'pg', 'pg13', 'nc16', 'm18', 'r21'))
   -- for future consideration, pull actual ratings from rotten tomatoes or other sites.
   -- with an external api.
 );
 
+-- Terrence said no need to create.
 CREATE TABLE cinema_room
 (
   id       SERIAL PRIMARY KEY CHECK (id > 0 AND id <= 8), -- room number, max 8.
@@ -309,14 +319,24 @@ CREATE TABLE cinema_room
   --  status BOOLEAN NOT NULL DEFAULT TRUE, -- FALSE if room is under maintenance.
 );
 
+-- A manager should handle the INSERT of movies into this table.
 CREATE TABLE screening
 (
   id          SERIAL PRIMARY KEY,
   movie_id    INTEGER    NOT NULL REFERENCES movie (id),
   show_time   VARCHAR(9) NOT NULL CHECK (show_time IN ('morning', 'afternoon', 'evening', 'midnight')),
-  cinema_room INTEGER    NOT NULL REFERENCES cinema_room (id)
+  cinema_room INTEGER    NOT NULL REFERENCES cinema_room (id),
+  is_active BOOLEAN,
+
+  /*
+   * In Java, we filter dates that are lesser than today/now()
+   * In Database, we do it as a trigger, that will set all dates
+   * lesser than today to FALSE for "is_active"
+   */
+  date_of_movie TIMESTAMP WITHOUT TIME ZONE NOT NULL
 );
 
+-- Pre-generated 280 seats, per cinema room.
 CREATE TABLE seat
 (
   id            SERIAL PRIMARY KEY,
@@ -330,21 +350,33 @@ CREATE TABLE seat
   seat_row      CHAR(1)      NOT NULL CHECK (seat_row >= 'A' AND seat_row <= 'N'),
   seat_column   INTEGER      NOT NULL CHECK (seat_column >= 1 AND seat_column <= 30),
 
-  status        VARCHAR(11)  NOT NULL DEFAULT 'available' CHECK (status IN ('available', 'booked', 'pending', 'unavailable')),
+  -- Additional enhancements, can remove if not implemented.
   seat_type     VARCHAR(255) NOT NULL CHECK (seat_type IN ('normal', 'wheelchair', 'disabled')),
+  -- Additional enhancements, can remove if not implemented.
   seat_category VARCHAR(255) NOT NULL CHECK (seat_category IN ('normal', 'gold')),
+
   UNIQUE (cinema_room, seat_row, seat_column)
 );
 
 CREATE TABLE ticket_type
 (
-  type_name    VARCHAR(7) PRIMARY KEY CHECK (type_name IN ('Adult', 'Student', 'Child', 'Senior')),
-  type_price   NUMERIC(10, 2)           NOT NULL CHECK (type_price >= 0),
-  last_updated TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-  updated_by   INTEGER                  NOT NULL
+    uuid UUID default uuid_generate_v4(),
+    -- pregenerate ('adult', 'student', 'child', 'senior')
+  type_name    VARCHAR(7) UNIQUE,
+  type_price   NUMERIC(10, 2)           NOT NULL CHECK (type_price >= 0), -- 10.50
+  is_active BOOLEAN DEFAULT TRUE
+
+-- why generate uuid or auto-increment primary key?
+-- UPDATE ticket_type set type_name 'student' WHERE type_name = 'teenager'
+-- UPDATE ticket_type set type_name 'adult' WHERE type_name = 'student'
+-- UPDATE ticket_type set type_name 'teenager' WHERE type_name = 'adult'
+
+-- 1) give discount, or change price? Change price.
+-- 2) allow to make more ticket types? Or, fixed to the 4 above?
 
   -- For consideration, should we allow the changing of prices,
-  -- or allow a discount system.
+  -- or allow a discount system. CREATE TABLE DISCOUNT( ... REFERENCE ticket_type(type_name)   );
+
   -- A discount system would mean that all four types will have fixed prices.
   -- then, the discount will modify the price value.
 );
@@ -354,10 +386,14 @@ CREATE TABLE ticket
   id            SERIAL PRIMARY KEY,
   customer      Uuid                     NOT NULL REFERENCES loyalty_point (uuid),
   ticket_type   VARCHAR(255)             NOT NULL REFERENCES ticket_type (type_name),
-  movie_session INTEGER                  NOT NULL REFERENCES screening (id),
+  screening INTEGER                  NOT NULL REFERENCES screening (id),
   seat          INTEGER                  NOT NULL REFERENCES seat (id),
   purchase_date TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-  UNIQUE (seat, movie_session)
+
+  -- Composite key
+  -- Any entry should not have a duplicate combination of these two attributes.
+  -- this.seat == that.seat && this.screening == that.screening { booked; }
+  UNIQUE (seat, screening)
 );
 
 -- There are only five different food combos.
@@ -365,15 +401,19 @@ CREATE TABLE food_combo
 (
   id          INTEGER PRIMARY KEY CHECK (id > 0 AND id <= 5),
   description TEXT           NOT NULL, -- e.g. "Popcorn and Coke"
-  price       NUMERIC(10, 2) NOT NULL  -- e.g. 10.00
+  price       NUMERIC(10, 2) NOT NULL  CHECK (price >= 0)-- e.g. 10.00
 );
 
+-- Frontend should handle ticket purchase,
+-- send data to us,
+-- then redirect customer to optional food_order purchase.
 CREATE TABLE food_order
 (
   id           SERIAL PRIMARY KEY,
   combo_number INTEGER NOT NULL REFERENCES food_combo (id),
-  ticket       INTEGER NOT NULL REFERENCES ticket (id)
+
   -- For consideration, no ideas for functionalities with order_time yet:
+  ticket       INTEGER NOT NULL REFERENCES ticket (id)
   -- order_time   TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
 );
 
@@ -403,7 +443,6 @@ reasons:
  ^ justify why we use a view when asked in class.
  2
 */
-
 -- SELECT *
 -- FROM monthly_revenue_report WHERE tickets.purchase_date::DATE > NOW() - INTERVAL '1 week' ;
 -- FROM monthly_revenue_report WHERE tickets.purchase_date::DATE > NOW() - INTERVAL '1 day' ;

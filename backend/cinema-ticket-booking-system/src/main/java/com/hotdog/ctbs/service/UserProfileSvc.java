@@ -13,6 +13,8 @@ import java.util.UUID;
  */
 public interface UserProfileSvc {
 
+    String cleanTitleInputAndCapitalize(String dirtyTitle);
+
     /** SELECT title FROM user_profile; */
     List<String> getAllTitles();
 
@@ -47,7 +49,7 @@ public interface UserProfileSvc {
     void updateOnePrivilege(String targetTitle, String privilege);
 
     /** DELETE FROM user_profile WHERE title = arg */
-    void deleteByTitle(String title);
+    String deleteByTitle(String title);
 
     /** Send JSON to frontend. */
     String userProfileToJSON(UserProfile userProfile) throws JsonProcessingException;

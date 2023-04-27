@@ -55,16 +55,16 @@
             <optional>true</optional>
         </dependency>
 
-        <!-- SUPPORT FOR SPRING SECURITY -->
-        <!--        <dependency>-->
-        <!--            <groupId>org.springframework.boot</groupId>-->
-        <!--            <artifactId>spring-boot-starter-security</artifactId>-->
-        <!--        </dependency>-->
-        <!--        <dependency>-->
-        <!--            <groupId>org.springframework.security</groupId>-->
-        <!--            <artifactId>spring-security-test</artifactId>-->
-        <!--            <scope>test</scope>-->
-        <!--        </dependency>-->
+<!--         SUPPORT FOR SPRING SECURITY -->
+<!--                <dependency>-->
+<!--                    <groupId>org.springframework.boot</groupId>-->
+<!--                    <artifactId>spring-boot-starter-security</artifactId>-->
+<!--                </dependency>-->
+<!--                <dependency>-->
+<!--                    <groupId>org.springframework.security</groupId>-->
+<!--                    <artifactId>spring-security-test</artifactId>-->
+<!--                    <scope>test</scope>-->
+<!--                </dependency>-->
 
         <!-- SUPPORT FOR FAKER -->
         <!-- Creates fake data to insert into the database -->

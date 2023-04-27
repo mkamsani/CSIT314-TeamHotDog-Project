@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.hotdog.ctbs.entity.UserProfile;
 import com.hotdog.ctbs.repository.UserProfileRepository;
+import org.aspectj.bridge.IMessage;
 import org.springframework.stereotype.Service;
 import com.hotdog.ctbs.service.UserProfileSvc;
 
@@ -21,6 +22,19 @@ import java.util.UUID;
 public class UserProfileImpl implements UserProfileSvc {
 
     private final UserProfileRepository userProfileRepository;
+
+    /**
+     * @return A title that does not have extra spaces or weird CaSe teXt.
+     */
+    public String cleanTitleInputAndCapitalize(String dirtyTitle) {
+        dirtyTitle = dirtyTitle.strip();
+        dirtyTitle.replaceAll("//s+", " ");
+        for (String word: dirtyTitle.split(" ")); {
+            // capitalize each text.
+        }
+
+        return null;
+    }
 
     public UserProfileImpl(UserProfileRepository userProfileRepository)
     {
@@ -104,7 +118,13 @@ public class UserProfileImpl implements UserProfileSvc {
 
         // Remove internal spaces, newlines, and tabs with a single space.
         // For future consideration, this method can Capitalize the string, or lowercase it.
-        title = title.replaceAll("\\s+", " ");
+        title = title.strip().replaceAll("\\s+", " ");
+
+        // "   Senior     Admin    "
+        // title.strip()
+        // "Senior     Admin"
+        // .replaceAll( , )
+        // "Senior Admin"
 
         userProfileRepository.save(
                 UserProfile.builder()
@@ -126,11 +146,17 @@ public class UserProfileImpl implements UserProfileSvc {
 
             if (!newTitle.matches("^[a-zA-Z ]+$"))
                 throw new IllegalArgumentException("Title must contain only letters and spaces.");
+
+            newTitle = newTitle.strip().replaceAll("\\s+", " ");
+
             userProfile.setTitle(newTitle);
             userProfileRepository.save(userProfile);
             break;
         }
     }
+
+    // Chief Information Officer (CIO): Owner
+    // Chief Information Officer (CIO): Admin
 
     /**
      * @param targetTitle  the title of the user profile to be modified.
@@ -145,6 +171,8 @@ public class UserProfileImpl implements UserProfileSvc {
             if (!userProfile.getTitle().equals(targetTitle))
                 continue;
 
+            newPrivilege = newPrivilege.strip().replaceAll("\\s+", " ");
+
             if (!newPrivilege.matches("^[a-zA-Z ]+$"))
                 throw new IllegalArgumentException("Privilege must contain only letters and spaces.");
             userProfile.setPrivilege(newPrivilege);
@@ -154,18 +182,33 @@ public class UserProfileImpl implements UserProfileSvc {
     }
 
     @Override
-    public void deleteByTitle(String title)
+    public String deleteByTitle(String title)
     {
-        if (title.stripLeading().startsWith("{") && title.stripTrailing().endsWith("}") && title.contains(":")) {
-            try {
-                deleteByTitle(new ObjectMapper().readTree(title).get("title").asText());
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            }
-        }
+        // Check if JSON. this logic should be elsewhere.
+//        if (title.stripLeading().startsWith("{") && title.stripTrailing().endsWith("}") && title.contains(":")) {
+//            try {
+//                deleteByTitle(new ObjectMapper().readTree(title).get("title").asText());
+//            } catch (JsonProcessingException e) {
+//                e.printStackTrace();
+//            }
+//        }
+
+        // TODO: check if this any user_account is using this title:
+
         for (UserProfile userProfile : userProfileRepository.findAll())
-            if (userProfile.getTitle().equals(title))
+            if (userProfile.getTitle().equals(title)) {
+                String message;
+                int size = userProfile.getUserAccounts().size();
+                if (size > 0) {
+                     message = "Deleted user profile belonging to " + size + " accounts.";
+                }
+                else {
+                    message = "Deleted user profile.";
+                }
                 userProfileRepository.delete(userProfile);
+                return message;
+            }
+        return "Not found";
     }
 
     @Override
