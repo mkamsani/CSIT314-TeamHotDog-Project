@@ -22,16 +22,6 @@ public class UserProfileController {
         this.userProfileImpl = userProfileImpl;
     }
 
-    @GetMapping("/read/all")
-    public String ReadAll()
-    {
-        try {
-            return userProfileImpl.userProfilesOmitIdToJSON();
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     @GetMapping("/read/titles")
     public String ReadTitles()
     {

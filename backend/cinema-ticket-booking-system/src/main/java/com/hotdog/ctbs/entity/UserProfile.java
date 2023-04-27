@@ -33,9 +33,10 @@ public class UserProfile {
     @OneToMany(mappedBy = "userProfile")
     private Set<UserAccount> userAccounts = new LinkedHashSet<>();
 
+    @Column(name = "is_active", nullable = false)
+    private Boolean isActive;
+
     /**
-     * Returns a JSON string of the user profile.
-     *
      * @return JSON string of the user profile.
      */
     @SneakyThrows

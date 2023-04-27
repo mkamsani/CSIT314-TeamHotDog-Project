@@ -13,8 +13,6 @@ import java.util.UUID;
  */
 public interface UserProfileSvc {
 
-    String cleanTitleInputAndCapitalize(String dirtyTitle);
-
     /** SELECT title FROM user_profile; */
     List<String> getAllTitles();
 
@@ -40,44 +38,26 @@ public interface UserProfileSvc {
     void createUserProfile(String title, String privilege);
 
     /** UPDATE user_profile SET title = newTitle WHERE title = targetTitle; */
-    void updateOneTitle(String oldTitle, String newTitle);
+    void updateOneByTitle(String oldTitle, String newTitle);
 
     /**
      * UPDATE user_profile SET privilege = newPrivilege WHERE title = targetTitle<br />
      * AND (newPrivilege = 'admin' OR newPrivilege = 'owner' OR newPrivilege = 'manager')
      */
-    void updateOnePrivilege(String targetTitle, String privilege);
+    void updateOneByPrivilege(String targetTitle, String privilege);
 
     /** DELETE FROM user_profile WHERE title = arg */
     String deleteByTitle(String title);
 
-    /** Send JSON to frontend. */
-    String userProfileToJSON(UserProfile userProfile) throws JsonProcessingException;
-
-    /** Send JSON to frontend. */
-    String userProfilesToJSON(List<UserProfile> userProfiles) throws JsonProcessingException;
+    /** Send JSON to frontend, without UUID. */
+    String UserProfileResponse(UserProfile userProfile) throws JsonProcessingException;
 
     /** Send JSON to frontend, without UUID. */
-    String userProfileOmitIdToJSON(UserProfile userProfile) throws JsonProcessingException;
-
-    /** Send JSON to frontend, without UUID. */
-    String userProfilesOmitIdToJSON(List<UserProfile> userProfiles) throws JsonProcessingException;
-
-    /** Receive JSON from frontend. */
-    UserProfile userProfileFromJSON(String json) throws JsonProcessingException;
-
-    /** Receive JSON from frontend. */
-    List<UserProfile> userProfilesFromJSON(String json) throws JsonProcessingException;
-
-    String userProfilesOmitIdToJSON() throws JsonProcessingException;
-
-    /**
-     * Receive JSON from frontend, regardless of UUID (or lack thereof).
-     *
-     * @return UserProfile from database, with UUID.
-     */
-    UserProfile userProfileOmitIdFromJSON(String json) throws JsonProcessingException;
+    String UserProfilesResponse(List<UserProfile> userProfiles) throws JsonProcessingException;
 
     /** Receive JSON from frontend, regardless of UUID (or lack thereof). */
-    List<UserProfile> userProfilesOmitIdFromJSON(String json) throws JsonProcessingException;
+    UserProfile UserProfileRequest(String json) throws JsonProcessingException;
+
+    /** Receive JSON from frontend, regardless of UUID (or lack thereof). */
+    List<UserProfile> UserProfilesRequest(String json) throws JsonProcessingException;
 }

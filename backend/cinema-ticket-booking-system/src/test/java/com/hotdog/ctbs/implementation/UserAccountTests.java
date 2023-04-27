@@ -14,30 +14,58 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
+@SpringBootTest
 public class UserAccountTests {
 
+    @Autowired
+    UserAccountImpl userAccountImpl;
 
     @Test
-    /**
-     *  Creates dummy user accounts.
-     */
     void getters()
     {
-        Faker faker = new Faker();
-        UserAccount userAccount = new UserAccount();
-        userAccount.setPasswordHash(faker.internet().password());
-        userAccount.setUsername(faker.name().firstName());
-        userAccount.setEmail(faker.internet().emailAddress());
-        userAccount.setFirstName(faker.name().firstName());
-        userAccount.setLastName(faker.name().lastName());
-        userAccount.setAddress(faker.address().fullAddress());
-        userAccount.setDateOfBirth(faker.date().birthday().toLocalDateTime().toLocalDate());
-        userAccount.setTimeCreated(OffsetDateTime.now());
-        userAccount.setTimeLastLogin(OffsetDateTime.now());
-        System.out.println(userAccount);
-        // {"id":null,"userProfile":null,"isActive":null,"passwordHash":"vc4l4aml","username":"Stan","email":"esteban.mcglynn@gmail.com",
-        // "firstName":"Inge","lastName":"Fisher",
-        // "address":"Apt. 055 6049 Lashay Vista, Murrayland, NY 94238",
-        // "dateOfBirth":[1963,9,9],"timeCreated":1682595428.960024500,"timeLastLogin":1682595428.960024500}
+        System.out.println("userAccountImpl.findUserAccountByUsername(\"stonebraker\")");
+        System.out.println(userAccountImpl.findUserAccountByUsername("stonebraker"));
+    }
+
+    @Test
+    void login()
+    {
+        System.out.println();
+        String result;
+
+        System.out.println("userAccountImpl.login(\"jim\", \"password_Mgr_is_mgrJ\")");
+        result = userAccountImpl.login("jim", "password_Mgr_is_mgrJ");
+        System.out.println(result);
+        System.out.println();
+
+        System.out.println("userAccountImpl.login(\"mscott\", \"password_Mgr_is_mgrS\")");
+        result = userAccountImpl.login("mscott", "password_Mgr_is_mgrS");
+        System.out.println(result);
+        System.out.println();
+
+        System.out.println("userAccountImpl.login(\"dwallace\", \"password_Owr_is_%CFO\")");
+        result = userAccountImpl.login("dwallace", "password_Owr_is_%CFO");
+        System.out.println(result);
+        System.out.println();
+
+        System.out.println("userAccountImpl.login(\"jbennett\", \"password_Owr_is_%CEO\")");
+        result = userAccountImpl.login("jbennett", "password_Owr_is_%CEO");
+        System.out.println(result);
+        System.out.println();
+
+        System.out.println("userAccountImpl.login(\"marcus\", \"password_Adm_is_admJ\")");
+        result = userAccountImpl.login("marcus", "password_Adm_is_admJ");
+        System.out.println(result);
+        System.out.println();
+
+        System.out.println("userAccountImpl.login(\"samy\", \"password_Adm_is_admS\")");
+        result = userAccountImpl.login("samy", "password_Adm_is_admS");
+        System.out.println(result);
+        System.out.println();
+
+        System.out.println("userAccountImpl.login(\"stonebraker\", \"password_Adm_is_%CIO\")");
+        result = userAccountImpl.login("stonebraker", "password_Adm_is_%CIO");
+        System.out.println(result);
+        System.out.println();
     }
 }

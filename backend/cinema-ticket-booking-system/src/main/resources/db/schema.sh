@@ -1,12 +1,12 @@
-#!/bin/sh
+#!/bin/sh -eux
+# -eux means:
+# -e : Terminate if a command exits with a non-zero status.
+# -u : Treat unset variables as an error when substituting.
+# -x : Print commands and their arguments as they are executed.
 
 # Prerequisites:
 # sudo usermod -aG docker $(id -nu 1000) && exit
 # Run the above command, then run this script again.
-
-# -e : Terminate if a command exits with a non-zero status.
-# -u : Treat unset variables as an error when substituting.
-set -eu
 
 # Exit if script is not run from the source directory.
 test "$(basename "$(pwd)")" = "db" || exit 1
@@ -16,9 +16,8 @@ test "$(command -v podman && podman -v   | grep podman)"  && oci=podman
 test "$(command -v docker && docker -v   | grep docker)"  && oci=docker
 test -z "$oci" && printf %s\\n "No OCI runtime found" && exit 1
 
-# Unset set -e
+# Unset set -e to allow the script to continue if the container is not running.
 set +e
-
 # Kill and remove the container (to reset) if it's running.
 sleep 1 && "$oci" container list -a | grep pg && "$oci" rm -f pg
 
@@ -51,20 +50,22 @@ sleep 1
 
 # Get absolute path of the schema.sql file
 schema_file="$(find "$(pwd)" -name "schema.sql" -type f -exec realpath {} \;)"
+data_file="$(find "$(pwd)" -name "data.sql" -type f -exec realpath {} \;)"
 # Copy the schema.sql file to the container
 "$oci" cp $schema_file pg:/home/postgres
-
+"$oci" cp $data_file pg:/home/postgres
 # Enter the container and create the schema.
 "$oci" exec -it pg psql -U postgres -f /home/postgres/schema.sql
+"$oci" exec -it pg psql -U postgres -f /home/postgres/data.sql
 
 # See  src/main/java/com/hotdog/ctbs/controller/UserProfileController.java
 # i.e. ../../main/java/com/hotdog/ctbs/controller/UserProfileController.java
-wget -O- --post-data='{"privilege":"admin","title":"Capitalize Of The Text"}' --header="Content-Type: application/json" http://localhost:8080/api/user-profile/create
-wget -O- --post-data='{"privilege":"admin","title":"lowercased of the text"}' --header="Content-Type: application/json" http://localhost:8080/api/user-profile/create
-wget -O- --post-data='{"privilege":"admin","title":"UPPERCASED OF THE TEXT"}' --header="Content-Type: application/json" http://localhost:8080/api/user-profile/create
-wget -O- --post-data='{"privilege":"admin","title":"camelCased of the text"}' --header="Content-Type: application/json" http://localhost:8080/api/user-profile/create
-wget -O- --post-data='{"privilege":"admin","title":"PascalCase Of The Text"}' --header="Content-Type: application/json" http://localhost:8080/api/user-profile/create
-"$oci" exec -it pg psql -U postgres -c "SELECT * FROM user_profile;"
+#wget -O- --post-data='{"privilege":"admin","title":"Capitalize Of The Text"}' --header="Content-Type: application/json" http://localhost:8080/api/user-profile/create
+#wget -O- --post-data='{"privilege":"admin","title":"lowercased of the text"}' --header="Content-Type: application/json" http://localhost:8080/api/user-profile/create
+#wget -O- --post-data='{"privilege":"admin","title":"UPPERCASED OF THE TEXT"}' --header="Content-Type: application/json" http://localhost:8080/api/user-profile/create
+#wget -O- --post-data='{"privilege":"admin","title":"camelCased of the text"}' --header="Content-Type: application/json" http://localhost:8080/api/user-profile/create
+#wget -O- --post-data='{"privilege":"admin","title":"PascalCase Of The Text"}' --header="Content-Type: application/json" http://localhost:8080/api/user-profile/create
+#"$oci" exec -it pg psql -U postgres -c "SELECT * FROM user_profile;"
 
 # Unset variables from the environment.
-unset oci schema_file
+unset oci schema_file data_file

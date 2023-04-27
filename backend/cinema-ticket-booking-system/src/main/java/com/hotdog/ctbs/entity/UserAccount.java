@@ -1,10 +1,15 @@
 package com.hotdog.ctbs.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
@@ -18,17 +23,14 @@ import java.util.UUID;
 @Setter
 @Entity
 @Table(name = "user_account")
+@JsonIgnoreProperties({"userProfile"})
 public class UserAccount {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "uuid", nullable = false)
     private UUID id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_profile", nullable = false)
-    private UserProfile userProfile;
-
-    @Column(name = "is_active")
+    @Column(name = "is_active", nullable = false)
     private Boolean isActive;
 
     @Column(name = "password_hash", nullable = false, length = 72)
@@ -58,6 +60,13 @@ public class UserAccount {
     @Column(name = "time_last_login", nullable = false)
     private OffsetDateTime timeLastLogin;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_profile", nullable = false)
+    @Fetch(FetchMode.JOIN)
+    private UserProfile userProfile;
+
+
+
     /**
      * Returns a JSON string of the user account.
      *
@@ -76,20 +85,24 @@ public class UserAccount {
      */
     @SneakyThrows
     @Override
-    public String toString() {
+    public String toString()
+    {
         return new ObjectMapper().registerModule(new JavaTimeModule())
                                  .writeValueAsString(this);
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(Object o)
+    {
         if (this == o) return true;
         if (!(o instanceof UserAccount that)) return false;
-        return id.equals(that.id) && username.equals(that.username) && email.equals(that.email);
+        return id.equals(that.id) && username.equals(that.username) && email.equals(that.email) && userProfile.equals(
+                that.userProfile);
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(id, username, email);
+    public int hashCode()
+    {
+        return Objects.hash(id, username, email, userProfile);
     }
 }

@@ -115,12 +115,12 @@ public class UserProfileTests {
         getAllTitles.run();
 
         System.out.println("userProfileImpl.updateOneTitle(\"Test Manager\", \"Test Manager Updated\")");
-        userProfileImpl.updateOneTitle("Test Manager", "Test Manager Updated");
+        userProfileImpl.updateOneByTitle("Test Manager", "Test Manager Updated");
         System.out.println();
         getAllTitles.run();
 
         System.out.println("userProfileImpl.updateOnePrivilege(\"Test Manager Updated\", \"admin\")");
-        userProfileImpl.updateOnePrivilege("Test Manager Updated", "admin");
+        userProfileImpl.updateOneByPrivilege("Test Manager Updated", "admin");
         System.out.println();
         getAllTitles.run();
 
@@ -196,18 +196,18 @@ public class UserProfileTests {
         System.out.println();
 
         System.out.println("userProfileOmitIdToJSON()");
-        String userProfileOmitIdToJSON = userProfileImpl.userProfileOmitIdToJSON(userProfileFromJSON);
+        String userProfileOmitIdToJSON = userProfileImpl.UserProfileResponse(userProfileFromJSON);
         System.out.println(userProfileOmitIdToJSON);
         System.out.println();
 
         System.out.println("userProfilesOmitIdToJSON()");
-        String userProfilesOmitIdToJSON = userProfileImpl.userProfilesOmitIdToJSON(userProfilesFromJSON);
+        String userProfilesOmitIdToJSON = userProfileImpl.UserProfilesResponse(userProfilesFromJSON);
         System.out.println(userProfilesOmitIdToJSON);
         System.out.println();
 
         // For this to work as expected, the default entries need to be loaded from schema.sql.
         System.out.println("userProfileOmitIdFromJSON()");
-        UserProfile userProfileOmitIdFromJSON = userProfileImpl.userProfileOmitIdFromJSON(
+        UserProfile userProfileOmitIdFromJSON = userProfileImpl.UserProfileRequest(
                 "{\"title\":\"Customer\",\"privilege\":\"customer\"}"
         );
         System.out.println(userProfileOmitIdFromJSON);
@@ -215,7 +215,7 @@ public class UserProfileTests {
 
         // For this to work as expected, the default entries need to be loaded from schema.sql.
         System.out.println("userProfilesOmitIdFromJSON()");
-        List<UserProfile> userProfilesOmitIdFromJSON = userProfileImpl.userProfilesOmitIdFromJSON(
+        List<UserProfile> userProfilesOmitIdFromJSON = userProfileImpl.UserProfilesRequest(
                 """
                         [
                              {"title":"Customer","privilege":"customer"},
