@@ -75,10 +75,7 @@ public class UserProfileImpl implements UserProfileService {
     @Override
     public UserProfile getUserProfileByTitle(final String title)
     {
-        for (UserProfile userProfile : userProfileRepository.findAll())
-            if (userProfile.getTitle().equals(title))
-                return userProfile;
-        return null;
+        return userProfileRepository.findUserProfileByTitle(title);
     }
 
     @Override
@@ -158,23 +155,22 @@ public class UserProfileImpl implements UserProfileService {
     }
 
     @Override
-    public String deleteByTitle(String title)
+    public String suspendOneByTitle(String title)
     {
-        // TODO: check if this any user_account is using this title:
+        UserProfile userProfile = userProfileRepository.findUserProfileByTitle(title);
+        if (userProfile == null)
+            return "Not found.";
+        if (!userProfile.getIsActive())
+            return title + " is already suspended.";
 
-        for (UserProfile userProfile : userProfileRepository.findAll())
-            if (userProfile.getTitle().equals(title)) {
-                String message;
-                int size = userProfile.getUserAccounts().size();
-                if (size > 0) {
-                    message = "Deleted user profile belonging to " + size + " accounts.";
-                } else {
-                    message = "Deleted user profile.";
-                }
-                userProfileRepository.delete(userProfile);
-                return message;
-            }
-        return "Not found";
+        userProfile.setIsActive(false);
+        userProfileRepository.save(userProfile);
+
+        int size = userProfile.getUserAccounts().size();
+        if (size == 0)
+            return title + " has been suspended.";
+        else
+            return title + " has been suspended. " + size + " user account(s) have been suspended.";
     }
 
     @Override

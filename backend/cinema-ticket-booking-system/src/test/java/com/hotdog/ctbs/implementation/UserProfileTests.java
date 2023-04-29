@@ -8,7 +8,6 @@ import com.hotdog.ctbs.entity.*;
 import com.hotdog.ctbs.service.implementation.*;
 import org.springframework.util.Assert;
 
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -125,7 +124,7 @@ public class UserProfileTests {
         getAllTitles.run();
 
         System.out.println("userProfileImpl.deleteByTitle(\"Test Manager Updated\")");
-        userProfileImpl.deleteByTitle("Test Manager Updated");
+        userProfileImpl.suspendOneByTitle("Test Manager Updated");
         System.out.println();
         getAllTitles.run();
 
@@ -136,7 +135,6 @@ public class UserProfileTests {
     void json() throws JsonProcessingException
     {
         long time = testStarter();
-
         testEnder(time);
     }
 }

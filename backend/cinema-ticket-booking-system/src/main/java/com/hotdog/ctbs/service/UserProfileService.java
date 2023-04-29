@@ -47,7 +47,7 @@ public interface UserProfileService {
     void updateOneByPrivilege(String targetTitle, String privilege);
 
     /** DELETE FROM user_profile WHERE title = arg */
-    String deleteByTitle(String title);
+    String suspendOneByTitle(String title);
 
     /** Send JSON to frontend, without UUID. */
     String UserProfileResponse(UserProfile userProfile) throws JsonProcessingException;
