@@ -67,18 +67,44 @@ public class DatabaseInitializer implements ApplicationRunner {
                                .passwordHash(userAccount[0])
                                .username(userAccount[1])
                                .email(userAccount[1] + "@ctbs.com")
-                               .firstName(userAccount[3])
-                               .lastName(userAccount[4])
+                               .firstName(userAccount[2])
+                               .lastName(userAccount[3])
                                .address(faker.address().fullAddress())
-                               .dateOfBirth(LocalDate.parse(userAccount[5]))
-                               .userProfile(userProfileRepository.findUserProfileByTitle(userAccount[6]))
+                               .dateOfBirth(LocalDate.parse(userAccount[4]))
+                               .userProfile(userProfileRepository.findUserProfileByTitle(userAccount[5]))
                                .timeCreated(OffsetDateTime.now())
                                .timeLastLogin(OffsetDateTime.now())
                                .isActive(true)
                                .build()
-
             ));
+            for (int i = 0; i < 100; i++) {
+                String firstName = faker.name().firstName();
+                UserAccount userAccount = UserAccount.builder()
+                        .id(UUID.randomUUID())
+                                                     .passwordHash("password_" + i)
+                                                     .username("user_" + i)
+                                                     .email(faker.internet().emailAddress())
+                                                     .firstName(firstName)
+                                                     .lastName(faker.name().lastName())
+                                                     .address(faker.address().fullAddress())
+                                                     .dateOfBirth(faker.date()
+                                                                       .birthday()
+                                                                       .toLocalDateTime()
+                                                                       .toLocalDate())
+                                                     .userProfile(userProfileRepository.findUserProfileByTitle(
+                                                             "customer"))
+                                                     .timeCreated(OffsetDateTime.now())
+                                                     .timeLastLogin(OffsetDateTime.now())
+                                                     .isActive(true)
+                                                     .build();
+                if (userAccountRepository.findAll().contains(userAccount)) {
+                    i--;
+                    continue;
+                }
+                userAccountRepository.save(
+                        userAccount
+                );
+            }
         }
-
     }
 }
