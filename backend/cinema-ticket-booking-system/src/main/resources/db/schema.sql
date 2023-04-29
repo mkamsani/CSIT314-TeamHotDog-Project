@@ -180,7 +180,7 @@ SELECT EXISTS
 -- Pre-generate 20 movies, allow manager to INSERT into this table
 CREATE TABLE movie
 (
-  id             SERIAL PRIMARY KEY,
+  uuid           Uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
   title          TEXT NOT NULL,
   genre          TEXT NOT NULL,                                                       -- .toLowerCase() wikipedia
   description    TEXT NOT NULL,                                                       -- .toLowerCase() wikipedia
@@ -204,8 +204,8 @@ CREATE TABLE cinema_room
 -- A manager should handle the INSERT of movies into this table.
 CREATE TABLE screening
 (
-  id            SERIAL     NOT NULL PRIMARY KEY,
-  movie_id      INTEGER    NOT NULL REFERENCES movie (id),
+  uuid          Uuid PRIMARY KEY     DEFAULT uuid_generate_v4(),
+  movie_id      Uuid       NOT NULL REFERENCES movie (uuid),
   show_time     VARCHAR(9) NOT NULL CHECK (show_time IN ('morning', 'afternoon', 'evening', 'midnight')),
   cinema_room   INTEGER    NOT NULL REFERENCES cinema_room (id),
   is_active     BOOLEAN,
@@ -221,7 +221,7 @@ CREATE TABLE screening
 -- Pre-generated 280 seats, per cinema room.
 CREATE TABLE seat
 (
-  id            SERIAL PRIMARY KEY,
+  uuid          Uuid PRIMARY KEY     DEFAULT uuid_generate_v4(),
   cinema_room   INTEGER NOT NULL REFERENCES cinema_room (id) ON DELETE CASCADE,
 
   -- 14 row * 20 column = 280 seats.
@@ -262,11 +262,11 @@ CREATE TABLE ticket_type
 
 CREATE TABLE ticket
 (
-  id            SERIAL PRIMARY KEY,
+  uuid          Uuid PRIMARY KEY     DEFAULT uuid_generate_v4(),
   customer      Uuid                     NOT NULL REFERENCES loyalty_point (uuid),
   ticket_type   TEXT                     NOT NULL REFERENCES ticket_type (type_name),
-  screening     INTEGER                  NOT NULL REFERENCES screening (id),
-  seat          INTEGER                  NOT NULL REFERENCES seat (id),
+  screening     Uuid                     NOT NULL REFERENCES screening (uuid),
+  seat          Uuid                     NOT NULL REFERENCES seat (uuid),
   purchase_date TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
 
   -- Composite key
@@ -288,7 +288,7 @@ CREATE TABLE food_combo
 -- then redirect customer to optional food_order purchase.
 CREATE TABLE food_order
 (
-  id           SERIAL PRIMARY KEY,
+  uuid         Uuid PRIMARY KEY     DEFAULT uuid_generate_v4(),
   combo_number INTEGER NOT NULL REFERENCES food_combo (id),
 
   -- For consideration, no ideas for functionalities with order_time yet:
