@@ -8,9 +8,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.hotdog.ctbs.entity.UserProfile;
 import com.hotdog.ctbs.repository.UserProfileRepository;
 import org.springframework.stereotype.Service;
-import com.hotdog.ctbs.service.UserProfileSvc;
+import com.hotdog.ctbs.service.UserProfileService;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,7 +19,7 @@ import java.util.UUID;
  * @see com.hotdog.ctbs.entity.UserProfile
  */
 @Service
-public class UserProfileImpl implements UserProfileSvc {
+public class UserProfileImpl implements UserProfileService {
 
     private final UserProfileRepository userProfileRepository;
 

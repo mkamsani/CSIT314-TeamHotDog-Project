@@ -11,7 +11,7 @@ import java.util.UUID;
  * <br />
  * "arg" refers to the method parameter.
  */
-public interface UserProfileSvc {
+public interface UserProfileService {
 
     /** SELECT title FROM user_profile; */
     List<String> getAllTitles();

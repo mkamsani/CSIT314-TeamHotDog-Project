@@ -1,29 +1,19 @@
 package com.hotdog.ctbs.service.implementation;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.hotdog.ctbs.entity.UserAccount;
-import com.hotdog.ctbs.entity.UserProfile;
 import com.hotdog.ctbs.repository.UserAccountRepository;
 import com.hotdog.ctbs.repository.UserProfileRepository;
-import com.hotdog.ctbs.service.UserAccountSvc;
+import com.hotdog.ctbs.service.UserAccountService;
 import jakarta.transaction.Transactional;
-import org.hibernate.Hibernate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.hotdog.ctbs.service.UserProfileSvc;
 
 import java.time.OffsetDateTime;
-import java.util.List;
-import java.util.UUID;
 
 /**
  *
  */
 @Service
-public class UserAccountImpl implements UserAccountSvc {
+public class UserAccountImpl implements UserAccountService {
 
     final UserAccountRepository userAccountRepository;
     final UserProfileRepository userProfileRepository;
