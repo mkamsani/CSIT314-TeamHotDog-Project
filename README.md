@@ -16,7 +16,7 @@
 7. [ ] Facilitate CI/CD:
     * e.g. circleCI
 
-## <span style="color:yellow">Deliverables (23rd May 2023)</span>
+## Deliverables (23rd May 2023)
 
 1. Final Deliverables (35 marks)
     * Report.docx
@@ -76,6 +76,18 @@
 │   └── style.css               # For <header> and <footer>.
 └── favicon.svg                 # Most likely a hot dog bun.
 ```
+
+## Backend
+
+### Setup
+
+1. Sign up for [JetBrains Student License](https://www.jetbrains.com/shop/eform/students).
+2. Install [IntelliJ IDEA Ultimate](https://www.jetbrains.com/idea/download/#section=windows).
+3. Install [WSL2](https://learn.microsoft.com/en-us/windows/wsl/install).
+4. Install Ubuntu 20.04 LTS from the Microsoft Store.
+5. Install [Docker Engine on Ubuntu](https://docs.docker.com/engine/install/ubuntu/).
+6. Clone this repository.
+7. Open the folder "cinema-ticket-booking-system" as an IntelliJ project.
 
 ## License
 
