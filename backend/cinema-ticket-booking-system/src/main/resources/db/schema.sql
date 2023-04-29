@@ -292,7 +292,7 @@ CREATE TABLE food_order
   combo_number INTEGER NOT NULL REFERENCES food_combo (id),
 
   -- For consideration, no ideas for functionalities with order_time yet:
-  ticket       INTEGER NOT NULL REFERENCES ticket (id)
+  ticket       Uuid NOT NULL REFERENCES ticket (uuid)
   -- order_time   TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
 );
 
