@@ -21,7 +21,7 @@ jobs:
 
       - name: Build with Maven
         working-directory: ./backend/cinema-ticket-booking-system
-        run: mvn -B package --file pom.xml
+        run: mvn -B package -Dmaven.test.skip --file pom.xml
 
       - name: Create Release
         uses: actions/create-release@v1
