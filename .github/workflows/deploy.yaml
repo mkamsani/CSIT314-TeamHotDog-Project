@@ -10,56 +10,34 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout Git Repository
+        uses: actions/checkout@v3
 
-      - name: Set up JDK 17
-        uses: actions/setup-java@v2
+      - name: Install JDK 17
+        uses: actions/setup-java@v3
         with:
-          java-version: '17'
+          java-version: 17
 
       - name: Build with Maven
-        run: mvn package
+        working-directory: ./backend/cinema-ticket-booking-system
+        run: mvn -B package --file pom.xml
 
-      - name: Move jar file to dist directory
-        run: mv target/*.jar .github/dist/
-
-  release:
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
       - name: Create Release
-        id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v${{ github.run_number }}
-          release_name: Release v${{ github.run_number }}
-          body: |
-            Changes in this Release:
-            - add some changes here
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
           draft: false
           prerelease: false
 
-      - name: Upload jar asset
-        id: upload-jar
-        uses: actions/upload-artifact@v2
-        with:
-          name: jar
-          path: .github/dist/*.jar
-
-      - name: Attach jar asset to Release
-        uses: actions/create-release@v1
+      - name: Upload JAR to Release
+        uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v${{ github.run_number }}
-          release_name: Release v${{ github.run_number }}
-          body: |
-            Changes in this Release:
-            - add some changes here
-          draft: false
-          prerelease: false
-          files: |
-            ${{ steps.upload-jar.outputs.artifact_path }}
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./backend/cinema-ticket-booking-system/target/cinema-ticket-booking-system-1.0-SNAPSHOT.jar
+          asset_name: cinema-ticket-booking-system-1.0-SNAPSHOT.jar
+          asset_content_type: application/java-archive
