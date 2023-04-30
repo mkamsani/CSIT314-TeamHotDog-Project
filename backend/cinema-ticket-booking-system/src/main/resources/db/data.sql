@@ -25,4 +25,16 @@ VALUES
 -- Insert 5 customers of the cinema:
 -- TODO
 
+-- i want to insert 5 dummy data to my movie table
+--
+INSERT INTO movie
+  (title, genre, description, release_date, image_url, content_rating)
+VALUES
+    ('Spider-Man', 'Action', 'Peter Parker, a high school student becomes a superhero, Spider Man.', '2002-05-03', 'https://en.wikipedia.org/wiki/Spider-Man_%282002_film%29#/media/File:Spider-Man2002Poster.jpg', 'pg13'),
+    ('Batman Begins', 'Action', 'Bruce Wayne, a billionare in Gotham City becomes a superhero, Bat Man', '2005-06-15', 'https://pt.wikipedia.org/wiki/Batman_Begins#/media/Ficheiro:Batman_begins.jpg', 'pg13'),
+    ('Ultraman', 'Sci-Fi', 'A giant alien warrior comes to Earth to fight off dinosaurs like T-Rex.', '1966-07-17', 'https://en.wikipedia.org/wiki/Ultraman_Nexus_%28character%29#/media/File:Ultraman_Nexus_Crunchyroll_Poster.jpg', 'g'),
+    ('Wonder Woman', 'Action', 'An Amazon princess becomes Wonder Woman', '2017-06-02', 'https://en.wikipedia.org/wiki/Wonder_Woman_%282017_film%29#/media/File:Wonder_Woman_(2017_film)_poster.jpg', 'pg13');
+
+
+
 SELECT 'Success'
