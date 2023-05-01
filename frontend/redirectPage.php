@@ -9,9 +9,8 @@
 <?php
 
 	$ch = curl_init();
-	curl_setopt($ch, CURLOPT_URL, "http://www.example.com/");
+	curl_setopt($ch, CURLOPT_URL, "http://localhost:8080/api/user-account/readAllUserAccounts");
 	curl_setopt($ch, CURLOPT_HEADER, 0);
-
 
 	// grab URL and pass it to the browser
 	$response = curl_exec($ch);
@@ -39,7 +38,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 	}
 	
 	if($check == "login" && $_POST['user'] == 'CO') {
-		if($_POST['name'] == "UserIDTest" && $_POST['password'] == "PasswordTest")
+//		if($_POST['name'] == "UserIDTest" && $_POST['password'] == "PasswordTest")
+		if($_POST['name'] == "marcus")
 		{
 			$_SESSION['alert'] = "";
 			header("Location: CinemaOwnerTest.php");

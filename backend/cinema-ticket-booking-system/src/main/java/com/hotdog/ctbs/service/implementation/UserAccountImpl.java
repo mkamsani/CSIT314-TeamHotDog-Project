@@ -41,7 +41,7 @@ public class UserAccountImpl implements UserAccountService {
     {
         UserAccount userAccount = userAccountRepo.findUserAccountByUsername(username);
         if (userAccount == null || !userAccountRepo.existsUserAccountByUsernameAndPassword(username, password))
-            return "Invalid username or password.";
+            return "{\"url\":\"Invalid username or password.\"}";
 
         // Update last login time.
         userAccount.setTimeLastLogin(OffsetDateTime.now());
@@ -49,10 +49,10 @@ public class UserAccountImpl implements UserAccountService {
 
         // Return URL to user's profile page.
         return switch (userAccount.getUserProfile().getPrivilege()) {
-            case "manager" -> "https://raw.github.com/manager.php";
-            case "owner" -> "https://raw.github.com/owner.php";
-            case "admin" -> "https://raw.github.com/admin.php";
-            default -> "https://raw.github.com/user.php";
+            case "manager" -> "{\"url\":\"https://raw.github.com/manager.php\"}";
+            case "owner" -> "{\"url\":\"https://raw.github.com/owner.php\"}";
+            case "admin" -> "{\"url\":\"https://raw.github.com/admin.php\"}";
+            default -> "{\"url\":\"https://raw.github.com/user.php\"}";
         };
     }
 
