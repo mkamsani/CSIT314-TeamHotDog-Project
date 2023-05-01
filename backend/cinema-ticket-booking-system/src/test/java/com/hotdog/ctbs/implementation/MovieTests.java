@@ -17,24 +17,25 @@ public class MovieTests {
     void getter()
     {
 
-        System.out.println("movieImpl.getAllTitles()");
-        System.out.println(movieImpl.getAllTitles());
+        // test getter methods
+        System.out.println("movieImpl.getAllMovieTitles()");
+        System.out.println(movieImpl.getAllMovieTitles());
         System.out.println();
 
-        System.out.println("movieImpl.getAllImages()");
-        System.out.println(movieImpl.getAllImages());
+        System.out.println("movieImpl.getAllMovieGenres()");
+        System.out.println(movieImpl.getAllMovieGenres());
         System.out.println();
 
-        System.out.println("movieImpl.getMovieByTitle(\"Spider-Man\")");
-        System.out.println(movieImpl.getMovieByTitle("Spider-Man"));
+        System.out.println("movieImpl.getAllMovieDescriptions()");
+        System.out.println(movieImpl.getAllMovieDescriptions());
         System.out.println();
 
-        System.out.println("movieImpl.getMovieById(UUID.fromString(\"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11\"))");
-        System.out.println(movieImpl.getMovieById(UUID.fromString("eb882ac5-83d5-442d-a570-a684adaf8c75")));
+        System.out.println("movieImpl.getAllMovieReleaseDates()");
+        System.out.println(movieImpl.getAllMovieReleaseDates());
         System.out.println();
 
-        System.out.println("movieImpl.getIdByTitle(\"Spider-Man\")");
-        System.out.println(movieImpl.getIdByTitle("Spider-Man"));
+        System.out.println("movieImpl.getAllMovieImagesURL()");
+        System.out.println(movieImpl.getAllMovieImagesURL());
         System.out.println();
 
         System.out.println("movieImpl.getAllContentRating()");
@@ -45,6 +46,17 @@ public class MovieTests {
         System.out.println(movieImpl.getValidContentRating());
         System.out.println();
 
+        System.out.println("movieImpl.getMovieByTitle(\"Spider-Man\")");
+        System.out.println(movieImpl.getMovieByTitle("Spider-Man"));
+        System.out.println();
+
+        System.out.println("movieImpl.getMovieById(UUID.fromString(\"690464fc-5beb-4ed8-90b3-cd2454b53496\"))");
+        System.out.println(movieImpl.getMovieById(UUID.fromString("690464fc-5beb-4ed8-90b3-cd2454b53496")));
+        System.out.println();
+
+        System.out.println("movieImpl.getMovieIdByTitle(\"Spider-Man\")");
+        System.out.println(movieImpl.getMovieIdByTitle("Spider-Man"));
+        System.out.println();
     }
 
     @Test
@@ -63,21 +75,100 @@ public class MovieTests {
                 "https://www.imdb.com/title/tt0145487/mediaviewer/rm4039471360/",
                 "pg13");
         System.out.println();
-        System.out.println(movieImpl.getAllTitles());
+        // To check the list of movies if the movie is created
+        System.out.println(movieImpl.getAllMovieTitles());
     }
 
     @Test
     void updateMethod()
     {
-        // test update movie method
-        System.out.println("The existing movie titles before an update made");
-        System.out.println(movieImpl.getAllTitles());
-        System.out.println("movieImpl.updateOneMovieByTitle(\"PowerPuffGirl\", \"Wonder Woman\")");
-        movieImpl.updateOneMovieByTitle("PowerPuffGirl", "Wonder Woman");
+        //
+        // test update movie method (using title)
+        System.out.println("The list of existing movie titles before an update made");
+        System.out.println(movieImpl.getAllMovieTitles());
         System.out.println();
-        System.out.println(movieImpl.getAllTitles());
+
+        System.out.println("movieImpl.updateOneMovieByTitle(\"Wonder Woman\", \"PowerPuffGirl\")");
+        movieImpl.updateMovieByTitle("Wonder Woman", "PowerPuffGirl");
+        System.out.println();
+
+        System.out.println("The list of existing movie titles after an update made");
+        System.out.println(movieImpl.getAllMovieTitles());
+        System.out.println("Done for update movie title method");
+
+        //
+        // test update movie method (using genre)
+        System.out.println("The list of existing movie genres before an update made");
+        System.out.println(movieImpl.getAllMovieGenres());
+        System.out.println();
+        movieImpl.updateMovieByGenre("PowerPuffGirl", "Action");
+        System.out.println("The list of existing movie genres after an update made");
+        // display all details for all movies
+        for (String title : movieImpl.getAllMovieTitles())
+            System.out.println(movieImpl.getMovieByTitle(title));
+        System.out.println("Done for update movie genre method");
+
+        //
+        // test update movie method (using description)
+        System.out.println("The list of existing movie description before an update made");
+        for (String title : movieImpl.getAllMovieTitles())
+            System.out.println(movieImpl.getMovieByTitle(title));
+
+        movieImpl.updateMovieByDescription("Ultraman", "A story about an alien superhero");
+        // display all details for all movies
+        for (String title : movieImpl.getAllMovieTitles())
+            System.out.println(movieImpl.getMovieByTitle(title));
+        System.out.println("Done for update movie description method");
+
+        //
+        // test update movie method (using release date)
+        System.out.println("The list of existing movie release date before an update made");
+        for (String title : movieImpl.getAllMovieTitles())
+            System.out.println(movieImpl.getMovieByTitle(title));
+
+        movieImpl.updateMovieByReleaseDate("Ultraman", LocalDate.of(1997, 5, 25));
+        // display all details for all movies
+        for (String title : movieImpl.getAllMovieTitles())
+            System.out.println(movieImpl.getMovieByTitle(title));
+        System.out.println("Done for update movie release date method");
+
+        //
+        // test update movie method (using image url)
+        System.out.println("The list of existing movie image url before an update made");
+        for (String title : movieImpl.getAllMovieTitles())
+            System.out.println(movieImpl.getMovieByTitle(title));
+
+        movieImpl.updateMovieByImageUrl("Ultraman", "https://www.imdb.com/title/tt0145487/mediaviewer/rm4039471360/");
+        // display all details for all movies
+        for (String title : movieImpl.getAllMovieTitles())
+            System.out.println(movieImpl.getMovieByTitle(title));
+        System.out.println("Done for update movie image url method");
+
+        //
+        // test update movie method (using content rating)
+        System.out.println("The list of existing movie content rating before an update made");
+        for (String title : movieImpl.getAllMovieTitles())
+            System.out.println(movieImpl.getMovieByTitle(title));
+
+        movieImpl.updateMovieByContentRating("Ultraman", "pg13");
+        // display all details for all movies
+        for (String title : movieImpl.getAllMovieTitles())
+            System.out.println(movieImpl.getMovieByTitle(title));
+        System.out.println("Done for update movie content rating method");
+
     }
 
+    @Test
+    void deleteMethod()
+    {
+        // test delete movie method
+        System.out.println("The existing movie titles before a deletion made");
+        System.out.println(movieImpl.getAllMovieTitles());
+        System.out.println("movieImpl.deleteOneMovieByTitle(\"Ultraman\")");
+        movieImpl.deleteMovieByTitle("Ultraman");
+        System.out.println();
+        System.out.println(movieImpl.getAllMovieTitles());
+    }
 
 
 }

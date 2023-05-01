@@ -1,59 +1,82 @@
 package com.hotdog.ctbs.service;
 
-//import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hotdog.ctbs.entity.Movie;
+import com.hotdog.ctbs.service.implementation.MovieImpl;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 public interface MovieService {
 
-    // return a list of all movie titles
-    List<String> getAllTitles();
+    // return a list of titles of all movies
+    List<String> getAllMovieTitles();
 
-    //return a list of image URL
-    List<String> getAllImages();
+    // return a list of genres of all movies
+    List<String> getAllMovieGenres();
 
+    // return a list of descriptions of all movies
+    List<String> getAllMovieDescriptions();
 
-    // get the movie by input its title
-    Movie getMovieByTitle(final String title);
+    // return a list of release dates of all movies
+    List<LocalDate> getAllMovieReleaseDates();
 
-    // get the movie by input its id
-    Movie getMovieById(final UUID id);
+    // return a list of image URLs of all movies
+    List<String> getAllMovieImagesURL();
 
-    // get the id by input its title
-    UUID getIdByTitle(final String title);
-
-    // get a list of content rating for all existing movie in the database
+    // return a list of content ratings of all movies
     List<String> getAllContentRating();
 
-    // get a list of validated of content rating
+    // return a list of valid content ratings
     List<String> getValidContentRating();
 
+    // return the movie by input its title
+    Movie getMovieByTitle(final String title);
+
+    // return the movie by input its id
+    Movie getMovieById(final UUID id);
+
+    // return the movie id by input its title
+    UUID getMovieIdByTitle(final String title);
+
+    // create a new movie
     void createMovie (String title, String genre, String description,
                              LocalDate releaseDate, String imageUrl, String contentRating);
 
-    void updateOneMovieByTitle(String targetTitle, String newTitle);
+    // all the methods to update movie with different attributes
+    // update the movie's title by input its title and new title
+    void updateMovieByTitle(String targetTitle, String newTitle);
 
-    /*
-    // need to update the movie description
-    void updateOneMovieByDescription(String targetTitle, String newDescription);
+    // update the movie's genre by input its title and new genre
+    void updateMovieByGenre(String targetTitle, String newGenre);
 
-    // update the movie genre
-    void updateOneMovieByGenre(String targetTitle, String newGenre);
+    // update the movie's description by input its title and new description
+    void updateMovieByDescription(String targetTitle, String newDescription);
 
-    // delete the movie by input its title *** whether should suspend
-    // due to it might be used in other table (screening)
+    // update the movie's release date by input its title and new release date
+    void updateMovieByReleaseDate(String targetTitle, LocalDate newReleaseDate);
+
+    // update the movie's image url by input its title and new image url
+    void updateMovieByImageUrl(String targetTitle, String newImageUrl);
+
+    // update the movie's content rating by input its title and new content rating
+    void updateMovieByContentRating(String targetTitle, String newContentRating);
+
+    // delete the movie by input its title
+    // consideration : if delete movie ==  delete all the screening related to this deleted movies
+    // or isAvailable to determine whether the movie can be deleted
     void deleteMovieByTitle(String title);
 
-    String MovieResponse(Movie movie) throws JsonProcessingException;
 
     String MoviesResponse(List<Movie> movies) throws JsonProcessingException;
+
 
     Movie MovieRequest(String json) throws JsonProcessingException;
 
     List<Movie> MoviesRequest(String json) throws JsonProcessingException;
 
-     */
 
 
 }
