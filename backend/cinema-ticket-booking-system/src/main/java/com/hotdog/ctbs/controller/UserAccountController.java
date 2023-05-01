@@ -135,7 +135,37 @@ public class UserAccountController {
         }
     }
 
+    // http://localhost:8080/api/user-account/deleteUserAccount
+    // Example: http://localhost:8080/api/user-account/deleteUserAccount/marcus
+    // PHP CURLOPT_POSTFIELDS: username=marcus
+    @DeleteMapping("/deleteUserAccount")
+    public String deleteUserAccount(@RequestParam("username") String username)
+    {
+        System.out.println("Method called." + LocalDateTime.now().format(java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        System.out.println();
 
+        System.out.println("Username: " + username);
+        System.out.println();
+
+        try {
+            int size = userAccountRepository.findAll().size();
+            UserAccount userAccount = userAccountRepository.findUserAccountByUsername(username);
+            if (userAccount == null) {
+                System.out.println("User account " + username + " not found");
+                return "User account " + username + " not found";
+            }
+            userAccountRepository.delete(userAccount);
+            if (userAccountRepository.findAll().size() == size - 1) {
+                System.out.println("User account " + username + " deleted successfully");
+                return "User account " + username + " deleted successfully";
+            } else {
+                System.out.println("User account " + username + " failed to delete");
+                return "User account " + username + " failed to delete";
+            }
+        } catch (Exception e) {
+            return "Error: " + e.getMessage();
+        }
+    }
 
     // Return HTTP Response object with the user's profile information
     // import org.springframework.http.ResponseEntity;

@@ -26,12 +26,5 @@ session_start();
 		?>
 </tr>
 </table>
-
-
-
-
-
-
-
 </body>
 </html>

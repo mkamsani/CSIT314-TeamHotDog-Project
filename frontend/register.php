@@ -177,24 +177,15 @@ if(	isset($_POST['register']) && $_POST['userR'] == 'UA' ){
         );
 
 		$jsondata = json_encode($arr);
-        // escape json
-//      $jsondata = urlencode($jsondata);
-//      $jsondata = json_encode(array("user" => $arr));
-//      $jsondata = "\"{\"username\":\"testingusername\",\"password\":\"testingpassword\",\"privilege\":\"testingprivilege\"}\"";
-//      $jsondata = "{\"username:\"testingusername\",\"password\":\"testingpassword\",\"privilege\":\"testingprivilege\"}";
-
-        // convert %22%7B%22username%22%3A%22testingusername%22%2C%22password%22%3A%22testingpassword%22%2C%22privilege%22%3A%22testingprivilege%22%7D%22= to {"username":"testingusername","password":"testingpassword","privilege":"testingprivilege"}
-//      $jsondata = urldecode($jsondata);
 
 		curl_setopt($ch, CURLOPT_URL, "http://localhost:8080/api/user-account/createUserAccount");
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
-//		curl_setopt($ch, CURLOPT_POST, true);
 		curl_setopt($ch,CURLOPT_POSTFIELDS, $jsondata);
 		$result = curl_exec($ch);
 		echo $result;
 		$testmsg = "UA Successfully registered";
-        // "%7B%22username%22%3A%22TestFirstName01%22%2C%22password%22%3A%22111111%22%2C%22privilege%22%3A%22admin%22%7D="
-        // translated: {"username":"TestFirstName01","password":"111111","privilege":"admin"}
+
+        // DELETE mapping to
 	}
 
 }

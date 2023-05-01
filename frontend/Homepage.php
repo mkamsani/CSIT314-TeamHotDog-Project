@@ -31,9 +31,24 @@ session_start();
 	ini_set('display_startup_errors', 0);
 	error_reporting(-1);
 	$_SESSION['alert'];
-	echo $_SESSION['alert'];	
-	?>
+	echo $_SESSION['alert'];
+
+
+    //delete user account
+    $data = "user_6";
+    $ch = curl_init( "http://localhost:8080/api/user-account/deleteUserAccount");
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+    curl_setopt($ch, CURLOPT_POSTFIELDS, "username=$data");
+
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    $result = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    echo $result; // "User account user_6 deleted successfully"
+    //end of delete user account
+
+    ?>
 	</label>
+
 	<br>
 	<button type="submit" name="check" value="register" class="register">register</button>
 	<button type="submit" name="check" value="login" class="login">login</button>
@@ -52,6 +67,8 @@ session_start();
 <hr />
 
 
-
+	<?php
+    curl_close($ch);
+    ?>
 </body>
 </html>
