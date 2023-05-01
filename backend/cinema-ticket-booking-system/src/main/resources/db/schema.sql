@@ -106,7 +106,7 @@ CREATE TABLE user_account
 
 CREATE TABLE loyalty_point
 (
-  uuid            Uuid PRIMARY KEY REFERENCES user_account (uuid),
+  uuid            Uuid PRIMARY KEY REFERENCES user_account (uuid) ON DELETE CASCADE ON UPDATE CASCADE,
   points_redeemed INTEGER NOT NULL DEFAULT 0 CHECK (points_redeemed >= 0),
   points_total    INTEGER NOT NULL DEFAULT 0 CHECK (points_total >= 0)
 );

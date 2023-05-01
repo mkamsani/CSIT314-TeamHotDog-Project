@@ -32,9 +32,18 @@ sleep 1 && "$oci" container list -a | grep php_apache && "$oci" rm -f php_apache
 #
 
 # Option 1:
-# "$oci" run --rm -p 8000:80 --name=php_apache -d php:7.4.3-apache && sleep 1 && "$oci" cp ./. php_apache:/var/www/html/
+# "$oci" run --rm -p 8123:80 --name=php_apache -d php:7.4.3-apache && sleep 1 && "$oci" cp ./. php_apache:/var/www/html/
 
 # Option 2:
- "$oci" run --rm -p 8000:80 --security-opt label=disable --name=php_apache -d -v "$(pwd)":/var/www/html:rw php:7.4.3-apache
+#"$oci" run --net=host --security-opt label=disable --name=php_apache -d -v "$(pwd)":/var/www/html:rw -v "$(pwd)"/./apache2.conf:/etc/apache2/apache2.conf:rw php:7.4.3-apache
+#"$oci" run --net=host --security-opt label=disable --name=php_apache -d -v "$(pwd)":/var/www/html:rw php:8.2.6RC1-apache
+#"$oci" run --net=host --security-opt label=disable --name=php_apache -d -v "$(pwd)":/var/www/html:rw trafex/php-nginx:latest
+# take the container's /etc/nginx/conf.d/default.conf
+#"$oci" cp php_apache:/etc/nginx/conf.d/default.conf ./nginx_php.conf
+
+"$oci" run --net=host --security-opt label=disable --name=php_apache -d \
+-v "$(pwd)":/var/www/html:rw \
+-v "$(pwd)"/nginx_php.conf:/etc/nginx/conf.d/default.conf \
+trafex/php-nginx:latest
 
 unset oci
