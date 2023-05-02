@@ -117,7 +117,11 @@ public class MovieImpl implements MovieService{
                 return movie.getId();
         return null;
     }
-    ///////////////////////////////////////////////////////////// check up to this part
+
+    // return a list of all movies details
+    public List<Movie> getAllMoviesDetails() {
+        return movieRepository.findAll();
+    }
 
     // create a new movie
     @Override

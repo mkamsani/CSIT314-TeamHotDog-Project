@@ -57,6 +57,11 @@ public class MovieTests {
         System.out.println("movieImpl.getMovieIdByTitle(\"Spider-Man\")");
         System.out.println(movieImpl.getMovieIdByTitle("Spider-Man"));
         System.out.println();
+
+        System.out.println("movieImpl.getAllMoviesDetails()");
+        System.out.println(movieImpl.getAllMoviesDetails());
+        System.out.println();
+
     }
 
     @Test

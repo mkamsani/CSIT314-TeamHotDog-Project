@@ -41,6 +41,9 @@ public interface MovieService {
     // return the movie id by input its title
     UUID getMovieIdByTitle(final String title);
 
+    // return a list of all movies
+    List<Movie> getAllMoviesDetails();
+
     // create a new movie
     void createMovie (String title, String genre, String description,
                              LocalDate releaseDate, String imageUrl, String contentRating);
