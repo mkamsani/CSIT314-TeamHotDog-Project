@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.hotdog</groupId>
-    <artifactId>cinema-ticket-booking-system</artifactId>
+    <artifactId>backend</artifactId>
     <version>0.0.5-SNAPSHOT</version>
     <name>cinema-ticket-booking-system</name>
     <description>cinema-ticket-booking-system</description>

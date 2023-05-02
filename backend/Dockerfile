@@ -11,7 +11,7 @@
 # Instructions for building and running the application with Dockerfile:
 FROM cgr.dev/chainguard/maven:openjdk-17 as builder
 # Same COPY command as above, but grant chown to user and group 65532:
-COPY --chown=65532:65532 ./. /home/build/
+COPY --chown=65532:65532 .. /home/build/
 WORKDIR /home/build/
 RUN mvn -B package -Dmaven.test.skip --file pom.xml
 FROM cgr.dev/chainguard/jre:openjdk17
