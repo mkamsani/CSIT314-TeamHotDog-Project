@@ -46,7 +46,7 @@ sleep 1 && "$oci" container list -a | grep pg && "$oci" rm -f pg
 -e TZ="Asia/Singapore"                   \
 cgr.dev/chainguard/postgres:latest
 # Allow time for postgres to start.
-sleep 1
+sleep 10
 
 # Get absolute path of the schema.sql file
 schema_file="$(find "$(pwd)" -name "schema.sql" -type f -exec realpath {} \;)"

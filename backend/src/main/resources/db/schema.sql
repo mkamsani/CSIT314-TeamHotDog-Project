@@ -289,7 +289,7 @@ CREATE TABLE food_combo
 CREATE TABLE food_order
 (
   uuid         Uuid PRIMARY KEY     DEFAULT uuid_generate_v4(),
-  combo_number INTEGER NOT NULL REFERENCES food_combo (id),
+  combo_number INTEGER NOT NULL REFERENCES food_combo (uuid),
 
   -- For consideration, no ideas for functionalities with order_time yet:
   ticket       Uuid NOT NULL REFERENCES ticket (uuid)
