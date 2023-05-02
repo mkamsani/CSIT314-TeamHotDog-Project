@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Lookup;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -17,6 +18,27 @@ public class TicketTypeImpl {
 
     public TicketTypeImpl(TicketTypeRepository ticketTypeRepository) {
         this.ticketTypeRepository = ticketTypeRepository;
+    }
+
+    // return a list of all ticket type names
+    public List<String> getAllTicketTypeNames(){
+        return ticketTypeRepository.findAll().stream()
+                .map(TicketType::getTypeName)
+                .toList();
+    }
+
+    // return a list of all ticket type prices
+    public List<BigDecimal> getAllTicketTypePrices(){
+        return ticketTypeRepository.findAll().stream()
+                .map(TicketType::getTypePrice)
+                .toList();
+    }
+
+    // return a list of all ticket type isActives
+    public List<Boolean> getAllTicketTypeIsActives(){
+        return ticketTypeRepository.findAll().stream()
+                .map(TicketType::getIsActive)
+                .toList();
     }
 
     //create new Ticket_Type
@@ -69,6 +91,17 @@ public class TicketTypeImpl {
         TicketType ticketType = ticketTypeRepository.findByTypeName(targetTypeName);
         ticketType.setTypePrice(newTypePrice);
         ticketTypeRepository.save(ticketType);
+    }
+
+    // delete Ticket_Type by typeName
+    public void deleteTicketTypeByTypeName(String typeName){
+        for (TicketType existingTicketType : ticketTypeRepository.findAll()) {
+            if (!existingTicketType.getTypeName().equals(typeName)) {
+                throw new IllegalStateException("Ticket Type does not exist");
+            }
+        }
+        TicketType ticketType = ticketTypeRepository.findByTypeName(typeName);
+        ticketTypeRepository.delete(ticketType);
     }
 
 

@@ -10,4 +10,6 @@ public interface TicketTypeRepository extends JpaRepository<TicketType, UUID> {
     TicketType findByTypeName(String typeName);
 
     TicketType findTicketTypeByID(UUID id);
+
+    TicketType findTicketTypeByIsActiveAndTypePrice(Boolean isActive);
 }
