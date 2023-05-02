@@ -183,9 +183,10 @@ CREATE TABLE movie
   uuid           Uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
   title          TEXT NOT NULL,
   genre          TEXT NOT NULL,                                                       -- .toLowerCase() wikipedia
-  description    TEXT NOT NULL,                                                       -- .toLowerCase() wikipedia
-  release_date   DATE NOT NULL,                                                       -- .toLowerCase() wikipedia
-  image_url      TEXT DEFAULT 'https://raw.githubusercontent.com/assets/default.jpg', -- .toLowerCase()
+  description    TEXT NOT NULL,
+  release_date   DATE NOT NULL,
+  image_url      TEXT DEFAULT 'https://raw.githubusercontent.com/assets/default.jpg',
+  is_active      BOOLEAN NOT NULL,
   content_rating TEXT NOT NULL,                                                       -- .toLowerCase()
   CHECK (content_rating IN ('g', 'pg', 'pg13', 'nc16', 'm18', 'r21'))
   -- for future consideration, pull actual ratings from rotten tomatoes or other sites.
@@ -275,11 +276,10 @@ CREATE TABLE ticket
   UNIQUE (seat, screening)
 );
 
--- There are only five different food combos.
 CREATE TABLE food_combo
 (
-  id          INTEGER PRIMARY KEY CHECK (id > 0 AND id <= 5),
-  description TEXT           NOT NULL,                  -- e.g. "Popcorn and Coke"
+  uuid         Uuid PRIMARY KEY     DEFAULT uuid_generate_v4(),
+  description TEXT UNIQUE            NOT NULL,                  -- e.g. "Popcorn and Coke"
   price       NUMERIC(10, 2) NOT NULL CHECK (price >= 0)-- e.g. 10.00
 );
 
