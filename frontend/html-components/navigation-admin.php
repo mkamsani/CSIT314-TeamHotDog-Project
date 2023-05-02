@@ -4,10 +4,22 @@
 <li><a href="http://localhost:8000">Home</a></li>
 
 <li>
-<?php echo parentLabel('Movies'); ?>
+<?php echo parentLabel('Accounts'); ?>
 <ul>
-<li><a href="#">Purchase a ticket</a></li>
-<li><a href="#">Add a rating and review</a></li>
+<li><a href="#">Create user account</a></li>
+<li><a href="#">Read user accounts</a></li>
+<li><a href="#">Update user account</a></li>
+<li><a href="#">Suspend user account</a></li>
+</ul>
+</li>
+
+<li>
+<?php echo parentLabel('Profiles'); ?>
+<ul>
+<li><a href="#">Create user profile</a></li>
+<li><a href="#">Read user profiles</a></li>
+<li><a href="#">Update user profile</a></li>
+<li><a href="#">Suspend user profile</a></li>
 </ul>
 </li>
 
@@ -15,11 +27,6 @@
 <?php echo parentLabel('My Account'); ?>
 <ul>
 <li><a href="#">Update my particulars</a></li>
-<li><a href="#">View my tickets</a></li>
-<li><a href="#">View my loyalty points</a></li>
-<li><a href="#">View my food orders</a></li>
-<li><a href="#">Request for account deletion</a></li>
-<li><a href="#">Request for reset password</a></li>
 <li><a href="#">Logout</a></li>
 </ul>
 </li>

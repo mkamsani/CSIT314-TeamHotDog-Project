@@ -1,3 +1,4 @@
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,8 +8,6 @@ echo head("HotDogBun Cinema", "Login and registration page of HotDogBun Cinema")
 ?>
 <link rel="stylesheet" href="/css/index.css">
 <style>
-    @import "css/index.css";
-
     section {
         background: #fffd;
         padding: 2rem;
@@ -53,7 +52,7 @@ echo head("HotDogBun Cinema", "Login and registration page of HotDogBun Cinema")
     }
 
     /* Uses image carousel. */
-    #now-playing > div {
+    #now-showing > div {
         margin-top: 1rem;
         display: grid;
         grid-template-columns: 1fr 1fr 1fr 1fr;
@@ -73,11 +72,17 @@ echo head("HotDogBun Cinema", "Login and registration page of HotDogBun Cinema")
 </header>
 <main>
 
-<section id="now-playing">
-<h2>Now Playing</h2>
+<!-- GET request to display all movies currently showing. -->
+<section id="now-showing">
+<h2>Now Showing</h2>
 <div>
 <?php
-$images = array(
+$ch = curl_init();
+// curl_setopt($ch, CURLOPT_URL, "http://localhost:8080/api/movie/getNowShowing");
+// curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+// $images = curl_exec($ch);
+curl_close($ch);
+$images = array( // TODO: Replace with API call.
 "{\"title\":\"Forrest Gump\", \"image\":\"https://image.tmdb.org/t/p/original/arw2vcBveWOVZr6pxd9XTd1TdQa.jpg\"}",
 "{\"title\":\"Batman\", \"image\":\"https://image.tmdb.org/t/p/original/cij4dd21v2Rk2YtUQbV5kW69WB2.jpg\"}",
 "{\"title\":\"Spider-Man: No Way Home\", \"image\":\"https://image.tmdb.org/t/p/original/uJYYizSuA9Y3DCs0qS4qWvHfZg4.jpg\"}",
@@ -91,10 +96,19 @@ echo "<img src='$object->image' alt='$object->title' width='100%'>\n";
 </div>
 </section>
 
+<?php
+// POST request.
+// Expected JSON:
+// {
+//    "username":"username",
+//    "password":"password",
+//    "privilege":"privilege"
+// }
+?>
 <section id="login">
 <h2>Login</h2>
 <p>For existing users, login to your account with your username and password.</p>
-<form action="redirectPage.php" method="POST" class="form-login">
+<form action="index.php" method="POST" class="form-login">
 <label for="username">Username:</label>
 <input type="text" name="username" id="username" required>
 <label for="password">Password:</label>
@@ -110,7 +124,21 @@ echo "<img src='$object->image' alt='$object->title' width='100%'>\n";
 </form>
 </section>
 
-<section id="registration"> <!-- Create customer account. -->
+
+<?php
+// POST request.
+// Expected JSON:
+// {
+//    "username":"marcus",
+//    "email":"marcus@adm.hotdogbuns.com",
+//    "password":"password",
+//    "firstName":"Marcus",
+//    "lastName":"Hutchins",
+//    "address":"099 Study Town, East Brooklyn, NY 29125"
+//    "dateOfBirth":"1994,1,1",                            // or, "1994-01-01"
+//  }
+?>
+<section id="registration">
 <h2>Registration</h2>
 <form action="redirectPage.php" method="POST" class="form-registration">
 <label for="username">Username:</label>
@@ -133,20 +161,30 @@ echo "<img src='$object->image' alt='$object->title' width='100%'>\n";
 <button type="submit" name="check" value="register">Submit</button>
 </form>
 </section>
+
 </main>
 </body>
-<!-- When creating other user accounts, e.g. admin, owner, manager, add the following to the form:
+
+When creating other user accounts, e.g. admin, owner, manager, add the following to the form:
 <label for="title">Title:</label>
 <select name="title" id="title">
-< ?php
+<?php
 // Replace this with a GET request to the API.
 $titles = array("Mr", "Mrs", "Ms", "Dr", "Prof");
+// Replacement:
+ $ch = curl_init();
+ curl_setopt($ch, CURLOPT_URL, "http://localhost:8080/api/user-profile/read/titles");
+ curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+ $titles = curl_exec($ch);
+ curl_close($ch);
+// Convert "[customer, junior manager, senior manager, chief financial officer, chief executive officer, junior admin, senior admin, chief information officer]" to array.
+$titles = explode(",", substr($titles, 1, -1));
 foreach ($titles as $title) {
 echo "<option value='$title'>$title</option>";
 }
 ?>
 </select>
--->
+
 
 </html>
 
