@@ -213,4 +213,27 @@ public class UserProfileImpl implements UserProfileService {
                            .map(userProfile -> userProfileRepository.findUserProfileByTitle(userProfile.getTitle()))
                            .toList();
     }
+
+    @Override
+    public void updateUserProfile(String uuid, String privilege, String title)
+    {
+        UserProfile userProfile = userProfileRepository.findById(UUID.fromString(uuid))
+                                                       .orElse(null);
+        if (userProfile == null)
+            throw new IllegalArgumentException("User profile not found.");
+        if (title.equals("Customer"))
+            throw new IllegalArgumentException("Cannot modify Customer.");
+        if (privilege.equals("customer"))
+            throw new IllegalArgumentException("Reserved privilege.");
+        if (!getValidPrivileges().contains(privilege))
+            throw new IllegalArgumentException("Invalid privilege.");
+        if (!title.matches("^[a-zA-Z ]+$"))
+            throw new IllegalArgumentException("Title must contain only letters and spaces.");
+
+        title = title.strip().replaceAll("\\s+", " ");
+
+        userProfile.setPrivilege(privilege);
+        userProfile.setTitle(title);
+        userProfileRepository.save(userProfile);
+    }
 }

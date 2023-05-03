@@ -39,8 +39,8 @@ TO-DO will not contain a hyphen in the actual comments below.
 | user_profile           | CRUS | In progress |
 | user_account           | CRUS | In progress | Delete == is_active FALSE.
 | loyalty_point          |  R   | In progress | No user-interaction on update.
-| movie                  | CRUD | Not started |
-| ticket_type            | CRU  | Not started | Create when db is initialised.
+| movie                  | CRUD | In progress |
+| ticket_type            | CRU  | In progress | Create when db is initialised.
 | food_combo             | CRUD | Not started |
 | cinema_room            |  RUS | Not started | Create when db is initialised.
 | seat                   |  R   | Not started | Create when db is initialised.

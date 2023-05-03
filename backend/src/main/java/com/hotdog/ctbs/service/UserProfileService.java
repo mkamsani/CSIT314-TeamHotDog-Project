@@ -60,4 +60,6 @@ public interface UserProfileService {
 
     /** Receive JSON from frontend, regardless of UUID (or lack thereof). */
     List<UserProfile> UserProfilesRequest(String json) throws JsonProcessingException;
+
+    void updateUserProfile(String uuid, String privilege, String title);
 }

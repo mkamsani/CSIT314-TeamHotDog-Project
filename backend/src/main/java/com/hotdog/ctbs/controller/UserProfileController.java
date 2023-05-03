@@ -23,6 +23,8 @@ public class UserProfileController {
     }
 
     // wget -qO- localhost:8080/user-profile/read/titles
+    // curl localhost:8080/user-profile/read/titles
+    // curl -X GET localhost:8080/user-profile/read/titles
     @GetMapping("/read/titles")
     public String ReadTitles()
     {
@@ -33,7 +35,23 @@ public class UserProfileController {
     @GetMapping("/read/privileges")
     public String ReadPrivileges()
     {
+        System.out.println("Method ReadPrivileges() called.");
         return userProfileImpl.getAllPrivileges().toString();
+    }
+
+    @PutMapping("/update")
+    public String Update(@RequestBody String json)
+    {
+        try {
+            JsonNode jsonNode = new ObjectMapper().readTree(json);
+            String uuid = jsonNode.get("id").asText();
+            String privilege = jsonNode.get("privilege").asText();
+            String title = jsonNode.get("title").asText();
+            userProfileImpl.updateUserProfile(uuid, privilege, title);
+            return "Success";
+        } catch (Exception e) {
+            return "Error: " + e.getMessage();
+        }
     }
 
     /**

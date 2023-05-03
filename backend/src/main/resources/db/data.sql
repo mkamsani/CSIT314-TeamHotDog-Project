@@ -28,12 +28,18 @@ VALUES
 -- i want to insert 5 dummy data to my movie table
 --
 INSERT INTO movie
-  (title, genre, description, release_date, image_url, content_rating)
+  (title, genre, description, release_date, image_url, is_active,content_rating)
 VALUES
-    ('Spider-Man', 'Action', 'Peter Parker, a high school student becomes a superhero, Spider Man.', '2002-05-03', 'https://en.wikipedia.org/wiki/Spider-Man_%282002_film%29#/media/File:Spider-Man2002Poster.jpg', 'pg13'),
-    ('Batman Begins', 'Action', 'Bruce Wayne, a billionare in Gotham City becomes a superhero, Bat Man', '2005-06-15', 'https://pt.wikipedia.org/wiki/Batman_Begins#/media/Ficheiro:Batman_begins.jpg', 'pg13'),
-    ('Ultraman', 'Sci-Fi', 'A giant alien warrior comes to Earth to fight off dinosaurs like T-Rex.', '1966-07-17', 'https://en.wikipedia.org/wiki/Ultraman_Nexus_%28character%29#/media/File:Ultraman_Nexus_Crunchyroll_Poster.jpg', 'g'),
-    ('Wonder Woman', 'Action', 'An Amazon princess becomes Wonder Woman', '2017-06-02', 'https://en.wikipedia.org/wiki/Wonder_Woman_%282017_film%29#/media/File:Wonder_Woman_(2017_film)_poster.jpg', 'pg13');
+    ('Spider-Man', 'Action', 'Peter Parker, a high school student becomes a superhero, Spider Man.', '2002-05-03', 'https://en.wikipedia.org/wiki/Spider-Man_%282002_film%29#/media/File:Spider-Man2002Poster.jpg',true, 'pg13'),
+    ('Batman Begins', 'Action', 'Bruce Wayne, a billionare in Gotham City becomes a superhero, Bat Man', '2005-06-15', 'https://pt.wikipedia.org/wiki/Batman_Begins#/media/Ficheiro:Batman_begins.jpg',true, 'pg13'),
+    ('Ultraman', 'Sci-Fi', 'A giant alien warrior comes to Earth to fight off dinosaurs like T-Rex.', '1966-07-17', 'https://en.wikipedia.org/wiki/Ultraman_Nexus_%28character%29#/media/File:Ultraman_Nexus_Crunchyroll_Poster.jpg',true, 'g'),
+    ('Wonder Woman', 'Action', 'An Amazon princess becomes Wonder Woman', '2017-06-02', 'https://en.wikipedia.org/wiki/Wonder_Woman_%282017_film%29#/media/File:Wonder_Woman_(2017_film)_poster.jpg', false, 'pg13'),
+    ('Matrix', 'Action', 'A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers', '1999-03-31', 'https://en.wikipedia.org/wiki/The_Matrix#/media/File:The_Matrix_Poster.jpg', false, 'r21'),
+    ('The Shawshank Redemption', 'Drama', 'Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency', '1994-09-23', 'https://en.wikipedia.org/wiki/The_Shawshank_Redemption#/media/File:ShawshankRedemptionMoviePoster.jpg', false, 'r21'),
+    ('Inception', 'Action', 'A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a CEO', '2010-07-13', 'https://en.wikipedia.org/wiki/Inception#/media/File:Inception_(2010)_theatrical_poster.jpg', true, 'm18'),
+    ('Jurassic Park', 'Adventure', 'During a preview tour, a theme park suffers a major power breakdown that allows its cloned dinosaur exhibits to run amok', '1993-06-09', 'https://en.wikipedia.org/wiki/Jurassic_Park_(film)#/media/File:Jurassic_Park_poster.jpg', true, 'pg'),
+    ('The Godfather', 'Crime', 'The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son', '1972-03-24', 'https://en.wikipedia.org/wiki/The_Godfather#/media/File:Godfather-Part-1-Poster.jpg', false, 'r21');
+
 
 
 
