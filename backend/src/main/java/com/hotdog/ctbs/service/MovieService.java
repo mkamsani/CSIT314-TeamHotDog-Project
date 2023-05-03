@@ -46,7 +46,7 @@ public interface MovieService {
 
     // create a new movie
     void createMovie (String title, String genre, String description,
-                             LocalDate releaseDate, String imageUrl, String contentRating);
+                             LocalDate releaseDate, String imageUrl, boolean isActive,String contentRating);
 
     // all the methods to update movie with different attributes
     // update the movie's title by input its title and new title
@@ -64,6 +64,9 @@ public interface MovieService {
     // update the movie's image url by input its title and new image url
     void updateMovieByImageUrl(String targetTitle, String newImageUrl);
 
+    // update the movie's is active by input its title and new is active
+    void updateMovieByIsActive(String targetTitle, boolean newIsActive);
+
     // update the movie's content rating by input its title and new content rating
     void updateMovieByContentRating(String targetTitle, String newContentRating);
 
@@ -80,6 +83,18 @@ public interface MovieService {
 
     List<Movie> MoviesRequest(String json) throws JsonProcessingException;
 
+    // Active movie methods
+    //***new method return a list of movie with true active status
+    List<Movie> getAllActiveMoviesDetails();
 
+    List<String> getAllActiveMoviesTitle();
+
+    // return a list of movie title and image url with true active status
+    List<String> getAllActiveMoviesTitleAndImageUrl();
+
+    // updateMovieByAllAttributes
+    // update the movie's all attributes by input its title and new attributes
+    void updateMovieByAllAttributes(String targetTitle, String newTitle, String newGenre, String newDescription,
+                                    LocalDate newReleaseDate, String newImageUrl, boolean newIsActive, String newContentRating);
 
 }
