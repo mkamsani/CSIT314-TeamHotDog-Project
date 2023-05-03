@@ -69,9 +69,8 @@ echo head("HotDogBun Cinema", "Login and registration page of HotDogBun Cinema")
 <header>
 <h1>HotDogBun Cinema</h1>
 <?php include '../html-components/navigation-admin.php';
-// Include a file called file.php, and call a function from that file called myFunction.php, pass in the url of this page itself as a variable.
-// include 'file.php';
-// myFunction($_SERVER['PHP_SELF']);
+// the variable is the name of this current url, use self method.
+echo makeNavigation($_SERVER['PHP_SELF'])
 ?>
 </header>
 <main>
@@ -85,7 +84,7 @@ echo $_SERVER['PHP_SELF'];
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 // Debugging:
-// echo "<pre>"; print_r($_POST); echo "</pre>";
+ echo "<pre>"; print_r($_POST); echo "</pre>";
 
 // Convert to a JSON that is readable by Spring's ObjectMapper.
 $json = json_encode($_POST);

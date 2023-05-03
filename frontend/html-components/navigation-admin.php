@@ -23,19 +23,23 @@ EOF;
 
 function makeNavigation($urlCurrent)
 {
-// if current url contains "/admin", echo something, else echo something else, do a switch
-
-}
-
-?>
-
+$base = <<<EOF
 <nav id="site-navigation" class="site-navigation" aria-label="Site Navigation">
 <ul class="main-menu clicky-menu no-js">
-
 <li><a href="http://localhost:8000">Home</a></li>
+EOF;
+$closingBase = <<<EOF
+</ul>
+</nav>
+<script><?php include 'navigation.js'; /* Minified JavaScript. */ ?></script>
+EOF;
 
+echo $base;
+
+if (strpos($urlCurrent, "/admin") !== false) {
+$contents .= <<<EOF
 <li>
-<?php echo parentLabel('Accounts'); ?>
+{parentLabel('Movies')}
 <ul>
 <li><a href="#">Create user account</a></li>
 <li><a href="#">Read user accounts</a></li>
@@ -45,7 +49,7 @@ function makeNavigation($urlCurrent)
 </li>
 
 <li>
-<?php echo parentLabel('Profiles'); ?>
+parentLabel('Movies');
 <ul>
 <li><a href="#">Create user profile</a></li>
 <li><a href="#">Read user profiles</a></li>
@@ -54,13 +58,35 @@ function makeNavigation($urlCurrent)
 </ul>
 </li>
 
+
 <li>
-<?php echo parentLabel('My Account'); ?>
+pare
 <ul>
 <li><a href="#">Update my particulars</a></li>
 <li><a href="#">Logout</a></li>
 </ul>
 </li>
+EOF;
+
+} elseif (strpos($urlCurrent, "/user") !== false) {
+// user page.
+} elseif (strpos($urlCurrent, "/manager") !== false) {
+// manager page.
+} elseif (strpos($urlCurrent, "/owner") !== false) {
+// owner page.
+} else {
+// home page, i.e. no login.
+}
+
+echo $closingBase;
+}
+
+?>
+
+<nav id="site-navigation" class="site-navigation" aria-label="Site Navigation">
+<ul class="main-menu clicky-menu no-js">
+
+<li><a href="http://localhost:8000">Home</a></li>
 
 </ul>
 </nav>
