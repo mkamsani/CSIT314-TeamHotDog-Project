@@ -87,7 +87,7 @@
 4. Install Ubuntu 20.04 LTS from the Microsoft Store.
 5. Install [Docker Engine on Ubuntu](https://docs.docker.com/engine/install/ubuntu/).
 6. Clone this repository.
-7. Open the folder "cinema-ticket-booking-system" as an IntelliJ project.
+7. Open the folder "CSIT314-TeamHotDog-Project" as an IntelliJ project.
 
 ## License
 
