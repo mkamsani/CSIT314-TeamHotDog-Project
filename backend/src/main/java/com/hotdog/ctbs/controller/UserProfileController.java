@@ -12,7 +12,7 @@ import com.hotdog.ctbs.service.implementation.UserProfileImpl;
  * All methods are PascalCase to denote public API.
  */
 @RestController
-@RequestMapping("/api/user-profile")
+@RequestMapping("/user-profile")
 public class UserProfileController {
 
     private final UserProfileImpl userProfileImpl;
@@ -22,9 +22,11 @@ public class UserProfileController {
         this.userProfileImpl = userProfileImpl;
     }
 
+    // wget -qO- localhost:8080/user-profile/read/titles
     @GetMapping("/read/titles")
     public String ReadTitles()
     {
+        System.out.println("Method ReadTitles() called.");
         return userProfileImpl.getAllTitles().toString();
     }
 
