@@ -1,4 +1,5 @@
-#!/bin/sh -eux
+#!/bin/sh
+set -eux
 # -eux means:
 # -e : Terminate if a command exits with a non-zero status.
 # -u : Treat unset variables as an error when substituting.
