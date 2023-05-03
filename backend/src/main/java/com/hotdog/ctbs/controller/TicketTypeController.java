@@ -42,4 +42,47 @@ public class TicketTypeController {
     {
         return ticketTypeImpl.getAllTicketTypesDetails().toString();
     }
-}
+
+    @GetMapping("/read/allTicketTypeNames")
+    public String ReadAllTicketTypeNames()
+    {
+        return ticketTypeImpl.getAllTicketTypeNames().toString();
+    }
+
+    @GetMapping("/read/allTicketTypePrices")
+    public String ReadAllTicketTypePrices()
+    {
+        return ticketTypeImpl.getAllTicketTypePrices().toString();
+    }
+
+    @PostMapping("/create/ticketType")
+    public String CreateTicketType(@RequestBody String json) {
+            try{
+                JsonNode jsonNode = new ObjectMapper().readTree(json);
+                String typeName = jsonNode.get("typename").asText();
+                Double typePrice = jsonNode.get("typeprice").asDouble();
+                Boolean isactive = jsonNode.get("isactive").asBoolean();
+                ticketTypeImpl.createTicketType(typeName, typePrice, isactive);
+                return "Success creating ticketType";
+            }
+            catch (Exception e){
+                return "Error: " + e.getMessage();
+            }
+        }
+    }
+
+    @PostMapping("/update/ticketType")
+    public String UpdateTicketType(@RequestBody String json) {
+            try{
+                JsonNode jsonNode = new ObjectMapper().readTree(json);
+                String typeName = jsonNode.get("typename").asText();
+                Double typePrice = jsonNode.get("typeprice").asDouble();
+                Boolean isactive = jsonNode.get("isactive").asBoolean();
+                ticketTypeImpl.updateTicketType(typeName, typePrice, isactive);
+                return "Success updating ticketType";
+            }
+            catch (Exception e){
+                return "Error: " + e.getMessage();
+            }
+        }
+    }

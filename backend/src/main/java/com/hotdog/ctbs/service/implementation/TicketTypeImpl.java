@@ -135,6 +135,17 @@ public class TicketTypeImpl implements TicketTypeService {
         ticketTypeRepository.save(ticketType);
     }
 
+    // update Ticket_Type by all fields, method will take targetTypeName, newTypeName, newTypePrice, newIsActive as input
+    @Override
+    public void updateTicketTypeByAllFields(String targetTypeName, String newTypeName, Double newTypePrice, Boolean newIsActive){
+        //checkTicketTypeExistsByTypeName(targetTypeName);
+        TicketType ticketType = ticketTypeRepository.findByTypeName(targetTypeName);
+        ticketType.setTypeName(newTypeName);
+        ticketType.setTypePrice(newTypePrice);
+        ticketType.setIsActive(newIsActive);
+        ticketTypeRepository.save(ticketType);
+    }
+
     // delete Ticket_Type by typeName
     @Override
     public void deleteTicketTypeByTypeName(String typeName){

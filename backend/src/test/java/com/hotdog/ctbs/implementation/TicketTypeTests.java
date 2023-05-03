@@ -107,6 +107,19 @@ public class TicketTypeTests {
         System.out.println("The list of existing ticket type isactives after an update made");
         System.out.println(ticketTypeImpl.getAllTicketTypeIsActives());
         System.out.println("Done for update ticket type isactive method");
+
+        // test update method using all fields
+        System.out.println("The list of existing ticket type names and prices before an update made");
+        System.out.println(ticketTypeImpl.getAllTicketTypesDetails());
+        System.out.println();
+
+        System.out.println("ticketTypeImpl.updateTicketTypeByAllFields(\"child\", \"child1\", 30.00, false)");
+        ticketTypeImpl.updateTicketTypeByAllFields("child", "child1", 30.00, false);
+        System.out.println();
+
+        System.out.println("The list of existing ticket type names and prices after an update made");
+        System.out.println(ticketTypeImpl.getAllTicketTypesDetails());
+        System.out.println("Done for update ticket type name and price method");
     }
 
     @Test
