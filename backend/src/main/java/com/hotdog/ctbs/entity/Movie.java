@@ -37,6 +37,9 @@ public class Movie {
     @Column(name = "image_url", length = Integer.MAX_VALUE)
     private String imageUrl;
 
+    @Column(name = "is_active", nullable = false)
+    private boolean isActive;
+
     @Column(name = "content_rating", nullable = false, length = Integer.MAX_VALUE)
     private String contentRating;
 

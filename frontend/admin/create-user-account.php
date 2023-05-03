@@ -68,9 +68,61 @@ echo head("HotDogBun Cinema", "Login and registration page of HotDogBun Cinema")
 <body>
 <header>
 <h1>HotDogBun Cinema</h1>
-<?php include '../html-components/navigation-admin.php'; ?>
+<?php include '../html-components/navigation-admin.php';
+// Include a file called file.php, and call a function from that file called myFunction.php, pass in the url of this page itself as a variable.
+// include 'file.php';
+// myFunction($_SERVER['PHP_SELF']);
+?>
 </header>
 <main>
+
+<div style="background: white; color:red;">
+<?php
+
+echo $_SERVER['PHP_SELF'];
+// The form below will perform a post request on this page,
+// we output the result here.
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+// Debugging:
+// echo "<pre>"; print_r($_POST); echo "</pre>";
+
+// Convert to a JSON that is readable by Spring's ObjectMapper.
+$json = json_encode($_POST);
+echo $json;
+/*
+e.g.
+{
+  "username":"a",
+  "email":"a@a.com",
+  "password":"a",
+  "firstName":"fn1","lastName":"ln1","dateOfBirth":"2023-05-03","address":"address1","title":"customer","check":"register"}
+*/
+echo "<br />";
+echo "<br />";
+echo "<br />";
+
+// Step 4: Send the JSON to the backend.
+// Send to http://localhost:8080/api/user-profile/create
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, "http://localhost:8080/api/user-account/create");
+curl_setopt($ch, CURLOPT_POST, 1);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+$result = curl_exec($ch);
+curl_close($ch);
+
+// Step 5: Output the result, surrounded by a <section> tag. Using HereDoc syntax.
+echo <<<HTML
+<section>
+<h2>Result</h2>
+<p>$result</p>
+</section>
+HTML;
+}
+?>
+</div>
 
 <?php
 // POST request.
@@ -88,7 +140,7 @@ echo head("HotDogBun Cinema", "Login and registration page of HotDogBun Cinema")
 ?>
 <section id="registration">
 <h2>Create User Account</h2>
-<form action="create-user-account.php" method="POST" class="form-registration">
+<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" class="form-registration">
 <label for="username">Username:</label>
 <input type="text" name="username" id="username" required>
 <label for="email">Email:</label>
@@ -98,12 +150,12 @@ echo head("HotDogBun Cinema", "Login and registration page of HotDogBun Cinema")
 <label for="password-confirm">Confirm Password:</label>
 <input type="password" name="password" id="password-confirm" required>
 
-<label for="firstname">First Name:</label>
-<input type="text" name="firstname" id="firstname" required>
-<label for="lastname">Last Name:</label>
-<input type="text" name="lastname" id="lastname" required>
-<label for="dob">Date of Birth:</label>
-<input type="date" name="dob" id="dob" required>
+<label for="firstName">First Name:</label>
+<input type="text" name="firstName" id="firstName" required>
+<label for="lastName">Last Name:</label>
+<input type="text" name="lastName" id="lastName" required>
+<label for="dateOfBirth">Date of Birth:</label>
+<input type="date" name="dateOfBirth" id="dateOfBirth" required>
 <label for="address">Address:</label>
 <textarea name="address" id="address" cols="30" rows="10" required></textarea>
 <label for="title">Title:</label>
@@ -115,10 +167,18 @@ curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 $titles = curl_exec($ch); // e.g. "[junior admin,senior admin,junior manager,senior manager]"
 $titles = explode(",", substr($titles, 1, -1));
 curl_close($ch);
+
+
 for ($i = 0; $i < count($titles); $i++) {
-$titleCapitalized = ucwords($titles[$i]);
-echo "<option value=\"$titles[$i]\">$titleCapitalized</option>\n";
+$titleCapitalized = trim(ucwords($titles[$i]));
+$title = trim($titles[$i]);
+echo <<<EOT
+<option value="$title">$titleCapitalized</option>\n
+EOT;
+
 }
+
+
 ?>
 </select>
 <button type="submit" name="check" value="register">Submit</button>

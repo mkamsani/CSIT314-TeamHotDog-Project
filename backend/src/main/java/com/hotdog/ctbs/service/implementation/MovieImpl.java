@@ -14,6 +14,7 @@ import com.hotdog.ctbs.service.MovieService;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 @Service
 public class MovieImpl implements MovieService{
@@ -31,7 +32,7 @@ public class MovieImpl implements MovieService{
         this.movieRepository = movieRepository;
     }
 
-    // return a list of titles of all movies
+        // return a list of titles of all movies
     @Override
     public List<String> getAllMovieTitles()
     {
@@ -89,7 +90,7 @@ public class MovieImpl implements MovieService{
     @Override
     public List<String> getValidContentRating()
     {
-        return List.of(ContentRating.values()).stream()
+        return Stream.of(ContentRating.values())
                 .map(Enum::name)
                 .toList();
     }
@@ -126,11 +127,11 @@ public class MovieImpl implements MovieService{
     // create a new movie
     @Override
     public void createMovie (String title, String genre, String description,
-                             LocalDate releaseDate, String imageUrl, String contentRating)
+                             LocalDate releaseDate, String imageUrl, boolean isActive, String contentRating)
     {
         // the new movie Title must not be the same as any existing title in database (1st check)
         // the content rating must be in lowercase form (2nd check)
-        // the content rating must be one of the valid content rating (3rd check)
+        // the content rating must be one of the valid content rating (3trd check)
         for (String existingMovieTitle : getAllMovieTitles())
             if (existingMovieTitle.equalsIgnoreCase(title))
                 throw new IllegalArgumentException("The movie title already exists.");
@@ -143,10 +144,11 @@ public class MovieImpl implements MovieService{
                 Movie.builder()
                         .id(UUID.randomUUID())
                         .title(title)
-                        .genre(genre)
+                        .genre(genre.toLowerCase())
                         .description(description)
                         .releaseDate(releaseDate)
                         .imageUrl(imageUrl)
+                        .isActive(isActive)
                         .contentRating(contentRating)
                         .build()
         );
@@ -189,7 +191,7 @@ public class MovieImpl implements MovieService{
         // update the movie genre if found the existing movie title
         for (Movie exsitingMovie : movieRepository.findAll()) {
             if (exsitingMovie.getTitle().equals(targetTitle)){
-                exsitingMovie.setGenre(newGenre);
+                exsitingMovie.setGenre(newGenre.toLowerCase());
                 movieRepository.save(exsitingMovie);
                 movieFound = true;
                 break;
@@ -209,7 +211,7 @@ public class MovieImpl implements MovieService{
     public void updateMovieByDescription(String targetTitle, String newDescription)
     {
         boolean movieFound = false;
-        // update the movie genre if found the existing movie title
+        // update the movie description if found the existing movie title
         for (Movie exsitingMovie : movieRepository.findAll()) {
             if (exsitingMovie.getTitle().equals(targetTitle)){
                 exsitingMovie.setDescription(newDescription);
@@ -231,7 +233,7 @@ public class MovieImpl implements MovieService{
     public void updateMovieByReleaseDate(String targetTitle, LocalDate newReleaseDate)
     {
         boolean movieFound = false;
-        // update the movie genre if found the existing movie title
+        // update the movie release date if found the existing movie title
         for (Movie exsitingMovie : movieRepository.findAll()) {
             if (exsitingMovie.getTitle().equals(targetTitle)){
                 exsitingMovie.setReleaseDate(newReleaseDate);
@@ -253,10 +255,32 @@ public class MovieImpl implements MovieService{
     public void updateMovieByImageUrl(String targetTitle, String newImageUrl)
     {
         boolean movieFound = false;
-        // update the movie genre if found the existing movie title
+        // update the movie's image URL if found the existing movie title
         for (Movie exsitingMovie : movieRepository.findAll()) {
             if (exsitingMovie.getTitle().equals(targetTitle)){
                 exsitingMovie.setImageUrl(newImageUrl);
+                movieRepository.save(exsitingMovie);
+                movieFound = true;
+                break;
+            }
+
+        }
+        // if the movie title that would to be updated is not found, throw an exception
+        if (!movieFound){
+            throw new IllegalArgumentException("The movie title you would " +
+                    "like to update does not exist.");
+        }
+    }
+
+    // update the movie's active status by input its title and new active status
+    @Override
+    public void updateMovieByIsActive(String targetTitle, boolean newIsActive)
+    {
+        boolean movieFound = false;
+        // update the movie status if found the existing movie title
+        for (Movie exsitingMovie : movieRepository.findAll()) {
+            if (exsitingMovie.getTitle().equals(targetTitle)){
+                exsitingMovie.setActive(newIsActive);
                 movieRepository.save(exsitingMovie);
                 movieFound = true;
                 break;
@@ -282,7 +306,7 @@ public class MovieImpl implements MovieService{
         if(!getValidContentRating().contains(newContentRating.toLowerCase()))
             throw new IllegalArgumentException("The content rating given is invalid.");
 
-        // update the movie genre if found the existing movie title
+        // update the content rating if found the existing movie title
         for (Movie exsitingMovie : movieRepository.findAll()) {
             if (exsitingMovie.getTitle().equals(targetTitle)){
                 exsitingMovie.setContentRating(newContentRating);
@@ -298,8 +322,6 @@ public class MovieImpl implements MovieService{
                     "like to update does not exist.");
         }
     }
-
-    /////////////////////////////////////// done to this part ///////////////////////////////////////
 
 
     // delete the movie by input its title
@@ -317,9 +339,6 @@ public class MovieImpl implements MovieService{
 
         }
     }
-
-    ////////////////////////done testing//////////////////////////////////////
-
 
     public String MovieResponse(Movie movie) throws JsonProcessingException
     {
@@ -361,6 +380,67 @@ public class MovieImpl implements MovieService{
                 .toList();
     }
 
+    // All methods for "active" movies
+    //***new method return a list of movie with true active status
+    @Override
+    public List<Movie> getAllActiveMoviesDetails()
+    {
+        return movieRepository.findAll().stream()
+                .filter(Movie::isActive)
+                .toList();
+    }
+
+    // return a list of movie title with true active status
+    @Override
+    public List<String> getAllActiveMoviesTitle()
+    {
+        return movieRepository.findAll().stream()
+                .filter(Movie::isActive)
+                .map(Movie::getTitle)
+                .toList();
+    }
+
+    // return a list of movie title and image url with true active status
+    @Override
+    public List<String> getAllActiveMoviesTitleAndImageUrl()
+    {
+        return movieRepository.findAll().stream()
+                .filter(Movie::isActive)
+                .map(movie -> movie.getTitle() + " " + movie.getImageUrl())
+                .toList();
+    }
+
+
+    // public void createMovie (String title, String genre, String description,
+    //                             LocalDate releaseDate, String imageUrl, boolean isActive, String contentRating)
+    // update a movie by enter all attributes
+    @Override
+    public void updateMovieByAllAttributes(String targetTitle, String newTitle, String newGenre, String newDescription,
+                                           LocalDate newReleaseDate, String newImageUrl, boolean newIsActive, String newContentRating) {
+        boolean movieFound = false;
+        // update everything if found the existing movie title
+        for (Movie exsitingMovie : movieRepository.findAll()) {
+            if (exsitingMovie.getTitle().equals(targetTitle)) {
+                exsitingMovie.setTitle(newTitle);
+                exsitingMovie.setGenre(newGenre.toLowerCase());
+                exsitingMovie.setDescription(newDescription);
+                exsitingMovie.setReleaseDate(newReleaseDate);
+                exsitingMovie.setImageUrl(newImageUrl);
+                exsitingMovie.setActive(newIsActive);
+                exsitingMovie.setContentRating(newContentRating);
+                movieRepository.save(exsitingMovie);
+                movieFound = true;
+                break;
+            }
+
+        }
+        // if the movie title that would to be updated is not found, throw an exception
+        if (!movieFound) {
+            throw new IllegalArgumentException("The movie title you would " +
+                    "like to update does not exist.");
+        }
+
+    }
 
 
 
