@@ -145,18 +145,4 @@ public class TicketTypeImpl implements TicketTypeService {
         ticketType.setIsActive(newIsActive);
         ticketTypeRepository.save(ticketType);
     }
-
-    // delete Ticket_Type by typeName
-    @Override
-    public void deleteTicketTypeByTypeName(String typeName){
-        for (TicketType existingTicketType : ticketTypeRepository.findAll()) {
-            if (existingTicketType.getTypeName().equals(typeName)) {
-                ticketTypeRepository.delete(existingTicketType);
-                System.out.println("Ticket " + typeName + " has been deleted.");
-                break;
-            }
-        }
-    }
-
-
 }

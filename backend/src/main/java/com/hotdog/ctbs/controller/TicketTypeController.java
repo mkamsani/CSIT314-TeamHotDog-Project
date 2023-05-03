@@ -136,18 +136,4 @@ public class TicketTypeController {
                 return "Error: " + e.getMessage();
             }
     }
-
-    // delete ticket type by ticket type name
-    @PostMapping("/delete/ticketType")
-    public String DeleteTicketType(@RequestBody String json) {
-            try{
-                JsonNode jsonNode = new ObjectMapper().readTree(json);
-                String targettypeName = jsonNode.get("targettypename").asText();
-                ticketTypeImpl.deleteTicketTypeByTypeName(targettypeName);
-                return "Success deleting ticketType";
-            }
-            catch (Exception e){
-                return "Error: " + e.getMessage();
-            }
-    }
 }

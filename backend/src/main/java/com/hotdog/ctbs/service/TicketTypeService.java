@@ -42,5 +42,4 @@ public interface TicketTypeService {
     // update Ticket_Type by all fields, method will take targetTypeName, newTypeName, newTypePrice, newIsActive as input
     void updateTicketTypeByAllFields(String targetTypeName, String newTypeName, Double newTypePrice, Boolean newIsActive);
 
-    void deleteTicketTypeByTypeName(String typeName);
 }

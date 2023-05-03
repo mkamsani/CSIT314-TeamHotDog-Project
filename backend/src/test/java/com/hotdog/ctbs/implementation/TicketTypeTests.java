@@ -122,20 +122,4 @@ public class TicketTypeTests {
         System.out.println("Done for update ticket type name and price method");
     }
 
-    @Test
-    void deleteMethod()
-    {
-        //test delete method
-        System.out.println("The list of existing ticket type names before a delete made");
-        System.out.println(ticketTypeImpl.getAllTicketTypeNames());
-        System.out.println();
-
-        System.out.println("ticketTypeImpl.deleteTicketTypeByTypeName(\"adult\")");
-        ticketTypeImpl.deleteTicketTypeByTypeName("adult");
-        System.out.println();
-
-        System.out.println("The list of existing ticket type names after a delete made");
-        System.out.println(ticketTypeImpl.getAllTicketTypeNames());
-        System.out.println("Done for delete ticket type method");
-    }
 }
