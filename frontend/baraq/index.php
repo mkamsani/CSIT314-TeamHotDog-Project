@@ -140,7 +140,7 @@ echo "<img src='$object->image' alt='$object->title' width='100%'>\n";
 ?>
 <section id="registration">
 <h2>Registration</h2>
-<form action="redirectPage.php" method="POST" class="form-registration">
+<form action="../justin/redirectPage.php" method="POST" class="form-registration">
 <label for="username">Username:</label>
 <input type="text" name="username" id="username" required>
 <label for="email">Email:</label>
