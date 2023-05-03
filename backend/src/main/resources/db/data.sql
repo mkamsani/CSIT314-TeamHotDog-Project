@@ -5,7 +5,8 @@ VALUES
     ('adult', 10.50, true),
     ('child', 5.50, true),
     ('senior', 6.50, true),
-    ('student', 8.50, true);
+    ('student', 8.50, true),
+    ('testType', 10.00, true);
 
 -- Insert default user profiles.
 INSERT INTO user_profile

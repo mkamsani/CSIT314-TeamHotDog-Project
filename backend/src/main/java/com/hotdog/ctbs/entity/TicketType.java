@@ -56,4 +56,6 @@ public class TicketType {
     public int hashCode() {
         return Objects.hash(uuid, typeName, typePrice, isActive);
     }
+
+
 }

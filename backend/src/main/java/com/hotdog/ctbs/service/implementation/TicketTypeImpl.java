@@ -1,13 +1,5 @@
 package com.hotdog.ctbs.service.implementation;
 
-
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import com.hotdog.ctbs.entity.TicketType;
 import com.hotdog.ctbs.repository.TicketTypeRepository;
 import com.hotdog.ctbs.service.TicketTypeService;
@@ -19,8 +11,7 @@ import java.util.UUID;
 
 @Service
 public class TicketTypeImpl implements TicketTypeService {
-    final
-    TicketTypeRepository ticketTypeRepository;
+    final TicketTypeRepository ticketTypeRepository;
 
     public TicketTypeImpl(TicketTypeRepository ticketTypeRepository) {
         this.ticketTypeRepository = ticketTypeRepository;
@@ -78,17 +69,24 @@ public class TicketTypeImpl implements TicketTypeService {
     }
 
 
+    public List<TicketType> getAllTicketTypesDetails(){
+        return ticketTypeRepository.findAll();
+    }
+
+
     //create new Ticket_Type
     // new ticketType typeName must not be the same as any other existing Ticket Types in database (1st check)
     // allow overlapping ticket price
     @Override
     public void createTicketType(String typeName, Double typePrice, Boolean isActive ){
-        TicketType ticketType = new TicketType();
         checkTicketTypeExistsByTypeName(typeName);
-        ticketType.setTypeName(typeName);
-        ticketType.setTypePrice(typePrice);
-        ticketType.setIsActive(isActive);
-        ticketTypeRepository.save(ticketType);
+        ticketTypeRepository.save(TicketType.builder()
+                                                .uuid(UUID.randomUUID())
+                                                .typeName(typeName)
+                                                .typePrice(typePrice)
+                                                .isActive(isActive)
+                                                .build()
+        );
     }
 
     // check if TicketType exists by typeName and throw exception if exists
@@ -102,11 +100,6 @@ public class TicketTypeImpl implements TicketTypeService {
         System.out.println("Ticket Type does not exist");
     }
     // retrieve Ticket_type by UUID
-    @Override
-    public TicketType getTicketTypeByUUID(UUID uuid){
-        TicketType ticketType = ticketTypeRepository.findTicketTypeByUUID(uuid);
-        return ticketType;
-    }
 
     // find ticketType by typeName
     @Override

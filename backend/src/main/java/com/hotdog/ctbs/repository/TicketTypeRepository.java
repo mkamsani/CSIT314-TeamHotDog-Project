@@ -9,6 +9,4 @@ public interface TicketTypeRepository extends JpaRepository<TicketType, UUID> {
 
     TicketType findByTypeName(String typeName);
 
-    TicketType findTicketTypeByUUID(UUID id);
-
 }

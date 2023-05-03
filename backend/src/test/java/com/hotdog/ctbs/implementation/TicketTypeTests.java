@@ -42,9 +42,12 @@ public class TicketTypeTests {
         System.out.println(ticketTypeImpl.getAllTicketTypeNamesAndPricesFromTicketTypeIsActives());
         System.out.println();
 
+        /*
         System.out.println("ticketTypeImpl.getTicketTypeByUUID(UUID.fromString(\"690464fc-5beb-4ed8-90b3-cd2454b53496\"))");
         System.out.println(ticketTypeImpl.getTicketTypeByUUID(UUID.fromString("690464fc-5beb-4ed8-90b3-cd2454b53496")));
         System.out.println();
+
+        */
 
         System.out.println("ticketTypeImpl.getTicketTypeByTypeName(\"testType\")");
         System.out.println(ticketTypeImpl.getTicketTypeByTypeName("testType"));
