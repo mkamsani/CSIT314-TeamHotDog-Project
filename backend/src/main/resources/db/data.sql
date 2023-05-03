@@ -1,3 +1,12 @@
+-- Insert default ticket types.
+INSERT INTO ticket_type
+(type_name, type_price, is_active)
+VALUES
+    ('adult', 10.50, true),
+    ('child', 5.50, true),
+    ('senior', 6.50, true),
+    ('student', 8.50, true);
+
 -- Insert default user profiles.
 INSERT INTO user_profile
   (privilege, title)
@@ -39,7 +48,6 @@ VALUES
     ('Inception', 'action', 'A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a CEO', '2010-07-13', 'https://en.wikipedia.org/wiki/Inception#/media/File:Inception_(2010)_theatrical_poster.jpg', true, 'm18'),
     ('Jurassic Park', 'adventure', 'During a preview tour, a theme park suffers a major power breakdown that allows its cloned dinosaur exhibits to run amok', '1993-06-09', 'https://en.wikipedia.org/wiki/Jurassic_Park_(film)#/media/File:Jurassic_Park_poster.jpg', true, 'pg'),
     ('The Godfather', 'crime', 'The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son', '1972-03-24', 'https://en.wikipedia.org/wiki/The_Godfather#/media/File:Godfather-Part-1-Poster.jpg', false, 'r21');
-
 
 
 
