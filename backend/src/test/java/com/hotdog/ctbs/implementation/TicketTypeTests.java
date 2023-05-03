@@ -58,8 +58,8 @@ public class TicketTypeTests {
     void createMethod()
     {
         //test create method
-        System.out.println("ticketTypeImpl.createTicketType(\"testType\", 10.00, true)");
-        ticketTypeImpl.createTicketType("testType", 10.00, true);
+        System.out.println("ticketTypeImpl.createTicketType(\"test1\", 10.00, true)");
+        ticketTypeImpl.createTicketType("test1", 10.00, true);
         System.out.println();
         System.out.println(ticketTypeImpl.getAllTicketTypeNames());
     }
@@ -72,8 +72,8 @@ public class TicketTypeTests {
         System.out.println(ticketTypeImpl.getAllTicketTypeNames());
         System.out.println();
 
-        System.out.println("ticketTypeImpl.updateTicketTypeByTypeName(\"testType\", \"testType2\")");
-        ticketTypeImpl.updateTicketTypeByTypeName("testType", "testType2");
+        System.out.println("ticketTypeImpl.updateTicketTypeByTypeName(\"test\", \"test2\")");
+        ticketTypeImpl.updateTicketTypeByTypeName("test", "test2");
         System.out.println();
 
         System.out.println("The list of existing ticket type names after an update made");
@@ -86,8 +86,8 @@ public class TicketTypeTests {
         System.out.println(ticketTypeImpl.getAllTicketTypePrices());
         System.out.println();
 
-        System.out.println("ticketTypeImpl.updateTicketTypeByTypePrice(\"testType2\", 20.00)");
-        ticketTypeImpl.updateTicketTypeByTypePrice("testType2", 20.00);
+        System.out.println("ticketTypeImpl.updateTicketTypeByTypePrice(\"student\", 20.00)");
+        ticketTypeImpl.updateTicketTypeByTypePrice("student", 20.00);
         System.out.println();
 
         System.out.println("The list of existing ticket type prices after an update made");
@@ -100,8 +100,8 @@ public class TicketTypeTests {
         System.out.println(ticketTypeImpl.getAllTicketTypeIsActives());
         System.out.println();
 
-        System.out.println("ticketTypeImpl.updateTicketTypeByIsActive(\"testType2\", false)");
-        ticketTypeImpl.updateTicketTypeByIsActive("testType2", false);
+        System.out.println("ticketTypeImpl.updateTicketTypeByIsActive(\"test\", false)");
+        ticketTypeImpl.updateTicketTypeByIsActive("senior", false);
         System.out.println();
 
         System.out.println("The list of existing ticket type isactives after an update made");
@@ -117,8 +117,8 @@ public class TicketTypeTests {
         System.out.println(ticketTypeImpl.getAllTicketTypeNames());
         System.out.println();
 
-        System.out.println("ticketTypeImpl.deleteTicketTypeByTypeName(\"testType2\")");
-        ticketTypeImpl.deleteTicketTypeByTypeName("testType2");
+        System.out.println("ticketTypeImpl.deleteTicketTypeByTypeName(\"adult\")");
+        ticketTypeImpl.deleteTicketTypeByTypeName("adult");
         System.out.println();
 
         System.out.println("The list of existing ticket type names after a delete made");

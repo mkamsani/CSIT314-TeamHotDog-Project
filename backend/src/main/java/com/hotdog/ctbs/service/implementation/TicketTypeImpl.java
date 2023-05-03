@@ -79,7 +79,7 @@ public class TicketTypeImpl implements TicketTypeService {
     // allow overlapping ticket price
     @Override
     public void createTicketType(String typeName, Double typePrice, Boolean isActive ){
-        checkTicketTypeExistsByTypeName(typeName);
+        //checkTicketTypeExistsByTypeName(typeName);
         ticketTypeRepository.save(TicketType.builder()
                                                 .uuid(UUID.randomUUID())
                                                 .typeName(typeName)
@@ -111,7 +111,7 @@ public class TicketTypeImpl implements TicketTypeService {
     //update Ticket_Type by typeName, method will take targetTypeName and newTypeName as input
     @Override
     public void updateTicketTypeByTypeName(String targetTypeName, String newTypeName){
-        checkTicketTypeExistsByTypeName(newTypeName);
+        //checkTicketTypeExistsByTypeName(newTypeName);
         TicketType ticketType = ticketTypeRepository.findByTypeName(targetTypeName);
         ticketType.setTypeName(newTypeName);
         ticketTypeRepository.save(ticketType);
@@ -120,7 +120,7 @@ public class TicketTypeImpl implements TicketTypeService {
     //update Ticket_Type by typePrice, method will take targetTypeName and newTypePrice as input
     @Override
     public void updateTicketTypeByTypePrice(String targetTypeName, Double newTypePrice){
-        checkTicketTypeExistsByTypeName(targetTypeName);
+        //checkTicketTypeExistsByTypeName(targetTypeName);
         TicketType ticketType = ticketTypeRepository.findByTypeName(targetTypeName);
         ticketType.setTypePrice(newTypePrice);
         ticketTypeRepository.save(ticketType);
@@ -129,7 +129,7 @@ public class TicketTypeImpl implements TicketTypeService {
     //update Ticket_Type by isActive, method will take targetTypeName and newIsActive as input
     @Override
     public void updateTicketTypeByIsActive(String targetTypeName, Boolean newIsActive){
-        checkTicketTypeExistsByTypeName(targetTypeName);
+        //checkTicketTypeExistsByTypeName(targetTypeName);
         TicketType ticketType = ticketTypeRepository.findByTypeName(targetTypeName);
         ticketType.setIsActive(newIsActive);
         ticketTypeRepository.save(ticketType);
@@ -139,12 +139,12 @@ public class TicketTypeImpl implements TicketTypeService {
     @Override
     public void deleteTicketTypeByTypeName(String typeName){
         for (TicketType existingTicketType : ticketTypeRepository.findAll()) {
-            if (!existingTicketType.getTypeName().equals(typeName)) {
-                throw new IllegalStateException("Ticket Type does not exist");
+            if (existingTicketType.getTypeName().equals(typeName)) {
+                ticketTypeRepository.delete(existingTicketType);
+                System.out.println("Ticket " + typeName + " has been deleted.");
+                break;
             }
         }
-        TicketType ticketType = ticketTypeRepository.findByTypeName(typeName);
-        ticketTypeRepository.delete(ticketType);
     }
 
 
