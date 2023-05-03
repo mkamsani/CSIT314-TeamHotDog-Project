@@ -9,7 +9,7 @@
 # Run the above command, then run this script again.
 
 # Exit if script is not run from the source directory.
-test "$(basename "$(pwd)")" = "frontend" || exit 1
+test "$(basename "$(pwd)")" = ".docker" || exit 1
 # Exit if no OCI runtime is found.
 test "$(command -v nerdctl && nerdctl -v | grep nerdctl)" && oci=nerdctl
 test "$(command -v podman && podman -v   | grep podman)"  && oci=podman
@@ -20,7 +20,7 @@ test -z "$oci" && printf %s\\n "No OCI runtime found" && exit 1
 sleep 1 && "$oci" container list -a | grep php_apache && "$oci" rm -f php_apache
 
 "$oci" run --net=host --security-opt label=disable --name=php_apache -d \
--v "$(pwd)":/var/www/html:rw \
+-v "$(pwd)/../frontend":/var/www/html:rw \
 -v "$(pwd)"/nginx_php.conf:/etc/nginx/conf.d/default.conf \
 trafex/php-nginx:latest
 
