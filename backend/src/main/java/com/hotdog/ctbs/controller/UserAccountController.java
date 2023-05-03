@@ -74,7 +74,7 @@ public class UserAccountController {
         }
     }
 
-    //
+    // curl -X GET http://localhost:8080/api/user-profile/readAllUserAccounts
     @GetMapping("/readAllUserAccounts")
     public String readAllUserAccounts()
     {
@@ -202,4 +202,53 @@ public class UserAccountController {
             return ResponseEntity.ok().headers(headers).body("incorrect json");
         }
     }
+
+
+
+    // RequestBody: {"username":"a","email":"a@a.com","password":"a","firstName":"fn1","lastName":"ln1","dateOfBirth":"2023-05-03","address":"address1","title":"customer"}
+    @PostMapping("/create")
+    public String create(@RequestBody String json)
+    {
+        System.out.println("Method create() called.");
+        try {
+            JsonNode jsonNode = new ObjectMapper().readTree(json);
+            String username = jsonNode.get("username").asText();
+            String email = jsonNode.get("email").asText();
+            String password = jsonNode.get("password").asText();
+            String firstName = jsonNode.get("firstName").asText();
+            String lastName = jsonNode.get("lastName").asText();
+            LocalDate dateOfBirth = LocalDate.parse(jsonNode.get("dateOfBirth").asText());
+            String address = jsonNode.get("address").asText();
+            String title = jsonNode.get("title").asText();
+            System.out.println("Username: " + username);
+            System.out.println("Email: " + email);
+            System.out.println("Password: " + password);
+            System.out.println("First name: " + firstName);
+            System.out.println("Last name: " + lastName);
+
+            if (userAccountRepository.findUserAccountByUsername(username) != null)
+                return "User account with username " + username + " already exists";
+            if (userAccountRepository.findUserAccountByEmail(email) != null)
+                return "User account with email " + email + " already exists";
+            UserAccount userAccount = UserAccount.builder()
+                                                 .username(username)
+                                                 .email(email)
+                                                 .passwordHash(password)
+                                                 .firstName(firstName)
+                                                 .lastName(lastName)
+                                                 .dateOfBirth(dateOfBirth)
+                                                 .address(address)
+                                                 .userProfile(userProfileRepository.findUserProfileByTitle(title))
+                                                 .timeCreated(OffsetDateTime.now())
+                                                 .timeLastLogin(OffsetDateTime.now())
+                                                 .isActive(true)
+                                                 .build();
+            userAccountRepository.save(userAccount);
+            System.out.println("User account " + username + " created successfully");
+            return "User account " + username + " created successfully";
+        } catch (Exception e) {
+            return "Error: " + e.getMessage();
+        }
+    }
+
 }
