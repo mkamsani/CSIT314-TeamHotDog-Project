@@ -1,10 +1,7 @@
 package com.hotdog.ctbs.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hotdog.ctbs.entity.Movie;
-import com.hotdog.ctbs.service.implementation.MovieImpl;
 
 import java.time.LocalDate;
 import java.util.List;

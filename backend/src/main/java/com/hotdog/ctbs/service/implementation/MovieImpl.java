@@ -14,6 +14,7 @@ import com.hotdog.ctbs.service.MovieService;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 @Service
 public class MovieImpl implements MovieService{
@@ -89,7 +90,7 @@ public class MovieImpl implements MovieService{
     @Override
     public List<String> getValidContentRating()
     {
-        return List.of(ContentRating.values()).stream()
+        return Stream.of(ContentRating.values())
                 .map(Enum::name)
                 .toList();
     }

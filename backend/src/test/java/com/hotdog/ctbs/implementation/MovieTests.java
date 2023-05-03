@@ -1,11 +1,11 @@
 package com.hotdog.ctbs.implementation;
 
+import com.hotdog.ctbs.service.implementation.MovieImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import com.hotdog.ctbs.service.implementation.*;
+
 import java.time.LocalDate;
-import java.util.List;
 import java.util.UUID;
 
 @SpringBootTest
