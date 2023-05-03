@@ -31,7 +31,7 @@ public class TicketType {
     private String typeName;
 
     @Column(name = "type_price", nullable = false, precision = 10, scale = 2)
-    private BigDecimal typePrice;
+    private Double typePrice;
 
     @Column(name = "is_active")
     private Boolean isActive;

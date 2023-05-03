@@ -16,17 +16,17 @@ public interface TicketTypeService {
 
     List<String> getAllTicketTypeNames();
 
-    List<BigDecimal> getAllTicketTypePrices();
+    List<Double> getAllTicketTypePrices();
 
     List<Boolean> getAllTicketTypeIsActives();
 
-    List<BigDecimal> getAllTicketTypePricesFromTicketTypeIsActives();
+    List<Double> getAllTicketTypePricesFromTicketTypeIsActives();
 
     List<String> getAllTicketTypeNamesFromTicketTypeIsActives();
 
     List<String> getAllTicketTypeNamesAndPricesFromTicketTypeIsActives();
 
-    void createTicketType(String typeName, BigDecimal typePrice, Boolean isActive );
+    void createTicketType(String typeName, Double typePrice, Boolean isActive );
 
     void checkTicketTypeExistsByTypeName(String typeName);
 
@@ -34,9 +34,9 @@ public interface TicketTypeService {
 
     TicketType getTicketTypeByTypeName(String typeName);
 
-    void updateTicketTypeByTypename(String targetTypeName, String newTypeName);
+    void updateTicketTypeByTypeName(String targetTypeName, String newTypeName);
 
-    void updateTicketTypeByTypePrice(String targetTypeName, BigDecimal newTypePrice);
+    void updateTicketTypeByTypePrice(String targetTypeName, Double newTypePrice);
 
     void updateTicketTypeByIsActive(String targetTypeName, Boolean newIsActive);
 
