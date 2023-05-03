@@ -104,7 +104,7 @@ public class TicketTypeImpl implements TicketTypeService {
     }
     // retrieve Ticket_type by UUID
     public TicketType getTicketTypeByUUID(UUID uuid){
-        TicketType ticketType = ticketTypeRepository.findById(uuid).orElse(null);
+        TicketType ticketType = ticketTypeRepository.findTicketTypeByID(uuid);
         return ticketType;
     }
 
