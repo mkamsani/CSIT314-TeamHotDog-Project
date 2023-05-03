@@ -1,10 +1,16 @@
 package com.hotdog.ctbs.service.implementation;
 
+
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import com.hotdog.ctbs.entity.TicketType;
 import com.hotdog.ctbs.repository.TicketTypeRepository;
-import lombok.Getter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Lookup;
+import com.hotdog.ctbs.service.TicketTypeService;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -12,7 +18,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-public class TicketTypeImpl {
+public class TicketTypeImpl implements TicketTypeService {
     final
     TicketTypeRepository ticketTypeRepository;
 
@@ -21,6 +27,7 @@ public class TicketTypeImpl {
     }
 
     // return a list of all ticket type names
+    @Override
     public List<String> getAllTicketTypeNames(){
         return ticketTypeRepository.findAll().stream()
                 .map(TicketType::getTypeName)
@@ -28,6 +35,7 @@ public class TicketTypeImpl {
     }
 
     // return a list of all ticket type prices
+    @Override
     public List<BigDecimal> getAllTicketTypePrices(){
         return ticketTypeRepository.findAll().stream()
                 .map(TicketType::getTypePrice)
@@ -35,11 +43,40 @@ public class TicketTypeImpl {
     }
 
     // return a list of all ticket type isActives
+    @Override
     public List<Boolean> getAllTicketTypeIsActives(){
         return ticketTypeRepository.findAll().stream()
                 .map(TicketType::getIsActive)
                 .toList();
     }
+
+    // return a list of all ticket type prices from ticket type isActives
+    @Override
+    public List<BigDecimal> getAllTicketTypePricesFromTicketTypeIsActives(){
+        return ticketTypeRepository.findAll().stream()
+                .filter(TicketType::getIsActive)
+                .map(TicketType::getTypePrice)
+                .toList();
+    }
+
+    // return a list of all ticket type names from ticket type isActives
+    @Override
+    public List<String> getAllTicketTypeNamesFromTicketTypeIsActives(){
+        return ticketTypeRepository.findAll().stream()
+                .filter(TicketType::getIsActive)
+                .map(TicketType::getTypeName)
+                .toList();
+    }
+
+    // return a list of all ticket type names and prices from ticket type isActives
+    @Override
+    public List<String> getAllTicketTypeNamesAndPricesFromTicketTypeIsActives(){
+        return ticketTypeRepository.findAll().stream()
+                .filter(TicketType::getIsActive)
+                .map(ticketType -> ticketType.getTypeName() + " - $" + ticketType.getTypePrice())
+                .toList();
+    }
+
 
     //create new Ticket_Type
     // new ticketType typeName must not be the same as any other existing Ticket Types in database (1st check)
@@ -66,7 +103,7 @@ public class TicketTypeImpl {
         }
     }
     // retrieve Ticket_type by UUID
-    public TicketType getTicketTypebyUUID(UUID uuid){
+    public TicketType getTicketTypeByUUID(UUID uuid){
         TicketType ticketType = ticketTypeRepository.findById(uuid).orElse(null);
         return ticketType;
     }
@@ -90,6 +127,14 @@ public class TicketTypeImpl {
         checkTicketTypeExistsByTypeName(targetTypeName);
         TicketType ticketType = ticketTypeRepository.findByTypeName(targetTypeName);
         ticketType.setTypePrice(newTypePrice);
+        ticketTypeRepository.save(ticketType);
+    }
+
+    //update Ticket_Type by isActive, method will take targetTypeName and newIsActive as input
+    public void updateTicketTypeByIsActive(String targetTypeName, Boolean newIsActive){
+        checkTicketTypeExistsByTypeName(targetTypeName);
+        TicketType ticketType = ticketTypeRepository.findByTypeName(targetTypeName);
+        ticketType.setIsActive(newIsActive);
         ticketTypeRepository.save(ticketType);
     }
 
