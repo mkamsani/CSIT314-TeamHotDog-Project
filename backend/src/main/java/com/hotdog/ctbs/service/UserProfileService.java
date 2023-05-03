@@ -13,6 +13,8 @@ import java.util.UUID;
  */
 public interface UserProfileService {
 
+    List<UserProfile> getActiveUserProfiles();
+
     /** SELECT title FROM user_profile; */
     List<String> getAllTitles();
 
@@ -25,41 +27,14 @@ public interface UserProfileService {
     /** SELECT * FROM user_profile WHERE privilege = arg; */
     List<UserProfile> getUserProfilesByPrivilege(String privilege);
 
-    /** SELECT * FROM user_profile WHERE id = arg; */
-    UserProfile getUserProfileById(UUID id);
-
-    /** SELECT * FROM user_profile WHERE title = arg; */
-    UserProfile getUserProfileByTitle(String title);
-
     /** SELECT id FROM user_profile WHERE title = arg; */
     UUID getIdByTitle(String title);
 
     /** INSERT INTO user_profile (privilege, title) VALUES (arg, arg); */
     void createUserProfile(String title, String privilege);
 
-    /** UPDATE user_profile SET title = newTitle WHERE title = targetTitle; */
-    void updateOneByTitle(String oldTitle, String newTitle);
-
-    /**
-     * UPDATE user_profile SET privilege = newPrivilege WHERE title = targetTitle<br />
-     * AND (newPrivilege = 'admin' OR newPrivilege = 'owner' OR newPrivilege = 'manager')
-     */
-    void updateOneByPrivilege(String targetTitle, String privilege);
-
     /** DELETE FROM user_profile WHERE title = arg */
-    String suspendOneByTitle(String title);
+    String suspendUserProfileByTitle(String title);
 
-    /** Send JSON to frontend, without UUID. */
-    String UserProfileResponse(UserProfile userProfile) throws JsonProcessingException;
-
-    /** Send JSON to frontend, without UUID. */
-    String UserProfilesResponse(List<UserProfile> userProfiles) throws JsonProcessingException;
-
-    /** Receive JSON from frontend, regardless of UUID (or lack thereof). */
-    UserProfile UserProfileRequest(String json) throws JsonProcessingException;
-
-    /** Receive JSON from frontend, regardless of UUID (or lack thereof). */
-    List<UserProfile> UserProfilesRequest(String json) throws JsonProcessingException;
-
-    void updateUserProfile(String uuid, String privilege, String title);
+    void updateUserProfileByTitle(String uuid, String privilege, String title);
 }

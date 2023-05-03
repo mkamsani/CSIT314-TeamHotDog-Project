@@ -14,5 +14,7 @@ public interface UserProfileRepository extends JpaRepository<UserProfile, UUID> 
 
     List<UserProfile> findUserProfilesByPrivilege(String privilege);
 
+    // TODO: replace UserProfile with Optional<UserProfile>
     UserProfile findUserProfileByTitle(String s);
+
 }

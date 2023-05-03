@@ -59,39 +59,10 @@ public class UserProfileTests {
         System.out.println(userProfileImpl.getUserProfilesByPrivilege("admin"));
         System.out.println();
 
-        System.out.println("userProfileImpl.getUserProfileByTitle(\"Customer\")");
-        UserProfile getUserProfileByTitle = userProfileImpl.getUserProfileByTitle("Customer");
-        System.out.println(getUserProfileByTitle);
-        System.out.println();
-
-        System.out.println("userProfileImpl.getUserProfileById(id)");
-        UUID getUserProfileById = getUserProfileByTitle.getId();
-        System.out.println(userProfileImpl.getUserProfileById(getUserProfileById));
-        System.out.println();
-
         System.out.println("userProfileImpl.getIdByTitle(\"Customer\")");
         UUID getIdByTitle = userProfileImpl.getIdByTitle("Customer");
         System.out.println(getIdByTitle);
         System.out.println();
-
-        // Perform equality check for the previous two methods.
-        System.out.println("getUserProfileById.equals(getIdByTitle)");
-        System.out.println(getUserProfileById.equals(getIdByTitle));
-        System.out.println();
-
-        // Asserts.
-        Assert.isTrue(
-                getUserProfileByTitle.getTitle().equals("Customer"),
-                "getUserProfileByTitle.getTitle() is not \"Customer\""
-        );
-        Assert.isTrue(
-                getUserProfileByTitle.getPrivilege().equals("customer"),
-                "getUserProfileByTitle.getPrivilege() is not \"Customer\""
-        );
-        Assert.isTrue(
-                getUserProfileById.equals(getIdByTitle),
-                "getUserProfileById is not getIdByTitle"
-        );
 
         testEnder(time);
     }
@@ -113,19 +84,10 @@ public class UserProfileTests {
         System.out.println();
         getAllTitles.run();
 
-        System.out.println("userProfileImpl.updateOneTitle(\"Test Manager\", \"Test Manager Updated\")");
-        userProfileImpl.updateOneByTitle("Test Manager", "Test Manager Updated");
-        System.out.println();
-        getAllTitles.run();
-
-        System.out.println("userProfileImpl.updateOnePrivilege(\"Test Manager Updated\", \"admin\")");
-        userProfileImpl.updateOneByPrivilege("Test Manager Updated", "admin");
-        System.out.println();
-        getAllTitles.run();
-
         System.out.println("userProfileImpl.deleteByTitle(\"Test Manager Updated\")");
-        userProfileImpl.suspendOneByTitle("Test Manager Updated");
+        userProfileImpl.suspendUserProfileByTitle("Test Manager Updated");
         System.out.println();
+
         getAllTitles.run();
 
         testEnder(time);

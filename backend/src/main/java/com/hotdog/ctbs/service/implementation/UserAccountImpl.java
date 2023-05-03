@@ -10,10 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  *
@@ -42,7 +39,7 @@ public class UserAccountImpl implements UserAccountService {
     {
         UserAccount userAccount = userAccountRepo.findUserAccountByUsername(username);
         if (userAccount == null || !userAccountRepo.existsUserAccountByUsernameAndPassword(username, password))
-            return "{\"response\":\"Invalid username or password.\"}";
+            return "Invalid username or password.";
 
         // Update last login time.
         userAccount.setTimeLastLogin(OffsetDateTime.now());
@@ -50,65 +47,30 @@ public class UserAccountImpl implements UserAccountService {
 
         // Return URL to user's profile page.
         return switch (userAccount.getUserProfile().getPrivilege()) {
-            case "manager" -> "{\"response\":\"https://raw.github.com/manager.php\"}";
-            case "owner" -> "{\"response\":\"https://raw.github.com/owner.php\"}";
-            case "admin" -> "{\"response\":\"https://raw.github.com/admin.php\"}";
-            default -> "{\"response\":\"https://raw.github.com/user.php\"}";
+            case "manager" -> "aaaa";
+            case "owner" ->   "aaaa";
+            case "admin" ->   "aaaa";
+            default ->        "aaaa";
         };
     }
 
-    public String createCustomerAccount(final String username,
-                                        final String password,
-                                        final String email,
-                                        final String firstName,
-                                        final String lastName,
-                                        final String address,
-                                        final String dateOfBirth)
-    {
-        return createUserAccount(username, password, email, firstName, lastName, address, dateOfBirth, "customer");
-    }
-
-    public String createUserAccount(final String username,
-                                    final String password,
-                                    final String email,
-                                    final String firstName,
-                                    final String lastName,
-                                    final String address,
-                                    final String dateOfBirth,
+    public void createUserAccount(final String username, final String password, final String email,
+                                    final String firstName, final String lastName, final String address,
+                                    final LocalDate dateOfBirth,
                                     final String title)
     {
         // The following validations are required when an admin/customer creates a new user account.
         if (userAccountRepo.findUserAccountByUsername(username) != null)
-            return "{\"response\":\"Username already exists.\"}";
+            throw new IllegalArgumentException("Username " + username + " already exists.");
         if (userAccountRepo.findUserAccountByEmail(email) != null)
-            return "{\"response\":\"Email already exists.\"}";
+            throw new IllegalArgumentException("Email " + email + " already exists.");
         if (!username.matches("[a-zA-Z0-9]+"))
-            return "{\"response\":\"Username must only contain alphanumeric characters.\"}";
-
-        /*
-         * The username (AKA "local part"):
-         *     Can use these characters: [a-zA-Z0-9-._]
-         *     Can't have two dots in a row.
-         *     Can't start or end with a dot.
-         *
-         * The domain:
-         *     Can use these characters: [a-zA-Z0-9-.]
-         *     Must have one or more dots in it.
-         *     Can't have two dots in a row.
-         *     Can't start or end with a dot.
-         *     Can't start or end with a hyphen.
-         *     Must end with a "TLD" that's 2+ letters, only [a-zA-Z] allowed.
-         *
-         * Reference:
-         *     https://colinhacks.com/essays/reasonable-email-regex
-         */
-        if (!email.matches("^([A-Z0-9_+-]+\\.?)*[A-Z0-9_+-]@([A-Z0-9][A-Z0-9-]*\\.)+[A-Z]{2,}$"))
-            return "{\"response\":\"Invalid email format.\"}";
+            throw new IllegalArgumentException("Username " + username + " must only contain alphanumeric characters.");
 
         // This validation is only required when an admin creates a new user account.
         UserProfile userProfile = userProfileRepo.findUserProfileByTitle(title);
         if (userProfile == null)
-            return "{\"response\":\"Invalid title.\"}";
+            throw new IllegalArgumentException("Invalid title.");
 
         try {
             UserAccount userAccount = UserAccount.builder()
@@ -124,14 +86,12 @@ public class UserAccountImpl implements UserAccountService {
                                                  .firstName(firstName)
                                                  .lastName(lastName)
                                                  .address(address)
-                                                 .dateOfBirth(LocalDate.parse(dateOfBirth))
+                                                 .dateOfBirth(dateOfBirth)
                                                  .build();
             userAccountRepo.save(userAccount);
         } catch (Exception e) {
-            return "{\"response\":\"Invalid date format.\"}";
+            throw new IllegalArgumentException("Invalid date of birth format: " + dateOfBirth);
         }
-
-        return "{\"response\":\"Account created.\"}";
     }
 
     public List<UserAccount> getUserAccountsByTitle(String title)

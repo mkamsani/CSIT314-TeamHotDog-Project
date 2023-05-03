@@ -6,64 +6,7 @@
 include 'html-components/head.php';
 echo head("HotDogBun Cinema", "Login and registration page of HotDogBun Cinema") . "\n";
 ?>
-<link rel="stylesheet" href="/css/index.css">
-<style>
-    section {
-        background: #fffd;
-        padding: 2rem;
-        border-radius: 0.5rem;
-        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-    }
-
-    section > * {
-        max-width: 97.5%;
-        margin: auto;
-    }
-
-    section > p {
-        margin-top: 1rem;
-    }
-
-    section > form {
-        display: flex;
-        flex-direction: column;
-    }
-
-    section form label {
-        margin-top: 1rem;
-    }
-
-    section form button {
-        margin-top: 2rem;
-        cursor: pointer;
-        text-align: left;
-        /* Make it slightly bigger: */
-        padding: 0.5rem 1rem;
-        font-size: 1.1rem;
-    }
-
-    section form label + input {
-        margin-top: 0.5rem;
-    }
-
-    /* Any section which is not the first */
-    section + section {
-        margin-top: 3rem;
-    }
-
-    /* Uses image carousel. */
-    #now-showing > div {
-        margin-top: 1rem;
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr 1fr;
-        grid-gap: 1rem;
-    }
-
-    /* Select the last section element */
-    section:last-child {
-        margin-bottom: 1rem;
-    }
-</style>
+<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 <header>
@@ -72,25 +15,43 @@ echo head("HotDogBun Cinema", "Login and registration page of HotDogBun Cinema")
 </header>
 <main>
 
+<?php
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+$json = json_encode($_POST);
+// echo "<section>\n<h3>DEBUGGING STATEMENTS</h3>\n";
+// echo $_SERVER['PHP_SELF'] . "<br />\n" . "<pre>";
+// echo "<pre>" . print_r($_POST, true) . "</pre>";
+// echo "</pre>" . "<br />" . $json . "</section>";
+$ch = curl_init("http://localhost:8000/api/user-account/create-customer");
+curl_setopt($ch, CURLOPT_POST, 1);
+curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+$result = curl_exec($ch);
+curl_close($ch);
+echo <<<HTML
+<section>
+<h2>Result</h2>
+<p>$result</p>
+</section>
+HTML;
+}
+?>
+
 <!-- GET request to display all movies currently showing. -->
 <section id="now-showing">
 <h2>Now Showing</h2>
-<div>
+<div style="display: grid; grid-template-columns: repeat(4, 1fr); grid-gap: 1rem;">
 <?php
-$ch = curl_init();
-// curl_setopt($ch, CURLOPT_URL, "http://localhost:8080/api/movie/getNowShowing");
-// curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-// $images = curl_exec($ch);
+$ch = curl_init("http://localhost:8000/api/movie/read/allActiveMoviesDetails");
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+$result = curl_exec($ch);
 curl_close($ch);
-$images = array( // TODO: Replace with API call.
-"{\"title\":\"Forrest Gump\", \"image\":\"https://image.tmdb.org/t/p/original/arw2vcBveWOVZr6pxd9XTd1TdQa.jpg\"}",
-"{\"title\":\"Batman\", \"image\":\"https://image.tmdb.org/t/p/original/cij4dd21v2Rk2YtUQbV5kW69WB2.jpg\"}",
-"{\"title\":\"Spider-Man: No Way Home\", \"image\":\"https://image.tmdb.org/t/p/original/uJYYizSuA9Y3DCs0qS4qWvHfZg4.jpg\"}",
-"{\"title\":\"Bee Movie\", \"image\":\"https://image.tmdb.org/t/p/original/grUgUWkTCO2UbyKZdswPnR4sAhk.jpg\"}"
-);
-for ($i = 0; $i < count($images); $i++) {
-$object = json_decode($images[$i]);
-echo "<img src='$object->image' alt='$object->title' width='100%'>\n";
+$result = json_decode($result, true);
+foreach ($result as $movie) {
+echo <<<HTML
+<img src="{$movie['imageUrl']}" alt="{$movie['title']}">
+HTML;
 }
 ?>
 </div>
@@ -107,7 +68,6 @@ echo "<img src='$object->image' alt='$object->title' width='100%'>\n";
 ?>
 <section id="login">
 <h2>Login</h2>
-<p>For existing users, login to your account with your username and password.</p>
 <form action="index.php" method="POST" class="form-login">
 <label for="username">Username:</label>
 <input type="text" name="username" id="username" required>
@@ -140,7 +100,7 @@ echo "<img src='$object->image' alt='$object->title' width='100%'>\n";
 ?>
 <section id="registration">
 <h2>Registration</h2>
-<form action="../justin/redirectPage.php" method="POST" class="form-registration">
+<form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" class="form-registration">
 <label for="username">Username:</label>
 <input type="text" name="username" id="username" required>
 <label for="email">Email:</label>
@@ -150,41 +110,18 @@ echo "<img src='$object->image' alt='$object->title' width='100%'>\n";
 <label for="password-confirm">Confirm Password:</label>
 <input type="password" name="password" id="password-confirm" required>
 
-<label for="firstname">First Name:</label>
-<input type="text" name="firstname" id="firstname" required>
-<label for="lastname">Last Name:</label>
-<input type="text" name="lastname" id="lastname" required>
-<label for="dob">Date of Birth:</label>
-<input type="date" name="dob" id="dob" required>
+<label for="firstName">First Name:</label>
+<input type="text" name="firstName" id="firstName" required>
+<label for="lastName">Last Name:</label>
+<input type="text" name="lastName" id="lastName" required>
+<label for="dateOfBirth">Date of Birth:</label>
+<input type="date" name="dateOfBirth" id="dateOfBirth" required>
 <label for="address">Address:</label>
 <textarea name="address" id="address" cols="30" rows="10" required></textarea>
 <button type="submit" name="check" value="register">Submit</button>
 </form>
 </section>
-
 </main>
 </body>
-
-When creating other user accounts, e.g. admin, owner, manager, add the following to the form:
-<label for="title">Title:</label>
-<select name="title" id="title">
-<?php
-// Replace this with a GET request to the API.
-$titles = array("Mr", "Mrs", "Ms", "Dr", "Prof");
-// Replacement:
- $ch = curl_init();
- curl_setopt($ch, CURLOPT_URL, "http://localhost:8080/api/user-profile/read/titles");
- curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
- $titles = curl_exec($ch);
- curl_close($ch);
-// Convert "[customer, junior manager, senior manager, chief financial officer, chief executive officer, junior admin, senior admin, chief information officer]" to array.
-$titles = explode(",", substr($titles, 1, -1));
-foreach ($titles as $title) {
-echo "<option value='$title'>$title</option>";
-}
-?>
-</select>
-
-
 </html>
 
