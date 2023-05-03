@@ -55,6 +55,12 @@ public class TicketTypeController {
         return ticketTypeImpl.getAllTicketTypePrices().toString();
     }
 
+    @GetMapping("/read/getTicketTypeByTypeName")
+    public String ReadTicketTypeByTypeName(@RequestParam String typeName)
+    {
+        return ticketTypeImpl.getTicketTypeByTypeName(typeName).toString();
+    }
+
     @PostMapping("/create/ticketType")
     public String CreateTicketType(@RequestBody String json) {
             try{
@@ -68,21 +74,80 @@ public class TicketTypeController {
             catch (Exception e){
                 return "Error: " + e.getMessage();
             }
-        }
     }
 
     @PostMapping("/update/ticketType")
     public String UpdateTicketType(@RequestBody String json) {
             try{
                 JsonNode jsonNode = new ObjectMapper().readTree(json);
-                String typeName = jsonNode.get("typename").asText();
+                String targettypeName = jsonNode.get("targettypename").asText();
+                String newTypeName = jsonNode.get("newtypename").asText();
                 Double typePrice = jsonNode.get("typeprice").asDouble();
                 Boolean isactive = jsonNode.get("isactive").asBoolean();
-                ticketTypeImpl.updateTicketType(typeName, typePrice, isactive);
+                ticketTypeImpl.updateTicketTypeByAllFields(targettypeName, newTypeName, typePrice, isactive);
                 return "Success updating ticketType";
             }
             catch (Exception e){
                 return "Error: " + e.getMessage();
             }
-        }
     }
+
+    // change only the ticket type name
+    @PostMapping("/update/ticketType/typename")
+    public String updateTicketTypeByTypeName(@RequestBody String json) {
+            try{
+                JsonNode jsonNode = new ObjectMapper().readTree(json);
+                String targettypeName = jsonNode.get("targettypename").asText();
+                String newTypeName = jsonNode.get("newtypename").asText();
+                ticketTypeImpl.updateTicketTypeByTypeName(targettypeName, newTypeName);
+                return "Success updating ticketType";
+            }
+            catch (Exception e){
+                return "Error: " + e.getMessage();
+            }
+    }
+
+    // change only the ticket type price
+    @PostMapping("/update/ticketType/typeprice")
+    public String updateTicketTypeByTypePrice(@RequestBody String json) {
+            try{
+                JsonNode jsonNode = new ObjectMapper().readTree(json);
+                String targettypeName = jsonNode.get("targettypename").asText();
+                Double typePrice = jsonNode.get("typeprice").asDouble();
+                ticketTypeImpl.updateTicketTypeByTypePrice(targettypeName, typePrice);
+                return "Success updating ticketType";
+            }
+            catch (Exception e){
+                return "Error: " + e.getMessage();
+            }
+    }
+
+    // change only the ticket type isactive
+    @PostMapping("/update/ticketType/isactive")
+    public String updateTicketTypeByIsActive(@RequestBody String json) {
+            try{
+                JsonNode jsonNode = new ObjectMapper().readTree(json);
+                String targettypeName = jsonNode.get("targettypename").asText();
+                Boolean isactive = jsonNode.get("isactive").asBoolean();
+                ticketTypeImpl.updateTicketTypeByIsActive(targettypeName, isactive);
+                return "Success updating ticketType";
+            }
+            catch (Exception e){
+                return "Error: " + e.getMessage();
+            }
+    }
+
+    // delete ticket type by ticket type name
+    @PostMapping("/delete/ticketType")
+    public String DeleteTicketType(@RequestBody String json) {
+            try{
+                JsonNode jsonNode = new ObjectMapper().readTree(json);
+                String targettypeName = jsonNode.get("targettypename").asText();
+                ticketTypeImpl.deleteTicketTypeByTypeName(targettypeName);
+                return "Success deleting ticketType";
+            }
+            catch (Exception e){
+                return "Error: " + e.getMessage();
+            }
+    }
+}
