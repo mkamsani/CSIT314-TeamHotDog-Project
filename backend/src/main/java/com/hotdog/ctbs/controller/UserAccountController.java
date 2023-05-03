@@ -203,8 +203,6 @@ public class UserAccountController {
         }
     }
 
-
-
     // RequestBody: {"username":"a","email":"a@a.com","password":"a","firstName":"fn1","lastName":"ln1","dateOfBirth":"2023-05-03","address":"address1","title":"customer"}
     @PostMapping("/create")
     public String create(@RequestBody String json)
@@ -213,23 +211,23 @@ public class UserAccountController {
         try {
             JsonNode jsonNode = new ObjectMapper().readTree(json);
             String username = jsonNode.get("username").asText();
-            String email = jsonNode.get("email").asText();
-            String password = jsonNode.get("password").asText();
-            String firstName = jsonNode.get("firstName").asText();
-            String lastName = jsonNode.get("lastName").asText();
-            LocalDate dateOfBirth = LocalDate.parse(jsonNode.get("dateOfBirth").asText());
-            String address = jsonNode.get("address").asText();
-            String title = jsonNode.get("title").asText();
             System.out.println("Username: " + username);
+            String email = jsonNode.get("email").asText();
             System.out.println("Email: " + email);
+            String password = jsonNode.get("password").asText();
             System.out.println("Password: " + password);
+            String firstName = jsonNode.get("firstName").asText();
             System.out.println("First name: " + firstName);
+            String lastName = jsonNode.get("lastName").asText();
             System.out.println("Last name: " + lastName);
+            String address = jsonNode.get("address").asText();
+            System.out.println("Address: " + address);
+            LocalDate dateOfBirth = LocalDate.parse(jsonNode.get("dateOfBirth").asText());
+            System.out.println("Date of birth: " + dateOfBirth);
+            String title = jsonNode.get("title").asText();
+            System.out.println("Title: " + title);
 
-            if (userAccountRepository.findUserAccountByUsername(username) != null)
-                return "User account with username " + username + " already exists";
-            if (userAccountRepository.findUserAccountByEmail(email) != null)
-                return "User account with email " + email + " already exists";
+            userAccountImpl.createUserAccount(username, email, password, firstName, lastName, address, dateOfBirth, title);
             UserAccount userAccount = UserAccount.builder()
                                                  .username(username)
                                                  .email(email)
