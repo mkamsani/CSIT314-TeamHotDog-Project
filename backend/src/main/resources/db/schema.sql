@@ -74,7 +74,9 @@ SELECT CURRENT_SETTING('TIMEZONE')    AS timezone,
 CREATE TABLE user_profile
 (
   uuid      Uuid             DEFAULT uuid_generate_v4() PRIMARY KEY,
-  is_active BOOLEAN NOT NULL DEFAULT TRUE, -- Suspend a profile.
+
+  -- Suspend a profile.
+  is_active BOOLEAN NOT NULL DEFAULT TRUE,
   privilege TEXT    NOT NULL CHECK ( privilege IN ('customer', 'manager', 'owner', 'admin')),
 
   -- ❎ 'staff', 'employee', 'personnel'.
@@ -87,10 +89,12 @@ CREATE INDEX ON user_profile (title);
 
 CREATE TABLE user_account
 (
-  uuid            Uuid PRIMARY KEY     DEFAULT uuid_generate_v4(),
-  is_active       BOOLEAN     NOT NULL DEFAULT TRUE,  -- Suspend an account.
-  user_profile    Uuid        NOT NULL REFERENCES user_profile (uuid) ON UPDATE CASCADE,
-  password_hash   VARCHAR(72) NOT NULL CHECK (LENGTH(password_hash) <= 72 ),
+  uuid            Uuid        PRIMARY KEY DEFAULT uuid_generate_v4(),
+
+  -- Suspend an account.
+  is_active       BOOLEAN     NOT NULL    DEFAULT TRUE,
+  user_profile    Uuid        NOT NULL    REFERENCES user_profile (uuid) ON UPDATE CASCADE,
+  password_hash   VARCHAR(72) NOT NULL    CHECK (LENGTH(password_hash) <= 72 ),
 
   /* The columns BELOW are visible to the user. */
 
@@ -106,181 +110,94 @@ CREATE TABLE user_account
 
 CREATE TABLE loyalty_point
 (
-  uuid            Uuid PRIMARY KEY REFERENCES user_account (uuid) ON DELETE CASCADE ON UPDATE CASCADE,
+  uuid            Uuid PRIMARY KEY REFERENCES user_account (uuid),
   points_redeemed INTEGER NOT NULL DEFAULT 0 CHECK (points_redeemed >= 0),
-  points_total    INTEGER NOT NULL DEFAULT 0 CHECK (points_total >= 0)
+  points_total    INTEGER NOT NULL DEFAULT 0 CHECK (points_total    >= 0)
 );
-
-CREATE OR REPLACE FUNCTION password_crypt()
-  RETURNS TRIGGER
-  LANGUAGE plpgsql
-AS
-$$
-BEGIN
-  IF (tg_op = 'INSERT') OR (old.password_hash != new.password_hash) THEN
-    new.password_hash = crypt(new.password_hash, gen_salt('bf'));
-  END IF;
-  RETURN new;
-END;
-$$;
-CREATE OR REPLACE TRIGGER password_crypt
-  BEFORE INSERT OR UPDATE
-  ON user_account
-  FOR EACH ROW
-EXECUTE PROCEDURE password_crypt();
-
-/*
- * If a user_account has the privilege 'customer' in user_profile,
- * A customer's loyalty_point will be created.
- */
-CREATE OR REPLACE FUNCTION loyalty_point_create()
-  RETURNS TRIGGER
-  LANGUAGE plpgsql
-AS
-$$
-BEGIN
-  IF (SELECT privilege FROM user_profile WHERE uuid = new.user_profile) = 'customer' THEN
-    INSERT INTO loyalty_point
-      (uuid)
-    VALUES
-      (new.uuid);
-  END IF;
-  RETURN new;
-END;
-$$;
-CREATE OR REPLACE TRIGGER loyalty_point_create
-  AFTER INSERT
-  ON user_account
-  FOR EACH ROW
-EXECUTE PROCEDURE loyalty_point_create();
-
-/*
-How to check for password_hash:
-
-SELECT EXISTS
-(
-  SELECT password_hash FROM user_account
-  WHERE  username      = 'stonebraker'
-  AND    is_active     = TRUE -- Suspended accounts cannot login.
-  AND    password_hash = crypt('password_Adm_is_%CIO', password_hash)
-);
--- 'true'
-
-SELECT EXISTS
-(
-  SELECT password_hash FROM user_account
-  WHERE  username      = 'stonebraker'
-  AND    is_active     = TRUE -- Suspended accounts cannot login.
-  AND    password_hash = crypt('wrong_password', password_hash)
-);
--- 'false'
--- (incorrect username / account suspended / incorrect password)
-*/
 
 -- Pre-generate 20 movies, allow manager to INSERT into this table
 CREATE TABLE movie
 (
-  uuid           Uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
+  uuid           Uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+
+  -- Suspends a movie.
+  is_active      BOOLEAN NOT NULL,
   title          TEXT NOT NULL,
   genre          TEXT NOT NULL,                                                       -- .toLowerCase() wikipedia
   description    TEXT NOT NULL,
   release_date   DATE NOT NULL,
   image_url      TEXT DEFAULT 'https://raw.githubusercontent.com/assets/default.jpg',
-  is_active      BOOLEAN NOT NULL,
-  content_rating TEXT NOT NULL,                                                       -- .toLowerCase()
+  content_rating TEXT NOT NULL,
   CHECK (content_rating IN ('g', 'pg', 'pg13', 'nc16', 'm18', 'r21'))
-  -- for future consideration, pull actual ratings from rotten tomatoes or other sites.
-  -- with an external api.
 );
 
--- Terrence said no need to create.
 CREATE TABLE cinema_room
 (
-  id       SERIAL PRIMARY KEY CHECK (id > 0 AND id <= 8), -- room number, max 8.
-  capacity INTEGER NOT NULL CHECK (capacity >= 0)
-  --  For future consideration:
-  --  status BOOLEAN NOT NULL DEFAULT TRUE, -- FALSE if room is under maintenance.
+  id        INTEGER PRIMARY KEY CHECK (id > 0 AND id <= 8), -- Room number, max 8.
+  is_active BOOLEAN NOT NULL    DEFAULT TRUE                -- FALSE if room is under maintenance.
 );
 
--- A manager should handle the INSERT of movies into this table.
 CREATE TABLE screening
 (
-  uuid          Uuid PRIMARY KEY     DEFAULT uuid_generate_v4(),
-  movie_id      Uuid       NOT NULL REFERENCES movie (uuid),
-  show_time     VARCHAR(9) NOT NULL CHECK (show_time IN ('morning', 'afternoon', 'evening', 'midnight')),
-  cinema_room   INTEGER    NOT NULL REFERENCES cinema_room (id),
-  is_active     BOOLEAN,
+  uuid        Uuid       PRIMARY KEY DEFAULT    uuid_generate_v4(),
+  is_active   BOOLEAN    NOT NULL    DEFAULT    TRUE,
+  movie_id    Uuid       NOT NULL    REFERENCES movie (uuid),
+  cinema_room INTEGER    NOT NULL    REFERENCES cinema_room (id),
 
-  /*
-   * In Java, we filter dates that are lesser than today/now()
-   * In Database, we do it as a trigger, that will set all dates
-   * lesser than today to FALSE for "is_active"
-   */
-  date_of_movie DATE       NOT NULL
+  -- Java:     if (screening.getShowDate().isBefore(LocalDate.now())) { screening.setIsActive(false); }
+  -- Postgres: CREATE FUNCTION + CREATE TRIGGER TODO
+  show_date   DATE       NOT NULL,
+  show_time   VARCHAR(9) NOT NULL    CHECK      (show_time IN ('morning', 'afternoon', 'evening', 'midnight')),
+
+  -- 1 movie per room per show_time per day.
+  UNIQUE (show_time, cinema_room, show_date)
 );
 
--- Pre-generated 280 seats, per cinema room.
+-- TRIGGER generates 280 seats, after every INSERT INTO cinema_room.
+-- 14 row * 20 column = 280 seats.
+-- Stops at N because 'O' is easily mistaken for '0'.
 CREATE TABLE seat
 (
-  uuid          Uuid PRIMARY KEY     DEFAULT uuid_generate_v4(),
-  cinema_room   INTEGER NOT NULL REFERENCES cinema_room (id) ON DELETE CASCADE,
-
-  -- 14 row * 20 column = 280 seats.
-  -- Stops at N because 'O' is easily mistaken for '0'.
-  seat_row      CHAR(1) NOT NULL CHECK (seat_row >= 'A' AND seat_row <= 'N'),
-  seat_column   INTEGER NOT NULL CHECK (seat_column >= 1 AND seat_column <= 20),
-
-  -- Additional enhancements, can remove if not implemented.
-  seat_type     TEXT    NOT NULL CHECK (seat_type IN ('normal', 'wheelchair', 'disabled')),
-  -- Additional enhancements, can remove if not implemented.
-  seat_category TEXT    NOT NULL CHECK (seat_category IN ('normal', 'gold')),
-
+  uuid          Uuid    PRIMARY KEY DEFAULT uuid_generate_v4(),
+  cinema_room   INTEGER NOT NULL    REFERENCES cinema_room (id),
+  seat_row      CHAR(1) NOT NULL    CHECK (seat_row >= 'A' AND seat_row <= 'N'),
+  seat_column   INTEGER NOT NULL    CHECK (seat_column >= 1 AND seat_column <= 20),
   UNIQUE (cinema_room, seat_row, seat_column)
 );
 
+-- The price can be changed.
+-- Manager can create new ticket types.
 CREATE TABLE ticket_type
 (
-  uuid       Uuid    DEFAULT uuid_generate_v4(),
-  -- pregenerate ('adult', 'student', 'child', 'senior')
-  type_name  VARCHAR(7) UNIQUE,
-  type_price NUMERIC(10, 2) NOT NULL CHECK (type_price >= 0), -- 10.50
-  is_active  BOOLEAN DEFAULT TRUE
-
-  -- why generate uuid or auto-increment primary key?
-  -- UPDATE ticket_type set type_name 'student' WHERE type_name = 'teenager'
-  -- UPDATE ticket_type set type_name 'adult' WHERE type_name = 'student'
-  -- UPDATE ticket_type set type_name 'teenager' WHERE type_name = 'adult'
-
-  -- 1) give discount, or change price? Change price.
-  -- 2) allow to make more ticket types? Or, fixed to the 4 above? Allow.
-
-  -- For consideration, should we allow the changing of prices,
-  -- or allow a discount system. CREATE TABLE DISCOUNT( ... REFERENCE ticket_type(type_name)   );
-
-  -- A discount system would mean that all four types will have fixed prices.
-  -- then, the discount will modify the price value.
+  uuid       Uuid           PRIMARY KEY DEFAULT uuid_generate_v4(),
+  type_name  TEXT           NOT NULL    UNIQUE,                  -- Defaults: ('adult', 'student', 'child', 'senior')
+  type_price NUMERIC(10, 2) NOT NULL    CHECK (type_price >= 0), -- e.g. 10.50
+  is_active  BOOLEAN        NOT NULL    DEFAULT TRUE
 );
 
 CREATE TABLE ticket
 (
-  uuid          Uuid PRIMARY KEY     DEFAULT uuid_generate_v4(),
-  customer      Uuid                     NOT NULL REFERENCES loyalty_point (uuid),
-  ticket_type   TEXT                     NOT NULL REFERENCES ticket_type (type_name),
-  screening     Uuid                     NOT NULL REFERENCES screening (uuid),
-  seat          Uuid                     NOT NULL REFERENCES seat (uuid),
-  purchase_date TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+  uuid          Uuid        PRIMARY KEY DEFAULT    uuid_generate_v4(),
+  customer      Uuid        NOT NULL    REFERENCES loyalty_point (uuid),
+  ticket_type   TEXT        NOT NULL    REFERENCES ticket_type (type_name),
+  screening     Uuid        NOT NULL    REFERENCES screening (uuid),
+  seat          Uuid        NOT NULL    REFERENCES seat (uuid),
+  purchase_date Timestamptz NOT NULL    DEFAULT    NOW(),
 
-  -- Composite key
-  -- Any entry should not have a duplicate combination of these two attributes.
-  -- this.seat == that.seat && this.screening == that.screening { booked; }
+  -- Composite superkey
+  -- this.seat == that.seat && this.screening == that.screening { "booked." }
   UNIQUE (seat, screening)
 );
 
+-----------------------------------------------------------------------------------------------------------------------
+-- Do not edit anything below until we are done with what's above.
+-----------------------------------------------------------------------------------------------------------------------
+
 CREATE TABLE food_combo
 (
-  uuid         Uuid PRIMARY KEY     DEFAULT uuid_generate_v4(),
-  description TEXT UNIQUE            NOT NULL,                  -- e.g. "Popcorn and Coke"
-  price       NUMERIC(10, 2) NOT NULL CHECK (price >= 0)-- e.g. 10.00
+  uuid        Uuid           PRIMARY KEY DEFAULT uuid_generate_v4(),
+  description TEXT           NOT NULL    UNIQUE,            -- e.g. "Popcorn and Coke"
+  price       NUMERIC(10, 2) NOT NULL    CHECK (price >= 0) -- e.g. 10.00
 );
 
 -- Frontend should handle ticket purchase,

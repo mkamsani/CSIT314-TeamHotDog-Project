@@ -1,25 +1,15 @@
--- Insert default ticket types.
-INSERT INTO ticket_type
-  (type_name, type_price, is_active)
-VALUES
-  ('adult', 10.50, TRUE),
-  ('child', 5.50, TRUE),
-  ('senior', 6.50, TRUE),
-  ('student', 8.50, TRUE),
-  ('test', 10.00, TRUE);
-
 -- Insert default user profiles.
 INSERT INTO user_profile
   (privilege, title)
 VALUES
   ('customer', 'customer'),
-  ('manager', 'junior manager'),
-  ('manager', 'senior manager'),
-  ('owner', 'chief financial officer'),
-  ('owner', 'chief executive officer'),
-  ('admin', 'junior admin'),
-  ('admin', 'senior admin'),
-  ('admin', 'chief information officer');
+  ('manager',  'junior manager'),
+  ('manager',  'senior manager'),
+  ('owner',    'chief financial officer'),
+  ('owner',    'chief executive officer'),
+  ('admin',    'junior admin'),
+  ('admin',    'senior admin'),
+  ('admin',    'chief information officer');
 
 INSERT INTO user_account
   (password_hash, username, email, first_name, last_name, address, date_of_birth, user_profile)
@@ -40,7 +30,6 @@ VALUES
   ('password_4', 'user_4', 'jarred.herzog@gmail.com', 'Orlando', 'Bradtke', '5259 Marshall Shoals, Priceburgh, OR 34597', '1996-05-29', (SELECT uuid FROM user_profile WHERE title = 'customer')),
   ('password_5', 'user_5', 'laree.kulas@yahoo.com', 'Olen', 'Legros', '4878 Santos Island, Gutmannside, AK 31521', '1998-03-16', (SELECT uuid FROM user_profile WHERE title = 'customer'));
 
-
 -- I want to insert 5 dummy data to my movie table
 INSERT INTO movie
   (title, genre, description, release_date, image_url, is_active, content_rating)
@@ -56,5 +45,17 @@ VALUES
   ('Inception', 'action', 'A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a CEO', '2010-07-13', 'https://en.wikipedia.org/wiki/Inception#/media/File:Inception_(2010)_theatrical_poster.jpg', TRUE, 'm18'),
   ('Jurassic Park', 'adventure', 'During a preview tour, a theme park suffers a major power breakdown that allows its cloned dinosaur exhibits to run amok', '1993-06-09', 'https://en.wikipedia.org/wiki/Jurassic_Park_(film)#/media/File:Jurassic_Park_poster.jpg', TRUE, 'pg'),
   ('The Godfather', 'crime', 'The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son', '1972-03-24', 'https://en.wikipedia.org/wiki/The_Godfather#/media/File:Godfather-Part-1-Poster.jpg', FALSE, 'r21');
+
+INSERT INTO cinema_room (id) VALUES (1), (2), (3), (4), (5), (6), (7), (8);
+
+-- Insert default ticket types.
+INSERT INTO ticket_type
+  (type_name, type_price, is_active)
+VALUES
+  ('adult', 10.50, TRUE),
+  ('child', 5.50, TRUE),
+  ('senior', 6.50, TRUE),
+  ('student', 8.50, TRUE),
+  ('test', 10.00, TRUE);
 
 SELECT 'Success' AS result;

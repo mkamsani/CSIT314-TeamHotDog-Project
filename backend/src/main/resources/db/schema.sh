@@ -13,8 +13,8 @@ set -eux
 test "$(basename "$(pwd)")" = "db" || exit 1
 # Exit if no OCI runtime is found.
 test "$(command -v nerdctl && nerdctl -v | grep nerdctl)" && oci=nerdctl
-test "$(command -v podman && podman -v   | grep podman)"  && oci=podman
-test "$(command -v docker && docker -v   | grep docker)"  && oci=docker
+test "$(command -v podman  && podman  -v | grep podman)"  && oci=podman
+test "$(command -v docker  && docker  -v | grep docker)"  && oci=docker
 test -z "$oci" && printf %s\\n "No OCI runtime found" && exit 1
 
 # Unset set -e to allow the script to continue if the container is not running.
@@ -49,13 +49,16 @@ sleep 3
 
 # Get absolute path of the schema.sql file
 schema_file="$(find "$(pwd)" -name "schema.sql" -type f -exec realpath {} \;)"
+trigger_file="$(find "$(pwd)" -name "trigger.sql" -type f -exec realpath {} \;)"
 data_file="$(find "$(pwd)" -name "data.sql" -type f -exec realpath {} \;)"
 # Copy the schema.sql file to the container
-"$oci" cp $schema_file pg:/home/postgres
-"$oci" cp $data_file pg:/home/postgres
+"$oci" cp $schema_file  pg:/home/postgres
+"$oci" cp $trigger_file pg:/home/postgres
+"$oci" cp $data_file    pg:/home/postgres
 # Enter the container and create the schema.
 "$oci" exec -it pg psql -U postgres -f /home/postgres/schema.sql
+"$oci" exec -it pg psql -U postgres -f /home/postgres/trigger.sql
 "$oci" exec -it pg psql -U postgres -f /home/postgres/data.sql
 
 # Unset variables from the environment.
-unset oci schema_file data_file
+unset oci schema_file trigger_file data_file
