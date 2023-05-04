@@ -19,7 +19,7 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/movie")
+@RequestMapping("/movie")
 public class MovieController {
 
     private final MovieImpl movieImpl;
@@ -29,34 +29,33 @@ public class MovieController {
         this.movieImpl = movieImpl;
     }
 
-    // To show a list of all movies title (including active and inactive movies)
+    // To return a list of all movies title (including active and inactive movies)
     @GetMapping("/read/allMovieTitles")
     public String ReadAllMovieTitles()
     {
         return movieImpl.getAllMovieTitles().toString();
     }
 
-    // To show a list of all movies objects (including active and inactive movies)
+    // To return a list of all movies objects (including active and inactive movies)
     @GetMapping("/read/allMoviesDetails")
     public String ReadAllMoviesDetails()
     {
         return movieImpl.getAllMoviesDetails().toString();
     }
 
-    // To show a list of all active movies title
+    // To return a list of all "active" movies title
     @GetMapping("/read/allActiveMovieTitles")
     public String ReadAllActiveMovieTitles()
     {
         return movieImpl.getAllActiveMoviesTitle().toString();
     }
 
-    // To show a list of all active movies details(object)
+    // To return a list of all "active" movies details(object)
     @GetMapping("/read/allActiveMoviesDetails")
     public String ReadAllActiveMoviesDetails()
     {
         return movieImpl.getAllActiveMoviesDetails().toString();
     }
-
 
     // create a new movie
     @PostMapping("/create/movie")
@@ -72,13 +71,13 @@ public class MovieController {
             boolean isActive = jsonNode.get("isActive").asBoolean();
             String contentRating = jsonNode.get("contentRating").asText();
             movieImpl.createMovie(title, genre, description, releaseDate, imageUrl, isActive, contentRating);
-            return "Success creating movie";
+            return "Movie was created successfully.";
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }
     }
 
-    // update a movie
+    // Update a movie with all its details (assume one "Submit" button)
     @PutMapping("/update/movie")
     public String UpdateMovie(@RequestBody String json)
     {
@@ -93,10 +92,138 @@ public class MovieController {
             boolean newIsActive = jsonNode.get("isActive").asBoolean();
             String newContentRating = jsonNode.get("contentRating").asText();
             movieImpl.updateMovieByAllAttributes(targetTitle, newTitle, newGenre, newDescription, newReleaseDate, newImageUrl, newIsActive, newContentRating);
-            return "Success updating movie";
+            // if update successfully, print the message
+            return "The movie was updated successfully.";
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }
+    }
+
+    // Update movie title
+    @PostMapping("/update/movie/Title")
+    public String UpdateMovieByTargetTitle(@RequestBody String json)
+    {
+        try {
+            JsonNode jsonNode = new ObjectMapper().readTree(json);
+            String targetTitle = jsonNode.get("targetTitle").asText();
+            String newTitle = jsonNode.get("title").asText();
+            movieImpl.updateMovieByTitle(targetTitle, newTitle);
+            // if update successfully, print the message
+            return "The movie title was updated successfully.";
+        } catch (Exception e) {
+            return "Error: " + e.getMessage();
+        }
+    }
+
+    // Update movie genre
+    @PostMapping("/update/movie/Genre")
+    public String UpdateMovieByGenre(@RequestBody String json)
+    {
+        try {
+            JsonNode jsonNode = new ObjectMapper().readTree(json);
+            String targetTitle = jsonNode.get("targetTitle").asText();
+            String newGenre = jsonNode.get("genre").asText();
+            movieImpl.updateMovieByGenre(targetTitle, newGenre);
+            // if update successfully, print the message
+            return "The movie genre was updated successfully.";
+        } catch (Exception e) {
+            return "Error: " + e.getMessage();
+        }
+    }
+
+    // Update movie description
+    @PostMapping("/update/movie/Description")
+    public String UpdateMovieByDescription(@RequestBody String json)
+    {
+        try {
+            JsonNode jsonNode = new ObjectMapper().readTree(json);
+            String targetTitle = jsonNode.get("targetTitle").asText();
+            String newDescription = jsonNode.get("description").asText();
+            movieImpl.updateMovieByDescription(targetTitle, newDescription);
+            // if update successfully, print the message
+            return "The movie description was updated successfully.";
+        } catch (Exception e) {
+            return "Error: " + e.getMessage();
+        }
+    }
+
+    // Update movie release date
+    @PostMapping("/update/movie/ReleaseDate")
+    public String UpdateMovieByReleaseDate(@RequestBody String json)
+    {
+        try {
+            JsonNode jsonNode = new ObjectMapper().readTree(json);
+            String targetTitle = jsonNode.get("targetTitle").asText();
+            LocalDate newReleaseDate = LocalDate.parse(jsonNode.get("releaseDate").asText());
+            movieImpl.updateMovieByReleaseDate(targetTitle, newReleaseDate);
+            // if update successfully, print the message
+            return "The movie release date was updated successfully.";
+        } catch (Exception e) {
+            return "Error: " + e.getMessage();
+        }
+    }
+
+    // Update movie image url
+    @PostMapping("/update/movie/ImageUrl")
+    public String UpdateMovieByImageUrl(@RequestBody String json)
+    {
+        try {
+            JsonNode jsonNode = new ObjectMapper().readTree(json);
+            String targetTitle = jsonNode.get("targetTitle").asText();
+            String newImageUrl = jsonNode.get("imageUrl").asText();
+            movieImpl.updateMovieByImageUrl(targetTitle, newImageUrl);
+            // if update successfully, print the message
+            return "The movie image url was updated successfully.";
+        } catch (Exception e) {
+            return "Error: " + e.getMessage();
+        }
+    }
+
+    // Update movie isActive
+    @PostMapping("/update/movie/IsActive")
+    public String UpdateMovieByIsActive(@RequestBody String json)
+    {
+        try {
+            JsonNode jsonNode = new ObjectMapper().readTree(json);
+            String targetTitle = jsonNode.get("targetTitle").asText();
+            boolean newIsActive = jsonNode.get("isActive").asBoolean();
+            movieImpl.updateMovieByIsActive(targetTitle, newIsActive);
+            // if update successfully, print the message
+            return "The movie is active status was updated successfully.";
+        } catch (Exception e) {
+            return "Error: " + e.getMessage();
+        }
+    }
+
+    // Update movie content rating
+    @PostMapping("/update/movie/ContentRating")
+    public String UpdateMovieByContentRating(@RequestBody String json)
+    {
+        try {
+            JsonNode jsonNode = new ObjectMapper().readTree(json);
+            String targetTitle = jsonNode.get("targetTitle").asText();
+            String newContentRating = jsonNode.get("contentRating").asText();
+            movieImpl.updateMovieByContentRating(targetTitle, newContentRating);
+            // if update successfully, print the message else print error message
+            return "The movie content rating was updated successfully.";
+        } catch (Exception e) {
+            return "Error: " + e.getMessage();
+        }
+    }
+
+    // Delete a movie by title (still in progress)
+    @DeleteMapping("/delete/movie")
+    public String DeleteMovie(@RequestBody String json) {
+        try {
+            JsonNode jsonNode = new ObjectMapper().readTree(json);
+            String title = jsonNode.get("title").asText();
+            movieImpl.deleteMovieByTitle(title);
+            // if delete successfully, print the message
+            return "The movie was deleted successfully.";
+        } catch (Exception e) {
+            return "Error: " + e.getMessage();
+        }
+
     }
 
 

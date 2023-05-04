@@ -323,8 +323,37 @@ public class MovieImpl implements MovieService{
         }
     }
 
+    // update a movie with entering all attributes
+    @Override
+    public void updateMovieByAllAttributes(String targetTitle, String newTitle, String newGenre, String newDescription,
+                                           LocalDate newReleaseDate, String newImageUrl, boolean newIsActive, String newContentRating) {
+        boolean movieFound = false;
+        // update everything if found the existing movie title
+        for (Movie exsitingMovie : movieRepository.findAll()) {
+            if (exsitingMovie.getTitle().equals(targetTitle)) {
+                exsitingMovie.setTitle(newTitle);
+                exsitingMovie.setGenre(newGenre.toLowerCase());
+                exsitingMovie.setDescription(newDescription);
+                exsitingMovie.setReleaseDate(newReleaseDate);
+                exsitingMovie.setImageUrl(newImageUrl);
+                exsitingMovie.setActive(newIsActive);
+                exsitingMovie.setContentRating(newContentRating);
+                movieRepository.save(exsitingMovie);
+                movieFound = true;
+                break;
+            }
 
-    // delete the movie by input its title
+        }
+        // if the movie title that would to be updated is not found, throw an exception
+        if (!movieFound) {
+            throw new IllegalArgumentException("The movie title you would " +
+                    "like to update does not exist.");
+        }
+
+    }
+
+
+    // delete the movie by input its title ( still in progress)
     // consideration : if delete movie ==  delete all the screening related to this deleted movies
     // or isAvailable to determine whether the movie can be deleted
     @Override
@@ -381,7 +410,6 @@ public class MovieImpl implements MovieService{
     }
 
     // All methods for "active" movies
-    //***new method return a list of movie with true active status
     @Override
     public List<Movie> getAllActiveMoviesDetails()
     {
@@ -411,36 +439,6 @@ public class MovieImpl implements MovieService{
     }
 
 
-    // public void createMovie (String title, String genre, String description,
-    //                             LocalDate releaseDate, String imageUrl, boolean isActive, String contentRating)
-    // update a movie by enter all attributes
-    @Override
-    public void updateMovieByAllAttributes(String targetTitle, String newTitle, String newGenre, String newDescription,
-                                           LocalDate newReleaseDate, String newImageUrl, boolean newIsActive, String newContentRating) {
-        boolean movieFound = false;
-        // update everything if found the existing movie title
-        for (Movie exsitingMovie : movieRepository.findAll()) {
-            if (exsitingMovie.getTitle().equals(targetTitle)) {
-                exsitingMovie.setTitle(newTitle);
-                exsitingMovie.setGenre(newGenre.toLowerCase());
-                exsitingMovie.setDescription(newDescription);
-                exsitingMovie.setReleaseDate(newReleaseDate);
-                exsitingMovie.setImageUrl(newImageUrl);
-                exsitingMovie.setActive(newIsActive);
-                exsitingMovie.setContentRating(newContentRating);
-                movieRepository.save(exsitingMovie);
-                movieFound = true;
-                break;
-            }
-
-        }
-        // if the movie title that would to be updated is not found, throw an exception
-        if (!movieFound) {
-            throw new IllegalArgumentException("The movie title you would " +
-                    "like to update does not exist.");
-        }
-
-    }
 
 
 
