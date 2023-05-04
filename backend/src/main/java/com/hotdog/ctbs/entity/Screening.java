@@ -61,6 +61,4 @@ public class Screening {
     public int hashCode() {
         return Objects.hash(id, movie, showTime, cinemaRoom, isActive, showDate);
     }
-
-
 }

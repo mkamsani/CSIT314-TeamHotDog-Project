@@ -5,7 +5,6 @@ import com.hotdog.ctbs.entity.Movie;
 import com.hotdog.ctbs.entity.CinemaRoom;
 import com.hotdog.ctbs.repository.*;
 import com.hotdog.ctbs.service.ScreeningService;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
