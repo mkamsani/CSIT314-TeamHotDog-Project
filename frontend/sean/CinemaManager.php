@@ -18,6 +18,7 @@ include('header.php');
 
 <select name="title" id="title">
 <?php
+$ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, "http://localhost:8005/api/user-profile/read/titles");
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 $titles = curl_exec($ch); // e.g. "[junior admin,senior admin,junior manager,senior manager]"
