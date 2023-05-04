@@ -39,9 +39,9 @@ public class ScreeningImpl implements ScreeningService{
                             .orElseThrow(() -> new IllegalArgumentException("No screenings found on this date."));
     }
 
-    // public List<Screening> getScreeningsByDataAndTime(LocalDate localDate, String showTime){
-    //
-    // }
+    public List<Screening> getScreeningsByDateAndTime(LocalDate localDate, String showTime){
+        
+    }
 
     @Override
     public String createScreening(String movieTitle, String showTime, Boolean isActive, LocalDate showDate,
