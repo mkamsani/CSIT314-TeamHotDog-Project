@@ -16,23 +16,23 @@ include('header.php');
 //echo $titles;
 //?>
 
-<select name="title" id="title">
+<!--<select name="title" id="title">-->
 <?php
 $ch = curl_init();
-curl_setopt($ch, CURLOPT_URL, "http://localhost:8005/api/user-profile/read/titles");
+curl_setopt($ch, CURLOPT_URL, "http://localhost:8080/api/user-account/createUserAccount");
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 $titles = curl_exec($ch); // e.g. "[junior admin,senior admin,junior manager,senior manager]"
 $titles = explode(",", substr($titles, 1, -1));
 curl_close($ch);
-for ($i = 0; $i < count($titles); $i++) {
-$titleCapitalized = trim(ucwords($titles[$i]));
-$title = trim($titles[$i]);
-echo <<<EOT
-<option value="$title">$titleCapitalized</option>\n
-EOT;
-}
+//for ($i = 0; $i < count($titles); $i++) {
+//$titleCapitalized = trim(ucwords($titles[$i]));
+//$title = trim($titles[$i]);
+//echo <<<EOT
+//<option value="$title">$titleCapitalized</option>\n
+// EOT;
+// }
+
 ?>
-</select>
 
 <nav class="navbar navbar-expand-sm">
     <div class="container">
