@@ -232,5 +232,10 @@ public class MovieTests {
         System.out.println(movieImpl.getAllMovieTitles());
     }
 
-
+    // @Test
+    // void immediateMethod()
+    // {
+    //     //test deleteMovieByTitle()
+    //     System.out.println(deleteMovieByTitle(""));
+    // }
 }

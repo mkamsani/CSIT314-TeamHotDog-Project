@@ -1,7 +1,12 @@
 package com.hotdog.ctbs.repository;
 
+import com.hotdog.ctbs.entity.Movie;
 import com.hotdog.ctbs.entity.Screening;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface ScreeningRepository extends JpaRepository<Screening, UUID> {
