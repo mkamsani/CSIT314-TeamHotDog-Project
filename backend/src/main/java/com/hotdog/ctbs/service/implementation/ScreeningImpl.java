@@ -40,23 +40,23 @@ public class ScreeningImpl implements ScreeningService{
     }
 
     public List<Screening> getScreeningsByDateAndTime(LocalDate localDate, String showTime){
-        
+        return null;
     }
 
     @Override
     public String createScreening(String movieTitle, String showTime, Boolean isActive, LocalDate showDate,
                                   CinemaRoom cinemaRoom)
     {
-
         // showTime, cinemaRoom, showDate cannot be equal to each other.
         for (Screening screening : screeningRepo.findAll())
             if (screening.getShowTime().equals(showTime) && screening.getCinemaRoom().equals(cinemaRoom) && screening.getShowDate().equals(showDate))
                 throw new IllegalArgumentException("Screening already exists");
 
         // one cinema room only 4 showtimes in a day
-        if (screeningRepo.findScreeningsByShowDate(showDate).stream().count() >= 4)
+        List<Screening> screenings = screeningRepo.findScreeningsByShowDate(showDate).orElse(null);
+        if (screenings != null && screenings.size() > 4)
             throw new IllegalArgumentException("Cinema room is full.");
-        
+
         // Screening's date cannot be in the past.
         if (showDate.isBefore(LocalDate.now()))
             throw new IllegalArgumentException("Invalid date.");
@@ -85,14 +85,12 @@ public class ScreeningImpl implements ScreeningService{
     }
 
     @Override
-    public String updateScreening(Movie movie, String showTime, Boolean isActive, LocalDate showDate,
+    public String updateScreening(Movie movie,
+                                  String showTime,
+                                  Boolean isActive,
+                                  LocalDate showDate,
                                   CinemaRoom cinemaRoom)
-    { return null;
-
+    {
+        return null;
     }
-
-
-
-    
-
 }
