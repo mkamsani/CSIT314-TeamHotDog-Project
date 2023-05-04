@@ -52,9 +52,9 @@ schema_file="$(find "$(pwd)" -name "schema.sql" -type f -exec realpath {} \;)"
 trigger_file="$(find "$(pwd)" -name "trigger.sql" -type f -exec realpath {} \;)"
 data_file="$(find "$(pwd)" -name "data.sql" -type f -exec realpath {} \;)"
 # Copy the schema.sql file to the container
-"$oci" cp $schema_file  pg:/home/postgres
-"$oci" cp $trigger_file pg:/home/postgres
-"$oci" cp $data_file    pg:/home/postgres
+"$oci" cp "$schema_file"  pg:/home/postgres
+"$oci" cp "$trigger_file" pg:/home/postgres
+"$oci" cp "$data_file"    pg:/home/postgres
 # Enter the container and create the schema.
 "$oci" exec -it pg psql -U postgres -f /home/postgres/schema.sql
 "$oci" exec -it pg psql -U postgres -f /home/postgres/trigger.sql
