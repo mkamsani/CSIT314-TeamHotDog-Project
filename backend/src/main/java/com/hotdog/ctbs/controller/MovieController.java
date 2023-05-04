@@ -51,6 +51,7 @@ public class MovieController {
     }
 
     // To return a list of all "active" movies details(object)
+    //localhost:8080/baraq/
     @GetMapping("/read/allActiveMoviesDetails")
     public String ReadAllActiveMoviesDetails()
     {
@@ -223,7 +224,6 @@ public class MovieController {
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }
-
     }
 
 

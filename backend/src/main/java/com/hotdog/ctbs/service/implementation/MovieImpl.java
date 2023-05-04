@@ -359,9 +359,14 @@ public class MovieImpl implements MovieService{
     @Override
     public void deleteMovieByTitle(String title)
     {
-        for (Movie exsitingMovie : movieRepository.findAll()) {
-            if (exsitingMovie.getTitle().equals(title)){
-                movieRepository.delete(exsitingMovie);
+        for (Movie existingMovie : movieRepository.findAll()) {
+            if (existingMovie.getTitle().equals(title)){
+
+                System.out.println("Try delete screening method");
+                System.out.println(existingMovie.getScreenings().size());
+
+
+                movieRepository.delete(existingMovie);
                 System.out.println("Movie " + title + " has been deleted.");
                 break;
             }

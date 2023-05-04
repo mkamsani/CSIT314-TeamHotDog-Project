@@ -1,6 +1,8 @@
 package com.hotdog.ctbs.implementation;
 
+import com.hotdog.ctbs.entity.Movie;
 import com.hotdog.ctbs.service.implementation.MovieImpl;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -211,9 +213,16 @@ public class MovieTests {
 
     }
 
+    @Transactional
     @Test
     void deleteMethod()
     {
+        Movie mv = movieImpl.getMovieByTitle("Ultraman");
+        System.out.println("Title: " + mv);
+        System.out.println("NumOfScreening: " + mv.getScreenings().size());
+        System.out.println("LiterallyTheScreenings: " + mv.getScreenings());
+
+
         // test delete movie method
         System.out.println("The existing movie titles before a deletion made");
         System.out.println(movieImpl.getAllMovieTitles());

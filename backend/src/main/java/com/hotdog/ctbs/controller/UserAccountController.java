@@ -36,22 +36,30 @@ public class UserAccountController {
 
     /**
      * <pre>
-     * wget -qO- --post-data '{"username":"admin","password":"admin"}' --header "Content-Type: application/json" http://localhost:8080/api/user-profile/login
-     * curl -X POST -H "Content-Type: application/json" -d '{"username":"admin","password":"admin"}' http://localhost:8080/api/user-profile/login
+     * wget -qO- --post-data '{"username":"admin","password":"admin"}' --header "Content-Type: application/json" http://localhost:8000/api/user-account/login
+     * curl -X POST -H "Content-Type: application/json" -d '{"username":"user_2","password":"password_2","privilege":"customer"}' http://localhost:8000/api/user-account/login
+     * curl -X POST -H "Content-Type: application/json" -d '{"username":"user_1","password":"password_1","privilege":"customer"}' http://localhost:8000/api/user-account/login
+     * curl -X POST -H "Content-Type: application/json" -d '{"username":"user_0","password":"password_0","privilege":"customer"}' http://localhost:8000/api/user-account/login
      * </pre>
      */
     @PostMapping("/login")
     public String Login(@RequestBody String json)
     {
+        System.out.println("Method login() called.");
         try {
             JsonNode jsonNode = new ObjectMapper().readTree(json);
             String username = jsonNode.get("username").asText();
+            System.out.println("username: " + username);
             String password = jsonNode.get("password").asText();
-            return userAccountImpl.login(username, password);
+            System.out.println("password: " + password);
+            String privilege = jsonNode.get("privilege").asText();
+            System.out.println("privilege: " + privilege);
+            return userAccountImpl.login(username, password, privilege);
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }
     }
+
 
     // RequestBody: {"username":"a","email":"a@a.com","password":"a","firstName":"fn1","lastName":"ln1","dateOfBirth":"2023-05-03","address":"address1","title":"customer"}
     @PostMapping("/create")

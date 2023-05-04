@@ -35,23 +35,28 @@ public class UserAccountImpl implements UserAccountService {
     }
 
     @Transactional
-    public String login(final String username, final String password)
+    public String login(final String username, final String password, final String privilege)
     {
         UserAccount userAccount = userAccountRepo.findUserAccountByUsername(username);
         if (userAccount == null || !userAccountRepo.existsUserAccountByUsernameAndPassword(username, password))
-            return "Invalid username or password.";
+            throw new IllegalArgumentException("Invalid username or password.");
+
+        // Check if user has the required privilege,
+        // frontend should not be getting this error if their code is gucci.
+        if (!userAccount.getUserProfile().getPrivilege().equals(privilege))
+            throw new IllegalArgumentException("Invalid privilege.");
 
         // Update last login time.
         userAccount.setTimeLastLogin(OffsetDateTime.now());
         userAccountRepo.save(userAccount);
 
         // Return URL to user's profile page.
-        return switch (userAccount.getUserProfile().getPrivilege()) {
-            case "manager" -> "aaaa";
-            case "owner" ->   "aaaa";
-            case "admin" ->   "aaaa";
-            default ->        "aaaa";
-        };
+        return "Success";
+
+        // Return values are:
+        // "Invalid username or password."
+        // "Success"
+        // "Invalid privilege."
     }
 
     public void createUserAccount(final String username, final String password, final String email,

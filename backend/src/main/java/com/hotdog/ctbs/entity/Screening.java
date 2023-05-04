@@ -28,18 +28,18 @@ public class Screening {
     @JoinColumn(name = "movie_id", nullable = false)
     private Movie movie;
 
-    @Column(name = "show_time", nullable = false, length = 9)
-    private String showTime;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "cinema_room", nullable = false)
-    private CinemaRoom cinemaRoom;
+    @Column(name = "show_time", nullable = false)
+    private String showTime; // ONLY 'morning', 'afternoon', 'evening', 'midnight'
 
     @Column(name = "is_active")
     private Boolean isActive;
 
-    @Column(name = "date_of_movie", nullable = false)
-    private LocalDate dateOfMovie;
+    @Column(name = "show_date", nullable = false)
+    private LocalDate showDate;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "cinema_room", nullable = false)
+    private CinemaRoom cinemaRoom;
 
     @SneakyThrows
     @Override
@@ -54,12 +54,12 @@ public class Screening {
     {
         if (this == o) return true;
         if (!(o instanceof Screening that)) return false;
-        return id.equals(that.id) && movie.equals(that.movie) && showTime.equals(that.showTime) && cinemaRoom.equals(that.cinemaRoom) && isActive.equals(that.isActive) && dateOfMovie.equals(that.dateOfMovie);
+        return id.equals(that.id) && movie.equals(that.movie) && showTime.equals(that.showTime) && cinemaRoom.equals(that.cinemaRoom) && isActive.equals(that.isActive) && showDate.equals(that.showDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, movie, showTime, cinemaRoom, isActive, dateOfMovie);
+        return Objects.hash(id, movie, showTime, cinemaRoom, isActive, showDate);
     }
 
 

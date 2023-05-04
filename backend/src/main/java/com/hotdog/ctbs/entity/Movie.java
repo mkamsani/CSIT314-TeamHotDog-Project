@@ -6,6 +6,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.UUID;
 import java.util.Objects;
 
@@ -42,6 +44,10 @@ public class Movie {
 
     @Column(name = "content_rating", nullable = false, length = Integer.MAX_VALUE)
     private String contentRating;
+
+    @OneToMany(mappedBy = "movie")
+    private Set<Screening> screenings = new LinkedHashSet<>();
+
 
     @SneakyThrows
     @Override
