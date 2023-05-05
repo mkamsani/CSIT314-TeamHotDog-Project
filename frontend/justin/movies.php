@@ -57,10 +57,14 @@ print_r($moviesDetails);
 <div class="container-fluid p-5 bg-danger text-white text-center">
     <h1>Movies</h1>
 <!--    <p>Admin ID: --><?php //echo $_SESSION["userId"] ?><!--</p>-->
+
+
     <table>
         <thead><tr>
             <th>Movie Title</th>
             <th>Movie Description</th>
+            <th>Genre</th>
+            <th>Poster</th>
         </thead><tbody><tr>
             <td><?php foreach($movies as $key) {
                     echo ''.$key.'<br/>';
@@ -71,6 +75,23 @@ print_r($moviesDetails);
                     echo ''.$key.'<br/>';
                 }
                 ?></td>
+            <td><?php
+                $genre = array_column($moviesDetails, 'genre');
+                foreach($genre as $key) {
+                    echo ''.$key.'<br/>';
+                }
+                ?></td>
+            <td><?php
+                $poster = array_column($moviesDetails, 'imageUrl');
+                foreach($poster as $key) {?>
+                    <img src="<?php echo $key ?>" width="500" height="100" > <br/>
+
+                <?php
+
+                }
+                ?>
+
+               </td>
 
 
     </table>
