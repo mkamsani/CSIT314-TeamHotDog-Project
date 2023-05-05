@@ -8,13 +8,14 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface ScreeningService {
+
     // get all screenings
     List<Screening> getAllScreenings();
 
     List<Screening> getScreeningsByDate(LocalDate localDate);
 
-    String createScreening(String movieTitle, String showTime, Boolean isActive, LocalDate showDate,
-                           CinemaRoom cinemaRoom);
+    String createScreening(String movieTitle, String showTime, Boolean isActive, LocalDate showDate, Integer cinemaRoomId);
+
 
     String updateScreening(Movie movie, String showTime, Boolean isActive, LocalDate showDate,
                            CinemaRoom cinemaRoom);
