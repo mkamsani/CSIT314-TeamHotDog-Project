@@ -147,10 +147,7 @@ CREATE TABLE screening
   -- Java:     if (screening.getShowDate().isBefore(LocalDate.now())) { screening.setIsActive(false); }
   -- Postgres: CREATE FUNCTION + CREATE TRIGGER TODO
   show_date   DATE       NOT NULL,
-  show_time   VARCHAR(9) NOT NULL    CHECK      (show_time IN ('morning', 'afternoon', 'evening', 'midnight')),
-
-  -- 1 movie per room per show_time per day.
-  UNIQUE (show_time, cinema_room, show_date)
+  show_time   VARCHAR(9) NOT NULL    CHECK      (show_time IN ('morning', 'afternoon', 'evening', 'midnight'))
 );
 
 -- TRIGGER generates 280 seats, after every INSERT INTO cinema_room.
@@ -193,6 +190,8 @@ CREATE TABLE ticket
 -- Do not edit anything below until we are done with what's above.
 -----------------------------------------------------------------------------------------------------------------------
 
+
+-- We are not going to be doing food_combo and food_order.
 CREATE TABLE food_combo
 (
   uuid        Uuid           PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -200,6 +199,7 @@ CREATE TABLE food_combo
   price       NUMERIC(10, 2) NOT NULL    CHECK (price >= 0) -- e.g. 10.00
 );
 
+-- Not doing this.
 -- Frontend should handle ticket purchase,
 -- send data to us,
 -- then redirect customer to optional food_order purchase.
@@ -213,6 +213,8 @@ CREATE TABLE food_order
   -- order_time   TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
 );
 
+
+-- Rating review will be done with along with loyalty.
 CREATE TABLE rating_review
 (
   uuid   Uuid PRIMARY KEY REFERENCES loyalty_point (uuid),

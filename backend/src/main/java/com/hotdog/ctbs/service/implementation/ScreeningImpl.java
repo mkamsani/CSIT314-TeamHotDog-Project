@@ -40,7 +40,9 @@ public class ScreeningImpl implements ScreeningService{
     }
 
     public List<Screening> getScreeningsByDateAndTime(LocalDate localDate, String showTime){
-        return null;
+        return screeningRepo.findScreeningsByShowDateAndShowTime(localDate, showTime)
+                            .orElseThrow(()
+                             -> new IllegalArgumentException("No screenings found on this date."));
     }
 
     @Override

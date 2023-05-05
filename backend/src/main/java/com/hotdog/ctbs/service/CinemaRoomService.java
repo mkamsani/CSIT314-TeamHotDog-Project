@@ -10,11 +10,17 @@ public interface CinemaRoomService {
     // return a list of all cinema room
     List<CinemaRoom> getAllCinemaRoom();
 
+    // get cinema room by id
+    CinemaRoom getCinemaRoomById(Integer id);
+
     // check if cinema room exists
     void checkCinemaRoomExists(Integer ID);
 
     // update cinema room status
     void updateCinemaRoom(Integer currentId, Boolean isActive);
+
+    // return a list of all CinemaRooms that are active
+    List<CinemaRoom> getAllActiveCinemaRooms();
 
     // cannot delete cinema room
     //void deleteCinemaRoom(Integer id);

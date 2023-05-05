@@ -48,19 +48,14 @@ VALUES
 
 INSERT INTO cinema_room (id) VALUES (1), (2), (3), (4), (5), (6), (7), (8);
 
--- uuid
--- is_active
--- movie_id
--- cinema_room
--- show_date
--- show_time
-
--- -- Generate 20 random screenings please.
--- INSERT INTO screening
---   (movie_id, cinema_room, show_date, show_time)
--- VALUES
---   (1, 1, '2020-01-01', '10:00');
-
+DO $$
+  DECLARE
+  BEGIN
+    FOR i IN 1..900 LOOP
+      CALL random_screening();
+    END LOOP;
+  END
+$$;
 
 -- Insert default ticket types.
 INSERT INTO ticket_type
@@ -71,5 +66,8 @@ VALUES
   ('senior', 6.50, TRUE),
   ('student', 8.50, TRUE),
   ('test', 10.00, TRUE);
+
+CREATE OR REPLACE VIEW screening_view AS
+SELECT cinema_room, show_date, show_time, title FROM screening JOIN movie m ON m.uuid = screening.movie_id;
 
 SELECT 'Success' AS result;
