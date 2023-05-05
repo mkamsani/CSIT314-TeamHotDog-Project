@@ -35,15 +35,19 @@ public class UserAccountImpl implements UserAccountService {
     }
 
     @Transactional
-    public String login(final String username, final String password, final String privilege)
+    public String login(final String username, final String password)
     {
         UserAccount userAccount = userAccountRepo.findUserAccountByUsername(username);
         if (userAccount == null || !userAccountRepo.existsUserAccountByUsernameAndPassword(username, password))
             throw new IllegalArgumentException("Invalid username or password.");
 
-        // Check if user has the required privilege,
-        // frontend should not be getting this error if their code is gucci.
-        if (!userAccount.getUserProfile().getPrivilege().equals(privilege))
+        String privilege = userAccount.getUserProfile().getPrivilege();
+        if (privilege == null)
+            throw new IllegalArgumentException("Invalid privilege.");
+        else if (!privilege.equals("admin") &&
+                 !privilege.equals("customer") &&
+                 !privilege.equals("owner") &&
+                 !privilege.equals("manager"))
             throw new IllegalArgumentException("Invalid privilege.");
 
         // Update last login time.
@@ -55,8 +59,8 @@ public class UserAccountImpl implements UserAccountService {
 
         // Return values are:
         // "Invalid username or password."
-        // "admin" || "customer" || "owner" || "manager"
         // "Invalid privilege."
+        // "admin" || "customer" || "owner" || "manager"
     }
 
     public void createUserAccount(final String username, final String password, final String email,

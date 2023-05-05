@@ -14,70 +14,46 @@ include('idx_nav.php');
 <body>
 
 <?php
-$userId = "";
-$userIdErr = "";
-$userIdValidated = false;
-
-function test_input($data)
+$result = '';
+if(isset($_POST['submit']) && !empty($_POST['userId']) && !empty($_POST['password']))
 {
-    $data = trim($data);
-    $data = stripslashes($data);
-    return htmlspecialchars($data);
-}
-
-if ($_SERVER["REQUEST_METHOD"] == "POST")
-{
-
-    // Validate User ID
-    if (empty($_POST["userId"]))
-    {
-        $userIdErr = "User ID is required!";
-    }
-
-    else
-    {
-        $userId = test_input($_POST["userId"]);
-        $userIdValidated = true;
-    }
-}
-
-
-
-if ($userIdValidated == true)
-{
-    $_SESSION["loggedin"] = true;
-    $_SESSION["userId"] = $_POST["userId"];
-
-    if ($_SESSION["userId"] == "CM")
-    {
-        header("location: CinemaManager.php");
-    }
-
-    else
-    {
-        $userIdErr = "Invalid User ID.";
-    }
-}
-
-if(isset($_POST['submit']) && !empty($_POST['userId']))
-{
+    $userId = $_POST['userId'];
+    $password = $_POST['password'];
     $ch = curl_init();
-    $privilege = 'manager';
-    $password = 'password_Mgr_is_mgrJ';
-    $arr = array('username' => $userId, 'password' => $password, 'privilege' => $privilege);
+    $loginarr = array('userId' => $userId, 'password' => $password);
 
-    $json_data = json_encode($arr);
+    $json_data = json_encode($loginarr);
 
     curl_setopt($ch, CURLOPT_URL, "http://localhost:8000/api/user-account/login");
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json','Content-Length: ' . strlen($json_data)]);
     curl_setopt($ch,CURLOPT_POSTFIELDS, $json_data);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     $result = curl_exec($ch);
-    echo $result;
+    $http_status_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
-}
 
+    // Check the user privilege and redirect
+    if ($http_status_code == 200)
+    {
+        if ($result == 'manager')
+        {
+            header("location: CinemaManager.php");
+        }
+
+        else if ($result == 'customer')
+        {
+            header("location: Customer.php");
+        }
+
+        else
+        {
+            echo "<script>document.getElementById('result').innerHTML = '" . $result . "';</script>";
+        }
+    }
+}
 ?>
+
+<input type="text" name = "result" value = $result hidden>
 
 <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" style="margin-left: 20%; width: 60%">
     <div class="carousel-indicators">
@@ -119,9 +95,13 @@ if(isset($_POST['submit']) && !empty($_POST['userId']))
           method='POST' name ="form1" style="width: 30%">
         <div class="input-group mt-3">
             <span class='input-group-text'>User ID : </span>
-            <input class='form-control' type='text' name='userId' maxlength="5" required>
+            <input class='form-control' type='text' name='userId' required>
         </div>
-        <span class="error" style="color:red"><?php echo $userIdErr; ?></span>
+        <div class="input-group mt-3">
+            <span class='input-group-text'>Password : </span>
+            <input class='form-control' type='text' name='password' required>
+        </div>
+        <span class="error" style="color:red" id = "result"><?php echo $result; ?></span>
         <div class="mt-3 d-grid col-6 gap-2 mx-auto">
             <input class="btn btn-danger" type="submit" name="submit" value="Log In">
             <label>Don't have an account?</label>

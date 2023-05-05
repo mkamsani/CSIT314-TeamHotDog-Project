@@ -48,13 +48,11 @@ public class UserAccountController {
         System.out.println("Method login() called.");
         try {
             JsonNode jsonNode = new ObjectMapper().readTree(json);
-            String username = jsonNode.get("username").asText();
+            String username = jsonNode.get("userId").asText();
             System.out.println("username: " + username);
             String password = jsonNode.get("password").asText();
             System.out.println("password: " + password);
-            String privilege = jsonNode.get("privilege").asText();
-            System.out.println("privilege: " + privilege);
-            return userAccountImpl.login(username, password, privilege);
+            return userAccountImpl.login(username, password);
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }

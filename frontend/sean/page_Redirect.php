@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-if ($_SESSION["userId"] == "CM")
+if ($_SESSION["result"] == "Success")
 {
     header("location: CinemaManager.php");
 }
