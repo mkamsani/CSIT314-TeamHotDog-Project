@@ -1,21 +1,12 @@
 package com.hotdog.ctbs.service.implementation;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import com.hotdog.ctbs.entity.CinemaRoom;
 import com.hotdog.ctbs.repository.CinemaRoomRepository;
 import org.springframework.stereotype.Service;
 import com.hotdog.ctbs.service.CinemaRoomService;
 
-import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
-import java.util.stream.Stream;
 
 @Service
 public class CinemaRoomImpl implements CinemaRoomService{
@@ -57,6 +48,15 @@ public class CinemaRoomImpl implements CinemaRoomService{
         cinemaRoom.setIsActive(isActive);
         cinemaRoomRepository.save(cinemaRoom);
     }
+
+    // return a list of all CinemaRooms that are active
+    @Override
+    public List<CinemaRoom> getAllActiveCinemaRooms(){
+        return cinemaRoomRepository.findAll().stream()
+                .filter(CinemaRoom::getIsActive)
+                .toList();
+    }
+
 
 
     /*

@@ -16,6 +16,9 @@ public interface CinemaRoomService {
     // update cinema room status
     void updateCinemaRoom(Integer currentId, Boolean isActive);
 
+    // return a list of all CinemaRooms that are active
+    List<CinemaRoom> getAllActiveCinemaRooms();
+
     // cannot delete cinema room
     //void deleteCinemaRoom(Integer id);
 }
