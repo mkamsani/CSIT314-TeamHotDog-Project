@@ -20,8 +20,9 @@ $moviesDetailsCh = curl_init();
 curl_setopt($moviesDetailsCh, CURLOPT_URL, "http://localhost:8000/api/movie/read/allMoviesDetails");
 curl_setopt($moviesDetailsCh, CURLOPT_RETURNTRANSFER, 1);
 $moviesDetails = curl_exec($moviesDetailsCh);
-$moviesDetails = explode(",",$moviesDetails);
 curl_close($moviesDetailsCh);
+$moviesDetails = json_decode($moviesDetails, true);
+print_r($moviesDetails);
 ?>
 
 <nav class="navbar navbar-expand-sm">
@@ -63,16 +64,16 @@ curl_close($moviesDetailsCh);
         </thead><tbody><tr>
             <td><?php foreach($movies as $key) {
                     echo ''.$key.'<br/>';
-                }  ?></php></td>
+                }  ?></td>
             <td><?php
+                $description = array_column($moviesDetails, 'description');
+                foreach($description as $key) {
+                    echo ''.$key.'<br/>';
+                }
+                ?></td>
 
-                foreach($moviesDetails as $key) {
-                        echo '' . $key . '<br/>';
 
-                }?></td>
-
-
-    </table>"
+    </table>
 </div>
 <?php include('footer.php') ?>
 
