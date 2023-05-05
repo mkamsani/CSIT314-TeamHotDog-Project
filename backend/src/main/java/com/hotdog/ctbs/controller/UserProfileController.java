@@ -71,12 +71,13 @@ public class UserProfileController {
     @PutMapping("/update")
     public String Update(@RequestBody String json)
     {
+        System.out.println("Method Update() called.");
         try {
             JsonNode jsonNode = new ObjectMapper().readTree(json);
-            String uuid = jsonNode.get("id").asText();
             String privilege = jsonNode.get("privilege").asText();
             String title = jsonNode.get("title").asText();
-            userProfileImpl.updateUserProfileByTitle(uuid, privilege, title);
+            String targetTitle = jsonNode.get("title").asText();
+            userProfileImpl.updateUserProfileByTitle(targetTitle, privilege, title);
             return "Success";
         } catch (Exception e) {
             return "Error: " + e.getMessage();
