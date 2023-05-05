@@ -147,10 +147,7 @@ CREATE TABLE screening
   -- Java:     if (screening.getShowDate().isBefore(LocalDate.now())) { screening.setIsActive(false); }
   -- Postgres: CREATE FUNCTION + CREATE TRIGGER TODO
   show_date   DATE       NOT NULL,
-  show_time   VARCHAR(9) NOT NULL    CHECK      (show_time IN ('morning', 'afternoon', 'evening', 'midnight')),
-
-  -- 1 movie per room per show_time per day.
-  UNIQUE (show_time, cinema_room, show_date)
+  show_time   VARCHAR(9) NOT NULL    CHECK      (show_time IN ('morning', 'afternoon', 'evening', 'midnight'))
 );
 
 -- TRIGGER generates 280 seats, after every INSERT INTO cinema_room.

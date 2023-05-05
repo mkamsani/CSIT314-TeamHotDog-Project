@@ -40,6 +40,46 @@ AFTER INSERT ON user_account FOR EACH ROW
 EXECUTE PROCEDURE loyalty_point_create();
 
 /*
+ * Creates a new screening with random movie, cinema_room, show_date and show_time.
+ * Prerequisites: movie, cinema_room, screening TABLE must be created.
+ */
+CREATE OR REPLACE PROCEDURE random_screening()
+    LANGUAGE plpgsql
+AS $$
+DECLARE
+    random_movie uuid;
+    random_cinema_room integer;
+    random_show_date date;
+    random_show_time varchar(20);
+    yyyy integer;
+    mm integer;
+    dd integer;
+BEGIN
+    SELECT uuid FROM movie ORDER BY random() LIMIT 1 INTO random_movie;
+    SELECT id FROM cinema_room ORDER BY random() LIMIT 1 INTO random_cinema_room;
+    yyyy := 2023;
+    mm := ceil(random() * 12);
+    dd := ceil(random() * 31);
+    dd := CASE
+          WHEN mm = 2 AND dd > 28 THEN 28
+          WHEN mm IN (4, 6, 9, 11) AND dd > 30 THEN 30
+          ELSE dd
+          END;
+    random_show_date := yyyy || '-' || mm || '-' || dd;
+    SELECT CASE
+               WHEN random() < 0.25 THEN 'morning'
+               WHEN random() < 0.5 THEN 'afternoon'
+               WHEN random() < 0.75 THEN 'evening'
+               ELSE 'midnight'
+               END INTO random_show_time;
+    INSERT INTO screening
+        (movie_id, cinema_room, show_date, show_time)
+    VALUES
+        (random_movie, random_cinema_room, random_show_date, random_show_time);
+END;
+$$;
+
+/*
  * Do an insert statement of 280 seats.
  * Use series of loops to insert 14 rows of 20 seats.
  * Prerequisites: cinema_room and seat TABLE must be created.
