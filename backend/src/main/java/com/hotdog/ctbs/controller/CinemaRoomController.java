@@ -40,4 +40,32 @@ public class CinemaRoomController {
     {
         return cinemaRoomImpl.getAllActiveCinemaRooms().toString();
     }
+
+    // To return an individual cinema room object
+    @GetMapping("/read/cinemaRoomDetails")
+    public String ReadCinemaRoomDetails(@RequestBody String json) {
+        try{
+            JsonNode jsonNode = new ObjectMapper().readTree(json);
+            Integer targetID = jsonNode.get("targetId").asInt();
+            return cinemaRoomImpl.getCinemaRoomById(targetID).toString();
+        }
+        catch(Exception e){
+            return "Invalid input";
+        }
+    }
+
+    // Update cinema room status
+    @PutMapping("/update/cinemaRoomStatus")
+    public String UpdateCinemaRoomStatus(@RequestBody String json) {
+        try{
+            JsonNode jsonNode = new ObjectMapper().readTree(json);
+            Integer targetID = jsonNode.get("targetId").asInt();
+            Boolean newStatus = jsonNode.get("newStatus").asBoolean();
+            cinemaRoomImpl.updateCinemaRoom(targetID, newStatus);
+            return "Cinema room status updated";
+        }
+        catch(Exception e){
+            return "Invalid input";
+        }
+    }
 }

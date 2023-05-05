@@ -10,6 +10,9 @@ public interface CinemaRoomService {
     // return a list of all cinema room
     List<CinemaRoom> getAllCinemaRoom();
 
+    // get cinema room by id
+    CinemaRoom getCinemaRoomById(Integer id);
+
     // check if cinema room exists
     void checkCinemaRoomExists(Integer ID);
 

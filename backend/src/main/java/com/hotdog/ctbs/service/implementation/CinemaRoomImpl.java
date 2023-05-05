@@ -32,6 +32,12 @@ public class CinemaRoomImpl implements CinemaRoomService{
         return cinemaRoomRepository.findAll();
     }
 
+    // get cinema room by id
+    @Override
+    public CinemaRoom getCinemaRoomById(Integer id){
+        return cinemaRoomRepository.findCinemaRoomById(id);
+    }
+
 
     @Override
     public void checkCinemaRoomExists(Integer ID){
