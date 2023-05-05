@@ -55,7 +55,7 @@ DO $$
       CALL random_screening();
     END LOOP;
   END
-$$ ;
+$$;
 
 -- Insert default ticket types.
 INSERT INTO ticket_type

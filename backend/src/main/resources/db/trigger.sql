@@ -72,10 +72,19 @@ BEGIN
                WHEN random() < 0.75 THEN 'evening'
                ELSE 'midnight'
                END INTO random_show_time;
-    INSERT INTO screening
-        (movie_id, cinema_room, show_date, show_time)
-    VALUES
-        (random_movie, random_cinema_room, random_show_date, random_show_time);
+    -- Abort the procedure if the screening already exists.
+    -- A screening exists if it has the same cinema_room, show_date, show_time.
+    IF EXISTS (SELECT * FROM screening
+               WHERE cinema_room = random_cinema_room
+                 AND show_date = random_show_date
+                 AND show_time = random_show_time) THEN
+      RAISE NOTICE 'Screening already exists.';
+    Else
+        INSERT INTO screening
+            (movie_id, cinema_room, show_date, show_time)
+        VALUES
+            (random_movie, random_cinema_room, random_show_date, random_show_time);
+    END IF;
 END;
 $$;
 
