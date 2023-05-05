@@ -55,11 +55,11 @@ INSERT INTO cinema_room (id) VALUES (1), (2), (3), (4), (5), (6), (7), (8);
 -- show_date
 -- show_time
 
--- Generate 20 random screenings please.
-INSERT INTO screening
-  (movie_id, cinema_room, show_date, show_time)
-VALUES
-  (1, 1, '2020-01-01', '10:00');
+-- -- Generate 20 random screenings please.
+-- INSERT INTO screening
+--   (movie_id, cinema_room, show_date, show_time)
+-- VALUES
+--   (1, 1, '2020-01-01', '10:00');
 
 
 -- Insert default ticket types.
