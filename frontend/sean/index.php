@@ -10,9 +10,10 @@ include('header.php');
 include('idx_nav.php');
 ?>
 
-<body>
-<?php
 
+<body>
+
+<?php
 $userId = "";
 $userIdErr = "";
 $userIdValidated = false;
@@ -40,6 +41,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST")
     }
 }
 
+
+
 if ($userIdValidated == true)
 {
     $_SESSION["loggedin"] = true;
@@ -54,6 +57,24 @@ if ($userIdValidated == true)
     {
         $userIdErr = "Invalid User ID.";
     }
+}
+
+if(isset($_POST['submit']) && !empty($_POST['userId']))
+{
+    $ch = curl_init();
+    $privilege = 'manager';
+    $password = 'password_Mgr_is_mgrJ';
+    $arr = array('username' => $userId, 'password' => $password, 'privilege' => $privilege);
+
+    $json_data = json_encode($arr);
+
+    curl_setopt($ch, CURLOPT_URL, "http://localhost:8000/api/user-account/login");
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+    curl_setopt($ch,CURLOPT_POSTFIELDS, $json_data);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    $result = curl_exec($ch);
+    echo $result;
+    curl_close($ch);
 }
 
 ?>
@@ -98,7 +119,7 @@ if ($userIdValidated == true)
           method='POST' name ="form1" style="width: 30%">
         <div class="input-group mt-3">
             <span class='input-group-text'>User ID : </span>
-            <input class='form-control' type='text' name='userId' maxlength="5" style="text-transform: uppercase" required>
+            <input class='form-control' type='text' name='userId' maxlength="5" required>
         </div>
         <span class="error" style="color:red"><?php echo $userIdErr; ?></span>
         <div class="mt-3 d-grid col-6 gap-2 mx-auto">
@@ -108,3 +129,4 @@ if ($userIdValidated == true)
         </div>
     </form>
 </div>
+</body>
