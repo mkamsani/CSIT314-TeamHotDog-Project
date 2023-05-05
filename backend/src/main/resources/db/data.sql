@@ -56,11 +56,48 @@ INSERT INTO cinema_room (id) VALUES (1), (2), (3), (4), (5), (6), (7), (8);
 -- show_time
 
 -- Generate 20 random screenings please.
-/*INSERT INTO screening
+INSERT INTO screening
   (movie_id, cinema_room, show_date, show_time)
 VALUES
-  (1, 1, '2020-01-01', '10:00');*/
+  ((SELECT uuid FROM movie WHERE title = 'Batman Begins'), 1, '2023-01-01', 'afternoon'),
+  ((SELECT uuid FROM movie WHERE title = 'Batman Begins'), 1, '2023-01-01', 'evening'),
+  ((SELECT uuid FROM movie WHERE title = 'Batman Begins'), 1, '2023-01-01', 'morning'),
+  ((SELECT uuid FROM movie WHERE title = 'Batman Begins'), 1, '2023-01-01', 'midnight');
 
+CREATE OR REPLACE PROCEDURE random_screening()
+LANGUAGE plpgsql
+AS $$
+DECLARE
+  movie_id uuid;
+  cinema_room_id integer;
+  show_date date;
+  show_time varchar(20);
+  yyyy integer;
+    mm integer;
+    dd integer;
+BEGIN
+    SELECT uuid FROM movie ORDER BY random() LIMIT 1 INTO movie_id;
+    SELECT id FROM cinema_room ORDER BY random() LIMIT 1 INTO cinema_room_id;
+    yyyy := 2023;
+    mm := random() * 12 + 1;
+    dd := random() * 28 + 1;
+    show_date := yyyy || '-' || mm || '-' || dd;
+    SELECT CASE
+        WHEN random() < 0.25 THEN 'morning'
+        WHEN random() < 0.5 THEN 'afternoon'
+        WHEN random() < 0.75 THEN 'evening'
+        ELSE 'midnight'
+    END INTO show_time;
+    INSERT INTO screening (movie_id, cinema_room, show_date, show_time) VALUES (movie_id, cinema_room_id, show_date, show_time);
+    END;
+$$;
+
+CALL random_screening();
+CALL random_screening();
+CALL random_screening();
+CALL random_screening();
+CALL random_screening();
+SELECT cinema_room, show_date, show_time, title FROM screening JOIN movie m ON m.uuid = screening.movie_id;
 
 -- Insert default ticket types.
 INSERT INTO ticket_type
