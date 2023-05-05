@@ -1,8 +1,12 @@
 package com.hotdog.ctbs.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.LinkedHashSet;
+import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 
 @Builder
@@ -12,23 +16,42 @@ import java.util.UUID;
 @Setter
 @Entity
 @Table(name = "seat")
+@JsonIgnoreProperties({"tickets"})
 public class Seat {
-    private UUID id;
-
-    private CinemaRoom cinemaRoom;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "uuid", nullable = false)
-    public UUID getId() {
-        return id;
-    }
+    private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cinema_room")
-    public CinemaRoom getCinemaRoom() {
-        return cinemaRoom;
+    private CinemaRoom cinemaRoom;
+
+    @Column(name = "seat_row", nullable = false, length = 1)
+    private String seatRow;
+
+    @Column(name = "seat_column", nullable = false)
+    private Integer seatColumn;
+
+    @OneToMany(mappedBy = "seat")
+    private Set<Ticket> tickets = new LinkedHashSet<>();
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (!(o instanceof Seat that)) return false;
+        return id.equals(that.id) &&
+               cinemaRoom.equals(that.cinemaRoom) &&
+               seatRow.equals(that.seatRow) &&
+               seatColumn.equals(that.seatColumn);
     }
 
-    //TODO [JPA Buddy] generate columns from DB
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(id, cinemaRoom, seatRow, seatColumn);
+    }
+
 }
