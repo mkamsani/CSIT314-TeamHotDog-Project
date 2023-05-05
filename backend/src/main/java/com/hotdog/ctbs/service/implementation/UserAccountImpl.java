@@ -51,11 +51,11 @@ public class UserAccountImpl implements UserAccountService {
         userAccountRepo.save(userAccount);
 
         // Return URL to user's profile page.
-        return "Success";
+        return privilege;
 
         // Return values are:
         // "Invalid username or password."
-        // "Success"
+        // "admin" || "customer" || "owner" || "manager"
         // "Invalid privilege."
     }
 
