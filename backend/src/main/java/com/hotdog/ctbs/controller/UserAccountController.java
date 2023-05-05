@@ -74,7 +74,7 @@ public class UserAccountController {
             String address = jsonNode.get("address").asText();
             LocalDate dateOfBirth = LocalDate.parse(jsonNode.get("dateOfBirth").asText());
             String title = jsonNode.get("title").asText();
-            userAccountImpl.createUserAccount(username, email, password, firstName, lastName, address, dateOfBirth, title);
+            userAccountImpl.createUserAccount(username, password, email, firstName, lastName, address, dateOfBirth, title);
             System.out.println("User account " + username + " created successfully");
             return "User account " + username + " created successfully";
         } catch (Exception e) {
