@@ -61,8 +61,11 @@ public class ScreeningImpl implements ScreeningService{
         System.out.println("Done checking movie");
 
         // check if cinema room exists
-        if (cinemaRoomRepo.findCinemaRoomById(cinemaRoomId).getId() > 8 || cinemaRoomRepo.findCinemaRoomById(cinemaRoomId).getId() < 0)
-            throw new IllegalArgumentException("Invalid cinema room.");
+        CinemaRoom cinemaRoom = cinemaRoomRepo.findCinemaRoomById(cinemaRoomId);
+        if (cinemaRoom == null)
+            throw new IllegalArgumentException("Cinema room does not exist.");
+        else if (cinemaRoom.getIsActive() == false)
+            throw new IllegalArgumentException("Cinema room is not active.");
 
         System.out.println("Done checking cinema room");
 
@@ -106,7 +109,7 @@ public class ScreeningImpl implements ScreeningService{
                 .showTime(showTime)
                 .isActive(isActive)
                 .showDate(showDate)
-                .cinemaRoom(cinemaRoomRepo.findCinemaRoomById(cinemaRoomId))
+                .cinemaRoom(cinemaRoom)
                 .build();
 
         screeningRepo.save(screening);
