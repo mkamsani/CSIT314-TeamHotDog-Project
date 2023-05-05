@@ -15,12 +15,13 @@ INSERT INTO user_account
   (password_hash, username, email, first_name, last_name, address, date_of_birth, user_profile)
 VALUES
   -- 7 personnel of the cinema:
-  ('password_Mgr_is_mgrS', 'mscott', 'mscott@hotdogbuns.com', 'Michael', 'Scott', '621 Court Kellum, Not Narcs, AP 01581', '1962-08-16', (SELECT uuid FROM user_profile WHERE title = 'senior manager')),
-  ('password_Owr_is_%CFO', 'dwallace', 'dwallace@hotdogbuns.com', 'David', 'Wallace', '6818 Smith Lake, Schimmelland, RI 93473', '1965-02-13', (SELECT uuid FROM user_profile WHERE title = 'chief financial officer')),
-  ('password_Owr_is_%CEO', 'jbennett', 'jbennett@hotdogbuns.com', 'Joleen', 'Bennett', 'Suite 814 91331 Kristeen Flats, Juliohaven, FL 00750', '1948-06-28', (SELECT uuid FROM user_profile WHERE title = 'chief executive officer')),
-  ('password_Adm_is_admJ', 'marcus', 'marcus@adm.hotdogbuns.com', 'Marcus', 'Hutchins', '096 Jeannine Tunnel, East Alysia, NY 96753', '1994-01-01', (SELECT uuid FROM user_profile WHERE title = 'junior admin')),
-  ('password_Adm_is_admS', 'samy', 'samy@adm.hotdogbuns.com', 'Samy', 'Kamkar', 'Apt. 209 29633 Gianna Parks, North Lonna, OK 27899', '1985-12-10', (SELECT uuid FROM user_profile WHERE title = 'senior admin')),
-  ('password_Adm_is_%CIO', 'stonebraker', 'stonebraker@adm.hotdogbuns.com', 'Michael', 'Stonebraker', 'Apt. 802 240 Freda Canyon, Connellytown, UT 62204', '1943-10-11', (SELECT uuid FROM user_profile WHERE title = 'chief information officer')),
+  ('password-employee', 'jim', 'jhalpert@hotdogbuns.com', 'Jim', '   Halpert', '126 Kellum Court, Scranton, PA 18510', '1979-10-20', (SELECT uuid FROM user_profile WHERE title = 'junior manager')),
+  ('password-employee', 'mscott', 'mscott@hotdogbuns.com', 'Michael', 'Scott', '621 Court Kellum, Not Narcs, AP 01581', '1962-08-16', (SELECT uuid FROM user_profile WHERE title = 'senior manager')),
+  ('password-employee', 'dwallace', 'dwallace@hotdogbuns.com', 'David', 'Wallace', '6818 Smith Lake, Schimmelland, RI 93473', '1965-02-13', (SELECT uuid FROM user_profile WHERE title = 'chief financial officer')),
+  ('password-employee', 'jbennett', 'jbennett@hotdogbuns.com', 'Joleen', 'Bennett', 'Suite 814 91331 Kristeen Flats, Juliohaven, FL 00750', '1948-06-28', (SELECT uuid FROM user_profile WHERE title = 'chief executive officer')),
+  ('password-employee', 'marcus', 'marcus@adm.hotdogbuns.com', 'Marcus', 'Hutchins', '096 Jeannine Tunnel, East Alysia, NY 96753', '1994-01-01', (SELECT uuid FROM user_profile WHERE title = 'junior admin')),
+  ('password-employee', 'samy', 'samy@adm.hotdogbuns.com', 'Samy', 'Kamkar', 'Apt. 209 29633 Gianna Parks, North Lonna, OK 27899', '1985-12-10', (SELECT uuid FROM user_profile WHERE title = 'senior admin')),
+  ('password-employee', 'stonebraker', 'stonebraker@adm.hotdogbuns.com', 'Michael', 'Stonebraker', 'Apt. 802 240 Freda Canyon, Connellytown, UT 62204', '1943-10-11', (SELECT uuid FROM user_profile WHERE title = 'chief information officer')),
   -- 5 customers:
   ('password_0', 'user_0', 'logan.kling@yahoo.com', 'Alexis', 'Flatley', '452 Hung Junction, Armstrongshire, MN 95193', '2004-08-26', (SELECT uuid FROM user_profile WHERE title = 'customer')),
   ('password_1', 'user_1', 'lavinia.morissette@yahoo.com', 'Bernie', 'Pollich', 'Suite 723 591 Towne Greens, Larryshire, AL 50078', '1989-08-06', (SELECT uuid FROM user_profile WHERE title = 'customer')),
