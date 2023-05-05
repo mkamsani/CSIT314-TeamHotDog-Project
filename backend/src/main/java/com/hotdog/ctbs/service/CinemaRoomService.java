@@ -3,15 +3,19 @@ package com.hotdog.ctbs.service;
 import com.hotdog.ctbs.entity.CinemaRoom;
 import java.util.List;
 
-public interface CinemaRoomService {
 
+public interface CinemaRoomService {
     List<Integer> getAllCinemaRoomIds();
 
-    List<Integer> getAllCinemaRoomCapacities();
+    // return a list of all cinema room
+    List<CinemaRoom> getAllCinemaRoom();
 
+    // check if cinema room exists
     void checkCinemaRoomExists(Integer ID);
 
-    void updateCinemaRoomCapacity(Integer id, Integer capacity);
+    // update cinema room status
+    void updateCinemaRoom(Integer currentId, Boolean isActive);
 
-    void deleteCinemaRoom(Integer id);
+    // cannot delete cinema room
+    //void deleteCinemaRoom(Integer id);
 }
