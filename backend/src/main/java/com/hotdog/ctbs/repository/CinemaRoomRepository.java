@@ -7,5 +7,4 @@ public interface CinemaRoomRepository extends JpaRepository<CinemaRoom, Integer>
 
     CinemaRoom findCinemaRoomById(Integer id);
 
-    CinemaRoom findCinemaRoomByCapacity(Integer capacity);
 }
