@@ -15,7 +15,6 @@ INSERT INTO user_account
   (password_hash, username, email, first_name, last_name, address, date_of_birth, user_profile)
 VALUES
   -- 7 personnel of the cinema:
-  ('password_Mgr_is_mgrJ', 'jim', 'jhalpert@hotdogbuns.com', 'Jim', '   Halpert', '126 Kellum Court, Scranton, PA 18510', '1979-10-20', (SELECT uuid FROM user_profile WHERE title = 'junior manager')),
   ('password_Mgr_is_mgrS', 'mscott', 'mscott@hotdogbuns.com', 'Michael', 'Scott', '621 Court Kellum, Not Narcs, AP 01581', '1962-08-16', (SELECT uuid FROM user_profile WHERE title = 'senior manager')),
   ('password_Owr_is_%CFO', 'dwallace', 'dwallace@hotdogbuns.com', 'David', 'Wallace', '6818 Smith Lake, Schimmelland, RI 93473', '1965-02-13', (SELECT uuid FROM user_profile WHERE title = 'chief financial officer')),
   ('password_Owr_is_%CEO', 'jbennett', 'jbennett@hotdogbuns.com', 'Joleen', 'Bennett', 'Suite 814 91331 Kristeen Flats, Juliohaven, FL 00750', '1948-06-28', (SELECT uuid FROM user_profile WHERE title = 'chief executive officer')),

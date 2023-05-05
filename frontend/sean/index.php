@@ -14,13 +14,13 @@ include('idx_nav.php');
 <body>
 
 <?php
-
+$result = '';
 if(isset($_POST['submit']) && !empty($_POST['userId']) && !empty($_POST['password']))
 {
     $userId = $_POST['userId'];
     $password = $_POST['password'];
     $ch = curl_init();
-    $loginarr = array('username' => $userId, 'password' => $password);
+    $loginarr = array('userId' => $userId, 'password' => $password);
 
     $json_data = json_encode($loginarr);
 
@@ -33,17 +33,24 @@ if(isset($_POST['submit']) && !empty($_POST['userId']) && !empty($_POST['passwor
     curl_close($ch);
 
     // Check the user privilege and redirect
-    if ($http_status_code == 200 && $result == 'Success')
+    if ($http_status_code == 200)
     {
+        if ($result == 'manager')
+        {
+            header("location: CinemaManager.php");
+        }
 
-    }
+        else if ($result == 'customer')
+        {
+            header("location: Customer.php");
+        }
 
-    else
-    {
-        echo $result;
+        else
+        {
+            echo "<script>document.getElementById('result').innerHTML = '" . $result . "';</script>";
+        }
     }
 }
-
 ?>
 
 <input type="text" name = "result" value = $result hidden>
@@ -94,6 +101,7 @@ if(isset($_POST['submit']) && !empty($_POST['userId']) && !empty($_POST['passwor
             <span class='input-group-text'>Password : </span>
             <input class='form-control' type='text' name='password' required>
         </div>
+        <span class="error" style="color:red" id = "result"><?php echo $result; ?></span>
         <div class="mt-3 d-grid col-6 gap-2 mx-auto">
             <input class="btn btn-danger" type="submit" name="submit" value="Log In">
             <label>Don't have an account?</label>
