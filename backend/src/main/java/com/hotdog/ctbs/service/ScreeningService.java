@@ -19,4 +19,9 @@ public interface ScreeningService {
 
     String updateScreening(Movie movie, String showTime, Boolean isActive, LocalDate showDate,
                            CinemaRoom cinemaRoom);
+
+    String updateScreening(String movieTitle,
+                                  String showTime,
+                                  LocalDate showDate,
+                                  CinemaRoom cinemaRoom);
 }
