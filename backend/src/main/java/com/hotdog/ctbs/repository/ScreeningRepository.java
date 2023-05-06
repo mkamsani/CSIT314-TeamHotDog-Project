@@ -23,4 +23,5 @@ public interface ScreeningRepository extends JpaRepository<Screening, UUID> {
 
     Optional<List<Screening>> findScreeningsByShowDateAndShowTime(LocalDate showDate, String showTime);
 
+    Screening findScreeningByMovieIdAndShowTimeAndShowDateAndCinemaRoomId(UUID movieId, String showTime, LocalDate showDate, Integer cinemaRoomId);
 }
