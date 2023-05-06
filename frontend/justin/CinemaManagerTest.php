@@ -27,6 +27,14 @@ $moviesDetails = curl_exec($moviesDetailsCh);
 echo $moviesDetails;
 curl_close($moviesDetailsCh);
 
+//$updateMoviesDetailsCh = curl_init();
+//
+//curl_setopt($moviesDetailsCh, CURLOPT_URL, "http://localhost:8000/api/movie/read/allMoviesDetails");
+//curl_setopt($moviesDetailsCh, CURLOPT_RETURNTRANSFER, 1);
+//$moviesDetails = curl_exec($moviesDetailsCh);
+//echo $moviesDetails;
+//curl_close($moviesDetailsCh);
+
 ?>
 
 
