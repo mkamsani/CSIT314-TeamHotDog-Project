@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.UUID;
 
 /**
  *
@@ -63,11 +64,25 @@ public class UserAccountImpl implements UserAccountService {
         // "admin" || "customer" || "owner" || "manager"
     }
 
-    public void createUserAccount(final String username, final String password, final String email,
-                                    final String firstName, final String lastName, final String address,
-                                    final LocalDate dateOfBirth,
-                                    final String title)
+    public void createUserAccount(final String username,
+                                  final String password,
+                                  final String email,
+                                  final String firstName,
+                                  final String lastName,
+                                  final String address,
+                                  final LocalDate dateOfBirth,
+                                  final String title)
     {
+        System.out.println("Method ctbs.service.implementation.UserAccountImpl.createUserAccount() called.");
+        System.out.println("Username: " + username);
+        System.out.println("Password: " + password);
+        System.out.println("Email: " + email);
+        System.out.println("First name: " + firstName);
+        System.out.println("Last name: " + lastName);
+        System.out.println("Address: " + address);
+        System.out.println("Date of birth: " + dateOfBirth);
+        System.out.println("Title: " + title);
+
         // The following validations are required when an admin/customer creates a new user account.
         if (userAccountRepo.findUserAccountByUsername(username) != null)
             throw new IllegalArgumentException("Username " + username + " already exists.");
@@ -84,6 +99,7 @@ public class UserAccountImpl implements UserAccountService {
         try {
             UserAccount userAccount = UserAccount.builder()
                                                  // Default values.
+                                                 .id(UUID.randomUUID())
                                                  .isActive(true)
                                                  .timeCreated(OffsetDateTime.now())
                                                  .timeLastLogin(OffsetDateTime.now())
@@ -97,6 +113,7 @@ public class UserAccountImpl implements UserAccountService {
                                                  .address(address)
                                                  .dateOfBirth(dateOfBirth)
                                                  .build();
+            System.out.println("User account: " + userAccount);
             userAccountRepo.save(userAccount);
         } catch (Exception e) {
             throw new IllegalArgumentException("Invalid date of birth format: " + dateOfBirth);

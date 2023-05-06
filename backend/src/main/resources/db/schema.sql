@@ -38,14 +38,14 @@ TO-DO will not contain a hyphen in the actual comments below.
 |------------------------|------|-------------|--------------------------------
 | user_profile           | CRUS | In progress |
 | user_account           | CRUS | In progress | Delete == is_active FALSE.
-| loyalty_point          |  R   | In progress | No user-interaction on update.
 | movie                  | CRUD | In progress |
 | ticket_type            | CRU  | In progress | Create when db is initialised.
+| cinema_room            |  RUS | In progress | Create when db is initialised.
+| seat                   |  R   | In progress | Create when db is initialised.
+| screening              | CRUD | In progress | Depends on movie, cinema_room
+| ticket                 | CRUD | In progress | Depends on screening, seat
+| loyalty_point          |  R   | Not started | No user-interaction on update.
 | food_combo             | CRUD | Not started |
-| cinema_room            |  RUS | Not started | Create when db is initialised.
-| seat                   |  R   | Not started | Create when db is initialised.
-| screening              | CRUD | Not started | Depends on movie, cinema_room
-| ticket                 | CRUD | Not started | Depends on screening, seat
 | food_order             | CRUD | Not started | Depends on food_combo, ticket
 | rating_review          | CRUD | Not started | Depends on loyalty_point
 | monthly_revenue_report |  R   | Not started |
@@ -73,15 +73,11 @@ SELECT CURRENT_SETTING('TIMEZONE')    AS timezone,
 
 CREATE TABLE user_profile
 (
-  uuid      Uuid             DEFAULT uuid_generate_v4() PRIMARY KEY,
-
-  -- Suspend a profile.
-  is_active BOOLEAN NOT NULL DEFAULT TRUE,
-  privilege TEXT    NOT NULL CHECK ( privilege IN ('customer', 'manager', 'owner', 'admin')),
-
-  -- ❎ 'staff', 'employee', 'personnel'.
-  -- ✅ 'senior manager', 'senior admin', 'intern manager'.
-  title     TEXT    NOT NULL UNIQUE,
+  PRIMARY KEY (uuid),
+  uuid      Uuid         NOT NULL DEFAULT uuid_generate_v4(),
+  is_active BOOLEAN      NOT NULL DEFAULT TRUE, -- Suspend a profile.
+  privilege VARCHAR(255) NOT NULL CHECK ( privilege IN ('customer', 'manager', 'owner', 'admin')),
+  title     VARCHAR(255) NOT NULL UNIQUE,
   CHECK (title != 'customer' OR privilege = 'customer')
 );
 CREATE INDEX ON user_profile (privilege);
@@ -89,28 +85,27 @@ CREATE INDEX ON user_profile (title);
 
 CREATE TABLE user_account
 (
-  uuid            Uuid        PRIMARY KEY DEFAULT uuid_generate_v4(),
-
-  -- Suspend an account.
-  is_active       BOOLEAN     NOT NULL    DEFAULT TRUE,
-  user_profile    Uuid        NOT NULL    REFERENCES user_profile (uuid) ON UPDATE CASCADE,
-  password_hash   VARCHAR(72) NOT NULL    CHECK (LENGTH(password_hash) <= 72 ),
+  PRIMARY KEY (uuid),
+  uuid            Uuid        NOT NULL DEFAULT uuid_generate_v4(),
+  is_active       BOOLEAN     NOT NULL DEFAULT TRUE, -- Suspend an account.
+  user_profile    Uuid        NOT NULL REFERENCES user_profile (uuid) ON UPDATE CASCADE,
+  password_hash   VARCHAR(72) NOT NULL CHECK (LENGTH(password_hash) <= 72 ),
 
   /* The columns BELOW are visible to the user. */
-
-  username        TEXT        NOT NULL UNIQUE,        -- Alphanumeric and used for login.
-  email           TEXT        NOT NULL UNIQUE,
-  first_name      TEXT        NOT NULL,
-  last_name       TEXT        NOT NULL,
-  address         TEXT        NOT NULL,               -- Users can enter their address in any format.
-  date_of_birth   DATE        NOT NULL,               -- SELECT EXTRACT(YEAR FROM AGE(NOW(), date_of_birth)) FROM user_account;
-  time_created    Timestamptz NOT NULL DEFAULT NOW(), -- Long-term user benefits.
-  time_last_login Timestamptz NOT NULL DEFAULT NOW()  -- User inactivity.
+  username        VARCHAR(255) NOT NULL UNIQUE,        -- Alphanumeric and used for login.
+  email           VARCHAR(255) NOT NULL UNIQUE,
+  first_name      VARCHAR(255) NOT NULL,
+  last_name       VARCHAR(255) NOT NULL,
+  address         VARCHAR(255) NOT NULL,               -- Users can enter their address in any format.
+  date_of_birth   DATE         NOT NULL,               -- SELECT EXTRACT(YEAR FROM AGE(NOW(), date_of_birth)) FROM user_account;
+  time_created    Timestamptz  NOT NULL DEFAULT NOW(), -- Long-term user benefits.
+  time_last_login Timestamptz  NOT NULL DEFAULT NOW()  -- User inactivity.
 );
 
 CREATE TABLE loyalty_point
 (
-  uuid            Uuid PRIMARY KEY REFERENCES user_account (uuid),
+  PRIMARY KEY (uuid),
+  uuid            Uuid    NOT NULL REFERENCES user_account (uuid),
   points_redeemed INTEGER NOT NULL DEFAULT 0 CHECK (points_redeemed >= 0),
   points_total    INTEGER NOT NULL DEFAULT 0 CHECK (points_total    >= 0)
 );
@@ -118,31 +113,32 @@ CREATE TABLE loyalty_point
 -- Pre-generate 20 movies, allow manager to INSERT into this table
 CREATE TABLE movie
 (
-  uuid           Uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-
-  -- Suspends a movie.
-  is_active      BOOLEAN NOT NULL,
-  title          TEXT NOT NULL,
-  genre          TEXT NOT NULL,                                                       -- .toLowerCase() wikipedia
-  description    TEXT NOT NULL,
-  release_date   DATE NOT NULL,
-  image_url      TEXT DEFAULT 'https://raw.githubusercontent.com/assets/default.jpg',
-  content_rating TEXT NOT NULL,
+  PRIMARY KEY (uuid),
+  uuid           Uuid         NOT NULL DEFAULT uuid_generate_v4(),
+  is_active      BOOL         NOT NULL, -- Suspends a movie.
+  title          VARCHAR(255) NOT NULL,
+  genre          VARCHAR(255) NOT NULL, -- .toLowerCase() wikipedia
+  description    VARCHAR(255) NOT NULL,
+  release_date   DATE         NOT NULL,
+  image_url      VARCHAR(255) NOT NULL DEFAULT 'https://raw.githubusercontent.com/assets/default.jpg',
+  content_rating VARCHAR(255) NOT NULL,
   CHECK (content_rating IN ('g', 'pg', 'pg13', 'nc16', 'm18', 'r21'))
 );
 
 CREATE TABLE cinema_room
 (
-  id        INTEGER PRIMARY KEY CHECK (id > 0 AND id <= 8), -- Room number, max 8.
-  is_active BOOLEAN NOT NULL    DEFAULT TRUE                -- FALSE if room is under maintenance.
+  PRIMARY KEY (id),
+  id        INTEGER NOT NULL CHECK (id > 0 AND id <= 8), -- Room number, max 8.
+  is_active BOOLEAN NOT NULL    DEFAULT TRUE             -- FALSE if room is under maintenance.
 );
 
 CREATE TABLE screening
 (
-  uuid        Uuid       PRIMARY KEY DEFAULT    uuid_generate_v4(),
-  is_active   BOOLEAN    NOT NULL    DEFAULT    TRUE,
-  movie_id    Uuid       NOT NULL    REFERENCES movie (uuid),
-  cinema_room INTEGER    NOT NULL    REFERENCES cinema_room (id),
+  PRIMARY KEY (uuid),
+  uuid        Uuid       NOT NULL DEFAULT    uuid_generate_v4(),
+  is_active   BOOLEAN    NOT NULL DEFAULT    TRUE,
+  movie_id    Uuid       NOT NULL REFERENCES movie (uuid),
+  cinema_room INTEGER    NOT NULL REFERENCES cinema_room (id),
 
   -- Java:     if (screening.getShowDate().isBefore(LocalDate.now())) { screening.setIsActive(false); }
   -- Postgres: CREATE FUNCTION + CREATE TRIGGER TODO
@@ -155,10 +151,11 @@ CREATE TABLE screening
 -- Stops at N because 'O' is easily mistaken for '0'.
 CREATE TABLE seat
 (
-  uuid          Uuid    PRIMARY KEY DEFAULT uuid_generate_v4(),
-  cinema_room   INTEGER NOT NULL    REFERENCES cinema_room (id),
-  seat_row      CHAR(1) NOT NULL    CHECK (seat_row >= 'A' AND seat_row <= 'N'),
-  seat_column   INTEGER NOT NULL    CHECK (seat_column >= 1 AND seat_column <= 20),
+  PRIMARY KEY (uuid),
+  uuid          Uuid    NOT NULL DEFAULT uuid_generate_v4(),
+  cinema_room   INTEGER NOT NULL REFERENCES cinema_room (id),
+  seat_row      CHAR(1) NOT NULL CHECK (seat_row >= 'A' AND seat_row <= 'N'),
+  seat_column   INTEGER NOT NULL CHECK (seat_column >= 1 AND seat_column <= 20),
   UNIQUE (cinema_room, seat_row, seat_column)
 );
 
@@ -166,20 +163,22 @@ CREATE TABLE seat
 -- Manager can create new ticket types.
 CREATE TABLE ticket_type
 (
-  uuid       Uuid           PRIMARY KEY DEFAULT uuid_generate_v4(),
-  type_name  TEXT           NOT NULL    UNIQUE,                  -- Defaults: ('adult', 'student', 'child', 'senior')
-  type_price NUMERIC(10, 2) NOT NULL    CHECK (type_price >= 0), -- e.g. 10.50
-  is_active  BOOLEAN        NOT NULL    DEFAULT TRUE
+  PRIMARY KEY (uuid),
+  uuid       Uuid           NOT NULL DEFAULT uuid_generate_v4(),
+  type_name  TEXT           NOT NULL UNIQUE,                  -- Defaults: ('adult', 'student', 'child', 'senior')
+  type_price NUMERIC(10, 2) NOT NULL CHECK (type_price >= 0), -- e.g. 10.50
+  is_active  BOOLEAN        NOT NULL DEFAULT TRUE
 );
 
 CREATE TABLE ticket
 (
-  uuid          Uuid        PRIMARY KEY DEFAULT    uuid_generate_v4(),
-  customer      Uuid        NOT NULL    REFERENCES loyalty_point (uuid),
-  ticket_type   TEXT        NOT NULL    REFERENCES ticket_type (type_name),
-  screening     Uuid        NOT NULL    REFERENCES screening (uuid),
-  seat          Uuid        NOT NULL    REFERENCES seat (uuid),
-  purchase_date Timestamptz NOT NULL    DEFAULT    NOW(),
+  PRIMARY KEY (uuid),
+  uuid          Uuid        NOT NULL DEFAULT    uuid_generate_v4(),
+  customer      Uuid        NOT NULL REFERENCES user_account (uuid),
+  ticket_type   TEXT        NOT NULL REFERENCES ticket_type (type_name),
+  screening     Uuid        NOT NULL REFERENCES screening (uuid),
+  seat          Uuid        NOT NULL REFERENCES seat (uuid),
+  purchase_date Timestamptz NOT NULL DEFAULT    NOW(),
 
   -- Composite superkey
   -- this.seat == that.seat && this.screening == that.screening { "booked." }
@@ -190,11 +189,11 @@ CREATE TABLE ticket
 -- Do not edit anything below until we are done with what's above.
 -----------------------------------------------------------------------------------------------------------------------
 
-
 -- We are not going to be doing food_combo and food_order.
 CREATE TABLE food_combo
 (
-  uuid        Uuid           PRIMARY KEY DEFAULT uuid_generate_v4(),
+  PRIMARY KEY (uuid),
+  uuid        Uuid           DEFAULT uuid_generate_v4(),
   description TEXT           NOT NULL    UNIQUE,            -- e.g. "Popcorn and Coke"
   price       NUMERIC(10, 2) NOT NULL    CHECK (price >= 0) -- e.g. 10.00
 );
@@ -205,7 +204,8 @@ CREATE TABLE food_combo
 -- then redirect customer to optional food_order purchase.
 CREATE TABLE food_order
 (
-  uuid         Uuid PRIMARY KEY     DEFAULT uuid_generate_v4(),
+    PRIMARY KEY (uuid),
+  uuid         Uuid NOT NULL DEFAULT uuid_generate_v4(),
   combo_number Uuid NOT NULL REFERENCES food_combo (uuid),
 
   -- For consideration, no ideas for functionalities with order_time yet:
@@ -217,7 +217,8 @@ CREATE TABLE food_order
 -- Rating review will be done with along with loyalty.
 CREATE TABLE rating_review
 (
-  uuid   Uuid PRIMARY KEY REFERENCES loyalty_point (uuid),
+  PRIMARY KEY (uuid),
+  uuid   Uuid    NOT NULL REFERENCES loyalty_point (uuid),
   rating INTEGER NOT NULL CHECK (rating > 0 AND rating <= 5),
   review TEXT    NOT NULL CHECK (LENGTH(review) > 0) -- e.g. "The cinema's popcorn is the best!"
 );
@@ -233,9 +234,6 @@ FROM ticket
 WHERE ticket.purchase_date::DATE > NOW() - INTERVAL '1 month'
 GROUP BY ticket.purchase_date::DATE, ticket.ticket_type, ticket_type.type_price
 ORDER BY ticket.purchase_date::DATE DESC;
-
--- Run another .sql file to populate the database with data below:
-
 
 /*
 reasons:
