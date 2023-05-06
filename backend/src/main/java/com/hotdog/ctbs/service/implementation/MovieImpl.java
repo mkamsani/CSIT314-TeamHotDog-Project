@@ -106,6 +106,10 @@ public class MovieImpl implements MovieService{
     @Override
     public Movie getMovieById(final UUID id)
     {
+        // throw illegal argument if movie is not found
+        if (movieRepository.findMovieById(id) == null)
+            throw new IllegalArgumentException("The movie id does not exist.");
+
         return movieRepository.findMovieById(id);
     }
 
@@ -113,10 +117,12 @@ public class MovieImpl implements MovieService{
     @Override
     public UUID getMovieIdByTitle(final String title)
     {
+        // throw illegal argument if movie is not found
         for (Movie movie : movieRepository.findAll())
             if (movie.getTitle().equals(title))
                 return movie.getId();
-        return null;
+
+        throw new IllegalArgumentException("The movie title does not exist.");
     }
 
     // return a list of all movies details

@@ -1,5 +1,6 @@
 package com.hotdog.ctbs.repository;
 
+import com.hotdog.ctbs.entity.CinemaRoom;
 import com.hotdog.ctbs.entity.Movie;
 import com.hotdog.ctbs.entity.Screening;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -24,4 +25,12 @@ public interface ScreeningRepository extends JpaRepository<Screening, UUID> {
     Optional<List<Screening>> findScreeningsByShowDateAndShowTime(LocalDate showDate, String showTime);
 
     Screening findScreeningByMovieIdAndShowTimeAndShowDateAndCinemaRoomId(UUID movieId, String showTime, LocalDate showDate, Integer cinemaRoomId);
+
+    Optional<List<Screening>> findScreeningsByCinemaRoom(CinemaRoom cinemaRoom);
+
+    Optional<List<Screening>> findScreeningsByMovieAndIsActive(Movie movie, Boolean isActive);
+
+    Optional<List<Screening>> findScreeningsByMovieAndIsActiveOrderByShowDateAsc(Movie movie, boolean b);
+
+    Optional<List<Screening>> findScreeningsByMovieOrderByShowDateAsc(Movie movie);
 }
