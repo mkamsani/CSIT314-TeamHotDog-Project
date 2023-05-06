@@ -15,14 +15,14 @@ $movies = trim($movies, ']');
 $movies = explode(", ",$movies);
 curl_close($moviesCh);
 
-//$moviesDetailsCh = curl_init();
+$moviesDetailsCh = curl_init();
 
-//curl_setopt($moviesDetailsCh, CURLOPT_URL, "http://localhost:8000/api/movie/read/allMoviesDetails");
-//curl_setopt($moviesDetailsCh, CURLOPT_RETURNTRANSFER, 1);
-//$moviesDetails = curl_exec($moviesDetailsCh);
-//curl_close($moviesDetailsCh);
-//$moviesDetails = json_decode($moviesDetails, true);
-//print_r($moviesDetails);
+curl_setopt($moviesDetailsCh, CURLOPT_URL, "http://localhost:8000/api/movie/read/allMoviesDetails");
+curl_setopt($moviesDetailsCh, CURLOPT_RETURNTRANSFER, 1);
+$moviesDetails = curl_exec($moviesDetailsCh);
+curl_close($moviesDetailsCh);
+$moviesDetails = json_decode($moviesDetails, true);
+
 
 $cinemaRoomIdsCh = curl_init();
 curl_setopt($cinemaRoomIdsCh, CURLOPT_URL, "http://localhost:8000/api/cinemaRoom/read/allCinemaRoomIds");
@@ -32,7 +32,7 @@ $cinemaRoomIds = trim($cinemaRoomIds, '[');
 $cinemaRoomIds = trim($cinemaRoomIds, ']');
 $cinemaRoomIds = explode(", ",$cinemaRoomIds);
 curl_close($cinemaRoomIdsCh);
-print_r($cinemaRoomIds);
+
 
 
 $cinemaRoomDetailCh = curl_init();
@@ -50,6 +50,8 @@ print_r($cinemaRoomDetails);
 //curl_close($ticketTypeCh);
 //$ticketType = json_decode($ticketType, true);
 //print_r($ticketType);
+
+
 ?>
 
 
@@ -91,39 +93,40 @@ print_r($cinemaRoomDetails);
     <table>
         <thead><tr>
             <th>Movie Title</th>
-            <th> Cinema Room </th>
-            <th> Room Active </th>
+            <th>Movie Description </th>
             <th>Genre</th>
             <th>Poster</th>
-            <th>Movie Description </th>
+            <th> Cinema Room </th>
+            <th> Room Active </th>
+
+
         </thead><tbody><tr>
-            <td><?php foreach($movies as $key) {
-                    echo ''.$key.'<br/>';
-                }  ?></td>
-<!--            <td>--><?php
-//                $description = array_column($moviesDetails, 'description');
-//                foreach($description as $key) {
-//                    echo ''.$key.'<br/>';
-//                }
-//                ?><!--</td>-->
-<!--            <td>--><?php
-//                $genre = array_column($moviesDetails, 'genre');
-//                foreach($genre as $key) {
-//                    echo ''.$key.'<br/>';
-//                }
-//                ?><!--</td>-->
-<!--            <td>--><?php
-//                $poster = array_column($moviesDetails, 'imageUrl');
-//                foreach($poster as $key) {?>
-<!--                    <img src="--><?php //echo $key ?><!--" width="500" height="100" > <br/>-->
-<!---->
-<!--                --><?php
-//
-//                }
-//                ?>
-<!---->
-<!--               </td>-->
-            <td><?php foreach($cinemaRoomIds as $CinemaRoomKey) {
+            <td><?php foreach($movies as $movieKey) {
+                    echo ''.$movieKey.'<br/>';
+            }  ?></td>
+
+            <td><?php
+                $description = array_column($moviesDetails, 'description');
+                foreach($description as $descKey) {
+                    echo ''.$descKey.'<br/>';
+                }
+                ?></td>
+<           <td><?php
+                 $genre = array_column($moviesDetails, 'genre');
+                 foreach($genre as $genreKey) {
+                      echo ''.$genreKey.'<br/>';
+                 }
+                 ?></td>
+            <td><?php
+                $poster = array_column($moviesDetails, 'imageUrl');
+                foreach($poster as $imageKey) {
+                ?>
+                 <img src="<?php echo $imageKey ?>" width="500" height="100"> <br/>
+                 <?php
+                }
+                ?>
+             </td>
+                <td><?php foreach($cinemaRoomIds as $CinemaRoomKey) {
                     echo ''.$CinemaRoomKey.'<br/>';
                 }  ?></td>
 
@@ -141,15 +144,76 @@ print_r($cinemaRoomDetails);
 
     </table>
 <br>
-    <table>
-        <thead><tr>
-            <th>Ticket Type</th>
-        </thead><tbody><tr>
-        <tr>
-            <td><?php foreach($movies as $key) {
-                    echo ''.$key.'<br/>';
-                }  ?></td>
-    </table>
+
+    <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" class="updateMovie">
+        <label for="moviesDDL">Choose a movie:</label>
+
+        <select name="movies" id="movies">
+            <option> Select Movie </option>
+            <?php
+            foreach($movies as $movieKey) {
+            ?>
+                <option><?php echo ''.$movieKey.'<br/>'; ?></option>
+            <?php
+            }
+            ?>
+        </select>
+        <input type="submit" name="delete" value="delete">
+        <br/>
+            <label for="movieName" >Update Movie Name to update:</label>
+            <input type="text"  name="movieName" id="movieName" placeholder="Enter Movie Name">
+            <input type="submit" name="submit" value="update">
+    </form>
+    <?php
+
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+    $title = $_POST['movies'];
+
+    $movieName = $_POST['movieName'];
+    $updatedTitle = $movieName;
+    $data = array('targetTitle' => $title, 'title' => $updatedTitle);
+    $data_json = json_encode($data);
+    print_r(  $data_json);
+    $updateMoviesCh = curl_init( "http://localhost:8000/api/movie/update/movie/Title");
+    curl_setopt($updateMoviesCh, CURLOPT_CUSTOMREQUEST, "PUT");
+    curl_setopt($updateMoviesCh, CURLOPT_POSTFIELDS, $data_json);
+    curl_setopt($updateMoviesCh, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($updateMoviesCh, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+
+    $response = curl_exec($updateMoviesCh);
+    curl_close($updateMoviesCh);
+    print_r ($response);
+    }
+
+//    $createMoviesCh = curl_init( "http://localhost:8000/api/movie/create/movie");
+//    curl_setopt($createMoviesCh, CURLOPT_POST, "1");
+//    curl_setopt($createMoviesCh, CURLOPT_POSTFIELDS, $data_json);
+//    curl_setopt($createMoviesCh, CURLOPT_RETURNTRANSFER, 1);
+//    curl_setopt($createMoviesCh, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+//
+//    $response = curl_exec($createMoviesCh);
+//    curl_close($createMoviesCh);
+
+//    $movieName = $_POST['movieName'];
+//    $deletingTitle = $movieName;
+//    $data = array('title' => $deletingTitle);
+//    $data_json = json_encode($data);
+//    print_r(  $data_json);
+//    $deleteMoviesCh = curl_init( "http://localhost:8000/api/movie/delete/movie");
+//    curl_setopt($deleteMoviesCh, CURLOPT_CUSTOMREQUEST, "DELETE");
+//    curl_setopt($deleteMoviesCh, CURLOPT_POSTFIELDS, $data_json);
+//    curl_setopt($deleteMoviesCh, CURLOPT_RETURNTRANSFER, 1);
+//    curl_setopt($deleteMoviesCh, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+//
+//    $response = curl_exec($deleteMoviesCh);
+//    curl_close($deleteMoviesCh);
+
+
+    ?>
+
+
+
 </div>
 <?php include('footer.php') ?>
 
