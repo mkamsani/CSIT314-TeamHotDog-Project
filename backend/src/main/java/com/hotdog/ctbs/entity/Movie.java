@@ -1,5 +1,6 @@
 package com.hotdog.ctbs.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -47,7 +48,11 @@ public class Movie {
     @Column(name = "content_rating", nullable = false, length = Integer.MAX_VALUE)
     private String contentRating;
 
-    @OneToMany(mappedBy = "movie")
+    /*@OneToMany(mappedBy = "movie")
+    private Set<Screening> screenings = new LinkedHashSet<>();*/
+
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private Set<Screening> screenings = new LinkedHashSet<>();
 
     @SneakyThrows

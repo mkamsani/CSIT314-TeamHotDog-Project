@@ -58,7 +58,8 @@ public class ScreeningTests {
 
         // get a list of screenings object in string
         System.out.println("Testing getAllScreenings method");
-        screeningImpl.getAllScreenings();
+        System.out.println(screeningImpl.getAllScreenings());
+
         System.out.println();
 
 

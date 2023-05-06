@@ -217,7 +217,7 @@ public class MovieTests {
     @Test
     void deleteMethod()
     {
-        Movie mv = movieImpl.getMovieByTitle("Ultraman");
+        Movie mv = movieImpl.getMovieByTitle("Ultraman2");
         System.out.println("Title: " + mv);
         System.out.println("NumOfScreening: " + mv.getScreenings().size());
         System.out.println("LiterallyTheScreenings: " + mv.getScreenings());

@@ -1,5 +1,7 @@
 package com.hotdog.ctbs.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.persistence.*;
@@ -14,6 +16,7 @@ import java.util.Objects;
 @Setter
 @Entity
 @Table(name = "cinema_room")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class CinemaRoom {
 
     @Id
@@ -44,6 +47,12 @@ public class CinemaRoom {
     public int hashCode()
     {
         return Objects.hash(id, isActive);
+    }
+
+    // try to solve hibernate session issues
+    @JsonIgnore
+    public boolean getIsActive() {
+        return isActive;
     }
 
 }

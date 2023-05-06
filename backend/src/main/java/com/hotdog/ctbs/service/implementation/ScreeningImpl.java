@@ -27,27 +27,8 @@ public class ScreeningImpl implements ScreeningService{
         this.cinemaRoomRepo = cinemaRoomRepo;
     }
 
-    // get all screenings
-    @Override
-    @Transactional
-    public List<Screening> getAllScreenings(){
-        return screeningRepo.findAll();
-    }
-
-    @Override
-    public List<Screening> getScreeningsByDate(LocalDate localDate)
-    {
-        return screeningRepo.findScreeningsByShowDate(localDate)
-                            .orElseThrow(() -> new IllegalArgumentException("No screenings found on this date."));
-    }
-
-
-    public List<Screening> getScreeningsByDateAndTime(LocalDate localDate, String showTime){
-        return screeningRepo.findScreeningsByShowDateAndShowTime(localDate, showTime)
-                            .orElseThrow(()
-                             -> new IllegalArgumentException("No screenings found on this date."));
-    }
-
+    // CRUD methods
+    // 1. Create screening
     // *** Done the testing for this method ***
     @Override
     @Transactional
@@ -116,6 +97,39 @@ public class ScreeningImpl implements ScreeningService{
 
         return null;
     }
+
+    // 2. Read screening
+    // get all screenings
+    @Override
+    @Transactional
+    public List<Screening> getAllScreenings(){
+        return screeningRepo.findAll();
+    }
+
+
+
+
+
+    // 3. Update screening
+    // 4. Delete screening
+
+
+
+    @Override
+    public List<Screening> getScreeningsByDate(LocalDate localDate)
+    {
+        return screeningRepo.findScreeningsByShowDate(localDate)
+                            .orElseThrow(() -> new IllegalArgumentException("No screenings found on this date."));
+    }
+
+
+    public List<Screening> getScreeningsByDateAndTime(LocalDate localDate, String showTime){
+        return screeningRepo.findScreeningsByShowDateAndShowTime(localDate, showTime)
+                            .orElseThrow(()
+                             -> new IllegalArgumentException("No screenings found on this date."));
+    }
+
+
 
     @Override
     public String updateScreening(Movie movie, String showTime, Boolean isActive, LocalDate showDate, CinemaRoom cinemaRoom) {
