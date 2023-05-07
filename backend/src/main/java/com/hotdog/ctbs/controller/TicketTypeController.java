@@ -20,7 +20,7 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/ticketType")
+@RequestMapping("/ticketType")
 public class TicketTypeController {
     private final TicketTypeImpl ticketTypeImpl;
 
@@ -30,6 +30,7 @@ public class TicketTypeController {
     }
 
     // To show a list of all ticket types (including active and inactive ticket types)
+    // curl -X GET http://localhost:8080/api/ticketType/read/allTicketTypes
     @GetMapping("/read/allTicketTypes")
     public String ReadAllTicketTypes()
     {
