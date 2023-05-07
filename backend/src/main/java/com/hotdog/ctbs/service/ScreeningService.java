@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface ScreeningService {
@@ -27,8 +29,6 @@ public interface ScreeningService {
         // get all screenings by movie title in date ascending order
         List<Screening> getAllScreeningsByMovieTitle(String movieTitle);
 
-        // get all screenings by show date
-        List<Screening> getAllScreeningsByDate(LocalDate localDate);
 
         // get all screenings by show time
         List<Screening> getAllScreeningsByShowTime(String showTime);
@@ -36,8 +36,6 @@ public interface ScreeningService {
         // get all screenings by cinema room id
         List<Screening> getAllScreeningsByCinemaRoomId(Integer cinemaRoomId);
 
-        // get all screenings by show date and show time
-        List<Screening> getScreeningsByDateAndTime(LocalDate localDate, String showTime);
 
         // get specific screening by movie id, show time, show date, cinema room id
         Screening getScreeningByMovieTitleAndShowTimeAndShowDateAndCinemaRoomId(String movieTitle, String showTime, LocalDate showDate, Integer cinemaRoomId);
@@ -60,6 +58,8 @@ public interface ScreeningService {
                                       String showTime,
                                       LocalDate showDate,
                                       CinemaRoom cinemaRoom);
+
+        List<Screening> getAllScreeningsByShowDate(LocalDate showDate);
 
 
 }
