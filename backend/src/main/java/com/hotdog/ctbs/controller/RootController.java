@@ -8,7 +8,9 @@ import org.springframework.web.servlet.view.RedirectView;
 @RequestMapping("/")
 public class RootController {
 
-    // Return the file index.html from the static folder
+    /**
+     * @return backend/src/main/resources/static/index.html
+     */
     @GetMapping(value = "")
     public RedirectView redirectWithUsingRedirectView(RedirectAttributes attributes)
     {
