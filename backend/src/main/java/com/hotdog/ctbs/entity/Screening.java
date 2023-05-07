@@ -1,6 +1,6 @@
 package com.hotdog.ctbs.entity;
 
-
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.*;
@@ -53,8 +53,13 @@ public class Screening {
     @Override
     public String toString()
     {
-        return new ObjectMapper().registerModule(new JavaTimeModule())
-                .writeValueAsString(this);
+        ObjectNode json = new ObjectMapper().createObjectNode();
+        json.put("movie", movie.getTitle());
+        json.put("showTime",   showTime);
+        json.put("isActive",   isActive);
+        json.put("showDate",   showDate.toString());
+        json.put("cinemaRoom", cinemaRoom.getId());
+        return json.toString();
     }
 
     @Override

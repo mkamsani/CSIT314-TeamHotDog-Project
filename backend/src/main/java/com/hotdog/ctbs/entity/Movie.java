@@ -2,6 +2,7 @@ package com.hotdog.ctbs.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.*;
@@ -59,8 +60,17 @@ public class Movie {
     @Override
     public String toString()
     {
-        return new ObjectMapper().registerModule(new JavaTimeModule())
-                .writeValueAsString(this);
+
+        ObjectNode json = new ObjectMapper().createObjectNode();
+        //json.put("id",          id.toString());
+        json.put("title",         title);
+        json.put("genre",         genre);
+        json.put("description",   description);
+        json.put("releaseDate",   releaseDate.toString());
+        json.put("imageUrl",      imageUrl);
+        json.put("isActive",      isActive);
+        json.put("contentRating", contentRating);
+        return json.toString();
     }
 
     // Method to compare two objects

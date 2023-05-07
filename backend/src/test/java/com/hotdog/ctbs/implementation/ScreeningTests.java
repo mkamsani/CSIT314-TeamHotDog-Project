@@ -4,6 +4,7 @@ package com.hotdog.ctbs.implementation;
 import com.hotdog.ctbs.entity.Screening;
 import com.hotdog.ctbs.entity.Movie;
 import com.hotdog.ctbs.entity.CinemaRoom;
+import com.hotdog.ctbs.repository.CinemaRoomRepository;
 import com.hotdog.ctbs.repository.MovieRepository;
 import com.hotdog.ctbs.service.ScreeningService;
 
@@ -22,6 +23,8 @@ public class ScreeningTests {
 
     @Autowired
     private ScreeningImpl screeningImpl;
+    @Autowired
+    private CinemaRoomRepository cinemaRoomRepository;
 
 
     @Test
@@ -30,36 +33,36 @@ public class ScreeningTests {
         System.out.println("Testing createScreening method");
         // date to be 2025-05-01
         screeningImpl.createScreening("Spider-Man", "morning",
-                true, LocalDate.of(2025, 5, 1), 2);
+                true, LocalDate.of(2025, 5, 1), 1);
         // create another different
-        screeningImpl.createScreening("Spider-Man", "evening",
-                true, LocalDate.of(2025, 5, 1), 2);
-
-        screeningImpl.createScreening("Inception", "afternoon",
-                true, LocalDate.of(2025, 5, 5), 4);
+        screeningImpl.createScreening("Spider-Man", "afternoon",
+                true, LocalDate.of(2025, 5, 1), 1);
 
         screeningImpl.createScreening("Inception", "evening",
-                true, LocalDate.of(2025, 5, 30), 5);
+                true, LocalDate.of(2025, 5, 1), 1);
 
+        screeningImpl.createScreening("Inception", "midnight",
+                true, LocalDate.of(2025, 5, 1), 1);
 
+    }
+
+    @Test
+    void violateImpl(){
+
+        // can perform any test to violate the createScreening method
+        System.out.println("violate the implementation");
+        screeningImpl.createScreening("Ultraman", "midnight",
+                true, LocalDate.of(2025, 5, 1), 1);
 
     }
 
     @Test
     void getter(){
 
-        // get a list of screenings object in string
-        System.out.println("Testing getAllScreenings method");
+        // test getAllScreenings
+        System.out.println("Test getAllScreenings()");
         System.out.println(screeningImpl.getAllScreenings());
         System.out.println();
-
-        // test getAllScreeningsByMovieTitle(String movieTitle)
-        System.out.println("Testing getAllScreeningsByMovieTitle method");
-        System.out.println(screeningImpl.getAllScreeningsByMovieTitle("Spider-Man"));
-        System.out.println();
-
-
-
 
     }
 
