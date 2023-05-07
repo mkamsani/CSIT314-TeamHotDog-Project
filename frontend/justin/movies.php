@@ -41,7 +41,7 @@ curl_setopt($cinemaRoomDetailCh, CURLOPT_RETURNTRANSFER, 1);
 $cinemaRoomDetails = curl_exec($cinemaRoomDetailCh);
 curl_close($cinemaRoomDetailCh);
 $cinemaRoomDetails = json_decode($cinemaRoomDetails, true);
-print_r($cinemaRoomDetails);
+//print_r($cinemaRoomDetails);
 
 //$ticketTypeCh = curl_init();
 //curl_setopt($ticketTypeCh, CURLOPT_URL, "http://localhost:8000/api/ticketType/read/allTicketTypes");
@@ -162,11 +162,30 @@ print_r($cinemaRoomDetails);
         <br/>
             <label for="movieName" >Update Movie Name to update:</label>
             <input type="text"  name="movieName" id="movieName" placeholder="Enter Movie Name">
-            <input type="submit" name="submit" value="update">
+            <input type="submit" name="update" value="update">
+    </form>
+
+    <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" class="createMovie">
+
+        <input type="text"  name="movieName" id="movieName" placeholder="Enter Movie title">
+        <input type="text"  name="movieGenre" id="movieGenre" placeholder="Enter Movie genre">
+        <input type="text"  name="movieDesc" id="movieDesc" placeholder="Enter Movie Description">
+        <input type="date"  name="movieRD" id="movieRD">
+        <input type="text"  name="moviePoster" id="moviePoster" placeholder="Enter image URL">
+        <select name="isActive" id="isActive">
+            <option> Select Movie Activity </option>
+            <option value = "TRUE"> Active </option>
+            <option value = "FALSE"> Not Active </option>
+        </select>
+        <input type="text"  name="contentRating" id="contentRating" placeholder="Enter content Rating">
+
+
+
+        <input type="submit" name="create" value="create">
     </form>
     <?php
 
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (isset($_POST['update'])) {
 
     $title = $_POST['movies'];
 
@@ -174,7 +193,7 @@ print_r($cinemaRoomDetails);
     $updatedTitle = $movieName;
     $data = array('targetTitle' => $title, 'title' => $updatedTitle);
     $data_json = json_encode($data);
-    print_r(  $data_json);
+   // print_r(  $data_json);
     $updateMoviesCh = curl_init( "http://localhost:8000/api/movie/update/movie/Title");
     curl_setopt($updateMoviesCh, CURLOPT_CUSTOMREQUEST, "PUT");
     curl_setopt($updateMoviesCh, CURLOPT_POSTFIELDS, $data_json);
@@ -186,29 +205,45 @@ print_r($cinemaRoomDetails);
     print_r ($response);
     }
 
-//    $createMoviesCh = curl_init( "http://localhost:8000/api/movie/create/movie");
-//    curl_setopt($createMoviesCh, CURLOPT_POST, "1");
-//    curl_setopt($createMoviesCh, CURLOPT_POSTFIELDS, $data_json);
-//    curl_setopt($createMoviesCh, CURLOPT_RETURNTRANSFER, 1);
-//    curl_setopt($createMoviesCh, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
-//
-//    $response = curl_exec($createMoviesCh);
-//    curl_close($createMoviesCh);
+    if (isset($_POST['create'])) {
 
-//    $movieName = $_POST['movieName'];
-//    $deletingTitle = $movieName;
-//    $data = array('title' => $deletingTitle);
-//    $data_json = json_encode($data);
-//    print_r(  $data_json);
-//    $deleteMoviesCh = curl_init( "http://localhost:8000/api/movie/delete/movie");
-//    curl_setopt($deleteMoviesCh, CURLOPT_CUSTOMREQUEST, "DELETE");
-//    curl_setopt($deleteMoviesCh, CURLOPT_POSTFIELDS, $data_json);
-//    curl_setopt($deleteMoviesCh, CURLOPT_RETURNTRANSFER, 1);
-//    curl_setopt($deleteMoviesCh, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
-//
-//    $response = curl_exec($deleteMoviesCh);
-//    curl_close($deleteMoviesCh);
+        $movieName = $_POST['movieName'];
+        $movieGenre = $_POST['movieGenre'];
+        $movieDesc = $_POST['movieDesc'];
+        $movieDate = $_POST['movieRD'];
+        $moviePoster = $_POST['moviePoster'];
+        $movieActive = $_POST['isActive'];
+        $movieRating = $_POST['contentRating'];
+        $data = array('title' => $movieName, 'genre' => $movieGenre, 'description' => $movieDesc, 'releaseDate' => $movieDate,
+            'imageUrl' => $moviePoster, 'isActive' => $movieActive, 'contentRating' => $movieRating);
+        $data_json = json_encode($data);
+        //print_r(  $data_json);
+        $createMoviesCh = curl_init("http://localhost:8000/api/movie/create/movie");
+        curl_setopt($createMoviesCh, CURLOPT_POST, "1");
+        curl_setopt($createMoviesCh, CURLOPT_POSTFIELDS, $data_json);
+        curl_setopt($createMoviesCh, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($createMoviesCh, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
 
+        $response = curl_exec($createMoviesCh);
+        curl_close($createMoviesCh);
+        print_r ($response);
+    }
+    if (isset($_POST['delete'])) {
+        $movieName = $_POST['movieName'];
+        $deletingTitle = $movieName;
+        $data = array('title' => $deletingTitle);
+        $data_json = json_encode($data);
+        //print_r(  $data_json);
+        $deleteMoviesCh = curl_init( "http://localhost:8000/api/movie/delete/movie");
+        curl_setopt($deleteMoviesCh, CURLOPT_CUSTOMREQUEST, "DELETE");
+        curl_setopt($deleteMoviesCh, CURLOPT_POSTFIELDS, $data_json);
+        curl_setopt($deleteMoviesCh, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($deleteMoviesCh, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+
+        $response = curl_exec($deleteMoviesCh);
+        curl_close($deleteMoviesCh);
+        print_r ($response);
+        }
 
     ?>
 
