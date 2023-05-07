@@ -26,9 +26,9 @@ jobs:
           docker cp ./backend/src/main/resources/db/schema.sql   pg:/home/postgres
           docker cp ./backend/src/main/resources/db/trigger.sql  pg:/home/postgres
           docker cp ./backend/src/main/resources/db/data.sql     pg:/home/postgres
-          docker exec -it pg psql -U postgres -f /home/postgres/schema.sql
-          docker exec -it pg psql -U postgres -f /home/postgres/trigger.sql
-          docker exec -it pg psql -U postgres -f /home/postgres/data.sql
+          docker exec -it -t pg psql -U postgres -f /home/postgres/schema.sql
+          docker exec -it -t pg psql -U postgres -f /home/postgres/trigger.sql
+          docker exec -it -t pg psql -U postgres -f /home/postgres/data.sql
 
       - name: Run Spring Boot Tests
         working-directory: ./backend/cinema-ticket-booking-system
