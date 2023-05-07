@@ -90,7 +90,7 @@ public class MovieController {
     }
 
     // Update movie title
-    @PostMapping("/update/movie/Title")
+    @PutMapping("/update/movie/Title")
     public String UpdateMovieByTargetTitle(@RequestBody String json)
     {
         try {
@@ -106,7 +106,7 @@ public class MovieController {
     }
 
     // Update movie genre
-    @PostMapping("/update/movie/Genre")
+    @PutMapping("/update/movie/Genre")
     public String UpdateMovieByGenre(@RequestBody String json)
     {
         try {
@@ -122,7 +122,7 @@ public class MovieController {
     }
 
     // Update movie description
-    @PostMapping("/update/movie/Description")
+    @PutMapping("/update/movie/Description")
     public String UpdateMovieByDescription(@RequestBody String json)
     {
         try {
@@ -138,7 +138,7 @@ public class MovieController {
     }
 
     // Update movie release date
-    @PostMapping("/update/movie/ReleaseDate")
+    @PutMapping("/update/movie/ReleaseDate")
     public String UpdateMovieByReleaseDate(@RequestBody String json)
     {
         try {
@@ -154,7 +154,7 @@ public class MovieController {
     }
 
     // Update movie image url
-    @PostMapping("/update/movie/ImageUrl")
+    @PutMapping("/update/movie/ImageUrl")
     public String UpdateMovieByImageUrl(@RequestBody String json)
     {
         try {
@@ -170,7 +170,7 @@ public class MovieController {
     }
 
     // Update movie isActive
-    @PostMapping("/update/movie/IsActive")
+    @PutMapping("/update/movie/IsActive")
     public String UpdateMovieByIsActive(@RequestBody String json)
     {
         try {
@@ -186,7 +186,7 @@ public class MovieController {
     }
 
     // Update movie content rating
-    @PostMapping("/update/movie/ContentRating")
+    @PutMapping("/update/movie/ContentRating")
     public String UpdateMovieByContentRating(@RequestBody String json)
     {
         try {
