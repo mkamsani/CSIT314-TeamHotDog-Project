@@ -8,14 +8,6 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: cgr.dev/chainguard/postgres:latest
-        ports:
-          - 5432:5432
-        env:
-          POSTGRES_PASSWORD: pg
-
     steps:
       - name: Checkout Git Repository
         uses: actions/checkout@v3
