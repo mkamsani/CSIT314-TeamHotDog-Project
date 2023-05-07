@@ -18,7 +18,8 @@ jobs:
           java-version: 17
           distribution: 'temurin'
 
-      - name: Install Postgres on Docker and copy the database to it
+      # This step can be removed when database is hosted on a server.
+      - name: Install Postgres and load data
         run: |
           docker run --name="pg" -u=postgres -e POSTGRES_PASSWORD="pg" -d --net=host cgr.dev/chainguard/postgres:latest
           sleep 5
