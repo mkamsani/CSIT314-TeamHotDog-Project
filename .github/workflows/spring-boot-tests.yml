@@ -20,7 +20,7 @@ jobs:
 
       - name: Install Postgres on Docker and copy the database to it
         run: |
-          docker run --name="pg" -u=postgres -e POSTGRES_PASSWORD="pg" -d -p 5432:5432 cgr.dev/chainguard/postgres:latest
+          docker run --name="pg" -u=postgres -e POSTGRES_PASSWORD="pg" -d --net=host cgr.dev/chainguard/postgres:latest
           sleep 5
           docker cp ./backend/src/main/resources/db/schema.sql   pg:/home/postgres
           docker cp ./backend/src/main/resources/db/trigger.sql  pg:/home/postgres
