@@ -88,38 +88,6 @@ BEGIN
 END;
 $$;
 
--- Every time the screening table is updated or selected from,
--- check all the rows and set the screenings that are before NOW() to FALSE for the is_active column.
-CREATE OR REPLACE FUNCTION screening_is_active()
-    RETURNS TRIGGER
-    LANGUAGE plpgsql
-AS
-$$
-BEGIN
-    UPDATE screening
-    SET is_active = FALSE
-    WHERE show_date < NOW()::date
-    OR (show_date = NOW()::date AND
-        -- if it's 10 AM and show_time is 'afternoon', then it's still active.
-        -- if it's  6 PM and show_time is 'afternoon', then it's not active.
-        CASE WHEN show_time = 'morning'   THEN 1
-             WHEN show_time = 'afternoon' THEN 2
-             WHEN show_time = 'evening'   THEN 3
-             ELSE 4
-        END < CASE WHEN NOW()::TIME < '12:00:00' AND
-                        NOW()::TIME > '10:00:00' THEN 1
-                   WHEN NOW()::TIME < '17:00:00' THEN 2
-                   WHEN NOW()::TIME < '22:00:00' THEN 3
-                   ELSE 4
-              END
-       );
-    RETURN new;
-END;
-$$;
-CREATE OR REPLACE TRIGGER screening_is_active
-AFTER UPDATE OR INSERT ON screening FOR EACH ROW
-EXECUTE PROCEDURE screening_is_active();
-
 /*
  * Do an insert statement of 280 seats.
  * Use series of loops to insert 14 rows of 20 seats.

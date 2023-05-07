@@ -58,6 +58,7 @@ CREATE SCHEMA public;
 -- Use gen_random_uuid() if not importing uuid-ossp.
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
+CREATE EXTENSION IF NOT EXISTS citext;
 
 /*
  * In schema.sh,
@@ -93,7 +94,7 @@ CREATE TABLE user_account
 
   /* The columns BELOW are visible to the user. */
   username        VARCHAR(255) NOT NULL UNIQUE,        -- Alphanumeric and used for login.
-  email           VARCHAR(255) NOT NULL UNIQUE,
+  email           Citext       NOT NULL UNIQUE,        -- Citext indicates case-insensitive text.
   first_name      VARCHAR(255) NOT NULL,
   last_name       VARCHAR(255) NOT NULL,
   address         VARCHAR(255) NOT NULL,               -- Users can enter their address in any format.

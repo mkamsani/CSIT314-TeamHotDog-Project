@@ -5,11 +5,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hotdog.ctbs.entity.UserAccount;
 import com.hotdog.ctbs.repository.UserAccountRepository;
 import com.hotdog.ctbs.repository.UserProfileRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.hotdog.ctbs.service.implementation.UserAccountImpl;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import org.apache.logging.log4j.*;
+
 
 /**
  * CRUD for user profiles.
@@ -24,6 +29,7 @@ public class UserAccountController {
     private final UserAccountImpl userAccountImpl;
     private final UserProfileRepository userProfileRepository;
     private final UserAccountRepository userAccountRepository;
+    private final Logger log4j;
 
     public UserAccountController(UserAccountImpl userAccountImpl,
                                  UserProfileRepository userProfileRepository,
@@ -32,13 +38,20 @@ public class UserAccountController {
         this.userAccountImpl = userAccountImpl;
         this.userProfileRepository = userProfileRepository;
         this.userAccountRepository = userAccountRepository;
+        this.log4j = LogManager.getLogger(UserAccountController.class);
+    }
+
+    public void printMethodStarter(String message)
+    {
+        log4j.info(System.lineSeparator());
+        log4j.info(LocalDateTime.now().format(DateTimeFormatter.ofPattern("MMM d h:mm:ss a")));
+        log4j.info(message);
+        log4j.info(System.lineSeparator());
     }
 
     /**
      * <pre>
      * wget -qO- --post-data '{"username":"admin","password":"admin"}' --header "Content-Type: application/json" http://localhost:8000/api/user-account/login
-     * curl -X POST -H "Content-Type: application/json" -d '{"username":"user_2","password":"password_2","privilege":"customer"}' http://localhost:8000/api/user-account/login
-     * curl -X POST -H "Content-Type: application/json" -d '{"username":"user_1","password":"password_1","privilege":"customer"}' http://localhost:8000/api/user-account/login
      * curl -X POST -H "Content-Type: application/json" -d '{"username":"user_0","password":"password_0","privilege":"customer"}' http://localhost:8000/api/user-account/login
      * </pre>
      */
@@ -100,6 +113,21 @@ public class UserAccountController {
             return "Registration for " + username + " is successful!";
         } catch (Exception e) {
             return "Error: " + e.getMessage();
+        }
+    }
+
+    @DeleteMapping("/delete")
+    // use the correct http class to return the correct http status code
+    public ResponseEntity<String> Delete(@RequestParam String username)
+    {
+        printMethodStarter("Method Delete() called.");
+        try {
+            UserAccount userAccount = userAccountImpl.findUserAccountByUsername(username);
+            // userAccountImpl.delete(username);
+            System.out.println("User account " + username + " deleted successfully");
+            return new ResponseEntity<>("User account " + username + " deleted successfully", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error: " + e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 

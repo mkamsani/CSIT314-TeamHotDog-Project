@@ -1,9 +1,6 @@
 FROM cgr.dev/chainguard/maven:openjdk-17 as spring-builder
-COPY --chown=65532:65532 ./backend/cinema-ticket-booking-system/. /home/build/
+COPY --chown=65532:65532 ./backend/. /home/build/
 WORKDIR /home/build/
-# Configure spring boot to port 8000
-RUN sed -i 's/8080/8000/g' src/main/resources/application.properties
-RUN printf \\n%s\\n "server.port=8000" >> src/main/resources/application.properties
 RUN mvn -B package -Dmaven.test.skip --file pom.xml
 
 FROM docker.io/trafex/php-nginx
