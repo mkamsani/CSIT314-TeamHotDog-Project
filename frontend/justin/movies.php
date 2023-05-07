@@ -227,11 +227,12 @@ $cinemaRoomDetails = json_decode($cinemaRoomDetails, true);
         print_r ($response);
     }
     if (isset($_POST['delete'])) {
-        $movieName = $_POST['movieName'];
+        $movieName = $_POST['movies'];
+       // echo $movieName;
         $deletingTitle = $movieName;
         $data = array('title' => $deletingTitle);
         $data_json = json_encode($data);
-        //print_r(  $data_json);
+       // print_r(  $data_json);
         $deleteMoviesCh = curl_init( "http://localhost:8000/api/movie/delete/movie");
         curl_setopt($deleteMoviesCh, CURLOPT_CUSTOMREQUEST, "DELETE");
         curl_setopt($deleteMoviesCh, CURLOPT_POSTFIELDS, $data_json);
