@@ -88,8 +88,6 @@ $cinemaRoomDetails = json_decode($cinemaRoomDetails, true);
 <div class="container-fluid p-5 bg-danger text-white text-center">
     <h1>Movies</h1>
 <!--    <p>Admin ID: --><?php //echo $_SESSION["userId"] ?><!--</p>-->
-
-
     <table>
         <thead><tr>
             <th>Movie Title</th>
@@ -121,7 +119,7 @@ $cinemaRoomDetails = json_decode($cinemaRoomDetails, true);
                 $poster = array_column($moviesDetails, 'imageUrl');
                 foreach($poster as $imageKey) {
                 ?>
-                 <img src="<?php echo $imageKey ?>" width="500" height="100"> <br/>
+                 <img src="<?php echo $imageKey ?>" width="100" height="50"> <br/>
                  <?php
                 }
                 ?>
