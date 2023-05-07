@@ -30,7 +30,7 @@ public class TicketTypeController {
     }
 
     // To show a list of all ticket types (including active and inactive ticket types)
-    // curl -X GET http://localhost:8080/api/ticketType/read/allTicketTypes
+    // curl -X GET http://localhost:8000/api/ticketType/read/allTicketTypes
     @GetMapping("/read/allTicketTypes")
     public String ReadAllTicketTypes()
     {
