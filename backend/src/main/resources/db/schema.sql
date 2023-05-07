@@ -93,8 +93,8 @@ CREATE TABLE user_account
   password_hash   VARCHAR(72) NOT NULL CHECK (LENGTH(password_hash) <= 72 ),
 
   /* The columns BELOW are visible to the user. */
-  username        VARCHAR(255) NOT NULL UNIQUE,        -- Alphanumeric and used for login.
-  email           Citext       NOT NULL UNIQUE,        -- Citext indicates case-insensitive text.
+  username        Citext       NOT NULL UNIQUE,        -- Alphanumeric and used for login.
+  email           Citext       NOT NULL UNIQUE,
   first_name      VARCHAR(255) NOT NULL,
   last_name       VARCHAR(255) NOT NULL,
   address         VARCHAR(255) NOT NULL,               -- Users can enter their address in any format.

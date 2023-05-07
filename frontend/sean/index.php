@@ -35,21 +35,24 @@ if(isset($_POST['submit']) && !empty($_POST['userId']) && !empty($_POST['passwor
     // Check the user privilege and redirect
     if ($http_status_code == 200)
     {
-        if ($result == 'manager')
-        {
-            header("location: CinemaManager.php");
-        }
-
-        else if ($result == 'customer')
-        {
-            header("location: Customer.php");
-        }
-
-        else
-        {
-            echo "<script>document.getElementById('result').innerHTML = '" . $result . "';</script>";
-        }
+        // Set session variable.
+        $_SESSION["privilege"] = $result;
     }
+}
+switch ($_SESSION["privilege"] ) {
+    case 'admin':
+//        header("location: admin/index.php"); TODO
+        echo "<script>document.getElementById('result').innerHTML = '" . $_SESSION["privilege"] . "';</script>";
+        break;
+    case 'owner':
+//        header("location: owner/index.php"); TODO
+        echo "<script>document.getElementById('result').innerHTML = '" . $_SESSION["privilege"] . "';</script>";
+        break;
+    case 'manager': header("location: CinemaManager.php"); break;
+    case 'customer': header("location: Customer.php"); break;
+    default:
+        echo "<script>document.getElementById('result').innerHTML = '" . $_SESSION["privilege"] . "';</script>";
+        break;
 }
 ?>
 

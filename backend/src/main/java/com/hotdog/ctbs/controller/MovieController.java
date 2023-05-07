@@ -109,8 +109,10 @@ public class MovieController {
     @PutMapping("/update/movie/Genre")
     public String UpdateMovieByGenre(@RequestBody String json)
     {
+        System.out.println("MovieController.UpdateMovieByGenre() called.");
         try {
             JsonNode jsonNode = new ObjectMapper().readTree(json);
+            System.out.println(jsonNode);
             String targetTitle = jsonNode.get("targetTitle").asText();
             String newGenre = jsonNode.get("genre").asText();
             movieImpl.updateMovieByGenre(targetTitle, newGenre);
@@ -204,7 +206,9 @@ public class MovieController {
     // Delete a movie by title (still in progress)
     @DeleteMapping("/delete/movie")
     public String DeleteMovie(@RequestBody String json) {
+        System.out.println("MovieController.DeleteMovie() called.");
         try {
+            System.out.println(json);
             JsonNode jsonNode = new ObjectMapper().readTree(json);
             String title = jsonNode.get("title").asText();
             movieImpl.deleteMovieByTitle(title);
