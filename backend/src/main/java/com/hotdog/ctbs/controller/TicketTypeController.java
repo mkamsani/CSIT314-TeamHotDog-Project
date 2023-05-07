@@ -76,7 +76,7 @@ public class TicketTypeController {
             }
     }
 
-    @PostMapping("/update/ticketType")
+    @PutMapping("/update/ticketType")
     public String UpdateTicketType(@RequestBody String json) {
             try{
                 JsonNode jsonNode = new ObjectMapper().readTree(json);
@@ -93,7 +93,7 @@ public class TicketTypeController {
     }
 
     // change only the ticket type name
-    @PostMapping("/update/ticketType/typename")
+    @PutMapping("/update/ticketType/typename")
     public String updateTicketTypeByTypeName(@RequestBody String json) {
             try{
                 JsonNode jsonNode = new ObjectMapper().readTree(json);
@@ -108,7 +108,7 @@ public class TicketTypeController {
     }
 
     // change only the ticket type price
-    @PostMapping("/update/ticketType/typeprice")
+    @PutMapping("/update/ticketType/typeprice")
     public String updateTicketTypeByTypePrice(@RequestBody String json) {
             try{
                 JsonNode jsonNode = new ObjectMapper().readTree(json);
@@ -123,7 +123,7 @@ public class TicketTypeController {
     }
 
     // change only the ticket type isactive
-    @PostMapping("/update/ticketType/isactive")
+    @PutMapping("/update/ticketType/isactive")
     public String updateTicketTypeByIsActive(@RequestBody String json) {
             try{
                 JsonNode jsonNode = new ObjectMapper().readTree(json);
