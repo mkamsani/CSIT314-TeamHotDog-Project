@@ -215,7 +215,7 @@ $cinemaRoomDetails = json_decode($cinemaRoomDetails, true);
         $data = array('title' => $movieName, 'genre' => $movieGenre, 'description' => $movieDesc, 'releaseDate' => $movieDate,
             'imageUrl' => $moviePoster, 'isActive' => $movieActive, 'contentRating' => $movieRating);
         $data_json = json_encode($data);
-        //print_r(  $data_json);
+        print_r(  $data_json);
         $createMoviesCh = curl_init("http://localhost:8000/api/movie/create/movie");
         curl_setopt($createMoviesCh, CURLOPT_POST, "1");
         curl_setopt($createMoviesCh, CURLOPT_POSTFIELDS, $data_json);
