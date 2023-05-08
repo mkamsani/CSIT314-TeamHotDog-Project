@@ -43,13 +43,7 @@ curl_close($cinemaRoomDetailCh);
 $cinemaRoomDetails = json_decode($cinemaRoomDetails, true);
 //print_r($cinemaRoomDetails);
 
-//$ticketTypeCh = curl_init();
-//curl_setopt($ticketTypeCh, CURLOPT_URL, "http://localhost:8000/api/ticketType/read/allTicketTypes");
-//curl_setopt($ticketTypeCh, CURLOPT_RETURNTRANSFER, 1);
-//$ticketType = curl_exec($ticketTypeCh);
-//curl_close($ticketTypeCh);
-//$ticketType = json_decode($ticketType, true);
-//print_r($ticketType);
+
 
 
 ?>
@@ -109,7 +103,7 @@ $cinemaRoomDetails = json_decode($cinemaRoomDetails, true);
                     echo ''.$descKey.'<br/>';
                 }
                 ?></td>
-<           <td><?php
+           <td><?php
                  $genre = array_column($moviesDetails, 'genre');
                  foreach($genre as $genreKey) {
                       echo ''.$genreKey.'<br/>';
@@ -138,7 +132,7 @@ $cinemaRoomDetails = json_decode($cinemaRoomDetails, true);
                                 echo ''.$activeRoom.'<br/>';
                             }
                 }
-                 ?></td>
+                 ?>
 
     </table>
 <br>
