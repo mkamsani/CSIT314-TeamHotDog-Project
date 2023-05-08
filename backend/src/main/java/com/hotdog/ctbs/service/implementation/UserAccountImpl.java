@@ -92,7 +92,7 @@ public class UserAccountImpl implements UserAccountService {
             throw new IllegalArgumentException("Username " + username + " must only contain alphanumeric characters.");
 
         // This validation is only required when an admin creates a new user account.
-        UserProfile userProfile = userProfileRepo.findUserProfileByTitle(title);
+        UserProfile userProfile = userProfileRepo.findUserProfileByTitle(title).orElse(null);
         if (userProfile == null)
             throw new IllegalArgumentException("Invalid title.");
 
@@ -122,7 +122,7 @@ public class UserAccountImpl implements UserAccountService {
 
     public List<UserAccount> getUserAccountsByTitle(String title)
     {
-        UserProfile userProfile = userProfileRepo.findUserProfileByTitle(title);
+        UserProfile userProfile = userProfileRepo.findUserProfileByTitle(title).orElse(null);
         if (userProfile == null)
             return null;
 
@@ -132,7 +132,7 @@ public class UserAccountImpl implements UserAccountService {
     @Transactional
     public List<UserAccount> getUserAccountsByPrivilege(String privilege)
     {
-        List<UserProfile> userProfiles = userProfileRepo.findUserProfilesByPrivilege(privilege);
+        List<UserProfile> userProfiles = userProfileRepo.findUserProfilesByPrivilege(privilege).orElse(null);
         if (userProfiles == null)
             return null;
 
