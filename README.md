@@ -31,7 +31,7 @@
     * [test](./backend/cinema-ticket-booking-system/src/test/java/com/hotdog/ctbs/CinemaTicketBookingSystemApplicationTests.java)
     * [resources](./backend/cinema-ticket-booking-system/src/main/resources/)
 * [Postgres 15](./backend/cinema-ticket-booking-system/src/main/resources/db)
-* PHP?
+* [PHP](./frontend/)
 
 ## Frontend
 

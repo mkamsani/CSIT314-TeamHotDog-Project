@@ -43,6 +43,7 @@ public class UserProfileImpl implements UserProfileService {
                            .id(UUID.randomUUID())
                            .privilege(privilege)
                            .title(title)
+                           .isActive(true)
                            .build()
         );
     }

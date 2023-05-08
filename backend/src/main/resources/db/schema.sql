@@ -93,8 +93,8 @@ CREATE TABLE user_account
   password_hash   VARCHAR(72) NOT NULL CHECK (LENGTH(password_hash) <= 72 ),
 
   /* The columns BELOW are visible to the user. */
-  username        VARCHAR(255) NOT NULL UNIQUE,        -- Alphanumeric and used for login.
-  email           Citext       NOT NULL UNIQUE,        -- Citext indicates case-insensitive text.
+  username        Citext       NOT NULL UNIQUE,        -- Alphanumeric and used for login.
+  email           Citext       NOT NULL UNIQUE,
   first_name      VARCHAR(255) NOT NULL,
   last_name       VARCHAR(255) NOT NULL,
   address         VARCHAR(255) NOT NULL,               -- Users can enter their address in any format.
@@ -122,6 +122,7 @@ CREATE TABLE movie
   description    VARCHAR(255) NOT NULL,
   release_date   DATE         NOT NULL,
   image_url      VARCHAR(255) NOT NULL DEFAULT 'https://raw.githubusercontent.com/assets/default.jpg',
+  landscape_image_url VARCHAR(255) NOT NULL DEFAULT 'https://raw.githubusercontent.com/assets/default.jpg',
   content_rating VARCHAR(255) NOT NULL,
   CHECK (content_rating IN ('g', 'pg', 'pg13', 'nc16', 'm18', 'r21'))
 );

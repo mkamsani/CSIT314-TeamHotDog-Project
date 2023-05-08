@@ -28,6 +28,9 @@ public class Movie {
     @Column(name = "uuid", nullable = false)
     private UUID id;
 
+    @Column(name = "is_active", nullable = false)
+    private boolean isActive;
+
     @Column(name = "title", nullable = false, length = Integer.MAX_VALUE)
     private String title;
 
@@ -43,8 +46,8 @@ public class Movie {
     @Column(name = "image_url", length = Integer.MAX_VALUE)
     private String imageUrl;
 
-    @Column(name = "is_active", nullable = false)
-    private boolean isActive;
+    @Column(name = "landscape_image_url", length = Integer.MAX_VALUE)
+    private String landscapeImageUrl;
 
     @Column(name = "content_rating", nullable = false, length = Integer.MAX_VALUE)
     private String contentRating;
@@ -68,6 +71,7 @@ public class Movie {
         json.put("description",   description);
         json.put("releaseDate",   releaseDate.toString());
         json.put("imageUrl",      imageUrl);
+        json.put("landscapeImageUrl", landscapeImageUrl);
         json.put("isActive",      isActive);
         json.put("contentRating", contentRating);
         return json.toString();

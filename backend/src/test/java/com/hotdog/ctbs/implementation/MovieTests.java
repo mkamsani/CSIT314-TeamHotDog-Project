@@ -91,16 +91,14 @@ public class MovieTests {
     {
         // test create movie method
         System.out.println("movieImpl.createMovie(\"Pokemon Diamond and Pearl\", " +
-                        "\"Adventurous\", \"A teenager dreams to become the Pokemon Master\", " +
-                        "LocalDate.of(1997, 5, 3), " +
-                        "\"https://www.imdb.com/title/tt0145487/mediaviewer/rm4039471360/\", " +
-                        "true, " +
-                        "\"PG13\")");
+                "\"Adventurous\", \"A teenager dreams to become the Pokemon Master\", LocalDate.of(1997, 5, 3), " +
+                "\"pokemon image URL\", \"pokemon landscape URL\", true, \"pg13\")");
         movieImpl.createMovie(
                 "Pokemon Diamond and Pearl", "Adventurous",
                 "A teenager dreams to become the Pokemon Master",
                 LocalDate.of(1997, 5, 3),
-                "https://www.imdb.com/title/tt0145487/mediaviewer/rm4039471360/",
+                "pokemon image URL",
+                "pokemon landscape URL",
                 true,
                 "pg13");
         System.out.println();
@@ -130,7 +128,8 @@ public class MovieTests {
         System.out.println("The list of existing movie genres before an update made");
         System.out.println(movieImpl.getAllMovieGenres());
         System.out.println();
-        movieImpl.updateMovieByGenre("PowerPuffGirl", "Action");
+
+        movieImpl.updateMovieByGenre("Spider-Man", "new SpiderMan genre");
         System.out.println("The list of existing movie genres after an update made");
         // display all details for all movies
         for (String title : movieImpl.getAllMovieTitles())
@@ -143,7 +142,7 @@ public class MovieTests {
         for (String title : movieImpl.getAllMovieTitles())
             System.out.println(movieImpl.getMovieByTitle(title));
 
-        movieImpl.updateMovieByDescription("Ultraman", "A story about an alien superhero");
+        movieImpl.updateMovieByDescription("Inception", "new Inception description");
         // display all details for all movies
         for (String title : movieImpl.getAllMovieTitles())
             System.out.println(movieImpl.getMovieByTitle(title));
@@ -155,7 +154,7 @@ public class MovieTests {
         for (String title : movieImpl.getAllMovieTitles())
             System.out.println(movieImpl.getMovieByTitle(title));
 
-        movieImpl.updateMovieByReleaseDate("Ultraman", LocalDate.of(1997, 5, 25));
+        movieImpl.updateMovieByReleaseDate("Inception", LocalDate.of(1997, 5, 25));
         // display all details for all movies
         for (String title : movieImpl.getAllMovieTitles())
             System.out.println(movieImpl.getMovieByTitle(title));
@@ -167,11 +166,23 @@ public class MovieTests {
         for (String title : movieImpl.getAllMovieTitles())
             System.out.println(movieImpl.getMovieByTitle(title));
 
-        movieImpl.updateMovieByImageUrl("Ultraman", "https://www.imdb.com/title/tt0145487/mediaviewer/rm4039471360/");
+        movieImpl.updateMovieByImageUrl("Matrix", "Matrix newUpdateImageURL");
         // display all details for all movies
         for (String title : movieImpl.getAllMovieTitles())
             System.out.println(movieImpl.getMovieByTitle(title));
         System.out.println("Done for update movie image url method");
+
+        //
+        // test update movie method (using landscape image url)
+        System.out.println("The list of existing movie landscape image url before an update made");
+        for (String title : movieImpl.getAllMovieTitles())
+            System.out.println(movieImpl.getMovieByTitle(title));
+
+        movieImpl.updateMovieByLandscapeImageUrl("Avatar","Avatar newUpdateLandscapeURL");
+        // display all details for all movies
+        for (String title : movieImpl.getAllMovieTitles())
+            System.out.println(movieImpl.getMovieByTitle(title));
+        System.out.println("Done for update movie landscape image url method");
 
         //
         // test update movie method (using status)
@@ -179,7 +190,7 @@ public class MovieTests {
         for (String title : movieImpl.getAllMovieTitles())
             System.out.println(movieImpl.getMovieByTitle(title));
 
-        movieImpl.updateMovieByIsActive("Ultraman", false);
+        movieImpl.updateMovieByIsActive("Spider-Man", false);
         // display all details for all movies
         for (String title : movieImpl.getAllMovieTitles())
             System.out.println(movieImpl.getMovieByTitle(title));
@@ -192,7 +203,7 @@ public class MovieTests {
         for (String title : movieImpl.getAllMovieTitles())
             System.out.println(movieImpl.getMovieByTitle(title));
 
-        movieImpl.updateMovieByContentRating("Ultraman", "pg13");
+        movieImpl.updateMovieByContentRating("Spider-Man", "pg13");
         // display all details for all movies
         for (String title : movieImpl.getAllMovieTitles())
             System.out.println(movieImpl.getMovieByTitle(title));
@@ -204,7 +215,12 @@ public class MovieTests {
         for (String title : movieImpl.getAllMovieTitles())
             System.out.println(movieImpl.getMovieByTitle(title));
 
-        movieImpl.updateMovieByAllAttributes("Ultraman", "Ultraman2", "Barbie girl", "A story about an alien superhero", LocalDate.of(1997, 5, 25), "https://www.imdb.com/title/tt0145487/mediaviewer/rm4039471360/", false, "pg13");
+        movieImpl.updateMovieByAllAttributes("Spider-Man",
+                "Spider-Man2", "Comedy", "A story about an alien superhero",
+                LocalDate.of(1997, 5, 25),
+                "Spider Man2 newImageURL.INPUT",
+                "Spider Man 2 newLandscapeImageURL.INPUT",
+                false, "pg13");
 
         // display all details for all movies
         for (String title : movieImpl.getAllMovieTitles())
@@ -213,29 +229,15 @@ public class MovieTests {
 
     }
 
-    @Transactional
+    //@Transactional
     @Test
     void deleteMethod()
     {
-        Movie mv = movieImpl.getMovieByTitle("Ultraman2");
-        System.out.println("Title: " + mv);
-        System.out.println("NumOfScreening: " + mv.getScreenings().size());
-        System.out.println("LiterallyTheScreenings: " + mv.getScreenings());
-
-
         // test delete movie method
-        System.out.println("The existing movie titles before a deletion made");
-        System.out.println(movieImpl.getAllMovieTitles());
-        System.out.println("movieImpl.deleteOneMovieByTitle(\"Ultraman\")");
-        movieImpl.deleteMovieByTitle("Ultraman");
+        System.out.println("movieImpl.deleteMovieByTitle(\"Black Adam\")");
+        movieImpl.deleteMovieByTitle("Black Adam");
         System.out.println();
-        System.out.println(movieImpl.getAllMovieTitles());
+
     }
 
-    // @Test
-    // void immediateMethod()
-    // {
-    //     //test deleteMovieByTitle()
-    //     System.out.println(deleteMovieByTitle(""));
-    // }
 }

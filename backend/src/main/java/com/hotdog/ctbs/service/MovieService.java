@@ -43,7 +43,7 @@ public interface MovieService {
 
     // create a new movie
     void createMovie (String title, String genre, String description,
-                             LocalDate releaseDate, String imageUrl, boolean isActive,String contentRating);
+                             LocalDate releaseDate, String imageUrl, String landscapeImageUrl,boolean isActive,String contentRating);
 
     // all the methods to update movie with different attributes
     // update the movie's title by input its title and new title
@@ -60,6 +60,9 @@ public interface MovieService {
 
     // update the movie's image url by input its title and new image url
     void updateMovieByImageUrl(String targetTitle, String newImageUrl);
+
+    // update the movie's landscape image url by input its title and new landscape image url
+    void updateMovieByLandscapeImageUrl(String targetTitle, String newLandscapeImageUrl);
 
     // update the movie's is active by input its title and new is active
     void updateMovieByIsActive(String targetTitle, boolean newIsActive);
@@ -92,6 +95,6 @@ public interface MovieService {
     // updateMovieByAllAttributes
     // update the movie's all attributes by input its title and new attributes
     void updateMovieByAllAttributes(String targetTitle, String newTitle, String newGenre, String newDescription,
-                                    LocalDate newReleaseDate, String newImageUrl, boolean newIsActive, String newContentRating);
+                                    LocalDate newReleaseDate, String newImageUrl, String newLandscapeImageUrl, boolean newIsActive, String newContentRating);
 
 }

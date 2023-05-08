@@ -5,6 +5,16 @@
 <?php
 session_start();
 include('header.php');
+// Added code (from baraq): header.php is based on privilege
+switch ($_SESSION["privilege"] ) {
+    case 'admin':    // include('admin-header.php');    break;
+    case 'owner':    // include('owner-header.php');    break;
+    case 'manager':  // include('manager-header.php');  break;
+    case 'customer': // include('customer-header.php'); break;
+    break;
+    default: header("location: index.php"); break; // Send the user back to the login page.
+}
+// End of added code.
 ?>
 
 <?php
