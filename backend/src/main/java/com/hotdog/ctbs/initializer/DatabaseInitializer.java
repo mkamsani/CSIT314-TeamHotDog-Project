@@ -68,13 +68,13 @@ public class DatabaseInitializer implements ApplicationRunner {
                                .lastName(userAccount[3])
                                .address(faker.address().fullAddress())
                                .dateOfBirth(LocalDate.parse(userAccount[4]))
-                               .userProfile(userProfileRepository.findUserProfileByTitle(userAccount[5]))
+                               .userProfile(userProfileRepository.findUserProfileByTitle(userAccount[5]).orElse(null))
                                .timeCreated(OffsetDateTime.now())
                                .timeLastLogin(OffsetDateTime.now())
                                .isActive(true)
                                .build()
             ));
-            UserProfile userProfileCustomer = userProfileRepository.findUserProfileByTitle("customer");
+            UserProfile userProfileCustomer = userProfileRepository.findUserProfileByTitle("customer").orElse(null);
             for (int i = 0; i < 100; i++) {
                 // Generate a random date of birth between 18 and 99 years ago.
                 LocalDate dateOfBirth = faker.date().birthday(18, 99).toLocalDateTime().toLocalDate();

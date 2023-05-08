@@ -43,6 +43,23 @@ activate CreateUserProfilePage
 CreateUserProfilePage ->> CreateUserAccountController : onClickCreate(String json)
 activate CreateUserAccountController
 CreateUserAccountController ->> UserAccountEntity : create(String json)
+# return something to the user
+CreateUserAccountController ->> CreateUserProfileController : parse(String json)
+activate CreateUserProfileController
+CreateUserProfileController ->> UserProfileService : createUserProfile(String privilege, String title)
+activate UserProfileService
+UserProfileService ->> UserProfile : createUserProfile(String privilege, String title)
+activate UserProfile
+UserProfile -->> UserProfileService : UserProfile
+deactivate UserProfile
+UserProfileService -->> CreateUserProfileController : UserProfileService
+deactivate UserProfileService
+CreateUserProfileController -->> CreateUserAccountController : CreateUserProfileController
+deactivate CreateUserProfileController
+CreateUserAccountController -->> CreateUserProfilePage : CreateUserAccountController
+deactivate CreateUserAccountController
+CreateUserProfilePage -->> Admin : CreateUserProfilePage
+deactivate CreateUserProfilePage
 ```
 
 ### Alternate flows: Invalid information
@@ -50,4 +67,26 @@ CreateUserAccountController ->> UserAccountEntity : create(String json)
 ```mermaid
 sequenceDiagram
 actor Admin
+Admin ->> CreateUserProfilePage : create user profile
+activate CreateUserProfilePage
+CreateUserProfilePage ->> CreateUserAccountController : onClickCreate(String json)
+activate CreateUserAccountController
+CreateUserAccountController ->> UserAccountEntity : create(String json)
+# return something to the user
+CreateUserAccountController ->> CreateUserProfileController : parse(String json)
+activate CreateUserProfileController
+CreateUserProfileController ->> UserProfileService : createUserProfile(String privilege, String title)
+activate UserProfileService
+UserProfileService ->> UserProfile : createUserProfile(String privilege, String title)
+activate UserProfile
+UserProfile -->> UserProfileService : UserProfile
+deactivate UserProfile
+UserProfileService -->> CreateUserProfileController : UserProfileService
+deactivate UserProfileService
+CreateUserProfileController -->> CreateUserAccountController : CreateUserProfileController
+deactivate CreateUserProfileController
+CreateUserAccountController -->> CreateUserProfilePage : CreateUserAccountController
+deactivate CreateUserAccountController
+CreateUserProfilePage -->> Admin : CreateUserProfilePage
+deactivate CreateUserProfilePage
 ```
