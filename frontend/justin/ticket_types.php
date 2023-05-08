@@ -33,10 +33,18 @@ if (isset($_POST['updateTicket'])) {
     $ticketTypeName = $_POST['typeName'];
     $newTicketTypeName = $_POST['newTypeName'];
     $newPrice = $_POST['newPrice'];
-    $ticketActivity = $_POST['isActive'];
+    $ticketActivity = $_POST['updateIsActive'];
+    if(  $ticketActivity == "TRUE"){
+        $ticketActivity = true;
+    }
+    else if($ticketActivity == "FALSE"){
+        $ticketActivity = false; //php returns nothing if its false
+    }
+
     $updateTicketCh = curl_init();
     $data = array('targettypename' => $ticketTypeName, 'newtypename'=> $newTicketTypeName, 'typeprice' => $newPrice, 'isactive' => $ticketActivity);
     $data_json = json_encode($data);
+    //print_r($data_json);
     curl_setopt($updateTicketCh, CURLOPT_URL, "http://localhost:8000/api/ticketType/update/ticketType");
     curl_setopt($updateTicketCh, CURLOPT_CUSTOMREQUEST, "PUT");
     curl_setopt($updateTicketCh, CURLOPT_POSTFIELDS, $data_json);
@@ -53,7 +61,13 @@ if (isset($_POST['createTicket'])) {
 
     $ticketTypeName = $_POST['ticketType'];
     $ticketTypePrice = $_POST['typePrice'];
-    $isActive = $_POST['isActive'];
+    $isActive = $_POST['createIsActive'];
+    if(  $isActive == "TRUE"){
+        $isActive = true;
+    }
+    else if($isActive == "FALSE"){
+        $isActive = false;
+    }
     setlocale(LC_MONETARY, "zh_SG");
     $data = array('typename' => $ticketTypeName, 'typeprice' => $ticketTypePrice, 'isactive' => $isActive);
     $data_json = json_encode($data);
@@ -112,12 +126,13 @@ if (isset($_POST['createTicket'])) {
 
         <input type="text"  name="ticketType" id="ticketType" placeholder="Enter ticket type">
         <input type="number"  name="typePrice" id="typePrice" placeholder="Enter ticket price">
-        <select name="isActive" id="isActive">
+
+        <select name="createIsActive" id="createIsActive">
             <option> Select ticket type Activity </option>
-            <option value = "TRUE"> Active </option>
+
+            <option value = "TRUE" > Active </option>
             <option value = "FALSE"> Not Active </option>
         </select>
-
 
 
         <input type="submit" name="createTicket" value="create Ticket">
@@ -183,7 +198,7 @@ if (isset($_POST['createTicket'])) {
         </select>
         <input type="text"  name="newTypeName" id="newTypeName" placeholder="Enter new type name">
         <input type="number"  name="newPrice" id="newPrice" placeholder="Enter new price">
-        <select name="isActive" id="isActive">
+        <select name="updateIsActive" id="updateIsActive">
             <option> Select ticket Activity </option>
             <option value = "TRUE"> Active </option>
             <option value = "FALSE"> Not Active </option>

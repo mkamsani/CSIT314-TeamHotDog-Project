@@ -35,13 +35,13 @@ curl_close($cinemaRoomIdsCh);
 
 
 
-$cinemaRoomDetailCh = curl_init();
-curl_setopt($cinemaRoomDetailCh, CURLOPT_URL, "http://localhost:8000/api/cinemaRoom/read/allCinemaRoomDetails");
-curl_setopt($cinemaRoomDetailCh, CURLOPT_RETURNTRANSFER, 1);
-$cinemaRoomDetails = curl_exec($cinemaRoomDetailCh);
-curl_close($cinemaRoomDetailCh);
+$activeCinemaRoomIdsCh = curl_init();
+curl_setopt($activeCinemaRoomIdsCh, CURLOPT_URL, "http://localhost:8000/api/cinemaRoom/read/allActiveCinemaRoomIds");
+curl_setopt($activeCinemaRoomIdsCh, CURLOPT_RETURNTRANSFER, 1);
+$cinemaRoomDetails = curl_exec($activeCinemaRoomIdsCh);
+curl_close($activeCinemaRoomIdsCh);
 $cinemaRoomDetails = json_decode($cinemaRoomDetails, true);
-//print_r($cinemaRoomDetails);
+print_r($cinemaRoomDetails);
 
 
 
