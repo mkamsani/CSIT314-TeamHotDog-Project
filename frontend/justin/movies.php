@@ -24,25 +24,6 @@ curl_close($moviesDetailsCh);
 $moviesDetails = json_decode($moviesDetails, true);
 
 
-$cinemaRoomIdsCh = curl_init();
-curl_setopt($cinemaRoomIdsCh, CURLOPT_URL, "http://localhost:8000/api/cinemaRoom/read/allCinemaRoomIds");
-curl_setopt($cinemaRoomIdsCh, CURLOPT_RETURNTRANSFER, 1);
-$cinemaRoomIds = curl_exec($cinemaRoomIdsCh);
-$cinemaRoomIds = trim($cinemaRoomIds, '[');
-$cinemaRoomIds = trim($cinemaRoomIds, ']');
-$cinemaRoomIds = explode(", ",$cinemaRoomIds);
-curl_close($cinemaRoomIdsCh);
-
-
-
-$activeCinemaRoomIdsCh = curl_init();
-curl_setopt($activeCinemaRoomIdsCh, CURLOPT_URL, "http://localhost:8000/api/cinemaRoom/read/allActiveCinemaRoomIds");
-curl_setopt($activeCinemaRoomIdsCh, CURLOPT_RETURNTRANSFER, 1);
-$cinemaRoomDetails = curl_exec($activeCinemaRoomIdsCh);
-curl_close($activeCinemaRoomIdsCh);
-$cinemaRoomDetails = json_decode($cinemaRoomDetails, true);
-print_r($cinemaRoomDetails);
-
 
 
 
@@ -88,8 +69,7 @@ print_r($cinemaRoomDetails);
             <th>Movie Description </th>
             <th>Genre</th>
             <th>Poster</th>
-            <th> Cinema Room </th>
-            <th> Room Active </th>
+
 
 
         </thead><tbody><tr>
@@ -118,21 +98,7 @@ print_r($cinemaRoomDetails);
                 }
                 ?>
              </td>
-                <td><?php foreach($cinemaRoomIds as $CinemaRoomKey) {
-                    echo ''.$CinemaRoomKey.'<br/>';
-                }  ?></td>
 
-            <td>
-                <?php
-                $cinemaRoom = array_column($cinemaRoomDetails, 'id');
-                $checkActive = array_column($cinemaRoomDetails, 'isActive');
-                    foreach($cinemaRoom as $cinemaRoomDetailKey) {
-                        foreach($checkActive as $activeRoom)
-                            if($CinemaRoomKey == $cinemaRoomDetailKey && $activeRoom == 1) {
-                                echo ''.$activeRoom.'<br/>';
-                            }
-                }
-                 ?>
 
     </table>
 <br>
