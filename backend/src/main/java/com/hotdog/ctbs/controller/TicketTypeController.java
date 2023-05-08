@@ -130,11 +130,17 @@ public class TicketTypeController {
                 JsonNode jsonNode = new ObjectMapper().readTree(json);
                 String targettypeName = jsonNode.get("targettypename").asText();
                 Boolean isactive = jsonNode.get("isactive").asBoolean();
-                ticketTypeImpl.updateTicketTypeByIsActive(targettypeName, isactive);
-                return "Success updating ticketType";
+                if( isactive == false){
+                    ticketTypeImpl.updateTicketTypeByIsActive(targettypeName, isactive);
+                    return "Success updating ticketType";
+                }
+                else {
+                    throw new Exception("Cannot set ticket type to active");
+                }
             }
             catch (Exception e){
                 return "Error: " + e.getMessage();
             }
     }
+
 }

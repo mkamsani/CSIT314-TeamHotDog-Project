@@ -15,21 +15,17 @@ include('header.php');
         </a>
         <ul class="nav nav-pills">
             <li class="nav-item">
-                <a class="nav-link active bg-danger" href="movies.php">Home</a>
+                <a class="nav-link active bg-danger" href="UserAdmin.php">Home</a>
             </li>
             &emsp;
             <li class="nav-item">
-                <a class="nav-link" href="food_orders.php">Food Orders</a>
-            </li>
-            &emsp;
-            <li class="nav-item">
-                <a class="nav-link" href="cinema_screenings.php">Cinemas</a>
+                <a class="nav-link" href="UserAccounts.php">User Accounts</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="ticket_types.php">Ticket Types</a>
+                <a class="nav-link" href="UserProfiles.php">User Profiles</a>
             </li>
             &emsp;
-            <form method = "get" class="d-flex">
+            <form method="get" class="d-flex">
                 <a class="btn btn-outline-danger" href="logout.php">Log Out</a>
             </form>
         </ul>
@@ -38,12 +34,12 @@ include('header.php');
 
 <body>
 <div class="container-fluid p-5 bg-danger text-white text-center">
-    <h1>Welcome Customer!</h1>
-    <p>Customer ID: </p>
+    <h1>Welcome User Administrator!</h1>
+    <p>Admin ID: </p>
 </div>
 
 <div class="container mt-6 row g-3 mx-auto" style="width: 20%">
-    <h1 class="text-center">Cinema Manager Information</h1>
+    <h1 class="text-center">User Admin Information</h1>
     <div class="col-md">
         <div class="form-floating">
             <input type="text" class="form-control" id="name" readonly>
@@ -75,13 +71,11 @@ include('header.php');
         </div>
     </div>
 
-    
+
 </div>
 <div class="text-center mt-3">
-    <a class="btn btn-danger" href="movies.php" role="button" style="margin-right: 2.7%">View Movies</a>
-    <a class="btn btn-danger" href="food_orders.php" role="button">View Food Orders</a>
-    <a class="btn btn-danger" href="cinema_screenings.php" role="button">View Cinema Screenings</a>
-    <a class="btn btn-danger" href="ticket_types.php" role="button">View Ticket Types</a>
+    <a class="btn btn-danger" href="UserAccounts.php" role="button" style="margin-right: 2.7%">View User Accounts</a>
+    <a class="btn btn-danger" href="UserProfiles.php" role="button">View User Profiles</a>
 </div>
 
 </body>
