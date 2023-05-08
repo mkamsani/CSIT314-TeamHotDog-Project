@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.hotdog.ctbs.entity.Movie;
 import com.hotdog.ctbs.repository.MovieRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import com.hotdog.ctbs.service.MovieService;
 
@@ -133,7 +134,7 @@ public class MovieImpl implements MovieService{
     // create a new movie
     @Override
     public void createMovie (String title, String genre, String description,
-                             LocalDate releaseDate, String imageUrl, boolean isActive, String contentRating)
+                             LocalDate releaseDate, String imageUrl, String landscapeImageUrl, boolean isActive, String contentRating)
     {
         // the new movie Title must not be the same as any existing title in database (1st check)
         // the content rating must be in lowercase form (2nd check)
@@ -154,6 +155,7 @@ public class MovieImpl implements MovieService{
                         .description(description)
                         .releaseDate(releaseDate)
                         .imageUrl(imageUrl)
+                        .landscapeImageUrl(landscapeImageUrl)
                         .isActive(isActive)
                         .contentRating(contentRating)
                         .build()
@@ -278,6 +280,28 @@ public class MovieImpl implements MovieService{
         }
     }
 
+    // update movie by landscape image url
+    @Override
+    public void updateMovieByLandscapeImageUrl(String targetTitle, String newLandscapeImageUrl)
+    {
+        boolean movieFound = false;
+        // update the movie's landscape image URL if found the existing movie title
+        for (Movie exsitingMovie : movieRepository.findAll()) {
+            if (exsitingMovie.getTitle().equals(targetTitle)){
+                exsitingMovie.setLandscapeImageUrl(newLandscapeImageUrl);
+                movieRepository.save(exsitingMovie);
+                movieFound = true;
+                break;
+            }
+
+        }
+        // if the movie title that would to be updated is not found, throw an exception
+        if (!movieFound){
+            throw new IllegalArgumentException("The movie title you would " +
+                    "like to update does not exist.");
+        }
+    }
+
     // update the movie's active status by input its title and new active status
     @Override
     public void updateMovieByIsActive(String targetTitle, boolean newIsActive)
@@ -332,7 +356,7 @@ public class MovieImpl implements MovieService{
     // update a movie with entering all attributes
     @Override
     public void updateMovieByAllAttributes(String targetTitle, String newTitle, String newGenre, String newDescription,
-                                           LocalDate newReleaseDate, String newImageUrl, boolean newIsActive, String newContentRating) {
+                                           LocalDate newReleaseDate, String newImageUrl, String newLandscapeImageUrl, boolean newIsActive, String newContentRating) {
         boolean movieFound = false;
         // update everything if found the existing movie title
         for (Movie exsitingMovie : movieRepository.findAll()) {
@@ -342,6 +366,7 @@ public class MovieImpl implements MovieService{
                 exsitingMovie.setDescription(newDescription);
                 exsitingMovie.setReleaseDate(newReleaseDate);
                 exsitingMovie.setImageUrl(newImageUrl);
+                exsitingMovie.setLandscapeImageUrl(newLandscapeImageUrl);
                 exsitingMovie.setActive(newIsActive);
                 exsitingMovie.setContentRating(newContentRating);
                 movieRepository.save(exsitingMovie);
@@ -362,19 +387,23 @@ public class MovieImpl implements MovieService{
     // delete the movie by input its title ( still in progress)
     // consideration : if delete movie ==  delete all the screening related to this deleted movies
     // or isAvailable to determine whether the movie can be deleted
+    @Transactional
     @Override
     public void deleteMovieByTitle(String title)
     {
         for (Movie existingMovie : movieRepository.findAll()) {
             if (existingMovie.getTitle().equals(title)){
 
-                System.out.println("Try delete screening method");
-                System.out.println(existingMovie.getScreenings().size());
 
+                if(existingMovie.getScreenings().size() > 0)
+                    throw new IllegalArgumentException("The movie cannot be deleted because it has screenings.");
+                else{
+                    System.out.println("Delete method called");
+                    movieRepository.delete(existingMovie);
+                    System.out.println("Movie " + title + " has been deleted.");
+                    break;
+                }
 
-                movieRepository.delete(existingMovie);
-                System.out.println("Movie " + title + " has been deleted.");
-                break;
             }
 
         }

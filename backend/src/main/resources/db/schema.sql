@@ -122,6 +122,7 @@ CREATE TABLE movie
   description    VARCHAR(255) NOT NULL,
   release_date   DATE         NOT NULL,
   image_url      VARCHAR(255) NOT NULL DEFAULT 'https://raw.githubusercontent.com/assets/default.jpg',
+  landscape_image_url VARCHAR(255) NOT NULL DEFAULT 'https://raw.githubusercontent.com/assets/default.jpg',
   content_rating VARCHAR(255) NOT NULL,
   CHECK (content_rating IN ('g', 'pg', 'pg13', 'nc16', 'm18', 'r21'))
 );
