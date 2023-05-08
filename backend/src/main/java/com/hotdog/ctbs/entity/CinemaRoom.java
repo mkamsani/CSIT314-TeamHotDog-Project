@@ -55,4 +55,7 @@ public class CinemaRoom {
         return isActive;
     }
 
+    public int compareTo(CinemaRoom cinemaRoom) {
+        return this.getId().compareTo(cinemaRoom.getId());
+    }
 }

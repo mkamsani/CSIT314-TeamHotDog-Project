@@ -91,4 +91,8 @@ public class Movie {
     {
         return Objects.hash(id, title);
     }
+
+    public int compareTo(Movie movie) {
+        return this.getId().compareTo(movie.getId());
+    }
 }
