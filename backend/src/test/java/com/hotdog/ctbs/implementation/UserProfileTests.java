@@ -92,11 +92,4 @@ public class UserProfileTests {
 
         testEnder(time);
     }
-
-    @Test
-    void json() throws JsonProcessingException
-    {
-        long time = testStarter();
-        testEnder(time);
-    }
 }
