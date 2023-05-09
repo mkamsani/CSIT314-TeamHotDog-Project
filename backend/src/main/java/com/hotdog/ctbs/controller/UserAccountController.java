@@ -2,6 +2,9 @@ package com.hotdog.ctbs.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.hotdog.ctbs.entity.UserAccount;
 import com.hotdog.ctbs.repository.UserAccountRepository;
 import com.hotdog.ctbs.repository.UserProfileRepository;
@@ -13,14 +16,11 @@ import com.hotdog.ctbs.service.implementation.UserAccountImpl;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.logging.log4j.*;
 
-
-/**
- * CRUD for user profiles.
- * <br />
- * All methods are PascalCase to denote public API.
- */
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/user-account")
@@ -50,15 +50,12 @@ public class UserAccountController {
     }
 
     /**
-     * <pre>
-     * wget -qO- --post-data '{"username":"admin","password":"admin"}' --header "Content-Type: application/json" http://localhost:8000/api/user-account/login
-     * curl -X POST -H "Content-Type: application/json" -d '{"username":"user_0","password":"password_0","privilege":"customer"}' http://localhost:8000/api/user-account/login
-     * </pre>
+     * curl -X POST -H "Content-Type: application/json" -d '{"userId":"user_0","password":"password_0"}' http://localhost:8000/api/user-account/login
      */
     @PostMapping("/login")
     public String Login(@RequestBody String json)
     {
-        System.out.println("Method login() called.");
+        printMethodStarter("Method UserAccountController.Login() called.");
         try {
             JsonNode jsonNode = new ObjectMapper().readTree(json);
             String username = jsonNode.get("userId").asText();
@@ -71,12 +68,11 @@ public class UserAccountController {
         }
     }
 
-
     // RequestBody: {"username":"a","email":"a@a.com","password":"a","firstName":"fn1","lastName":"ln1","dateOfBirth":"2023-05-03","address":"address1","title":"customer"}
     @PostMapping("/create")
     public String Create(@RequestBody String json)
     {
-        System.out.println("Method create() called.");
+        printMethodStarter("Method UserAccountController.Create() called.");
         try {
             JsonNode jsonNode = new ObjectMapper().readTree(json);
             String username = jsonNode.get("username").asText();
@@ -88,8 +84,8 @@ public class UserAccountController {
             LocalDate dateOfBirth = LocalDate.parse(jsonNode.get("dateOfBirth").asText());
             String title = jsonNode.get("title").asText();
             userAccountImpl.createUserAccount(username, password, email, firstName, lastName, address, dateOfBirth, title);
-            System.out.println("User account " + username + " created successfully");
-            return "User account " + username + " created successfully";
+            System.out.println("User account " + username + " created successfully.");
+            return "User account " + username + " created successfully.";
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }
@@ -98,7 +94,7 @@ public class UserAccountController {
     @PostMapping("/create-customer")
     public String CreateCustomer(@RequestBody String json)
     {
-        System.out.println("Method CreateCustomer() called.");
+        printMethodStarter("Method UserAccountController.CreateCustomer() called.");
         try {
             JsonNode jsonNode = new ObjectMapper().readTree(json);
             String username = jsonNode.get("username").asText();
@@ -116,14 +112,55 @@ public class UserAccountController {
         }
     }
 
-    @DeleteMapping("/delete")
-    // use the correct http class to return the correct http status code
-    public ResponseEntity<String> Delete(@RequestParam String username)
+    // Array of UserAccount objects,
+    // curl -X GET http://localhost:8000/api/user-account/read/all
+    // curl -X GET http://localhost:8000/api/user-account/read/active
+    // curl -X GET http://localhost:8000/api/user-account/read/admin
+    // curl -X GET http://localhost:8000/api/user-account/read/owner
+    // curl -X GET http://localhost:8000/api/user-account/read/manager
+    // curl -X GET http://localhost:8000/api/user-account/read/customer
+    //
+    // Singular UserAccount object, inside an array,
+    // curl -X GET http://localhost:8000/api/user-account/read/mscott
+    // curl -X GET http://localhost:8000/api/user-account/read/stonebraker
+    @GetMapping("/read/{param}")
+    public String Read(@PathVariable String param)
     {
-        printMethodStarter("Method Delete() called.");
         try {
-            UserAccount userAccount = userAccountImpl.findUserAccountByUsername(username);
-            // userAccountImpl.delete(username);
+            ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
+            List<UserAccount> userAccountList = switch (param) {
+                case "admin", "owner", "manager", "customer" -> userAccountImpl.getUserAccountsByPrivilege(param);
+                case "active" -> userAccountImpl.getActiveUserAccounts();
+                case "all" -> userAccountImpl.getAllUserAccounts();
+                // Assume the parameter is a username.
+                default -> {
+                    List<UserAccount> tmp = new ArrayList<>();
+                    // Thrown exception for getUserAccountByUsername() is done in the method itself.
+                    tmp.add(userAccountImpl.getUserAccountByUsername(param));
+                    yield tmp;
+                }
+            };
+            JsonNode[] jsonNodes = new JsonNode[userAccountList.size()];
+            ArrayNode arrayNode = objectMapper.createArrayNode();
+            for (int i = userAccountList.size() - 1; i >= 0; i--) {
+                jsonNodes[i] = objectMapper.valueToTree(userAccountList.get(i));
+                ((ObjectNode) jsonNodes[i]).remove("id");
+                ((ObjectNode) jsonNodes[i]).remove("passwordHash");
+                arrayNode.add(jsonNodes[i]);
+            }
+            return new ObjectMapper().writeValueAsString(arrayNode);
+        } catch (Exception e) {
+            return "Error: " + e.getMessage();
+        }
+    }
+
+    @DeleteMapping("/suspend")
+    // use the correct http class to return the correct http status code
+    public ResponseEntity<String> Suspend(@RequestParam("username") String username)
+    {
+        printMethodStarter("Method UserAccountController.Delete() called.");
+        try {
+            // userAccountImpl.suspend(username);
             System.out.println("User account " + username + " deleted successfully");
             return new ResponseEntity<>("User account " + username + " deleted successfully", HttpStatus.OK);
         } catch (Exception e) {
@@ -141,16 +178,10 @@ public class UserAccountController {
     @DeleteMapping("/deleteUserAccount")
     public String deleteUserAccount(@RequestParam("username") String username)
     {
-        System.out.println("Method called." + LocalDateTime.now()
-                                                           .format(java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-        System.out.println();
-
         System.out.println("Username: " + username);
-        System.out.println();
-
         try {
             int size = userAccountRepository.findAll().size();
-            UserAccount userAccount = userAccountRepository.findUserAccountByUsername(username);
+            UserAccount userAccount = userAccountRepository.findUserAccountByUsername(username).orElse(null);
             if (userAccount == null) {
                 System.out.println("User account " + username + " not found");
                 return "User account " + username + " not found";
@@ -172,6 +203,6 @@ public class UserAccountController {
     @GetMapping("/readAllUserAccounts")
     public String readAllUserAccounts()
     {
-        return userAccountImpl.getManagerUserAccounts().toString();
+        return null;
     }
 }

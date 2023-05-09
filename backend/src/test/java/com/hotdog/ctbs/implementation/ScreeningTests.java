@@ -25,6 +25,7 @@ public class ScreeningTests {
 
     @Autowired
     private ScreeningImpl screeningImpl;
+
     @Autowired
     private CinemaRoomRepository cinemaRoomRepository;
 
@@ -34,6 +35,7 @@ public class ScreeningTests {
 
         System.out.println("Testing createScreening method");
         // date to be 2025-05-01
+        // first 4 screenings
         screeningImpl.createScreening("Spider-Man", "morning",
                 LocalDate.of(2025, 5, 7), 1);
         // create another different
@@ -47,6 +49,7 @@ public class ScreeningTests {
                 LocalDate.of(2025, 5, 15), 1);
 
 
+        // second 4 screenings
         screeningImpl.createScreening("Spider-Man", "morning",
                 LocalDate.of(2025, 5, 1), 1);
         // create another different
@@ -59,6 +62,7 @@ public class ScreeningTests {
         screeningImpl.createScreening("Inception", "midnight",
                 LocalDate.of(2025, 5, 1), 1);
 
+        // third 4 screenings
         screeningImpl.createScreening("Spider-Man", "midnight",
                 LocalDate.of(2025, 5, 1), 2);
         // create another different
@@ -113,7 +117,7 @@ public class ScreeningTests {
 
         // test Screening getScreeningByMovieTitleAndShowTimeAndShowDateAndCinemaRoomId(String movieTitle, String showTime, LocalDate showDate, Integer cinemaRoomId);
         System.out.println("Testing getScreeningByMovieTitleAndShowTimeAndShowDateAndCinemaRoomId method");
-        System.out.println(screeningImpl.getScreeningByMovieTitleAndShowTimeAndShowDateAndCinemaRoomId("Avatar", "midnight", LocalDate.of(2025, 5, 1), 1));
+        System.out.println(screeningImpl.getScreeningByMovieTitleAndShowTimeAndShowDateAndCinemaRoomId("Spider-Man", "morning", LocalDate.of(2025, 5, 1), 1));
         System.out.println();
 
         // test List<Screening> getAllActiveScreenings();
@@ -141,26 +145,12 @@ public class ScreeningTests {
     @Test
     void updateMethod() {
 
-        // test void updateScreening(String currentMovieTitle, String currentShowTime,LocalDate currentShowDate, Integer currentCinemaRoomId,String newMovieTitle, String newShowTime, LocalDate newShowDate, Integer newCinemaRoomId);
-        /*System.out.println("Testing updateScreening method");
-        screeningImpl.updateScreening("Spider-Man", "morning",
-                LocalDate.of(2025, 5, 1), 1,
-                "Avatar", "afternoon",
-                LocalDate.of(2030, 5, 30), 7);
-        System.out.println(screeningImpl.getAllScreenings());
-        System.out.println();*/
-
-        // screeningImpl.createScreening("Spider-Man", "afternoon",
-        //                LocalDate.of(2025, 5, 14), 1);
-        // violate updateScreening method
-        // screeningImpl.createScreening("Inception", "evening",
-        //                LocalDate.of(2025, 5, 1), 2);
         try{
             System.out.println("Testing updateScreening method");
-            screeningImpl.updateScreening("Spider-Man", "afternoon",
-                    LocalDate.of(2025, 5, 14), 1,
-                    "Batman Begins", "evening",
-                    LocalDate.of(2025, 5, 1), 2);
+            screeningImpl.updateScreening("Spider-Man", "morning",
+                    LocalDate.of(2025, 5, 1), 1,
+                    "Avatar", "afternoon",
+                    LocalDate.of(2025, 5, 1), 4);
             System.out.println(screeningImpl.getAllScreenings());
             System.out.println();
         }
@@ -173,15 +163,11 @@ public class ScreeningTests {
     @Test
     void suspendMethod() {
 
-        //screeningImpl.createScreening("Inception", "evening",
-        //                LocalDate.of(2025, 5, 1), 1);
-        // TEST void suspendScreeningByIsActive(String movieTitle,String currentShowTime,LocalDate curreshowDate,Integer cinemaRoomId, Boolean newIsActive);
         System.out.println("Testing suspendScreeningByIsActive method");
-        screeningImpl.suspendScreeningByIsActive("Inception", "evening",
-                LocalDate.of(2025, 5, 1), 1, false);
+        screeningImpl.suspendScreeningByIsActive("Spider-Man", "afternoon",
+                LocalDate.of(2025, 5, 1), 1, true);
         System.out.println(screeningImpl.getAllScreenings());
         System.out.println();
-
 
         }
 

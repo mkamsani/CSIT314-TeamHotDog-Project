@@ -6,13 +6,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
 public interface UserAccountRepository extends JpaRepository<UserAccount, UUID> {
 
-    UserAccount findUserAccountByUsername(final String username);
-    UserAccount findUserAccountByEmail(final String email);
+    Optional<UserAccount> findUserAccountByUsername(final String username);
+    Optional<UserAccount> findUserAccountByEmail(final String email);
     List<UserAccount> findAllByIsActive(final Boolean isActive);
     List<UserAccount> findAllByIsActiveFalse();
 
