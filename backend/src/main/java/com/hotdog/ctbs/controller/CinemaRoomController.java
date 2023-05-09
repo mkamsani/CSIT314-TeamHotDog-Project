@@ -54,14 +54,19 @@ public class CinemaRoomController {
     }
 
     // Update cinema room status
-    @PutMapping("/update/cinemaRoomStatus")
-    public String UpdateCinemaRoomStatus(@RequestBody String json) {
+    @PutMapping("/update/cinemaRoomSuspension")
+    public String suspendCinemaRoom(@RequestBody String json) {
         try{
             JsonNode jsonNode = new ObjectMapper().readTree(json);
             Integer targetID = jsonNode.get("targetId").asInt();
             Boolean newStatus = jsonNode.get("newStatus").asBoolean();
-            cinemaRoomImpl.updateCinemaRoom(targetID, newStatus);
-            return "Cinema room status updated";
+            if (newStatus == false){
+                cinemaRoomImpl.updateCinemaRoom(targetID, newStatus);
+                return "Cinema room status updated";
+            }
+            else{
+                return "Cinema room status cannot be updated to true";
+            }
         }
         catch(Exception e){
             return "Invalid input";

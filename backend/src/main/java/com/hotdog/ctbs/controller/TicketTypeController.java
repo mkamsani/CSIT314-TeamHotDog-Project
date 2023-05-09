@@ -135,7 +135,7 @@ public class TicketTypeController {
                     return "Success updating ticketType";
                 }
                 else {
-                    throw new Exception("Cannot set ticket type to active");
+                    return "Error: Cannot update ticketType to active";
                 }
             }
             catch (Exception e){
