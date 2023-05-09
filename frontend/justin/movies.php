@@ -6,7 +6,6 @@ session_start();
 include('header.php');
 
 $moviesCh = curl_init();
-
 curl_setopt($moviesCh, CURLOPT_URL, "http://localhost:8000/api/movie/read/allMovieTitles");
 curl_setopt($moviesCh, CURLOPT_RETURNTRANSFER, 1);
 $movies = curl_exec($moviesCh);
@@ -16,16 +15,11 @@ $movies = explode(", ",$movies);
 curl_close($moviesCh);
 
 $moviesDetailsCh = curl_init();
-
 curl_setopt($moviesDetailsCh, CURLOPT_URL, "http://localhost:8000/api/movie/read/allMoviesDetails");
 curl_setopt($moviesDetailsCh, CURLOPT_RETURNTRANSFER, 1);
 $moviesDetails = curl_exec($moviesDetailsCh);
 curl_close($moviesDetailsCh);
 $moviesDetails = json_decode($moviesDetails, true);
-
-
-
-
 
 ?>
 
@@ -63,19 +57,23 @@ $moviesDetails = json_decode($moviesDetails, true);
 <div class="container-fluid p-5 bg-danger text-white text-center">
     <h1>Movies</h1>
 <!--    <p>Admin ID: --><?php //echo $_SESSION["userId"] ?><!--</p>-->
-    <table>
-        <thead><tr>
+    <table border="1">
+       <tr>
             <th>Movie Title</th>
             <th>Movie Description </th>
             <th>Genre</th>
             <th>Poster</th>
+        <tr>
+        <tr>
 
+            <td>
+                <?php
+                $movieName = array_column($moviesDetails, 'title');
+                foreach($movieName as $movieKey) {
+                echo ''.$movieKey.'<br/>';
+            }  ?>
+            </td>
 
-
-        </thead><tbody><tr>
-            <td><?php foreach($movies as $movieKey) {
-                    echo ''.$movieKey.'<br/>';
-            }  ?></td>
 
             <td><?php
                 $description = array_column($moviesDetails, 'description');
@@ -93,11 +91,14 @@ $moviesDetails = json_decode($moviesDetails, true);
                 $poster = array_column($moviesDetails, 'imageUrl');
                 foreach($poster as $imageKey) {
                 ?>
-                 <img src="<?php echo $imageKey ?>" width="100" height="50"> <br/>
+                    <a href="Review.php" class='moviePoster' title="moviePoster">
+                        <img src="<?php echo $imageKey ?>" width="100" height="50"> <br/>
+                    </a>
                  <?php
                 }
                 ?>
              </td>
+        </tr>
 
 
     </table>

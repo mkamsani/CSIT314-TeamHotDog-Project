@@ -24,6 +24,27 @@ session_start();
 		}; */
 		echo "</table>\n";
 		?>
+
+    <?php
+//                    get monthly reports
+//    $monthlyReportsCh = curl_init();
+//    curl_setopt($monthlyReportsCh, CURLOPT_URL, "http://localhost:8000/api/cinemaRoom/read/allActiveCinemaRoomIds");
+//    curl_setopt($monthlyReportsCh, CURLOPT_RETURNTRANSFER, 1);
+//    $mReports = curl_exec($monthlyReportsCh);
+//    curl_close($monthlyReportsCh);
+//    $mReports = json_decode($mReports, true);
+//    print_r($mReports);
+
+    //                    get daily reports
+    //    $dailyReportsCh = curl_init();
+    //    curl_setopt($dailyReportsCh, CURLOPT_URL, "http://localhost:8000/api/cinemaRoom/read/allActiveCinemaRoomIds");
+    //    curl_setopt($dailyReportsCh, CURLOPT_RETURNTRANSFER, 1);
+    //    $dReports = curl_exec($dailyReportsCh);
+    //    curl_close($dailyReportsCh);
+    //    $dReports = json_decode($dReports, true);
+    //    print_r($dReports);
+
+    ?>
 </tr>
 </table>
 </body>
