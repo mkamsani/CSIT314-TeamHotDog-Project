@@ -91,7 +91,8 @@ $moviesDetails = json_decode($moviesDetails, true);
                 $poster = array_column($moviesDetails, 'imageUrl');
                 foreach($poster as $imageKey) {
                 ?>
-                    <a href="Review.php" class='moviePoster' title="moviePoster">
+
+                    <a href="Review.php?imageUrl=.$imageKey.'" class='moviePoster' title="moviePoster">
                         <img src="<?php echo $imageKey ?>" width="100" height="50"> <br/>
                     </a>
                  <?php

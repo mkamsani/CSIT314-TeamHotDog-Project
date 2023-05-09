@@ -19,6 +19,7 @@
     <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" class="reviews">
     <textarea id="movieReview" name="movieReview" rows="4" cols="50">
     </textarea>
+    <br>
     <input type="submit" name="submit" value="submit">
     <input type="submit" name="back" value="back">
     </form>
@@ -33,6 +34,8 @@ echo $review;
 if(isset($_POST['back'])) {
 	header("Location: movies.php");
 }
+
+echo $_GET['imageUrl'];
 
 //$reviewCh = curl_init();
 //$review = $_POST['review'];
