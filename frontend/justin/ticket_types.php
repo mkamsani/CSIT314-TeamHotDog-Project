@@ -125,7 +125,7 @@ if (isset($_POST['createTicket'])) {
     <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" class="showTicket">
 
         <input type="text"  name="ticketType" id="ticketType" placeholder="Enter ticket type">
-        <input type="number"  name="typePrice" id="typePrice" placeholder="Enter ticket price">
+        <input type="number" step = "0.01" name="typePrice" id="typePrice" placeholder="Enter ticket price">
 
         <select name="createIsActive" id="createIsActive">
             <option> Select ticket type Activity </option>
@@ -197,7 +197,7 @@ if (isset($_POST['createTicket'])) {
             ?>
         </select>
         <input type="text"  name="newTypeName" id="newTypeName" placeholder="Enter new type name">
-        <input type="number"  name="newPrice" id="newPrice" placeholder="Enter new price">
+        <input type="number"  name="newPrice" step = "0.01" id="newPrice" placeholder="Enter new price">
         <select name="updateIsActive" id="updateIsActive">
             <option> Select ticket Activity </option>
             <option value = "TRUE"> Active </option>
