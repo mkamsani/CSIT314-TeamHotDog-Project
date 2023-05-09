@@ -3,11 +3,14 @@ package com.hotdog.ctbs.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.LinkedHashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Builder
 @AllArgsConstructor
@@ -27,12 +30,20 @@ public class CinemaRoom {
     @Column(name = "is_active", nullable = false)
     private Boolean isActive;
 
+    @OneToMany(mappedBy = "cinemaRoom", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JsonIgnore
+    private Set<Seat> seats = new LinkedHashSet<>();
+
     @SneakyThrows
     @Override
     public String toString()
     {
-        return new ObjectMapper().registerModule(new JavaTimeModule())
-                .writeValueAsString(this);
+        ObjectNode json = new ObjectMapper().createObjectNode();
+        json.put("id",          id.toString());
+        json.put("isActive",    isActive.toString());
+        json.put("capacity",    countSeats());
+
+        return json.toString();
     }
 
     @Override
@@ -58,4 +69,13 @@ public class CinemaRoom {
     public int compareTo(CinemaRoom cinemaRoom) {
         return this.getId().compareTo(cinemaRoom.getId());
     }
+
+    // count number of seats linked cinema room
+    public int countSeats() {
+
+        return this.getSeats().size();
+
+    }
+
+
 }

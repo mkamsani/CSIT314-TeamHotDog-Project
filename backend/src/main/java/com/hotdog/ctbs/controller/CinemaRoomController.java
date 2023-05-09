@@ -14,7 +14,6 @@ import com.hotdog.ctbs.service.implementation.CinemaRoomImpl;
 @RequestMapping("/cinemaRoom")
 public class CinemaRoomController {
     private final CinemaRoomImpl cinemaRoomImpl;
-
     public CinemaRoomController(CinemaRoomImpl cinemaRoomImpl)
     {
         this.cinemaRoomImpl = cinemaRoomImpl;

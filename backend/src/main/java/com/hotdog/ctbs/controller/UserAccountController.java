@@ -18,8 +18,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
-import org.apache.logging.log4j.*;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -29,7 +29,7 @@ public class UserAccountController {
     private final UserAccountImpl userAccountImpl;
     private final UserProfileRepository userProfileRepository;
     private final UserAccountRepository userAccountRepository;
-    private final Logger log4j;
+    private final Logger logger;
 
     public UserAccountController(UserAccountImpl userAccountImpl,
                                  UserProfileRepository userProfileRepository,
@@ -38,15 +38,15 @@ public class UserAccountController {
         this.userAccountImpl = userAccountImpl;
         this.userProfileRepository = userProfileRepository;
         this.userAccountRepository = userAccountRepository;
-        this.log4j = LogManager.getLogger(UserAccountController.class);
+        this.logger = Logger.getLogger(UserAccountController.class.getName());
     }
 
     public void printMethodStarter(String message)
     {
-        log4j.info(System.lineSeparator());
-        log4j.info(LocalDateTime.now().format(DateTimeFormatter.ofPattern("MMM d h:mm:ss a")));
-        log4j.info(message);
-        log4j.info(System.lineSeparator());
+        logger.info(System.lineSeparator());
+        logger.info(LocalDateTime.now().format(DateTimeFormatter.ofPattern("MMM d h:mm:ss a")));
+        logger.info(message);
+        logger.info(System.lineSeparator());
     }
 
     /**
@@ -126,6 +126,7 @@ public class UserAccountController {
     @GetMapping("/read/{param}")
     public String Read(@PathVariable String param)
     {
+        printMethodStarter("Method UserAccountController.Read() called.");
         try {
             ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
             List<UserAccount> userAccountList = switch (param) {
@@ -146,6 +147,8 @@ public class UserAccountController {
                 jsonNodes[i] = objectMapper.valueToTree(userAccountList.get(i));
                 ((ObjectNode) jsonNodes[i]).remove("id");
                 ((ObjectNode) jsonNodes[i]).remove("passwordHash");
+                ((ObjectNode) jsonNodes[i]).put("title", userAccountList.get(i).getUserProfile().getTitle());
+                ((ObjectNode) jsonNodes[i]).put("privilege", userAccountList.get(i).getUserProfile().getPrivilege());
                 arrayNode.add(jsonNodes[i]);
             }
             return new ObjectMapper().writeValueAsString(arrayNode);
@@ -154,21 +157,42 @@ public class UserAccountController {
         }
     }
 
-    @DeleteMapping("/suspend")
-    // use the correct http class to return the correct http status code
-    public ResponseEntity<String> Suspend(@RequestParam("username") String username)
+    /*
+curl -X PUT -H "Content-Type: application/json" -d '{"username":"mscott","firstName":"Michael","lastName":"Scott","email":"address":"Scranton, PA","dateOfBirth":"1964-03-15","title":"manager"}' http://localhost:8000/api/user-account/update/mscott
+    */
+    @PutMapping("/update/{targetUsername}")
+    public String Update(@RequestBody String json, @PathVariable String targetUsername)
     {
-        printMethodStarter("Method UserAccountController.Delete() called.");
+        printMethodStarter("Method UserAccountController.Update() called.");
         try {
-            // userAccountImpl.suspend(username);
-            System.out.println("User account " + username + " deleted successfully");
-            return new ResponseEntity<>("User account " + username + " deleted successfully", HttpStatus.OK);
+            JsonNode jsonNode = new ObjectMapper().readTree(json);
+            String username = jsonNode.get("username").asText();
+            String firstName = jsonNode.get("firstName").asText();
+            String lastName = jsonNode.get("lastName").asText();
+            String email = jsonNode.get("email").asText();
+            String address = jsonNode.get("address").asText();
+            LocalDate dateOfBirth = LocalDate.parse(jsonNode.get("dateOfBirth").asText());
+            String title = jsonNode.get("title").asText();
+            userAccountImpl.update(targetUsername, username, firstName, lastName, email, address, dateOfBirth, title);
+            System.out.println("User account " + username + " updated successfully.");
+            return "User account " + username + " updated successfully.";
         } catch (Exception e) {
-            return new ResponseEntity<>("Error: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+            return "Error: " + e.getMessage();
         }
     }
 
-    /// ----------------------------------------------
+    @DeleteMapping("/suspend/{targetUsername}")
+    public String Suspend(@PathVariable String targetUsername)
+    {
+        printMethodStarter("Method UserAccountController.Suspend() called.");
+        try {
+            userAccountImpl.suspend(targetUsername);
+            System.out.println("User account " + targetUsername + " deleted successfully");
+            return "User account " + targetUsername + " deleted successfully";
+        } catch (Exception e) {
+            return "Error: " + e.getMessage();
+        }
+    }
 
     /// TODO: update these methods below -----------------------------------------------------------------------------
 

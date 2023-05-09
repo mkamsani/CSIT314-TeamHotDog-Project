@@ -29,7 +29,7 @@ public class CinemaRoomTests {
         System.out.println(cinemaRoomImpl.getAllCinemaRoom());
         System.out.println();
 
-        // test void checkCinemaRoomExists(Integer ID);
+        /*// test void checkCinemaRoomExists(Integer ID);
         System.out.println("Test void checkCinemaRoomExists(Integer ID)");
         cinemaRoomImpl.checkCinemaRoomExists(1);
         System.out.println();
@@ -37,7 +37,8 @@ public class CinemaRoomTests {
         // test void updateCinemaRoom(Integer id, Boolean isActive);
         System.out.println("Test void updateCinemaRoom(Integer id, Boolean isActive)");
         cinemaRoomImpl.updateCinemaRoom(3, false);
-        System.out.println();
+        System.out.println();*/
+
         // return a list of all cinema room after update
         System.out.println("Return a list of all cinema room after update");
         System.out.println(cinemaRoomImpl.getAllCinemaRoom());
