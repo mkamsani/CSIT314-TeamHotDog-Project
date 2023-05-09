@@ -12,7 +12,8 @@
 <body>
 <?php
 // Code for update
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+if ($_SERVER['REQUEST_METHOD'] == 'POST')
+{
 $json = json_encode($_POST);
 $ch = curl_init("http://localhost:8000/api/user-profile/update");
 curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
