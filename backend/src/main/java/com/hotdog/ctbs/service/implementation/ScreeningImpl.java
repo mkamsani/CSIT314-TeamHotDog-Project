@@ -161,7 +161,12 @@ public class ScreeningImpl implements ScreeningService{
         if (movie == null)
             throw new IllegalArgumentException("Movie does not exist.");
 
-        List<Screening> screenings = screeningRepo.findScreeningsByMovieTitle(movieTitle);
+        List<Screening> screenings = screeningRepo.findScreeningsByMovieTitle(movieTitle).orElse(null);
+
+        if (screenings.isEmpty() || screenings == null) {
+            throw new IllegalArgumentException("No screenings found for the specified movie.");
+        }
+
         // sort the screening details using self defined comparator
         Collections.sort(screenings, new ScreeningComparator());
         return screenings;
@@ -173,7 +178,14 @@ public class ScreeningImpl implements ScreeningService{
     @Transactional
     public List<Screening> getAllScreeningsByShowDate(LocalDate showDate)
     {
-        List<Screening> screenings = screeningRepo.findScreeningsByShowDate(showDate);
+
+        List<Screening> screenings = screeningRepo.findScreeningsByShowDate(showDate).orElse(null);
+
+        if (screenings.isEmpty() || screenings == null) {
+            throw new IllegalArgumentException("No screenings found for the specified date.");
+        }
+
+
         // sort the screening details using self defined comparator
         Collections.sort(screenings, new ScreeningComparator());
 
@@ -185,7 +197,13 @@ public class ScreeningImpl implements ScreeningService{
     @Transactional
     public List<Screening> getAllScreeningsByShowTime(String showTime)
     {
-        List<Screening> screenings = screeningRepo.findScreeningsByShowTime(showTime);
+
+        List<Screening> screenings = screeningRepo.findScreeningsByShowTime(showTime).orElse(null);
+
+        if (screenings.isEmpty() || screenings == null) {
+            throw new IllegalArgumentException("No screenings found for the specified time.");
+        }
+
         // sort the screening details using self defined comparator
         Collections.sort(screenings, new ScreeningComparator());
 
@@ -203,7 +221,13 @@ public class ScreeningImpl implements ScreeningService{
         if (cinemaRoom == null)
             throw new IllegalArgumentException("Cinema room does not exist.");
 
-        List<Screening> screenings = screeningRepo.findScreeningsByCinemaRoom(cinemaRoom);
+
+        List<Screening> screenings = screeningRepo.findScreeningsByCinemaRoom(cinemaRoom).orElse(null);
+
+        if (screenings.isEmpty() || screenings == null) {
+            throw new IllegalArgumentException("No screenings found for the specified cinema room.");
+        }
+
         // sort the screening details using self defined comparator
         Collections.sort(screenings, new ScreeningComparator());
 
@@ -241,7 +265,8 @@ public class ScreeningImpl implements ScreeningService{
             throw new IllegalArgumentException("Cinema room is not active.");
 
         // check if screening exists
-        Screening screening = screeningRepo.findScreeningByMovieTitleAndShowTimeAndShowDateAndCinemaRoomId(movieTitle, showTime, showDate, cinemaRoomId);
+        Screening screening = screeningRepo.findScreeningByMovieTitleAndShowTimeAndShowDateAndCinemaRoomId
+                (movieTitle, showTime, showDate, cinemaRoomId);
         if (screening == null)
             throw new IllegalArgumentException("Screening does not exist.");
 
@@ -261,8 +286,14 @@ public class ScreeningImpl implements ScreeningService{
     @Transactional
     public List<Screening> getAllActiveScreenings()
     {
+
         // get all active screenings
-        List<Screening> screenings = screeningRepo.findScreeningsByIsActive(true);
+        List<Screening> screenings = screeningRepo.findScreeningsByIsActive(true).orElse(null);
+
+        if (screenings.isEmpty() || screenings == null) {
+            throw new IllegalArgumentException("No active screenings found.");
+        }
+
         // sort the screening details using self defined comparator
         Collections.sort(screenings, new ScreeningComparator());
 
@@ -279,15 +310,17 @@ public class ScreeningImpl implements ScreeningService{
         if (movie == null)
             throw new IllegalArgumentException("Movie does not exist.");
 
-        List<Screening> screenings = screeningRepo.findScreeningsByMovieTitleAndIsActive(movieTitle, true);
-        if (screenings.isEmpty()) {
-            throw new IllegalArgumentException("No active screenings found for this movie.");
+        List<Screening> screenings = screeningRepo.findScreeningsByMovieTitleAndIsActive(movieTitle, true).orElse(null);
+        // check if there is any active screening for this movie
+        if (screenings.isEmpty() || screenings == null) {
+            throw new IllegalArgumentException("No active screenings found for the specified movie.");
         }
         else{
             // sort the screening details using self defined comparator
             Collections.sort(screenings, new ScreeningComparator());
             return screenings;
         }
+
     }
 
     // 3. Update screening
@@ -305,7 +338,7 @@ public class ScreeningImpl implements ScreeningService{
 
         // check if current screening is active
         if (currentScreening.getIsActive() == false)
-            throw new IllegalArgumentException("Cannot update a inactive screening.");
+            throw new IllegalArgumentException("Cannot update an inactive screening.");
 
         // check if new movie title exists
         Movie newMovie = movieRepo.findMovieByTitle(newMovieTitle);
@@ -335,7 +368,8 @@ public class ScreeningImpl implements ScreeningService{
             if (screening.getShowTime().equals(newShowTime)
                     && screening.getCinemaRoom().equals(newCinemaRoom)
                     && screening.getShowDate().equals(newShowDate))
-                throw new IllegalArgumentException("Screening already exists");
+                throw new IllegalArgumentException("You cannot update to a " +
+                        "screening that has the same show time, cinema room and show date as another screening.");
 
 
         // update screening details
