@@ -17,7 +17,9 @@ include('header.php');
             <li class="nav-item">
                 <a class="nav-link active bg-danger" href="UserAdmin.php">Home</a>
             </li>
-            &emsp;
+            <li class="nav-item">
+                <a class="nav-link" href="CreateUser.php">Create User Account</a>
+            </li>
             <li class="nav-item">
                 <a class="nav-link" href="UserAccounts.php">User Accounts</a>
             </li>

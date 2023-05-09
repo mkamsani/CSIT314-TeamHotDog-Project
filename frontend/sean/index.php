@@ -41,7 +41,7 @@ if(isset($_POST['submit']) && !empty($_POST['userId']) && !empty($_POST['passwor
 }
 switch ($_SESSION["privilege"] ) {
     case 'admin':
-//        header("location: admin/index.php"); TODO
+        header("location: UserAdmin.php");
         echo "<script>document.getElementById('result').innerHTML = '" . $_SESSION["privilege"] . "';</script>";
         break;
     case 'owner':
@@ -69,16 +69,22 @@ switch ($_SESSION["privilege"] ) {
     </div>
     <div class="carousel-inner">
         <div class="carousel-item active" data-bs-interval="5000">
-            <img src="Pics\carousel.png" class="d-block w-100" alt="...">
+            <img src="Pics\carousel-1.png" class="d-block w-100" alt="...">
             <div class="carousel-caption d-none d-md-block">
-                <h1>HotDog Cinemas</h1>
+                <h1 style ="color: red; text-shadow: 2px 2px #000">HotDog Cinemas</h1>
             </div>
         </div>
         <div class="carousel-item" data-bs-interval="5000">
-            <img src="Pics\carousel-2.jpg" class="d-block w-100" alt="...">
+            <img src="Pics\carousel-2.png" class="d-block w-100" alt="...">
+            <div class="carousel-caption d-none d-md-block">
+                <h1 style ="color: red; text-shadow: 2px 2px #000;">HotDog Cinemas</h1>
+            </div>
         </div>
         <div class="carousel-item" data-bs-interval="5000">
-            <img src="Pics\carousel-3.jpg" class="d-block w-100" alt="...">
+            <img src="Pics\carousel-3.png" class="d-block w-100" alt="...">
+            <div class="carousel-caption d-none d-md-block">
+                <h1 style ="color: red; text-shadow: 2px 2px #000;">HotDog Cinemas</h1>
+            </div>
         </div>
     </div>
     <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators"
@@ -102,7 +108,7 @@ switch ($_SESSION["privilege"] ) {
         </div>
         <div class="input-group mt-3">
             <span class='input-group-text'>Password : </span>
-            <input class='form-control' type='text' name='password' required>
+            <input class='form-control' type='password' name='password' required>
         </div>
         <span class="error" style="color:red" id = "result"><?php echo $result; ?></span>
         <div class="mt-3 d-grid col-6 gap-2 mx-auto">
