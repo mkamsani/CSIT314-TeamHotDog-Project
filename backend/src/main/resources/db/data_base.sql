@@ -11,10 +11,11 @@ VALUES
   ('admin',    'senior admin'),
   ('admin',    'chief information officer');
 
+-- Insert default users accounts: 2 managers, 2 owners, 3 admins, 1 customer.
+-- Use data_many.sql to insert more users.
 INSERT INTO user_account
   (password_hash, username, email, first_name, last_name, address, date_of_birth, user_profile)
 VALUES
-  -- 7 personnel of the cinema:
   ('password-employee', 'jim',         'jhalpert@hotdogbuns.com',        'Jim',     'Halpert',     '126 Kellum Court, Scranton, PA 18510',                 '1979-10-20', (SELECT uuid FROM user_profile WHERE title = 'junior manager')),
   ('password-employee', 'mscott',      'mscott@hotdogbuns.com',          'Michael', 'Scott',       '621 Court Kellum, Not Narcs, AP 01581',                '1962-08-16', (SELECT uuid FROM user_profile WHERE title = 'senior manager')),
   ('password-employee', 'dwallace',    'dwallace@hotdogbuns.com',        'David',   'Wallace',     '6818 Smith Lake, Schimmelland, RI 93473',              '1965-02-13', (SELECT uuid FROM user_profile WHERE title = 'chief financial officer')),
@@ -22,15 +23,9 @@ VALUES
   ('password-employee', 'marcus',      'marcus@adm.hotdogbuns.com',      'Marcus',  'Hutchins',    '096 Jeannine Tunnel, East Alysia, NY 96753',           '1994-01-01', (SELECT uuid FROM user_profile WHERE title = 'junior admin')),
   ('password-employee', 'samy',        'samy@adm.hotdogbuns.com',        'Samy',    'Kamkar',      'Apt. 209 29633 Gianna Parks, North Lonna, OK 27899',   '1985-12-10', (SELECT uuid FROM user_profile WHERE title = 'senior admin')),
   ('password-employee', 'stonebraker', 'stonebraker@adm.hotdogbuns.com', 'Michael', 'Stonebraker', 'Apt. 802 240 Freda Canyon, Connellytown, UT 62204',    '1943-10-11', (SELECT uuid FROM user_profile WHERE title = 'chief information officer')),
-  -- 5 customers:
-  ('password_0', 'user_0', 'logan.kling@yahoo.com',        'Alexis',  'Flatley',   '452 Hung Junction, Armstrongshire, MN 95193',             '2004-08-26', (SELECT uuid FROM user_profile WHERE title = 'customer')),
-  ('password_1', 'user_1', 'lavinia.morissette@yahoo.com', 'Bernie',  'Pollich',   'Suite 723 591 Towne Greens, Larryshire, AL 50078',        '1989-08-06', (SELECT uuid FROM user_profile WHERE title = 'customer')),
-  ('password_2', 'user_2', 'dwain.franecki@yahoo.com',     'Sonya',   'Larson',    '8788 Franecki Coves, Kenethton, OK 44141',                '1990-10-15', (SELECT uuid FROM user_profile WHERE title = 'customer')),
-  ('password_3', 'user_3', 'an.romaguera@hotmail.com',     'Ellan',   'Bashirian', 'Apt. 849 7652 Michaele Fields, New Keelymouth, VA 07784', '1974-04-02', (SELECT uuid FROM user_profile WHERE title = 'customer')),
-  ('password_4', 'user_4', 'jarred.herzog@gmail.com',      'Orlando', 'Bradtke',   '5259 Marshall Shoals, Priceburgh, OR 34597',              '1996-05-29', (SELECT uuid FROM user_profile WHERE title = 'customer')),
-  ('password_5', 'user_5', 'laree.kulas@yahoo.com',        'Olen',    'Legros',    '4878 Santos Island, Gutmannside, AK 31521',               '1998-03-16', (SELECT uuid FROM user_profile WHERE title = 'customer'));
+  ('password-customer', 'customer0',   'im.king@example.com',            'King',    'Charles',     '4878 Santos Island, Gutmannside, AK 31521',            '1998-03-16', (SELECT uuid FROM user_profile WHERE title = 'customer'));
 
--- I want to insert 5 dummy data to my movie table
+-- Insert 9 default movies.
 INSERT INTO movie
   (title, genre, description, release_date, image_url, landscape_image_url,is_active, content_rating)
 VALUES
@@ -55,12 +50,15 @@ VALUES
   ('Avengers: Infinity War',   'adventure', 'The superhero blockbuster "Avengers: Infinity War" features Robert Downey Jr., Chris Hemsworth, and Chris Evans as the Avengers, ' ||
                                             'who fight against Thanos to prevent the destruction of the universe.',                                                                                  '2018-04-27', 'https://www.themoviedb.org/t/p/original/rcV5bQjDoPNfI4wRpWAgZXtE0ON.jpg', 'https://www.themoviedb.org/t/p/original/lmZFxXgJE3vgrciwuDib0N8CfQo.jpg', TRUE, 'pg13');
 
+-- Insert 8 default cinema rooms.
+-- No further cinema rooms can be added.
 INSERT INTO cinema_room (id) VALUES (1), (2), (3), (4), (5), (6), (7), (8);
 
+-- Insert a maximum of 500 random screenings.
 DO $$
   DECLARE
   BEGIN
-    FOR i IN 1..900 LOOP
+    WHILE (SELECT COUNT(*) FROM screening) < 500 LOOP
       CALL random_screening();
     END LOOP;
   END

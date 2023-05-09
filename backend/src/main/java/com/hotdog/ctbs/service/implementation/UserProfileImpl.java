@@ -105,7 +105,7 @@ public class UserProfileImpl implements UserProfileService {
     @Override
     public String suspendUserProfileByTitle(String targetTitle)
     {
-        UserProfile userProfile = userProfileRepository.findUserProfileByTitle(targetTitle);
+        UserProfile userProfile = userProfileRepository.findUserProfileByTitle(targetTitle).orElse(null);
         if (userProfile == null)
             return "Not found.";
         if (!userProfile.getIsActive())
@@ -124,7 +124,7 @@ public class UserProfileImpl implements UserProfileService {
     @Override
     public void updateUserProfileByTitle(String targetTitle, String privilege, String title)
     {
-        UserProfile userProfile = userProfileRepository.findUserProfileByTitle(targetTitle);
+        UserProfile userProfile = userProfileRepository.findUserProfileByTitle(targetTitle).orElse(null);
         if (userProfile == null)
             throw new IllegalArgumentException("User profile not found.");
         if (title.equals("Customer"))

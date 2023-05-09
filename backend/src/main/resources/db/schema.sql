@@ -34,22 +34,22 @@ and will be removed once the Java code is implemented.
 These statements will be marked with a 'TO-DO: Convert to Spring Boot'.
 TO-DO will not contain a hyphen in the actual comments below.
 
-| TABLE/VIEW             | CRUD | Status      | Notes
-|------------------------|------|-------------|--------------------------------
-| user_profile           | CRUS | In progress |
-| user_account           | CRUS | In progress | Delete == is_active FALSE.
-| movie                  | CRUD | In progress |
-| ticket_type            | CRU  | In progress | Create when db is initialised.
-| cinema_room            |  RUS | In progress | Create when db is initialised.
-| seat                   |  R   | In progress | Create when db is initialised.
-| screening              | CRUD | In progress | Depends on movie, cinema_room
-| ticket                 | CRUD | In progress | Depends on screening, seat
-| loyalty_point          |  R   | Not started | No user-interaction on update.
-| food_combo             | CRUD | Not started |
-| food_order             | CRUD | Not started | Depends on food_combo, ticket
-| rating_review          | CRUD | Not started | Depends on loyalty_point
-| monthly_revenue_report |  R   | Not started |
-| monthly_rating_report  |  R   | Not started |
+| TABLE/VIEW             | CRUD  | Status      | Notes
+|------------------------|-------|-------------|--------------------------------
+| user_profile           | CRUS  | In progress |
+| user_account           | CRUS  | In progress | Delete == is_active FALSE.
+| loyalty_point          |  R    | Not started | 100% generated. Java update.
+| rating_review          | CRUD  | Not started | Depends on loyalty_point.
+| movie                  | CRUD  | In progress |
+| cinema_room            |  RUS  | In progress | Create when db is initialised.
+| screening              | CRUD  | In progress | Depends on movie, cinema_room
+| ticket_type            | CRUS  | In progress | Create when db is initialised.
+| ticket                 | CRUD  | In progress | Depends on screening, seat
+| seat                   |  R    | In progress | 100% generated.
+| monthly_rating_report  |  R    | Not started | TODO.
+| monthly_revenue_report |  R    | Not started | TODO.
+| food_order             | CRUD  | Not started | Not implemented.
+| food_combo             | CRUD  | Not started | Not implemented.
 */
 
 DROP SCHEMA IF EXISTS public CASCADE;
@@ -106,7 +106,7 @@ CREATE TABLE user_account
 CREATE TABLE loyalty_point
 (
   PRIMARY KEY (uuid),
-  uuid            Uuid    NOT NULL REFERENCES user_account (uuid),
+  uuid            Uuid    NOT NULL REFERENCES user_account (uuid) ON DELETE CASCADE ON UPDATE CASCADE,
   points_redeemed INTEGER NOT NULL DEFAULT 0 CHECK (points_redeemed >= 0),
   points_total    INTEGER NOT NULL DEFAULT 0 CHECK (points_total    >= 0)
 );

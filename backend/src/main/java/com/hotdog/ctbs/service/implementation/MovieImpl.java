@@ -384,9 +384,8 @@ public class MovieImpl implements MovieService{
     }
 
 
-    // delete the movie by input its title ( still in progress)
-    // consideration : if delete movie ==  delete all the screening related to this deleted movies
-    // or isAvailable to determine whether the movie can be deleted
+    // delete the movie by input its title
+    // Note: the movie cannot be deleted if it has screenings
     @Transactional
     @Override
     public void deleteMovieByTitle(String title)

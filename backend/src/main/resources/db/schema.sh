@@ -20,7 +20,7 @@ test -z "$oci" && printf %s\\n "No OCI runtime found" && exit 1
 # Unset set -e to allow the script to continue if the container is not running.
 set +e
 # Kill and remove the container (to reset) if it's running.
-sleep 2 && "$oci" container list -a | grep pg && "$oci" rm -f pg
+sleep 3 && "$oci" container list -a | grep pg && "$oci" rm -f pg
 
 # Start the container in the background.
 # --rm                    : Automatically remove the container when it exits.
@@ -47,18 +47,17 @@ cgr.dev/chainguard/postgres:latest
 # Allow time for postgres to start.
 sleep 3
 
-# Get absolute path of the schema.sql file
-schema_file="$(find "$(pwd)" -name "schema.sql" -type f -exec realpath {} \;)"
-trigger_file="$(find "$(pwd)" -name "trigger.sql" -type f -exec realpath {} \;)"
-data_file="$(find "$(pwd)" -name "data.sql" -type f -exec realpath {} \;)"
 # Copy the schema.sql file to the container
-"$oci" cp "$schema_file"  pg:/home/postgres
-"$oci" cp "$trigger_file" pg:/home/postgres
-"$oci" cp "$data_file"    pg:/home/postgres
+"$oci" cp "$(find "$(pwd)" -name "schema.sql"    -type f -exec realpath {} \;)" pg:/home/postgres
+"$oci" cp "$(find "$(pwd)" -name "trigger.sql"   -type f -exec realpath {} \;)" pg:/home/postgres
+"$oci" cp "$(find "$(pwd)" -name "data_base.sql" -type f -exec realpath {} \;)" pg:/home/postgres
+"$oci" cp "$(find "$(pwd)" -name "data_many.sql" -type f -exec realpath {} \;)" pg:/home/postgres
 # Enter the container and create the schema.
-"$oci" exec -it pg psql -U postgres -f /home/postgres/schema.sql
-"$oci" exec -it pg psql -U postgres -f /home/postgres/trigger.sql
-"$oci" exec -it pg psql -U postgres -f /home/postgres/data.sql
+"$oci" exec pg psql -U postgres -f /home/postgres/schema.sql
+"$oci" exec pg psql -U postgres -f /home/postgres/trigger.sql
+"$oci" exec pg psql -U postgres -f /home/postgres/data_base.sql
+# (Optionally) insert large amounts of data.
+"$oci" exec pg psql -U postgres -f /home/postgres/data_many.sql
 
 # Unset variables from the environment.
-unset oci schema_file trigger_file data_file
+unset oci

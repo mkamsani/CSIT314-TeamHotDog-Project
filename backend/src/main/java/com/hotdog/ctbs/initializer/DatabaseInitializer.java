@@ -5,7 +5,6 @@ import com.hotdog.ctbs.entity.UserProfile;
 import com.hotdog.ctbs.repository.UserAccountRepository;
 import com.hotdog.ctbs.repository.UserProfileRepository;
 import net.datafaker.Faker;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
@@ -14,8 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
 import java.util.UUID;
 
 @Component
@@ -33,7 +30,7 @@ public class DatabaseInitializer implements ApplicationRunner {
 
     @Transactional
     @Override
-    public void run(ApplicationArguments args) throws Exception
+    public void run(ApplicationArguments args)
     {
         if (userProfileRepository.count() == 0) {
             Arrays.stream(new String[][]{
@@ -71,39 +68,34 @@ public class DatabaseInitializer implements ApplicationRunner {
                                .lastName(userAccount[3])
                                .address(faker.address().fullAddress())
                                .dateOfBirth(LocalDate.parse(userAccount[4]))
-                               .userProfile(userProfileRepository.findUserProfileByTitle(userAccount[5]))
+                               .userProfile(userProfileRepository.findUserProfileByTitle(userAccount[5]).orElse(null))
                                .timeCreated(OffsetDateTime.now())
                                .timeLastLogin(OffsetDateTime.now())
                                .isActive(true)
                                .build()
             ));
+            UserProfile userProfileCustomer = userProfileRepository.findUserProfileByTitle("customer").orElse(null);
             for (int i = 0; i < 100; i++) {
-                String firstName = faker.name().firstName();
+                // Generate a random date of birth between 18 and 99 years ago.
+                LocalDate dateOfBirth = faker.date().birthday(18, 99).toLocalDateTime().toLocalDate();
+                int randomNumberCreated = faker.number().numberBetween(0, 365);
+                OffsetDateTime timeCreated = OffsetDateTime.now().minusDays(randomNumberCreated);
+                OffsetDateTime timeLastLogin = timeCreated.plusDays(faker.number().numberBetween(0, randomNumberCreated));
                 UserAccount userAccount = UserAccount.builder()
-                        .id(UUID.randomUUID())
+                                                     .id(UUID.randomUUID())
                                                      .passwordHash("password_" + i)
                                                      .username("user_" + i)
-                                                     .email(faker.internet().emailAddress())
-                                                     .firstName(firstName)
+                                                     .email("user" + i + "@example.com")
+                                                     .firstName(faker.name().firstName())
                                                      .lastName(faker.name().lastName())
                                                      .address(faker.address().fullAddress())
-                                                     .dateOfBirth(faker.date()
-                                                                       .birthday()
-                                                                       .toLocalDateTime()
-                                                                       .toLocalDate())
-                                                     .userProfile(userProfileRepository.findUserProfileByTitle(
-                                                             "customer"))
-                                                     .timeCreated(OffsetDateTime.now())
-                                                     .timeLastLogin(OffsetDateTime.now())
+                                                     .dateOfBirth(dateOfBirth)
+                                                     .userProfile(userProfileCustomer)
+                                                     .timeCreated(timeCreated)
+                                                     .timeLastLogin(timeLastLogin)
                                                      .isActive(true)
                                                      .build();
-                if (userAccountRepository.findAll().contains(userAccount)) {
-                    i--;
-                    continue;
-                }
-                userAccountRepository.save(
-                        userAccount
-                );
+                userAccountRepository.save(userAccount);
             }
         }
     }

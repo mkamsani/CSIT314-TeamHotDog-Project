@@ -35,7 +35,7 @@ public class Screening {
     @Column(name = "show_time", nullable = false)
     private String showTime; // ONLY 'morning', 'afternoon', 'evening', 'midnight'
 
-    @Column(name = "is_active")
+    @Column(name = "is_active" , nullable = false)
     private Boolean isActive;
 
     @Column(name = "show_date", nullable = false)

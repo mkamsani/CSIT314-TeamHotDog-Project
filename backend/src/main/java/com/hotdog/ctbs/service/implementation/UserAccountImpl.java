@@ -30,38 +30,24 @@ public class UserAccountImpl implements UserAccountService {
     }
 
     @Transactional
-    public UserAccount findUserAccountByUsername(final String username)
-    {
-        return userAccountRepo.findUserAccountByUsername(username);
-    }
-
-    @Transactional
     public String login(final String username, final String password)
     {
-        UserAccount userAccount = userAccountRepo.findUserAccountByUsername(username);
+        UserAccount userAccount = userAccountRepo.findUserAccountByUsername(username).orElse(null);
         if (userAccount == null || !userAccountRepo.existsUserAccountByUsernameAndPassword(username, password))
             throw new IllegalArgumentException("Invalid username or password.");
 
         String privilege = userAccount.getUserProfile().getPrivilege();
         if (privilege == null)
             throw new IllegalArgumentException("Invalid privilege.");
-        else if (!privilege.equals("admin") &&
-                 !privilege.equals("customer") &&
-                 !privilege.equals("owner") &&
-                 !privilege.equals("manager"))
+        if (!privilege.equals("admin") && !privilege.equals("customer") &&
+            !privilege.equals("owner") && !privilege.equals("manager"))
             throw new IllegalArgumentException("Invalid privilege.");
 
         // Update last login time.
         userAccount.setTimeLastLogin(OffsetDateTime.now());
         userAccountRepo.save(userAccount);
 
-        // Return URL to user's profile page.
-        return privilege;
-
-        // Return values are:
-        // "Invalid username or password."
-        // "Invalid privilege."
-        // "admin" || "customer" || "owner" || "manager"
+        return privilege; // "admin", "customer", "owner", or "manager"
     }
 
     public void createUserAccount(final String username,
@@ -73,93 +59,89 @@ public class UserAccountImpl implements UserAccountService {
                                   final LocalDate dateOfBirth,
                                   final String title)
     {
-        System.out.println("Method ctbs.service.implementation.UserAccountImpl.createUserAccount() called.");
-        System.out.println("Username: " + username);
-        System.out.println("Password: " + password);
-        System.out.println("Email: " + email);
-        System.out.println("First name: " + firstName);
-        System.out.println("Last name: " + lastName);
-        System.out.println("Address: " + address);
-        System.out.println("Date of birth: " + dateOfBirth);
-        System.out.println("Title: " + title);
+        System.out.println("Method UserAccountImpl.createUserAccount() called.");
+
+        if (false) { // DEBUG
+            System.out.println("Username: " + username);
+            System.out.println("Password: " + password);
+            System.out.println("Email: " + email);
+            System.out.println("First name: " + firstName);
+            System.out.println("Last name: " + lastName);
+            System.out.println("Address: " + address);
+            System.out.println("Date of birth: " + dateOfBirth);
+            System.out.println("Title: " + title);
+        }
 
         // The following validations are required when an admin/customer creates a new user account.
-        if (userAccountRepo.findUserAccountByUsername(username) != null)
+        if (userAccountRepo.findUserAccountByUsername(username).isPresent())
             throw new IllegalArgumentException("Username " + username + " already exists.");
-        if (userAccountRepo.findUserAccountByEmail(email) != null)
+        if (userAccountRepo.findUserAccountByEmail(email).isPresent())
             throw new IllegalArgumentException("Email " + email + " already exists.");
         if (!username.matches("[a-zA-Z0-9]+"))
             throw new IllegalArgumentException("Username " + username + " must only contain alphanumeric characters.");
+        if (username.equals("admin") || username.equals("customer") ||
+            username.equals("owner") || username.equals("manager"))
+            throw new IllegalArgumentException("Username " + username + " is reserved.");
 
         // This validation is only required when an admin creates a new user account.
-        UserProfile userProfile = userProfileRepo.findUserProfileByTitle(title);
-        if (userProfile == null)
-            throw new IllegalArgumentException("Invalid title.");
+        UserProfile userProfile = userProfileRepo
+                .findUserProfileByTitle(title)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid title."));
 
         try {
-            UserAccount userAccount = UserAccount.builder()
-                                                 // Default values.
-                                                 .id(UUID.randomUUID())
-                                                 .isActive(true)
-                                                 .timeCreated(OffsetDateTime.now())
-                                                 .timeLastLogin(OffsetDateTime.now())
-                                                 .userProfile(userProfile)
-                                                 // User input values.
-                                                 .username(username.toLowerCase())
-                                                 .passwordHash(password) // Hashed in Postgres.
-                                                 .email(email.toLowerCase())
-                                                 .firstName(firstName)
-                                                 .lastName(lastName)
-                                                 .address(address)
-                                                 .dateOfBirth(dateOfBirth)
-                                                 .build();
-            System.out.println("User account: " + userAccount);
-            userAccountRepo.save(userAccount);
+            userAccountRepo.save(
+                    UserAccount.builder()
+                               // Default values.
+                               .id(UUID.randomUUID())
+                               .isActive(true)
+                               .timeCreated(OffsetDateTime.now())
+                               .timeLastLogin(OffsetDateTime.now())
+                               .userProfile(userProfile)
+                               // User input values.
+                               .username(username.toLowerCase())
+                               .passwordHash(password) // Hashed in Postgres.
+                               .email(email.toLowerCase())
+                               .firstName(firstName)
+                               .lastName(lastName)
+                               .address(address)
+                               .dateOfBirth(dateOfBirth)
+                               .build()
+            );
         } catch (Exception e) {
             throw new IllegalArgumentException("Invalid date of birth format: " + dateOfBirth);
         }
     }
 
-    public List<UserAccount> getUserAccountsByTitle(String title)
-    {
-        UserProfile userProfile = userProfileRepo.findUserProfileByTitle(title);
-        if (userProfile == null)
-            return null;
 
-        return userProfile.getUserAccounts().stream().toList();
+
+    @Transactional
+    public UserAccount getUserAccountByUsername(final String username)
+    {
+        return userAccountRepo.findUserAccountByUsername(username).orElseThrow(
+                () -> new IllegalArgumentException("User account " + username + " does not exist.")
+        );
+    }
+
+    public List<UserAccount> getAllUserAccounts()
+    {
+        return userAccountRepo.findAll();
+    }
+
+    public List<UserAccount> getActiveUserAccounts()
+    {
+        return userAccountRepo.findAll().stream().filter(UserAccount::getIsActive).toList();
     }
 
     @Transactional
     public List<UserAccount> getUserAccountsByPrivilege(String privilege)
     {
-        List<UserProfile> userProfiles = userProfileRepo.findUserProfilesByPrivilege(privilege);
+        if (!privilege.equals("admin") && !privilege.equals("customer") &&
+            !privilege.equals("owner") && !privilege.equals("manager"))
+            throw new IllegalArgumentException("Invalid privilege.");
+        List<UserProfile> userProfiles = userProfileRepo.findUserProfilesByPrivilege(privilege).orElse(null);
         if (userProfiles == null)
             return null;
 
         return userProfiles.stream().flatMap(userProfile -> userProfile.getUserAccounts().stream()).toList();
-    }
-
-    @Transactional
-    public List<UserAccount> getAdminUserAccounts()
-    {
-        return getUserAccountsByPrivilege("admin");
-    }
-
-    @Transactional
-    public List<UserAccount> getOwnerUserAccounts()
-    {
-        return getUserAccountsByPrivilege("owner");
-    }
-
-    @Transactional
-    public List<UserAccount> getManagerUserAccounts()
-    {
-        return getUserAccountsByPrivilege("manager");
-    }
-
-    @Transactional
-    public List<UserAccount> getCustomerUserAccounts()
-    {
-        return getUserAccountsByPrivilege("customer");
     }
 }

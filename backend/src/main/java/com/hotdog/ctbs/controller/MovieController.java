@@ -36,7 +36,7 @@ public class MovieController {
         return movieImpl.getAllMoviesDetails().toString();
     }
 
-    // To return a list of all "active" movies title for customer to view
+    // To return a list of all "active" movies title (for customer to view) or (for manager to allocate it to a screening)
     @GetMapping("/read/allActiveMovieTitles")
     public String ReadAllActiveMovieTitles()
     {
@@ -45,7 +45,7 @@ public class MovieController {
         return movieImpl.getAllActiveMoviesTitle().toString();
     }
 
-    // To return a list of all "active" movies details(object) for customer to view
+    // To return a list of all "active" movies details(object) (for customer to view) or (for manager to allocate it to a screening)
     @GetMapping("/read/allActiveMoviesDetails")
     public String ReadAllActiveMoviesDetails()
     {

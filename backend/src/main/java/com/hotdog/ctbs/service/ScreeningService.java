@@ -1,65 +1,63 @@
 package com.hotdog.ctbs.service;
 
-import com.hotdog.ctbs.entity.CinemaRoom;
-import com.hotdog.ctbs.entity.Movie;
 import com.hotdog.ctbs.entity.Screening;
-import com.hotdog.ctbs.repository.CinemaRoomRepository;
-import com.hotdog.ctbs.repository.MovieRepository;
-import com.hotdog.ctbs.repository.ScreeningRepository;
-import jakarta.transaction.Transactional;
-import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
 public interface ScreeningService {
 
-        String createScreening(String movieTitle, String showTime, Boolean isActive, LocalDate showDate, Integer cinemaRoomId);
-
-        // get screening by id
+        void createScreening(String movieTitle, String showTime, LocalDate showDate, Integer cinemaRoomId);
         Screening getScreeningById(UUID id);
 
-        // get method for manager
-        // get all screenings (includes all inactive) for manager ***
         List<Screening> getAllScreenings();
 
-        // get all screenings by movie title in date ascending order
+        // get all screenings by movie title follow the sort order
         List<Screening> getAllScreeningsByMovieTitle(String movieTitle);
 
 
-        // get all screenings by show time
+
+        // get all screenings by show date follow the sort order
+        List<Screening> getAllScreeningsByShowDate(LocalDate showDate);
+
+
+        // get all screenings by show time follow the sort order
         List<Screening> getAllScreeningsByShowTime(String showTime);
 
-        // get all screenings by cinema room id
+
+        // get all screenings by cinema room id follow the sort order
         List<Screening> getAllScreeningsByCinemaRoomId(Integer cinemaRoomId);
+
 
 
         // get specific screening by movie id, show time, show date, cinema room id
         Screening getScreeningByMovieTitleAndShowTimeAndShowDateAndCinemaRoomId(String movieTitle, String showTime, LocalDate showDate, Integer cinemaRoomId);
 
-        // get screening method for customers
-        // get all active screenings
+        // get all active screening method for customers usage
+        // (customer does not need to see inactive screenings)
         List<Screening> getAllActiveScreenings();
 
-        // get all active screening by movie title in show date ascending order
+        // get all active screenings by movie title
         List<Screening> getAllActiveScreeningsByMovieTitle(String movieTitle);
 
         // 3. Update screening
-        String updateScreening(String movieTitle,
-                                      String showTime,
-                                      LocalDate showDate,
-                                      CinemaRoom cinemaRoom);
+        // *** can update all attribute of a screening except the "isActive" (status)
+        // update a screening require all 4 fields (movieTitle, showTime, showDate, cinemaRoomId)
+        // if a screening is inactive, cant update
+        void updateScreening(String currentMovieTitle, String currentShowTime,
+                             LocalDate currentShowDate, Integer currentCinemaRoomId,
+                             String newMovieTitle, String newShowTime, LocalDate newShowDate, Integer newCinemaRoomId);
 
-        // 4. Delete screening (in progress need to check if it is linked to any ticket)
-        String deleteScreening(String movieTitle,
-                                      String showTime,
-                                      LocalDate showDate,
-                                      CinemaRoom cinemaRoom);
 
-        List<Screening> getAllScreeningsByShowDate(LocalDate showDate);
+        // 4. Suspend the screening (update screening isActive to false)
+        void suspendScreeningByIsActive(String movieTitle,
+                                                       String currentShowTime,
+                                                       LocalDate curreshowDate,
+                                                       Integer cinemaRoomId, Boolean newIsActive);
+
+
 
 
 }
