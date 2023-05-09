@@ -1,27 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<?php
-session_start();
-include('header.php');
+<style>
+    <?php  include('test.css'); ?>
+  </style>
 
-$moviesCh = curl_init();
-curl_setopt($moviesCh, CURLOPT_URL, "http://localhost:8000/api/movie/read/allMovieTitles");
-curl_setopt($moviesCh, CURLOPT_RETURNTRANSFER, 1);
-$movies = curl_exec($moviesCh);
-$movies = trim($movies, '[');
-$movies = trim($movies, ']');
-$movies = explode(", ",$movies);
-curl_close($moviesCh);
+  <?php
+  session_start();
+  include('header.php');
 
-$moviesDetailsCh = curl_init();
-curl_setopt($moviesDetailsCh, CURLOPT_URL, "http://localhost:8000/api/movie/read/allMoviesDetails");
-curl_setopt($moviesDetailsCh, CURLOPT_RETURNTRANSFER, 1);
-$moviesDetails = curl_exec($moviesDetailsCh);
-curl_close($moviesDetailsCh);
-$moviesDetails = json_decode($moviesDetails, true);
+  $moviesCh = curl_init();
+  curl_setopt($moviesCh, CURLOPT_URL, "http://localhost:8000/api/movie/read/allMovieTitles");
+  curl_setopt($moviesCh, CURLOPT_RETURNTRANSFER, 1);
+  $movies = curl_exec($moviesCh);
+  $movies = trim($movies, '[');
+  $movies = trim($movies, ']');
+  $movies = explode(", ",$movies);
+  curl_close($moviesCh);
 
-?>
+  $moviesDetailsCh = curl_init();
+  curl_setopt($moviesDetailsCh, CURLOPT_URL, "http://localhost:8000/api/movie/read/allMoviesDetails");
+  curl_setopt($moviesDetailsCh, CURLOPT_RETURNTRANSFER, 1);
+  $moviesDetails = curl_exec($moviesDetailsCh);
+  curl_close($moviesDetailsCh);
+  $moviesDetails = json_decode($moviesDetails, true);
+
+  ?>
 
 
 
@@ -89,14 +93,29 @@ $moviesDetails = json_decode($moviesDetails, true);
                  ?></td>
             <td><?php
                 $poster = array_column($moviesDetails, 'imageUrl');
-                foreach($poster as $imageKey) {
-                ?>
+                $combineArray = array_combine($movieName, $poster);
+                foreach($combineArray as $movieName => $poster ) {
+                        ?>
+                        <div class="flip-card">
+                            <div class="flip-card-inner">
+                                <div class="flip-card-front">
+                                    <a href="Review.php" class='moviePoster' title="moviePoster">
+                                        <img src="<?php echo $poster ?>" width="150" height="100"> <br/>
+                                    </a>
+                                </div>
+                                <div class="flip-card-back">
+                                    <a href="Review.php" class='moviePoster' title="moviePoster">
+                                        <h6><?php echo $movieName ?> </h6>
+                                    </a>
 
-                    <a href="Review.php?imageUrl=.$imageKey.'" class='moviePoster' title="moviePoster">
-                        <img src="<?php echo $imageKey ?>" width="100" height="50"> <br/>
-                    </a>
-                 <?php
-                }
+                                </div>
+                            </div>
+                        </div>
+                <?php } ?>
+                        <?php
+
+
+
                 ?>
              </td>
         </tr>

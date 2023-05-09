@@ -35,7 +35,6 @@ if(isset($_POST['back'])) {
 	header("Location: movies.php");
 }
 
-echo $_GET['imageUrl'];
 
 //$reviewCh = curl_init();
 //$review = $_POST['review'];

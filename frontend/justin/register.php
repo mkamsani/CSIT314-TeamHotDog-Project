@@ -2,7 +2,7 @@
 <head>
 <title></title>
 <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
-<style><?php include 'register.css'; ?></style>
+<style><?php include 'test.css'; ?></style>
 </head>
 <body>
 <table width="100%" style="border: 0">
