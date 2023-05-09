@@ -99,15 +99,10 @@
                         <div class="flip-card">
                             <div class="flip-card-inner">
                                 <div class="flip-card-front">
-                                    <a href="Review.php" class='moviePoster' title="moviePoster">
-                                        <img src="<?php echo $poster ?>" width="150" height="100"> <br/>
-                                    </a>
+                                    <img src="<?php echo $poster ?>" width="150" height="100"> <br/>
                                 </div>
                                 <div class="flip-card-back">
-                                    <a href="Review.php" class='moviePoster' title="moviePoster">
-                                        <h6><?php echo $movieName ?> </h6>
-                                    </a>
-
+                                    <h6><?php echo $movieName ?> </h6>
                                 </div>
                             </div>
                         </div>
