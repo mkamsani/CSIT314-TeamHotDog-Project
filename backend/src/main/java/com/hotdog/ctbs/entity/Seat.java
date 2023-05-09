@@ -1,6 +1,8 @@
 package com.hotdog.ctbs.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -29,7 +31,7 @@ public class Seat {
     private CinemaRoom cinemaRoom;
 
     @Column(name = "seat_row", nullable = false, length = 1)
-    private String seatRow;
+    private char seatRow;
 
     @Column(name = "seat_column", nullable = false)
     private Integer seatColumn;
@@ -41,17 +43,48 @@ public class Seat {
     public boolean equals(Object o)
     {
         if (this == o) return true;
+        if (!(o instanceof Seat)) return false;
+        Seat seat = (Seat) o;
+        return Objects.equals(id, seat.id) && Objects.equals(cinemaRoom, seat.cinemaRoom)
+                && Objects.equals(seatRow, seat.seatRow)
+                && Objects.equals(seatColumn, seat.seatColumn);
+    }
+
+
+   /* public boolean equals(Object o)
+    {
+        if (this == o) return true;
         if (!(o instanceof Seat that)) return false;
         return id.equals(that.id) &&
-               cinemaRoom.equals(that.cinemaRoom) &&
-               seatRow.equals(that.seatRow) &&
-               seatColumn.equals(that.seatColumn);
-    }
+                cinemaRoom.equals(that.cinemaRoom) &&
+                seatRow.equals(that.seatRow) &&
+                seatColumn.equals(that.seatColumn);
+    }*/
 
     @Override
     public int hashCode()
     {
         return Objects.hash(id, cinemaRoom, seatRow, seatColumn);
+    }
+
+    public String getName(){
+        // int cinema room id = 1
+        // char seat row = 'A'
+        // int seat column = 20
+        // output = 1A20
+        return cinemaRoom.getId().toString() + seatRow + seatColumn;
+
+    }
+
+    @Override
+    public String toString()
+    {
+        ObjectNode json = new ObjectMapper().createObjectNode();
+        json.put("row",      String.valueOf(seatRow));
+        json.put("column",   String.valueOf(seatColumn));
+        json.put("room",     cinemaRoom.getId().toString());
+        json.put("seatCode",     getName());
+        return json.toString();
     }
 
 }

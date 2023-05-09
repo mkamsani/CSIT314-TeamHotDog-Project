@@ -17,23 +17,27 @@ import java.util.UUID;
 @Entity
 @Table(name = "ticket")
 public class Ticket {
+
     @Id
     @Column(name = "uuid", nullable = false)
     private UUID id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "customer", nullable = false)
     private UserAccount customer;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    //@ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "ticket_type", nullable = false, referencedColumnName = "type_name")
     private TicketType ticketType;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    //@ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "screening", nullable = false)
     private Screening screening;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    //@ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "seat", nullable = false)
     private Seat seat;
 
@@ -63,15 +67,19 @@ public class Ticket {
     public String toString()
     {
         ObjectNode json = new ObjectMapper().createObjectNode();
-        json.put("id",       id.toString());
+        //json.put("id",       id.toString());
         json.put("customer", customer.getUsername());
         json.put("type",     ticketType.getTypeName());
-        json.put("row",      seat.getSeatRow());
+        json.put("price",    ticketType.getTypePrice());
+        // change row to string
+        json.put("cinemaRoom",     String.valueOf(seat.getCinemaRoom().getId()));
+        json.put("row",      String.valueOf(seat.getSeatRow()));
         json.put("column",   seat.getSeatColumn());
-        json.put("room",     screening.getId().toString());
-        json.put("time",     screening.getShowTime());
-        json.put("date",     screening.getShowDate().toString());
+        //json.put("room",     screening.getId().toString());
+        json.put("showTime",     screening.getShowTime());
+        json.put("showDate",     screening.getShowDate().toString());
         json.put("movie",    screening.getMovie().getTitle());
+        json.put("purchaseDate", purchaseDate.toString());
         return json.toString();
     }
 

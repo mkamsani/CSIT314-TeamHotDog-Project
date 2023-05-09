@@ -3,6 +3,7 @@ package com.hotdog.ctbs.service.implementation;
 
 import com.hotdog.ctbs.entity.CinemaRoom;
 import com.hotdog.ctbs.repository.CinemaRoomRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import com.hotdog.ctbs.service.CinemaRoomService;
 
@@ -19,6 +20,7 @@ public class CinemaRoomImpl implements CinemaRoomService{
 
     // return a list of all cinema room ids
     @Override
+    @Transactional
     public List<Integer> getAllCinemaRoomIds(){
         return cinemaRoomRepository.findAll().stream()
                 .map(CinemaRoom::getId)
@@ -28,6 +30,7 @@ public class CinemaRoomImpl implements CinemaRoomService{
 
     // return a list of all cinema room
     @Override
+    @Transactional
     public List<CinemaRoom> getAllCinemaRoom(){
         return cinemaRoomRepository.findAll();
     }
@@ -40,6 +43,7 @@ public class CinemaRoomImpl implements CinemaRoomService{
 
 
     @Override
+    @Transactional
     public void checkCinemaRoomExists(Integer ID){
         if (cinemaRoomRepository.findCinemaRoomById(ID) == null){
             throw new IllegalStateException("Cinema Room with ID " + ID + " does not exist");
@@ -48,6 +52,7 @@ public class CinemaRoomImpl implements CinemaRoomService{
 
     // update cinema room status
     @Override
+    @Transactional
     public void updateCinemaRoom(Integer currentId, Boolean isActive){
         checkCinemaRoomExists(currentId);
         CinemaRoom cinemaRoom = cinemaRoomRepository.findCinemaRoomById(currentId);
@@ -57,6 +62,7 @@ public class CinemaRoomImpl implements CinemaRoomService{
 
     // return a list of all CinemaRooms that are active
     @Override
+    @Transactional
     public List<CinemaRoom> getAllActiveCinemaRooms(){
         return cinemaRoomRepository.findAll().stream()
                 .filter(CinemaRoom::getIsActive)

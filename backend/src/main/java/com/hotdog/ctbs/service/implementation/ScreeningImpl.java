@@ -84,7 +84,6 @@ public class ScreeningImpl implements ScreeningService{
 
         System.out.println("Done checking if show date is valid");
 
-
         if (!showTime.equals("morning")   &&
                 !showTime.equals("afternoon") &&
                 !showTime.equals("evening")   &&
