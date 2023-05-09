@@ -68,15 +68,16 @@ public class UserProfileController {
         }
     }
 
+    // curl -X PUT -H "Content-Type: application/json" -d "{\"target\":\"test admin\",\"privilege\":\"manager\",\"title\":\"test manager\"}" http://localhost:8000/api/user-profile/update
     @PutMapping("/update")
     public String Update(@RequestBody String json)
     {
         System.out.println("Method Update() called.");
         try {
             JsonNode jsonNode = new ObjectMapper().readTree(json);
-            String privilege = jsonNode.get("privilege").asText();
-            String title = jsonNode.get("title").asText();
-            String targetTitle = jsonNode.get("title").asText();
+            String targetTitle = jsonNode.get("target").asText();  // <input name="target" type="text"></input>
+            String privilege = jsonNode.get("privilege").asText(); // <input name="privilege" type="text"></input>
+            String title = jsonNode.get("title").asText();         // <input name="title" type="text"></input>
             userProfileImpl.updateUserProfileByTitle(targetTitle, privilege, title);
             return "Success";
         } catch (Exception e) {
@@ -84,18 +85,14 @@ public class UserProfileController {
         }
     }
 
-    /**
-     * Receives a JSON string of a user profile, this JSON object does not have a UUID.
-     * <br />
-     * Store the user profile in the database.
-     */
+    // curl -X POST -H "Content-Type: application/json" -d "{\"privilege\":\"admin\",\"title\":\"test admin\"}" http://localhost:8000/api/user-profile/create
     @PostMapping("/create")
     public String Create(@RequestBody String json)
     {
         try {
             JsonNode jsonNode = new ObjectMapper().readTree(json);
-            String privilege = jsonNode.get("privilege").asText();
-            String title = jsonNode.get("title").asText();
+            String privilege = jsonNode.get("privilege").asText(); // <input name="privilege" type="text"></input>
+            String title = jsonNode.get("title").asText();         // <input name="title" type="text"></input>
             userProfileImpl.createUserProfile(privilege, title);
             return "Success";
         } catch (Exception e) {

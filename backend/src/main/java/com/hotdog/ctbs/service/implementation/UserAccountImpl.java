@@ -112,7 +112,58 @@ public class UserAccountImpl implements UserAccountService {
         }
     }
 
+    @Transactional
+    public String update(final String target,
+                         final String username,
+                         final String firstName,
+                         final String lastName,
+                         final String email,
+                         final String address,
+                         final LocalDate dateOfBirth,
+                         final String title)
+    {
+        UserAccount userAccount = userAccountRepo.findUserAccountByUsername(target).orElse(null);
+        if (userAccount == null)
+            throw new IllegalArgumentException("User account " + username + " does not exist.");
+        UserProfile userProfile = userProfileRepo.findUserProfileByTitle(title).orElse(null);
+        if (userProfile == null)
+            throw new IllegalArgumentException("Invalid title.");
 
+        // The following validations are required when an admin/customer updates a user account.
+        if (userAccountRepo.findUserAccountByUsername(username).isPresent() &&
+            !userAccount.getUsername().equals(username))
+            throw new IllegalArgumentException("Username " + username + " already exists.");
+        if (userAccountRepo.findUserAccountByEmail(email).isPresent() &&
+            !userAccount.getEmail().equals(email))
+            throw new IllegalArgumentException("Email " + email + " already exists.");
+        if (!username.matches("[a-zA-Z0-9]+"))
+            throw new IllegalArgumentException("Username " + username + " must only contain alphanumeric characters.");
+        if (username.equals("admin") || username.equals("customer") ||
+            username.equals("owner") || username.equals("manager"))
+            throw new IllegalArgumentException("Username " + username + " is reserved.");
+        userAccount.setUsername(username.toLowerCase());
+        userAccount.setEmail(email.toLowerCase());
+        userAccount.setFirstName(firstName);
+        userAccount.setLastName(lastName);
+        userAccount.setAddress(address);
+        userAccount.setDateOfBirth(dateOfBirth);
+        userAccount.setUserProfile(userProfile);
+        userAccountRepo.save(userAccount);
+        return "User account " + target + " updated.";
+    }
+
+    @Transactional
+    public String suspend(final String target)
+    {
+        UserAccount userAccount = userAccountRepo.findUserAccountByUsername(target).orElse(null);
+        if (userAccount == null)
+            throw new IllegalArgumentException("User account " + target + " does not exist.");
+
+        userAccount.setIsActive(false);
+        userAccountRepo.save(userAccount);
+
+        return "User account " + target + " suspended.";
+    }
 
     @Transactional
     public UserAccount getUserAccountByUsername(final String username)
