@@ -13,9 +13,6 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
-/**
- *
- */
 @Service
 public class UserAccountImpl implements UserAccountService {
 
@@ -30,7 +27,9 @@ public class UserAccountImpl implements UserAccountService {
     }
 
     @Transactional
-    public String login(final String username, final String password)
+    @Override
+    public String login(final String username,
+                        final String password)
     {
         UserAccount userAccount = userAccountRepo.findUserAccountByUsername(username).orElse(null);
         if (userAccount == null || !userAccountRepo.existsUserAccountByUsernameAndPassword(username, password))
@@ -50,28 +49,21 @@ public class UserAccountImpl implements UserAccountService {
         return privilege; // "admin", "customer", "owner", or "manager"
     }
 
-    public void createUserAccount(final String username,
-                                  final String password,
-                                  final String email,
-                                  final String firstName,
-                                  final String lastName,
-                                  final String address,
-                                  final LocalDate dateOfBirth,
-                                  final String title)
+    @Override
+    public void create(final String username,
+                       final String password,
+                       final String email,
+                       final String firstName,
+                       final String lastName,
+                       final String address,
+                       final LocalDate dateOfBirth,
+                       final String title)
     {
         System.out.println("Method UserAccountImpl.createUserAccount() called.");
-
-        if (false) { // DEBUG
-            System.out.println("Username: " + username);
-            System.out.println("Password: " + password);
-            System.out.println("Email: " + email);
-            System.out.println("First name: " + firstName);
-            System.out.println("Last name: " + lastName);
-            System.out.println("Address: " + address);
-            System.out.println("Date of birth: " + dateOfBirth);
-            System.out.println("Title: " + title);
-        }
-
+        // This validation is only required when an admin creates a new user account.
+        UserProfile userProfile = userProfileRepo.findUserProfileByTitle(title).orElseThrow(
+                () -> new IllegalArgumentException("Invalid title.")
+        );
         // The following validations are required when an admin/customer creates a new user account.
         if (userAccountRepo.findUserAccountByUsername(username).isPresent())
             throw new IllegalArgumentException("Username " + username + " already exists.");
@@ -83,53 +75,40 @@ public class UserAccountImpl implements UserAccountService {
             username.equals("owner") || username.equals("manager"))
             throw new IllegalArgumentException("Username " + username + " is reserved.");
 
-        // This validation is only required when an admin creates a new user account.
-        UserProfile userProfile = userProfileRepo
-                .findUserProfileByTitle(title)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid title."));
-
-        try {
-            userAccountRepo.save(
-                    UserAccount.builder()
-                               // Default values.
-                               .id(UUID.randomUUID())
-                               .isActive(true)
-                               .timeCreated(OffsetDateTime.now())
-                               .timeLastLogin(OffsetDateTime.now())
-                               .userProfile(userProfile)
-                               // User input values.
-                               .username(username.toLowerCase())
-                               .passwordHash(password) // Hashed in Postgres.
-                               .email(email.toLowerCase())
-                               .firstName(firstName)
-                               .lastName(lastName)
-                               .address(address)
-                               .dateOfBirth(dateOfBirth)
-                               .build()
-            );
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Invalid date of birth format: " + dateOfBirth);
-        }
+        UserAccount userAccount = new UserAccount();
+        userAccount.setId(UUID.randomUUID());
+        userAccount.setIsActive(true);
+        userAccount.setTimeCreated(OffsetDateTime.now());
+        userAccount.setTimeLastLogin(OffsetDateTime.now());
+        userAccount.setUserProfile(userProfile);
+        userAccount.setUsername(username.toLowerCase());
+        userAccount.setPasswordHash(password); // Hashed in Postgres.
+        userAccount.setEmail(email.toLowerCase());
+        userAccount.setFirstName(firstName);
+        userAccount.setLastName(lastName);
+        userAccount.setAddress(address);
+        userAccount.setDateOfBirth(dateOfBirth);
+        userAccountRepo.save(userAccount);
     }
 
     @Transactional
-    public String update(final String target,
-                         final String username,
-                         final String firstName,
-                         final String lastName,
-                         final String email,
-                         final String address,
-                         final LocalDate dateOfBirth,
-                         final String title)
+    @Override
+    public void update(final String target,
+                       final String username,
+                       final String firstName,
+                       final String lastName,
+                       final String email,
+                       final String address,
+                       final LocalDate dateOfBirth,
+                       final String title)
     {
-        UserAccount userAccount = userAccountRepo.findUserAccountByUsername(target).orElse(null);
-        if (userAccount == null)
-            throw new IllegalArgumentException("User account " + username + " does not exist.");
-        UserProfile userProfile = userProfileRepo.findUserProfileByTitle(title).orElse(null);
-        if (userProfile == null)
-            throw new IllegalArgumentException("Invalid title.");
+        UserAccount userAccount = userAccountRepo.findUserAccountByUsername(target).orElseThrow(
+                () -> new IllegalArgumentException("User account " + target + " does not exist.")
+        );
+        UserProfile userProfile = userProfileRepo.findUserProfileByTitle(title).orElseThrow(
+                () -> new IllegalArgumentException("Title " + title + " does not exist.")
+        );
 
-        // The following validations are required when an admin/customer updates a user account.
         if (userAccountRepo.findUserAccountByUsername(username).isPresent() &&
             !userAccount.getUsername().equals(username))
             throw new IllegalArgumentException("Username " + username + " already exists.");
@@ -137,10 +116,13 @@ public class UserAccountImpl implements UserAccountService {
             !userAccount.getEmail().equals(email))
             throw new IllegalArgumentException("Email " + email + " already exists.");
         if (!username.matches("[a-zA-Z0-9]+"))
-            throw new IllegalArgumentException("Username " + username + " must only contain alphanumeric characters.");
+            throw new IllegalArgumentException("Username " + username + " must be alphanumeric.");
         if (username.equals("admin") || username.equals("customer") ||
             username.equals("owner") || username.equals("manager"))
             throw new IllegalArgumentException("Username " + username + " is reserved.");
+        if (dateOfBirth.isAfter(LocalDate.now()))
+            throw new IllegalArgumentException("Invalid date of birth: " + dateOfBirth);
+
         userAccount.setUsername(username.toLowerCase());
         userAccount.setEmail(email.toLowerCase());
         userAccount.setFirstName(firstName);
@@ -149,22 +131,25 @@ public class UserAccountImpl implements UserAccountService {
         userAccount.setDateOfBirth(dateOfBirth);
         userAccount.setUserProfile(userProfile);
         userAccountRepo.save(userAccount);
-        return "User account " + target + " updated.";
     }
 
+    @Override
     @Transactional
-    public String suspend(final String target)
+    public void suspend(final String target)
     {
         UserAccount userAccount = userAccountRepo.findUserAccountByUsername(target).orElse(null);
         if (userAccount == null)
             throw new IllegalArgumentException("User account " + target + " does not exist.");
+        if (!userAccount.getIsActive())
+            throw new IllegalArgumentException("User account " + target + " is already suspended.");
 
         userAccount.setIsActive(false);
         userAccountRepo.save(userAccount);
-
-        return "User account " + target + " suspended.";
     }
 
+    //////////////////////////////// Accessors ////////////////////////////////
+
+    @Override
     @Transactional
     public UserAccount getUserAccountByUsername(final String username)
     {
@@ -173,22 +158,25 @@ public class UserAccountImpl implements UserAccountService {
         );
     }
 
+    @Override
     public List<UserAccount> getAllUserAccounts()
     {
         return userAccountRepo.findAll();
     }
 
+    @Override
     public List<UserAccount> getActiveUserAccounts()
     {
         return userAccountRepo.findAll().stream().filter(UserAccount::getIsActive).toList();
     }
 
     @Transactional
+    @Override
     public List<UserAccount> getUserAccountsByPrivilege(String privilege)
     {
         if (!privilege.equals("admin") && !privilege.equals("customer") &&
             !privilege.equals("owner") && !privilege.equals("manager"))
-            throw new IllegalArgumentException("Invalid privilege.");
+            throw new IllegalArgumentException("Invalid privilege: " + privilege);
         List<UserProfile> userProfiles = userProfileRepo.findUserProfilesByPrivilege(privilege).orElse(null);
         if (userProfiles == null)
             return null;

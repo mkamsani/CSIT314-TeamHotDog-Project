@@ -58,11 +58,11 @@ INSERT INTO cinema_room (id) VALUES (1), (2), (3), (4), (5), (6), (7), (8);
 INSERT INTO screening
     (movie_id, cinema_room, show_date, show_time, is_active)
 VALUES
-    ((SELECT uuid FROM movie WHERE title = 'Spider-Man'), 1, '2023-01-01', 'morning',   TRUE),
-    ((SELECT uuid FROM movie WHERE title = 'Spider-Man'), 1, '2023-01-01', 'afternoon', TRUE),
-    ((SELECT uuid FROM movie WHERE title = 'Spider-Man'), 1, '2023-01-01', 'evening',   TRUE),
-    ((SELECT uuid FROM movie WHERE title = 'Spider-Man'), 1, '2023-01-01', 'midnight',  TRUE),
-    ((SELECT uuid FROM movie WHERE title = 'Spider-Man'), 5, '2023-02-03', 'afternoon', TRUE);
+    ((SELECT uuid FROM movie WHERE title = 'Spider-Man'), 1, '2023-05-23', 'morning',   TRUE),
+    ((SELECT uuid FROM movie WHERE title = 'Spider-Man'), 1, '2023-05-23', 'afternoon', TRUE),
+    ((SELECT uuid FROM movie WHERE title = 'Spider-Man'), 1, '2023-05-23', 'evening',   TRUE),
+    ((SELECT uuid FROM movie WHERE title = 'Spider-Man'), 1, '2023-05-23', 'midnight',  TRUE),
+    ((SELECT uuid FROM movie WHERE title = 'Spider-Man'), 5, '2023-01-01', 'afternoon', FALSE);
 -- Insert a maximum of 495 random screenings.
 DO $$
   DECLARE

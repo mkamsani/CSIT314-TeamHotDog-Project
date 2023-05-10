@@ -1,4 +1,4 @@
-package com.hotdog.ctbs.controller.admin;
+package com.hotdog.ctbs.controller.customer;
 
 // Application imports.
 import com.hotdog.ctbs.service.implementation.UserAccountImpl;
@@ -19,26 +19,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * The {@code UserAccountCreateController} class exposes
- * the {@code /api/admin/user-account/create} endpoint.
+ * The {@code CustomerAccountCreateController} class exposes
+ * the {@code /api/customer/user-account/create} endpoint.
  * <p />
  *
  * The expected JSON format is:
  * <blockquote><pre>
  * {
- *   "username":    "mscott",
- *   "email":       "mscott@hotdogbuns.com",
- *   "password":    "password-employee",
- *   "firstName":   "Michael",
- *   "lastName":    "Scott",
- *   "dateOfBirth": "1962-08-16",
- *   "address":     "621 Court Kellum, Not Narcs, AP 01581",
- *   "title":       "senior manager"
+ *   "username":    "sample",
+ *   "email":       "sample@example.com",
+ *   "password":    "whatever",
+ *   "firstName":   "John",
+ *   "lastName":    "Doe",
+ *   "dateOfBirth": "1999-12-21",
+ *   "address":     "123 Courts, Singapore, 5138008",
  * }
  * </pre></blockquote>
  *
- * The HTML form should GET {@link UserAccountReadController#Read(String) /api/admin/user-profile/read/titles} to obtain the list of titles.
- * <br />
  * The suggested HTML form format is:
  * <blockquote><pre>
  * &lt;form&gt;
@@ -49,11 +46,6 @@ import org.springframework.web.bind.annotation.RestController;
  *   &lt;input type="text" name="lastName"&gt;
  *   &lt;input type="text" name="dateOfBirth"&gt;
  *   &lt;input type="text" name="address"&gt;
- *   &lt;select name="title"&gt;
- *     &lt;option value="senior manager"&gt;Senior Manager&lt;/option&gt;
- *     &lt;option value="junior manager"&gt;Manager&lt;/option&gt;
- *     &lt;option value="customer"&gt;Customer&lt;/option&gt;
- *   &lt;/select&gt;
  *   &lt;button type="submit"&gt;Submit&lt;/button&gt;
  * &lt;/form&gt;
  * </pre></blockquote>
@@ -62,25 +54,24 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
-@RequestMapping("/admin/user-account")
-public class UserAccountCreateController {
+@RequestMapping("/customer/user-account")
+public class CustomerAccountCreateController {
 
-    private final UserAccountImpl userAccountImpl;
-    private final ObjectMapper objectMapper;
+    final UserAccountImpl userAccountImpl;
+    final ObjectMapper objectMapper;
 
-    public UserAccountCreateController(UserAccountImpl userAccountImpl)
+    public CustomerAccountCreateController(UserAccountImpl userAccountImpl)
     {
         this.userAccountImpl = userAccountImpl;
         this.objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
     }
 
-    /** Create a {@code UserAccount} based on the given JSON. */
+    /** Create a customer {@code UserAccount} based on the given JSON. */
     @PostMapping("/create")
-    public String Create(@RequestBody final String json)
+    public String CreateCustomer(@RequestBody String json)
     {
-        System.out.println("UserAccountCreateController.Create() called.");
         try {
-            JsonNode jsonNode = objectMapper.readTree(json);
+            JsonNode jsonNode = new ObjectMapper().readTree(json);
             String username = jsonNode.get("username").asText();
             userAccountImpl.create(
                     username,
@@ -90,9 +81,9 @@ public class UserAccountCreateController {
                     jsonNode.get("lastName").asText(),
                     jsonNode.get("address").asText(),
                     LocalDate.parse(jsonNode.get("dateOfBirth").asText()),
-                    jsonNode.get("title").asText()
+                    "customer"
             );
-            return "Success";
+            return "Registration for " + username + " is successful!";
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }

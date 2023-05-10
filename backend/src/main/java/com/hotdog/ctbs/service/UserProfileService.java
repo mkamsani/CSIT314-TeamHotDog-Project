@@ -1,6 +1,5 @@
 package com.hotdog.ctbs.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.hotdog.ctbs.entity.UserProfile;
 
 import java.util.List;
@@ -15,6 +14,10 @@ public interface UserProfileService {
 
     List<UserProfile> getActiveUserProfiles();
 
+    List<UserProfile> getAllUserProfiles();
+
+    List<UserProfile> getAllUserProfilesByPrivilege(String privilege);
+
     /** SELECT title FROM user_profile; */
     List<String> getAllTitles();
 
@@ -27,14 +30,13 @@ public interface UserProfileService {
     /** SELECT * FROM user_profile WHERE privilege = arg; */
     List<UserProfile> getUserProfilesByPrivilege(String privilege);
 
-    /** SELECT id FROM user_profile WHERE title = arg; */
-    UUID getIdByTitle(String title);
-
     /** INSERT INTO user_profile (privilege, title) VALUES (arg, arg); */
-    void createUserProfile(String title, String privilege);
+    void create(String title, String privilege);
+
+    UserProfile getUserProfileByTitle(String title);
 
     /** DELETE FROM user_profile WHERE title = arg */
-    String suspendUserProfileByTitle(String title);
+    String suspend(String title);
 
-    void updateUserProfileByTitle(String uuid, String privilege, String title);
+    void update(String uuid, String privilege, String title);
 }

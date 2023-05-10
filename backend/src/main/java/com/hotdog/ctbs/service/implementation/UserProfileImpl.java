@@ -24,7 +24,7 @@ public class UserProfileImpl implements UserProfileService {
     }
 
     @Override
-    public void createUserProfile(String privilege, String title)
+    public void create(String privilege, String title)
     {
         for (String s : getAllTitles())
             if (s.equalsIgnoreCase(title))
@@ -57,6 +57,21 @@ public class UserProfileImpl implements UserProfileService {
     }
 
     @Override
+    public List<UserProfile> getAllUserProfiles()
+    {
+        return userProfileRepository.findAll();
+    }
+
+    @Override
+    public List<UserProfile> getAllUserProfilesByPrivilege(String privilege)
+    {
+        return userProfileRepository.findAll().stream()
+                                    .filter(userProfile -> userProfile.getPrivilege().equals(privilege))
+                                    .toList();
+    }
+
+    /** @deprecated */
+    @Override
     public List<String> getAllTitles()
     {
         return userProfileRepository.findAll().stream()
@@ -64,7 +79,7 @@ public class UserProfileImpl implements UserProfileService {
                                     .toList();
     }
 
-    /** @return [ "admin", "owner", "manager", "customer" ] */
+    /** @deprecated */
     @Override
     public List<String> getAllPrivileges()
     {
@@ -74,7 +89,7 @@ public class UserProfileImpl implements UserProfileService {
                                     .toList();
     }
 
-    /** @return [ "admin", "owner", "manager"] */
+    /** @deprecated */
     @Override
     public List<String> getValidPrivileges()
     {
@@ -94,16 +109,15 @@ public class UserProfileImpl implements UserProfileService {
     }
 
     @Override
-    public UUID getIdByTitle(final String title)
+    public UserProfile getUserProfileByTitle(final String title)
     {
-        for (UserProfile userProfile : userProfileRepository.findAll())
-            if (userProfile.getTitle().equals(title))
-                return userProfile.getId();
-        return null;
+        return userProfileRepository.findUserProfileByTitle(title).orElseThrow(
+                () -> new IllegalArgumentException("User profile not found.")
+        );
     }
 
     @Override
-    public String suspendUserProfileByTitle(String targetTitle)
+    public String suspend(String targetTitle)
     {
         UserProfile userProfile = userProfileRepository.findUserProfileByTitle(targetTitle).orElse(null);
         if (userProfile == null)
@@ -122,7 +136,7 @@ public class UserProfileImpl implements UserProfileService {
     }
 
     @Override
-    public void updateUserProfileByTitle(String targetTitle, String privilege, String title)
+    public void update(String targetTitle, String privilege, String title)
     {
         UserProfile userProfile = userProfileRepository.findUserProfileByTitle(targetTitle).orElse(null);
         if (userProfile == null)
