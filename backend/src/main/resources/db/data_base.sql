@@ -54,11 +54,20 @@ VALUES
 -- No further cinema rooms can be added.
 INSERT INTO cinema_room (id) VALUES (1), (2), (3), (4), (5), (6), (7), (8);
 
--- Insert a maximum of 500 random screenings.
+-- Insert 5 default screenings, with a fixed date and time.
+INSERT INTO screening
+    (movie_id, cinema_room, show_date, show_time, is_active)
+VALUES
+    ((SELECT uuid FROM movie WHERE title = 'Spider-Man'), 1, '2023-01-01', 'morning',   TRUE),
+    ((SELECT uuid FROM movie WHERE title = 'Spider-Man'), 1, '2023-01-01', 'afternoon', TRUE),
+    ((SELECT uuid FROM movie WHERE title = 'Spider-Man'), 1, '2023-01-01', 'evening',   TRUE),
+    ((SELECT uuid FROM movie WHERE title = 'Spider-Man'), 1, '2023-01-01', 'midnight',  TRUE),
+    ((SELECT uuid FROM movie WHERE title = 'Spider-Man'), 5, '2023-02-03', 'afternoon', TRUE);
+-- Insert a maximum of 495 random screenings.
 DO $$
   DECLARE
   BEGIN
-    WHILE (SELECT COUNT(*) FROM screening) < 500 LOOP
+    WHILE (SELECT COUNT(*) FROM screening) < 495 LOOP
       CALL random_screening();
     END LOOP;
   END
