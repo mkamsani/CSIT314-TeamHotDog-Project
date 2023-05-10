@@ -25,6 +25,7 @@ public class SeatImpl implements SeatService{
     }
 
     // get a seat by id
+    @Override
     public Seat getSeatById(UUID id){
         return seatRepo.findSeatById(id);
     }
@@ -32,6 +33,7 @@ public class SeatImpl implements SeatService{
     // get a seat by char row, integer column and cinema room id
 
     @Transactional
+    @Override
     public Seat getSeatByRowAndColumnAndCinemaRoomId(char row, Integer column, Integer cinemaRoomId){
 
         CinemaRoom cinemaRoom = cinemaRoomRepo.findCinemaRoomById(cinemaRoomId);

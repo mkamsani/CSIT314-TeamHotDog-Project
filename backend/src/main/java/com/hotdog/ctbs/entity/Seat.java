@@ -22,7 +22,7 @@ import java.util.UUID;
 public class Seat {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "uuid", nullable = false)
     private UUID id;
 
