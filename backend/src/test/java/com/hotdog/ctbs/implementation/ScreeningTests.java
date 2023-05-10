@@ -102,7 +102,7 @@ public class ScreeningTests {
 
         // test List<Screening> getAllScreeningsByShowDate(LocalDate showDate);
         System.out.println("Testing getAllScreeningsByShowDate method");
-        System.out.println(screeningImpl.getAllScreeningsByShowDate(LocalDate.of(2025, 5, 1)));
+        System.out.println(screeningImpl.getAllScreeningsByShowDate(LocalDate.of(2023, 1, 1)));
         System.out.println();
 
         // test List<Screening> getAllScreeningsByShowTime(String showTime);
@@ -117,7 +117,7 @@ public class ScreeningTests {
 
         // test Screening getScreeningByMovieTitleAndShowTimeAndShowDateAndCinemaRoomId(String movieTitle, String showTime, LocalDate showDate, Integer cinemaRoomId);
         System.out.println("Testing getScreeningByMovieTitleAndShowTimeAndShowDateAndCinemaRoomId method");
-        System.out.println(screeningImpl.getScreeningByMovieTitleAndShowTimeAndShowDateAndCinemaRoomId("Spider-Man", "morning", LocalDate.of(2025, 5, 1), 1));
+        System.out.println(screeningImpl.getScreeningByMovieTitleAndShowTimeAndShowDateAndCinemaRoomId("Spider-Man", "morning", LocalDate.of(2023, 1, 1), 1));
         System.out.println();
 
         // test List<Screening> getAllActiveScreenings();
@@ -144,32 +144,26 @@ public class ScreeningTests {
 
     @Test
     void updateMethod() {
-
-        try{
-            System.out.println("Testing updateScreening method");
-            screeningImpl.updateScreening("Spider-Man", "morning",
-                    LocalDate.of(2025, 5, 1), 1,
-                    "Avatar", "afternoon",
-                    LocalDate.of(2025, 5, 1), 4);
-            System.out.println(screeningImpl.getAllScreenings());
-            System.out.println();
-        }
-        catch (Exception e){
-            System.out.println("Expected exception: " + e.getMessage());
-        }
-
+        System.out.println("Testing updateScreening method");
+        screeningImpl.updateScreening(
+                "Spider-Man", "afternoon", LocalDate.of(2023, 1, 1), 1,
+                "Avatar", "afternoon", LocalDate.of(2025, 5, 1), 4
+        );
+        System.out.println(screeningImpl.getAllScreenings());
+        System.out.println();
     }
 
     @Test
     void suspendMethod() {
-
         System.out.println("Testing suspendScreeningByIsActive method");
-        screeningImpl.suspendScreeningByIsActive("Spider-Man", "afternoon",
-                LocalDate.of(2025, 5, 1), 1, true);
+        screeningImpl.suspendScreeningByIsActive(
+                "Spider-Man",
+                "afternoon",
+                LocalDate.of(2023, 1, 1), 1,
+                false
+        );
         System.out.println(screeningImpl.getAllScreenings());
         System.out.println();
-
         }
-
 }
 

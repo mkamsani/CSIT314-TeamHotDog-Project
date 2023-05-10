@@ -3,6 +3,7 @@ package com.hotdog.ctbs.implementation;
 import com.hotdog.ctbs.entity.Movie;
 import com.hotdog.ctbs.service.implementation.MovieImpl;
 import jakarta.transaction.Transactional;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -233,11 +234,15 @@ public class MovieTests {
     @Test
     void deleteMethod()
     {
-        // test delete movie method
-        System.out.println("movieImpl.deleteMovieByTitle(\"Black Adam\")");
-        movieImpl.deleteMovieByTitle("Black Adam");
-        System.out.println();
-
+        // Test delete movie method
+        try {
+            System.out.println("movieImpl.deleteMovieByTitle(\"Black Adam\")");
+            movieImpl.deleteMovieByTitle("Black Adam");
+            System.out.println();
+        } catch (IllegalArgumentException e) {
+            System.out.println("IllegalArgumentException thrown");
+            Assertions.assertEquals("The movie cannot be deleted because it has screenings.", e.getMessage());
+        }
     }
 
 }
