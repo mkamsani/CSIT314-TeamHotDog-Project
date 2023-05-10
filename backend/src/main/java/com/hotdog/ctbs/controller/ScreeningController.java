@@ -42,7 +42,8 @@ public class ScreeningController {
         }
     }
 
-    // 2. read all screenings (has "2" methods for different purpose)
+    // 2. read the screening that are later than or equal to now time
+    // (has "2" methods for different purpose)
     // the result will be sort follow this ascending order :
     //1st order ==> show date in ascending order
     // 2nd order ==> show time in ascending order
@@ -72,7 +73,7 @@ public class ScreeningController {
     // 3. update screening
     // *** can update all attribute of a screening except the "isActive" (status) ==> (suspend should be in point 4)
     // update a screening require all 4 fields (movieTitle, showTime, showDate, cinemaRoomId)
-    // if a screening is inactive, cant update
+    // if a screening is inactive or passed, cant update
     @PutMapping("/update/screening")
     public String UpdateScreening(@RequestBody String json)
     {
@@ -107,6 +108,7 @@ public class ScreeningController {
     // another field == "newIsActive" to indicate the new status of the screening which is false
     // *** can only suspend an active screening
     // *** cannot reactivate a suspended screening ***
+    // *** cannot suspend a past screening ***
     @PutMapping("/suspend/screening")
     public String SuspendScreening(@RequestBody String json)
     {

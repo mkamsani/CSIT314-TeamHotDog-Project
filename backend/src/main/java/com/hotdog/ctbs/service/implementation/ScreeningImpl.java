@@ -245,9 +245,10 @@ public class ScreeningImpl implements ScreeningService{
         if (movie == null)
             throw new IllegalArgumentException("Movie does not exist.");
 
+        /* Debugging
         // check if show date is valid
         if (showDate.isBefore(LocalDate.now()))
-            throw new IllegalArgumentException("Invalid date.");
+            throw new IllegalArgumentException("Invalid date.");*/
 
         // check if show time is valid
         if (!showTime.equals("morning")   &&
@@ -286,8 +287,9 @@ public class ScreeningImpl implements ScreeningService{
     public List<Screening> getAllActiveScreenings()
     {
 
-        // get all active screenings
-        List<Screening> screenings = screeningRepo.findScreeningsByIsActive(true).orElse(null);
+        // get all active screenings with local date today
+        List<Screening> screenings = screeningRepo.findByIsActiveAndShowDateGreaterThanEqual(true, LocalDate.now()).orElse(null);
+        // = screeningRepo.findScreeningsByIsActive(true).orElse(null);
 
         if (screenings.isEmpty() || screenings == null) {
             throw new IllegalArgumentException("No active screenings found.");
@@ -309,7 +311,7 @@ public class ScreeningImpl implements ScreeningService{
         if (movie == null)
             throw new IllegalArgumentException("Movie does not exist.");
 
-        List<Screening> screenings = screeningRepo.findScreeningsByMovieTitleAndIsActive(movieTitle, true).orElse(null);
+        List<Screening> screenings = screeningRepo.findScreeningsByMovieTitleAndIsActiveAndShowDateGreaterThanEqual(movieTitle, true, LocalDate.now()).orElse(null);
         // check if there is any active screening for this movie
         if (screenings.isEmpty() || screenings == null) {
             throw new IllegalArgumentException("No active screenings found for the specified movie.");
@@ -335,9 +337,15 @@ public class ScreeningImpl implements ScreeningService{
         // find current screening objects first
         Screening currentScreening = getScreeningByMovieTitleAndShowTimeAndShowDateAndCinemaRoomId(currentMovieTitle, currentShowTime, currentShowDate, currentCinemaRoomId);
 
+        // check current screening if it is before now
+        if (currentScreening.getShowDate().isBefore(LocalDate.now()))
+            throw new IllegalArgumentException("Cannot update a screening that has already passed.");
+
         // check if current screening is active
         if (currentScreening.getIsActive() == false)
             throw new IllegalArgumentException("Cannot update an inactive screening.");
+
+        System.out.println("Done checking for the current screenings.");
 
         // check if new movie title exists
         Movie newMovie = movieRepo.findMovieByTitle(newMovieTitle);
@@ -346,7 +354,7 @@ public class ScreeningImpl implements ScreeningService{
 
         // check if new show date is valid
         if (newShowDate.isBefore(LocalDate.now()))
-            throw new IllegalArgumentException("Invalid date.");
+            throw new IllegalArgumentException("Cannot set the date to past.");
 
         // check if new show time is valid
         if (!newShowTime.equals("morning")   &&
@@ -390,12 +398,12 @@ public class ScreeningImpl implements ScreeningService{
     @Transactional
     public void suspendScreeningByIsActive(String movieTitle,
                                   String currentShowTime,
-                                  LocalDate curreshowDate,
+                                  LocalDate currentShowDate,
                                   Integer cinemaRoomId, Boolean newIsActive) {
 
         // find current screening objects first (illegal argument exception if any invalid input)
         Screening currentScreening = getScreeningByMovieTitleAndShowTimeAndShowDateAndCinemaRoomId(
-                movieTitle, currentShowTime, curreshowDate, cinemaRoomId);
+                movieTitle, currentShowTime, currentShowDate, cinemaRoomId);
 
         // check if current screening is active
         if (currentScreening.getIsActive() == false)

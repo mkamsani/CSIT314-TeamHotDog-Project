@@ -32,4 +32,9 @@ public interface ScreeningRepository extends JpaRepository<Screening, UUID> {
 
     Screening findScreeningByMovieTitleAndShowTimeAndShowDateAndCinemaRoomId(String movieTitle, String showTime, LocalDate showDate, Integer cinemaRoomId);
 
+    // need to find all active later than or equal to now(localdatetime)
+    Optional <List<Screening>> findByIsActiveAndShowDateGreaterThanEqual(Boolean isActive, LocalDate showDate);
+
+
+    Optional<List<Screening>> findScreeningsByMovieTitleAndIsActiveAndShowDateGreaterThanEqual(String movieTitle, boolean b, LocalDate now);
 }
