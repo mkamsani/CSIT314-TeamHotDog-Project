@@ -47,7 +47,7 @@ include('header.php');
     <?php
 
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, 'http://localhost:8000/api/user-account/read/all');
+    curl_setopt($ch, CURLOPT_URL, 'http://localhost:8000/api/admin/user-account/read/all');
     curl_setopt($ch, CURLOPT_HTTPGET, true);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     $result = curl_exec($ch);

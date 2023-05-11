@@ -113,7 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
             <select class = "form-select" name="title" id="title">
                 <?php
                 $ch = curl_init();
-                curl_setopt($ch, CURLOPT_URL, "http://localhost:8000/api/user-profile/read/active-user-profiles");
+                curl_setopt($ch, CURLOPT_URL, "http://localhost:8000/api/admin/user-profile/read/active");
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
                 $user_profiles = curl_exec($ch); // [{"privilege":"customer","title":"customer"},...,{"privilege":"admin","title":"chief information officer"}]
                 curl_close($ch);
