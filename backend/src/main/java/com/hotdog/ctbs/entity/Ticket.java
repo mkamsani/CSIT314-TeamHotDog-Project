@@ -67,18 +67,15 @@ public class Ticket {
     public String toString()
     {
         ObjectNode json = new ObjectMapper().createObjectNode();
-        //json.put("id",       id.toString());
         json.put("customer", customer.getUsername());
         json.put("type",     ticketType.getTypeName());
         json.put("price",    ticketType.getTypePrice());
-        // change row to string
+        json.put("movie",    screening.getMovie().getTitle());
         json.put("cinemaRoom",     String.valueOf(seat.getCinemaRoom().getId()));
         json.put("row",      String.valueOf(seat.getSeatRow()));
         json.put("column",   seat.getSeatColumn());
-        //json.put("room",     screening.getId().toString());
         json.put("showTime",     screening.getShowTime());
         json.put("showDate",     screening.getShowDate().toString());
-        json.put("movie",    screening.getMovie().getTitle());
         json.put("purchaseDate", purchaseDate.toString());
         return json.toString();
     }

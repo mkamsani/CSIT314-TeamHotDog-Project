@@ -27,7 +27,6 @@ public class MovieImpl implements MovieService{
         g, pg, pg13, nc16, m18, r21
     }
 
-
     public MovieImpl(MovieRepository movieRepository)
     {
         this.movieRepository = movieRepository;
@@ -358,7 +357,13 @@ public class MovieImpl implements MovieService{
     public void updateMovieByAllAttributes(String targetTitle, String newTitle, String newGenre, String newDescription,
                                            LocalDate newReleaseDate, String newImageUrl, String newLandscapeImageUrl, boolean newIsActive, String newContentRating) {
         boolean movieFound = false;
-        // update everything if found the existing movie title
+
+        // make sure new movie title is not same as other existing movie titles
+        for (String existingMovieTitle : getAllMovieTitles())
+            if (existingMovieTitle.equalsIgnoreCase(newTitle))
+                throw new IllegalArgumentException("The new movie title already exists.");
+
+            // update everything if found the existing movie title
         for (Movie exsitingMovie : movieRepository.findAll()) {
             if (exsitingMovie.getTitle().equals(targetTitle)) {
                 exsitingMovie.setTitle(newTitle);
@@ -375,9 +380,9 @@ public class MovieImpl implements MovieService{
             }
 
         }
-        // if the movie title that would to be updated is not found, throw an exception
+        // if the movie that would to be updated is not found, throw an exception
         if (!movieFound) {
-            throw new IllegalArgumentException("The movie title you would " +
+            throw new IllegalArgumentException("The movie you would " +
                     "like to update does not exist.");
         }
 

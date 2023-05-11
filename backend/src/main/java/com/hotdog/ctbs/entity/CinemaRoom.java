@@ -74,8 +74,9 @@ public class CinemaRoom {
     public int countSeats() {
 
         return this.getSeats().size();
-
     }
 
-
+    public int getNumberOfSeats() {
+        return this.getSeats().size();
+    }
 }
