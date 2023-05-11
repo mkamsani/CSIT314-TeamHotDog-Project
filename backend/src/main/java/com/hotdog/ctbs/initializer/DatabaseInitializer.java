@@ -15,6 +15,14 @@ import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.UUID;
 
+/**
+ * The {@code DatabaseInitializer} class initializes any tables that are empty.
+ * <p />
+ * Initialization of test data for all tables in the database will be done via
+ * the {@code INSERT INTO} statements in SQL, in the production environment.
+ * The {@code DatabaseInitializer} class is only used for development purposes,
+ * and preparation of mock data that requires the use of Java's {@link Faker}.
+ */
 @Component
 public class DatabaseInitializer implements ApplicationRunner {
 
