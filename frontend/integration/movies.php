@@ -91,16 +91,8 @@
                 <td class="movie-description"><?php echo $description; ?></td>
                 <td class="movie-genre"><?php echo $genre; ?></td>
                 <td>
-                    <div class="flip-card">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <img class="movie-poster" src="<?php echo $poster; ?>">
-                            </div>
-                            <div class="flip-card-back">
-                                <h6 class = "movie-poster-title"><?php echo $title; ?></h6>
-                            </div>
-                        </div>
-                    </div>
+                    <img class="movie-poster" src="<?php echo $poster; ?>">
+
                 </td>
             </tr>
         <?php } ?>
@@ -154,6 +146,7 @@
 
         <div class="mt-3">
             <input type="text" class="form-control" name="moviePoster" id="moviePoster" placeholder="Enter image URL">
+            <input type="text" class="form-control" name="landScapePoster" id="landScapePoster" placeholder="Enter landscape image URL">
         </div>
 
         <div class="mt-3">
@@ -202,10 +195,11 @@
         $movieDesc = $_POST['movieDesc'];
         $movieDate = $_POST['movieRD'];
         $moviePoster = $_POST['moviePoster'];
+        $movieLandScapePoster = $_POST['landScapePoster'];
         $movieActive = $_POST['isActive'];
         $movieRating = $_POST['contentRating'];
         $data = array('title' => $movieName, 'genre' => $movieGenre, 'description' => $movieDesc, 'releaseDate' => $movieDate,
-            'imageUrl' => $moviePoster, 'isActive' => $movieActive, 'contentRating' => $movieRating);
+            'imageUrl' => $moviePoster, 'landscapeImageUrl' =>$movieLandScapePoster , 'isActive' => $movieActive, 'contentRating' => $movieRating);
         $data_json = json_encode($data);
         print_r(  $data_json);
         $createMoviesCh = curl_init("http://localhost:8000/api/movie/create/movie");
