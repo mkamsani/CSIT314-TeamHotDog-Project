@@ -47,7 +47,7 @@ public class LoginController {
     {
         try {
             JsonNode jsonNode = new ObjectMapper().readTree(json);
-            String username = jsonNode.get("userId").asText();
+            String username = jsonNode.get("username").asText();
             String password = jsonNode.get("password").asText();
             return userAccountImpl.login(username, password);
         } catch (Exception e) {

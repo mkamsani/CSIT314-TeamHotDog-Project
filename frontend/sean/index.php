@@ -15,16 +15,16 @@ include('idx_nav.php');
 
 <?php
 $result = '';
-if(isset($_POST['submit']) && !empty($_POST['userId']) && !empty($_POST['password']))
+if(isset($_POST['submit']) && !empty($_POST['username']) && !empty($_POST['password']))
 {
-    $userId = $_POST['userId'];
+    $username = $_POST['username'];
     $password = $_POST['password'];
     $ch = curl_init();
-    $loginarr = array('userId' => $userId, 'password' => $password);
+    $loginarr = array('username' => $username, 'password' => $password);
 
     $json_data = json_encode($loginarr);
 
-    curl_setopt($ch, CURLOPT_URL, "http://localhost:8000/api/user-account/login");
+    curl_setopt($ch, CURLOPT_URL, "http://localhost:8000/api/login");
     curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json','Content-Length: ' . strlen($json_data)]);
     curl_setopt($ch,CURLOPT_POSTFIELDS, $json_data);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -109,8 +109,8 @@ if(isset($_SESSION['privilege']))
     <form class='form-wrapper mx-auto' action="<?php echo $_SERVER["PHP_SELF"]; ?>"
           method='POST' name ="form1" style="width: 30%">
         <div class="input-group mt-3">
-            <span class='input-group-text'>User ID : </span>
-            <input class='form-control' type='text' name='userId' required>
+            <span class='input-group-text'>Username : </span>
+            <input class='form-control' type='text' name='username' required>
         </div>
         <div class="input-group mt-3">
             <span class='input-group-text'>Password : </span>
