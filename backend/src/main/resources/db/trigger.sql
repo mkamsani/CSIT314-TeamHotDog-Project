@@ -134,7 +134,9 @@ DECLARE
 BEGIN
     select uuid from screening order by random() limit 1 into random_screening;
     select uuid from seat order by random() limit 1 into random_seat;
-    select uuid from user_account order by random() limit 1 into random_user_account;
+    select uuid from user_account
+                where user_profile = (SELECT uuid FROM user_profile WHERE privilege = 'customer')
+                order by random() limit 1 into random_user_account;
     select case when random() < .25 then 'adult'
                 when random() < .5 then 'child'
                 when random() < .75 then 'senior'

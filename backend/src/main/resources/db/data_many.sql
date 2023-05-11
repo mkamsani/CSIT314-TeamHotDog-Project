@@ -102,3 +102,12 @@ VALUES
 (FALSE, (SELECT uuid FROM user_profile WHERE privilege = 'customer'), 'password_98', 'user_98', 'user98@example.com', 'Lashaunda', 'Parisian',     '81880 Kovacek Forge, Tanishaland, WA 81150',                   '1990-09-30', '2023-03-05 08:30:23.176411 +00:00', '2023-03-08 08:30:23.176411 +00:00'),
 (TRUE,  (SELECT uuid FROM user_profile WHERE privilege = 'customer'), 'password_99', 'user_99', 'user99@example.com', 'Nancie',    'Mayert',       '863 Strosin Mountains, Deandreaburgh, MN 12287',               '1945-05-22', '2023-01-23 08:30:23.176793 +00:00', '2023-04-25 08:30:23.176793 +00:00');
 
+-- Insert a max of 500 random tickets
+DO $$
+    DECLARE
+    BEGIN
+        WHILE (SELECT COUNT(*) FROM ticket) < 500 LOOP
+            CALL random_ticket();
+            END LOOP;
+    END
+$$;

@@ -83,17 +83,6 @@ VALUES
   ('student', 8.50,  TRUE),
   ('test',    10.00, TRUE);
 
--- Insert a max of 500 random tickets
-DO $$
-    DECLARE
-    BEGIN
-        WHILE (SELECT COUNT(*) FROM ticket) < 500 LOOP
-            CALL random_ticket();
-        END LOOP;
-    END
-$$;
-
-
 -- Development views, to present data in a more readable format.
 CREATE OR REPLACE VIEW dev_screening_view AS
 SELECT TO_CHAR(show_date, 'Mon DD') AS show_date, cinema_room, show_time, title
@@ -119,5 +108,14 @@ SELECT username, email, title, privilege,
 FROM user_account
 INNER JOIN user_profile ON user_profile.uuid = user_account.user_profile
 ORDER BY user_account.username;
+
+CREATE OR REPLACE VIEW dev_ticket_view AS
+SELECT ticket.uuid, username, screening.cinema_room, show_date, show_time, concat(seat_row, seat_column) seat_concat,
+       type_name t_type, type_price price
+FROM ticket
+         INNER JOIN user_account ON user_account.uuid = ticket.customer
+         INNER JOIN ticket_type ON ticket_type.type_name = ticket.ticket_type
+         INNER JOIN seat ON seat.uuid = ticket.seat
+         INNER JOIN screening ON screening.uuid = ticket.screening
 
 SELECT 'Success' AS result;
