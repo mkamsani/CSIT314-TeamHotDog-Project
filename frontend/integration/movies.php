@@ -124,16 +124,13 @@
         </div>
 
         <div class="mt-3">
-            <input type="submit" class="btn btn-danger" name="delete" value="Delete">
-        </div>
-
-        <div class="mt-3">
             <label class="form-label" for="movieName">Update Movie Name to update:</label>
             <input type="text" class="form-control" name="movieName" id="movieName" placeholder="Enter Movie Name">
         </div>
 
         <div class="mt-3">
             <input type="submit" class="btn btn-primary" name="update" value="Update">
+            <input type="submit" class="btn btn-outline-danger" name="suspend" value="Suspend">
         </div>
     </form>
 
