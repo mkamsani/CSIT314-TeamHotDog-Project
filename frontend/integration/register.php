@@ -83,6 +83,8 @@ include('idx_nav.php');
     </section>
 </div>
 
+
+
 </body>
 <?php include('footer.php') ?>
 </html>
