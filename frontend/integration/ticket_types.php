@@ -101,7 +101,7 @@ if (isset($_POST['createTicket'])) {
             </li>
             &emsp;
             <li class="nav-item">
-                <a class="nav-link" href="food_orders.php">Food Orders</a>
+                <a class="nav-link" href="movies.php">Movies</a>
             </li>
             &emsp;
             <li class="nav-item">
@@ -122,90 +122,111 @@ if (isset($_POST['createTicket'])) {
 <div class="container-fluid p-5 bg-danger text-white text-center">
     <h1>Ticket Types</h1>
 <!--    <p>Admin ID: --><?php //echo $_SESSION["userId"] ?><!--</p>-->
+</div>
+
+<div class="container mt-4" style="margin-left: 20%; width: 40%">
     <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" class="showTicket">
+        <h1>Create Ticket Form</h1>
+        <div class="mt-3">
+            <input type="text" class="form-control" name="ticketType" id="ticketType" placeholder="Enter ticket type">
+            <input type="number" class="form-control" step="0.01" name="typePrice" id="typePrice" placeholder="Enter ticket price">
+        </div>
 
-        <input type="text"  name="ticketType" id="ticketType" placeholder="Enter ticket type">
-        <input type="number" step = "0.01" name="typePrice" id="typePrice" placeholder="Enter ticket price">
+        <div class="mt-3">
+            <select class = "form-select" name="createIsActive" id="createIsActive">
+                <option>Select ticket type Activity</option>
+                <option value="TRUE">Active</option>
+                <option value="FALSE">Not Active</option>
+            </select>
+        </div>
 
-        <select name="createIsActive" id="createIsActive">
-            <option> Select ticket type Activity </option>
-
-            <option value = "TRUE" > Active </option>
-            <option value = "FALSE"> Not Active </option>
-        </select>
-
-
-        <input type="submit" name="createTicket" value="create Ticket">
-
-
+        <div class="mt-3">
+            <input type="submit" name="createTicket" class = "btn btn-primary" value="Create Ticket">
+        </div>
     </form>
 
     <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" class="showTicket">
+        <br>
+        <br>
+        <br>
+        <br>
+        <h1>Update Ticket Form</h1>
+        <div class="mt-3">
+            <table class="table table-hover" style="margin: auto; width: 100%; table-layout: fixed">
+                <thead>
+                <tr>
+                    <th>Type Name</th>
+                    <th>Type Price</th>
+                    <th>Active</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>
+                        <?php
+                        $ticketTypeName = array_column($ticketDetails, 'typeName');
+                        foreach ($ticketTypeName as $ticketTypeKey) {
+                            echo '' . $ticketTypeKey . '<br/>';
+                        }
+                        ?>
+                    </td>
+                    <td>
+                        <?php
+                        $ticketPrice = array_column($ticketDetails, 'typePrice');
+                        foreach ($ticketPrice as $ticketPriceKey) {
+                            echo '' . $ticketPriceKey . '<br/>';
+                        }
+                        ?>
+                    </td>
+                    <td>
+                        <?php
+                        $isActive = array_column($ticketDetails, 'isActive');
+                        foreach ($isActive as $isActiveKey) {
+                            echo '' . $isActiveKey . '<br/>';
+                        }
+                        ?>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
 
-        <select name="ticketTypes" id="ticketTypes">
-            <option> Select ticket type </option>
-            <?php
-            foreach($ticket as $ticketDetailsKey) {
-                ?>
-                <option><?php echo ''.$ticketDetailsKey.'<br/>'; ?></option>
+        <div class="mt-3">
+            <select class = "form-select" name="typeName" id="typeName">
+                <option>Select Ticket Type</option>
                 <?php
-            }
-            ?>
-        </select><br>
-
-
-
-        <table>
-            <thead><tr>
-                <th>Type Name</th>
-                <th>Type Price </th>
-                <th>Active</th>
-            </thead><tbody><tr>
-
-                <td> <?php
-                    $ticketTypeName = array_column($ticketDetails, 'typeName');
-                    foreach($ticketTypeName as $ticketTypeKey) {
-                        echo ''.$ticketTypeKey.'<br/>';
-                    }
-                ?></td>
-                <td>
+                $typeName = array_column($ticketDetails, 'typeName');
+                foreach ($typeName as $typeNameKey) {
+                    ?>
+                    <option><?php echo '' . $typeNameKey . '<br/>'; ?></option>
                     <?php
-                    $ticketPrice = array_column($ticketDetails, 'typePrice');
-                    foreach($ticketPrice as $ticketPriceKey) {
-                       echo ''.$ticketPriceKey.'<br/>';
-                    }
-                   ?></td>
-                <td>
-                    <?php
-                    $isActive = array_column($ticketDetails, 'isActive');
-                    foreach($isActive as $isActiveKey) {
-                       echo ''.$isActiveKey.'<br/>';
-                    }
-                   ?>
-                </td>
-        </table>
-
-        <select name="typeName" id="typeName">
-            <option> Select Ticket Type </option>
-            <?php
-            $typeName = array_column($ticketDetails, 'typeName');
-            foreach($typeName as $typeNameKey) {
+                }
                 ?>
-                <option><?php echo ''.$typeNameKey.'<br/>'; ?></option>
-                <?php
-            }
-            ?>
-        </select>
-        <input type="text"  name="newTypeName" id="newTypeName" placeholder="Enter new type name">
-        <input type="number"  name="newPrice" step = "0.01" id="newPrice" placeholder="Enter new price">
-        <select name="updateIsActive" id="updateIsActive">
-            <option> Select ticket Activity </option>
-            <option value = "TRUE"> Active </option>
-            <option value = "FALSE"> Not Active </option>
-        </select>
-        <input type="submit" name="updateTicket" value="update Ticket"> <br>
+            </select>
+        </div>
+
+        <div class="mt-3">
+            <input type="text" class = "form-control" name="newTypeName" id="newTypeName" placeholder="Enter new type name">
+        </div>
+
+        <div class="mt-3">
+            <input type="number" class = "form-control" name="newPrice" step = "0.01" id="newPrice" placeholder="Enter new price">
+        </div>
+
+        <div class="mt-3">
+            <select name="updateIsActive" class = "form-select" id="updateIsActive">
+                <option> Select ticket Activity </option>
+                <option value = "TRUE"> Active </option>
+                <option value = "FALSE"> Not Active </option>
+            </select>
+        </div>
+
+        <div class="mt-3">
+            <input type="submit" class = "btn btn-primary" name="updateTicket" value="Update Ticket">
+        </div>
     </form>
 </div>
+
 <?php include('footer.php') ?>
 
 </html>

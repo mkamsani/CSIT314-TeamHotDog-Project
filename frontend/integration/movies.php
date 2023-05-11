@@ -201,7 +201,7 @@
         $data = array('title' => $movieName, 'genre' => $movieGenre, 'description' => $movieDesc, 'releaseDate' => $movieDate,
             'imageUrl' => $moviePoster, 'landscapeImageUrl' =>$movieLandScapePoster , 'isActive' => $movieActive, 'contentRating' => $movieRating);
         $data_json = json_encode($data);
-        print_r(  $data_json);
+//        print_r(  $data_json);
         $createMoviesCh = curl_init("http://localhost:8000/api/movie/create/movie");
         curl_setopt($createMoviesCh, CURLOPT_POST, "1");
         curl_setopt($createMoviesCh, CURLOPT_POSTFIELDS, $data_json);
@@ -210,7 +210,7 @@
 
         $response = curl_exec($createMoviesCh);
         curl_close($createMoviesCh);
-        print_r ($response);
+//        print_r ($response);
     }
     if (isset($_POST['delete'])) {
         $movieName = $_POST['movies'];
@@ -262,7 +262,7 @@
 
     .fixed-forms-container {
         position: fixed;
-        top: 19%;
+        top: 16%;
         left: 0;
         width: 20%;
         height: 100vh; /* Use 100vh for full screen height */
