@@ -112,3 +112,55 @@ $$;
 CREATE OR REPLACE TRIGGER seat_create
 AFTER INSERT ON cinema_room FOR EACH ROW
 EXECUTE PROCEDURE seat_create();
+
+/*
+ * Create a new ticket with random screening, seat, and user_account.
+ * Prerequisites: screening, seat, user_account, ticket TABLE must be created.
+ * new ticket should not clash with existing ticket
+ */
+
+CREATE OR REPLACE PROCEDURE  random_ticket()
+    LANGUAGE plpgsql
+AS $$
+DECLARE
+    random_screening uuid;
+    random_seat uuid;
+    random_user_account uuid;
+    random_ticket_type varchar(20);
+    random_purchase_date date;
+    yyyy integer;
+    mm integer;
+    dd integer;
+BEGIN
+    select uuid from screening order by random() limit 1 into random_screening;
+    select uuid from seat order by random() limit 1 into random_seat;
+    select uuid from user_account order by random() limit 1 into random_user_account;
+    select case when random() < .25 then 'adult'
+                when random() < .5 then 'child'
+                when random() < .75 then 'senior'
+                else 'student'
+                end into random_ticket_type;
+    yyyy := 2023;
+    mm := CEIL(RANDOM() * 12);
+    dd := CEIL(RANDOM() * 31);
+    dd := CASE
+        WHEN mm = 2 AND dd > 28 THEN 28
+        WHEN mm IN (4, 6, 9, 11) AND dd > 30 THEN 30
+        ELSE dd
+        END;
+    random_purchase_date := yyyy || '-' || mm || '-' || dd;
+    -- Abort a procedure if the seat is already taken
+    -- A seat is taken if it has the same screening and seat.
+    IF EXISTS (SELECT * FROM ticket
+               WHERE screening = random_screening
+                 AND seat = random_seat) THEN
+        RAISE NOTICE 'Seat is already taken: %, %',
+                     random_screening, random_seat;
+    ELSE
+        INSERT INTO ticket
+            (customer, ticket_type, screening, seat, purchase_date)
+        VALUES
+            (random_user_account, random_ticket_type, random_screening, random_seat, random_purchase_date);
+    END IF;
+END;
+$$;

@@ -77,5 +77,17 @@ public class TicketTests {
 
     }
 
+//    void updateMethod(){
+//
+//        try{
+//            //test to update any current ticket
+//            System.out.println("Testing updateTicket method");
+//            System.out.println(ticketImpl.updateTicket("dwallace",
+//                    ));
+//            System.out.println();
+//        }
+//
+//    }
+
 
 }

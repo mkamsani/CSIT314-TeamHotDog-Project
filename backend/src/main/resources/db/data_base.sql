@@ -83,6 +83,17 @@ VALUES
   ('student', 8.50,  TRUE),
   ('test',    10.00, TRUE);
 
+-- Insert a max of 500 random tickets
+DO $$
+    DECLARE
+    BEGIN
+        WHILE (SELECT COUNT(*) FROM ticket) < 500 LOOP
+            CALL random_ticket();
+        END LOOP;
+    END
+$$;
+
+
 -- Development views, to present data in a more readable format.
 CREATE OR REPLACE VIEW dev_screening_view AS
 SELECT TO_CHAR(show_date, 'Mon DD') AS show_date, cinema_room, show_time, title
