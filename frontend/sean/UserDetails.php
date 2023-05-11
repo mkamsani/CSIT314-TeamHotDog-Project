@@ -44,13 +44,14 @@ $username = $_GET['username'];
 
 // Retrieve the user data from the API
 $ch = curl_init();
-curl_setopt($ch, CURLOPT_URL, 'http://localhost:8000/api/user-account/' . $username);
+curl_setopt($ch, CURLOPT_URL, 'http://localhost:8000/api/user-account/read/' . $username);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 $result = curl_exec($ch);
 $data = json_decode($result, true);
-echo $username;
 $user = $data[0];
 curl_close($ch);
+
+
 
 // Update the user information when the form is submitted
 if ($_SERVER['REQUEST_METHOD'] == 'POST')
@@ -66,29 +67,39 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, 'http://localhost:8000/api/user-account/' . urlencode($username));
-    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
-    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($updatedUser));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PATCH');
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($updatedUser));
     $result = curl_exec($ch);
 
     if(!empty($result))
     {
-        echo '<div class="container mt-5"><div class="alert alert-success mb-3 mt-3" id="successMsg" style="width: 75%;"><strong>Success!</strong>
-        User account has been updated. Head over to the <a href="UserAccounts.php" class="alert-link">User Accounts</a>to view all User Accounts,
-         or go <a href="UserAdmin.php.php" class="alert-link">back</a>.</div></div>';
+        echo '<div class="container mt-5">
+  <div class="alert alert-success mb-3 mt-3" id="successMsg" style="width: 75%;">
+    <strong>Success!</strong> User account has been updated. Head over to the <a href="UserAccounts.php" class="alert-link">User Accounts</a> to view all User Accounts, or go <a href="UserAdmin.php" class="alert-link">back</a>.
+  </div>
+</div>
+';
     }
     curl_close($ch);
 }
+
+
 ?>
 
 
 
 <div class="container mt-4">
-    <form class="mt-4 mx-auto" novalidate action="<?php echo $_SERVER["PHP_SELF"]; ?>"
-          method='POST' style="width: 40%;">
-        <div class="row g-2 col-4 mx-auto">
-            <a href="UserAccounts.php" class="btn btn-danger">Go Back</a>
+    <div class="mt-4 mx-auto" novalidate action="<?php echo $_SERVER["PHP_SELF"] . '?username=' . $username; ?>" method='POST' style="width: 40%;">
+        <div class="row">
+            <div class="col-4 mx-auto">
+                <input class="btn btn-danger" onclick="location.href='UserAccounts.php'" value = "Go back"></input>
+            </div>
+            <div class="col-auto">
+                <input class="btn btn-outline-danger" value="Suspend Account">
+            </div>
         </div>
+
         <div class="mt-3 row g-1 mx-auto">
             <div class="col-md">
                 <div class="form-floating">
@@ -100,14 +111,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
             <div class="col-md">
                 <div class="form-floating">
                     <input type="text" class="form-control" id="firstName" name="firstName"
-                           value="<?php echo $user['firstName']; ?>" readonly>
+                           value="<?php echo $user['firstName']; ?>">
                     <label for="subName">First Name: </label>
                 </div>
             </div>
             <div class="col-md">
                 <div class="form-floating">
                     <input type="text" class="form-control" id="lastName" name="lastName"
-                           value="<?php echo $user['lastName']; ?>" style="text-transform: uppercase">
+                           value="<?php echo $user['lastName']; ?>">
                     <label for="lastName">Last Name: </label>
                 </div>
             </div>
@@ -120,13 +131,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
                         <label for="email">Email: </label>
                     </div>
                 </div>
-                <div class="col-md">
-                    <div class="form-floating">
-                        <input type="text" class="form-control" id="isActive" name="isActive"
-                               value="<?php echo $user['isActive']; ?>">
-                        <label for="isActive">Status: </label>
-                    </div>
-                </div>
             </div>
             <div class="mt-2 row g-1 mx-auto">
                 <div class="form-floating">
@@ -134,12 +138,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
                     <label for="address">Address: </label>
                 </div>
             </div>
+
+            <div class="row g-2 col-4 mx-auto">
+                    <input class="btn btn-primary" type="submit" name="submit" value="Update">
+            </div>
         </div>
 
-        <div class="row g-2 col-4 mx-auto">
-            <input class="btn btn-danger" type="submit" name="submit" value="Update">
-        </div>
-    </form>
+</form>
 </body>
 <?php include('footer.php') ?>
 </html>

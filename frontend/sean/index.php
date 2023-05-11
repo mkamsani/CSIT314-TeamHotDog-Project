@@ -39,21 +39,27 @@ if(isset($_POST['submit']) && !empty($_POST['userId']) && !empty($_POST['passwor
         $_SESSION["privilege"] = $result;
     }
 }
-switch ($_SESSION["privilege"] ) {
-    case 'admin':
-        header("location: UserAdmin.php");
-        echo "<script>document.getElementById('result').innerHTML = '" . $_SESSION["privilege"] . "';</script>";
-        break;
-    case 'owner':
+
+if(isset($_SESSION['privilege']))
+{
+    switch ($_SESSION["privilege"] )
+    {
+        case 'admin':
+            header("location: UserAdmin.php");
+            echo "<script>document.getElementById('result').innerHTML = '" . $_SESSION["privilege"] . "';</script>";
+            break;
+        case 'owner':
 //        header("location: owner/index.php"); TODO
-        echo "<script>document.getElementById('result').innerHTML = '" . $_SESSION["privilege"] . "';</script>";
-        break;
-    case 'manager': header("location: CinemaManager.php"); break;
-    case 'customer': header("location: Customer.php"); break;
-    default:
-        echo "<script>document.getElementById('result').innerHTML = '" . $_SESSION["privilege"] . "';</script>";
-        break;
+            echo "<script>document.getElementById('result').innerHTML = '" . $_SESSION["privilege"] . "';</script>";
+            break;
+        case 'manager': header("location: CinemaManager.php"); break;
+        case 'customer': header("location: Customer.php"); break;
+        default:
+            echo "<script>document.getElementById('result').innerHTML = '" . $_SESSION["privilege"] . "';</script>";
+            break;
+    }
 }
+
 ?>
 
 <input type="text" name = "result" value = $result hidden>
