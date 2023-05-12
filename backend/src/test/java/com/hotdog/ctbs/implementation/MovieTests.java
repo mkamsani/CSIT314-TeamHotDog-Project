@@ -191,12 +191,11 @@ public class MovieTests {
         for (String title : movieImpl.getAllMovieTitles())
             System.out.println(movieImpl.getMovieByTitle(title));
 
-        movieImpl.updateMovieByIsActive("Spider-Man", false);
+        movieImpl.updateMovieByIsActive("Inception", false);
         // display all details for all movies
         for (String title : movieImpl.getAllMovieTitles())
             System.out.println(movieImpl.getMovieByTitle(title));
         System.out.println("Done for update movie status method");
-
 
         //
         // test update movie method (using content rating)
@@ -216,11 +215,11 @@ public class MovieTests {
         for (String title : movieImpl.getAllMovieTitles())
             System.out.println(movieImpl.getMovieByTitle(title));
 
-        movieImpl.updateMovieByAllAttributes("Spider-Man",
-                "Spider-Man2", "Comedy", "A story about an alien superhero",
+        movieImpl.updateMovieByAllAttributes("I am Number Four",
+                "DUMMY DATA", "DUMMY Comedy", "DUMMY DATA DESCRIPTION",
                 LocalDate.of(1997, 5, 25),
-                "Spider Man2 newImageURL.INPUT",
-                "Spider Man 2 newLandscapeImageURL.INPUT",
+                "DUMMY Spider Man2 newImageURL.INPUT",
+                "DUMMY Spider Man 2 newLandscapeImageURL.INPUT",
                 false, "pg13");
 
         // display all details for all movies
@@ -244,5 +243,23 @@ public class MovieTests {
             Assertions.assertEquals("The movie cannot be deleted because it has screenings.", e.getMessage());
         }
     }
+
+    @Test
+    void controllerMethod()
+    {
+        // test getActiveMovieByTitle method
+        System.out.println("movieController.getActiveMovieByTitle(\"Avatar\")");
+        System.out.println(movieImpl.getActiveMovieByTitle("Avatar"));
+        System.out.println();
+
+
+    }
+
+    @Test
+    void violationMethod(){
+
+    }
+
+
 
 }

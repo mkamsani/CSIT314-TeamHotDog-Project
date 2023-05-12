@@ -97,4 +97,12 @@ public interface MovieService {
     void updateMovieByAllAttributes(String targetTitle, String newTitle, String newGenre, String newDescription,
                                     LocalDate newReleaseDate, String newImageUrl, String newLandscapeImageUrl, boolean newIsActive, String newContentRating);
 
+    // get active movie by its title
+    Movie getActiveMovieByTitle(String title);
+
+    /////////////////////// consider suspend method ///////////////////////
+    void updateMovie(String targetTitle, String newTitle, String newGenre, String newDescription,
+                     LocalDate newReleaseDate, String newImageUrl, String newLandscapeImageUrl, String newContentRating);
+
+    void suspendMovie(String targetTitle);
 }

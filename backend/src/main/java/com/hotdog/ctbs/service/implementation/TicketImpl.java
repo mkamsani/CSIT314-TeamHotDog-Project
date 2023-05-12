@@ -197,7 +197,7 @@ public class TicketImpl implements TicketService{
 
 
     /////////////////////////////////////*******************************************/////////////////////////////////////
-    // Method to list out the available seats for a particular screening ( not tested) (important for customer to choose the seat)
+    // Method to list out the available seats for a particular screening (important for customer to choose the seat)
     @Transactional
     public List<Seat> listAvailableSeats(String movieTitle, String showTime, LocalDate showDate, Integer cinemaRoomId){
         // get screening if null throw exception

@@ -32,6 +32,9 @@ public class TicketTests {
     @Test
     void createMethod(){
 
+        // TEMPORARY PUT TRY STATEMENT HERE
+        // ONCE HAS FAKE DATA THEN CAN REMOVE TRY STATEMENT
+
         try{
             // test create ticket
             // create a ticket
@@ -54,6 +57,8 @@ public class TicketTests {
     @Test
     void getter(){
 
+        // TEMPORARY PUT TRY STATEMENT HERE
+        // ONCE HAS FAKE DATA THEN CAN REMOVE TRY STATEMENT
         try{
             // test get all tickets
             System.out.println("Testing getAllTickets method");
