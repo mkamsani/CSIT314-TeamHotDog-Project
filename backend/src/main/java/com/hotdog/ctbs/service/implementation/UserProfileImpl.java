@@ -16,11 +16,11 @@ import java.util.UUID;
 @Service
 public class UserProfileImpl implements UserProfileService {
 
-    private final UserProfileRepository userProfileRepository;
+    private final UserProfileRepository userProfileRepo;
 
-    public UserProfileImpl(UserProfileRepository userProfileRepository)
+    public UserProfileImpl(UserProfileRepository userProfileRepo)
     {
-        this.userProfileRepository = userProfileRepository;
+        this.userProfileRepo = userProfileRepo;
     }
 
     @Override
@@ -42,7 +42,7 @@ public class UserProfileImpl implements UserProfileService {
 
         title = title.strip().replaceAll("\\s+", " ");
 
-        userProfileRepository.save(
+        userProfileRepo.save(
                 UserProfile.builder()
                            .id(UUID.randomUUID())
                            .privilege(privilege)
@@ -55,67 +55,67 @@ public class UserProfileImpl implements UserProfileService {
     @Override
     public List<UserProfile> getActiveUserProfiles()
     {
-        return userProfileRepository.findAll().stream()
-                                    .filter(UserProfile::getIsActive)
-                                    .toList();
+        return userProfileRepo.findAll().stream()
+                              .filter(UserProfile::getIsActive)
+                              .toList();
     }
 
     @Override
     public List<UserProfile> getAllUserProfiles()
     {
-        return userProfileRepository.findAll();
+        return userProfileRepo.findAll();
     }
 
     @Override
     public List<UserProfile> getAllUserProfilesByPrivilege(String privilege)
     {
-        return userProfileRepository.findAll().stream()
-                                    .filter(userProfile -> userProfile.getPrivilege().equals(privilege))
-                                    .toList();
+        return userProfileRepo.findAll().stream()
+                              .filter(userProfile -> userProfile.getPrivilege().equals(privilege))
+                              .toList();
     }
 
     /** @deprecated */
     @Override
     public List<String> getAllTitles()
     {
-        return userProfileRepository.findAll().stream()
-                                    .map(UserProfile::getTitle)
-                                    .toList();
+        return userProfileRepo.findAll().stream()
+                              .map(UserProfile::getTitle)
+                              .toList();
     }
 
     /** @deprecated */
     @Override
     public List<String> getAllPrivileges()
     {
-        return userProfileRepository.findAll().stream()
-                                    .map(UserProfile::getPrivilege)
-                                    .distinct()
-                                    .toList();
+        return userProfileRepo.findAll().stream()
+                              .map(UserProfile::getPrivilege)
+                              .distinct()
+                              .toList();
     }
 
     /** @deprecated */
     @Override
     public List<String> getValidPrivileges()
     {
-        return userProfileRepository.findAll().stream()
-                                    .map(UserProfile::getPrivilege)
-                                    .distinct()
-                                    .filter(privilege -> !privilege.equals("customer"))
-                                    .toList();
+        return userProfileRepo.findAll().stream()
+                              .map(UserProfile::getPrivilege)
+                              .distinct()
+                              .filter(privilege -> !privilege.equals("customer"))
+                              .toList();
     }
 
     @Override
     public List<UserProfile> getUserProfilesByPrivilege(final String privilege)
     {
-        return userProfileRepository.findAll().stream()
-                                    .filter(userProfile -> userProfile.getPrivilege().equals(privilege))
-                                    .toList();
+        return userProfileRepo.findAll().stream()
+                              .filter(userProfile -> userProfile.getPrivilege().equals(privilege))
+                              .toList();
     }
 
     @Override
     public UserProfile getUserProfileByTitle(final String title)
     {
-        return userProfileRepository.findUserProfileByTitle(title).orElseThrow(
+        return userProfileRepo.findUserProfileByTitle(title).orElseThrow(
                 () -> new IllegalArgumentException("User profile not found.")
         );
     }
@@ -123,14 +123,14 @@ public class UserProfileImpl implements UserProfileService {
     @Override
     public String suspend(String targetTitle)
     {
-        UserProfile userProfile = userProfileRepository.findUserProfileByTitle(targetTitle).orElse(null);
+        UserProfile userProfile = userProfileRepo.findUserProfileByTitle(targetTitle).orElse(null);
         if (userProfile == null)
             return "Not found.";
         if (!userProfile.getIsActive())
             return targetTitle + " is already suspended.";
 
         userProfile.setIsActive(false);
-        userProfileRepository.save(userProfile);
+        userProfileRepo.save(userProfile);
 
         int size = userProfile.getUserAccounts().size();
         if (size == 0)
@@ -142,7 +142,7 @@ public class UserProfileImpl implements UserProfileService {
     @Override
     public void update(String targetTitle, String privilege, String title)
     {
-        UserProfile userProfile = userProfileRepository.findUserProfileByTitle(targetTitle).orElse(null);
+        UserProfile userProfile = userProfileRepo.findUserProfileByTitle(targetTitle).orElse(null);
         if (userProfile == null)
             throw new IllegalArgumentException("User profile not found.");
         if (title.equals("Customer"))
@@ -158,6 +158,6 @@ public class UserProfileImpl implements UserProfileService {
 
         userProfile.setPrivilege(privilege);
         userProfile.setTitle(title);
-        userProfileRepository.save(userProfile);
+        userProfileRepo.save(userProfile);
     }
 }

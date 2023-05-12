@@ -47,7 +47,7 @@ import org.springframework.web.bind.annotation.RestController;
  *     "dateOfBirth": "1965-02-13",
  *     "address":     "6818 Smith Lake, Schimmelland, RI 93473",
  *     "title":       "chief financial officer"
- *   },
+ *   }
  * ]
  * </pre></blockquote>
  *

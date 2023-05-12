@@ -44,7 +44,9 @@ include('header.php');
 if ($_SERVER['REQUEST_METHOD'] == 'POST')
 {
     $json = json_encode($_POST);
-    $ch = curl_init("http://localhost:8000/api/admin/user-profile/update/" . $_POST['title-selector']);
+    $url = "http://localhost:8000/api/admin/user-profile/update/" . $_POST['title-selector'];
+    $url = str_replace(' ', '%20', $url); // replace spaces with %20 (URL-safe)
+    $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
     curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);

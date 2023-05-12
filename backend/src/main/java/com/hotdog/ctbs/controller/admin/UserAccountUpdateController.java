@@ -61,7 +61,7 @@ public class UserAccountUpdateController {
     {
         System.out.println("UserAccountUpdateController.Update() called.");
         try {
-            JsonNode jsonNode = new ObjectMapper().readTree(json);
+            JsonNode jsonNode = objectMapper.readTree(json);
             String username = jsonNode.get("username").asText();
             userAccountImpl.update(
                     targetUsername,

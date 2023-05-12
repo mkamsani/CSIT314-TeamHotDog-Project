@@ -116,6 +116,6 @@ FROM ticket
          INNER JOIN user_account ON user_account.uuid = ticket.customer
          INNER JOIN ticket_type ON ticket_type.type_name = ticket.ticket_type
          INNER JOIN seat ON seat.uuid = ticket.seat
-         INNER JOIN screening ON screening.uuid = ticket.screening
+         INNER JOIN screening ON screening.uuid = ticket.screening;
 
 SELECT 'Success' AS result;
