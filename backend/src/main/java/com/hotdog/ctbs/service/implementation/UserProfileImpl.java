@@ -29,6 +29,10 @@ public class UserProfileImpl implements UserProfileService {
         for (String s : getAllTitles())
             if (s.equalsIgnoreCase(title))
                 throw new IllegalArgumentException("Title already exists.");
+        for (String s : new String[]{ "admin", "owner", "manager", "customer",
+                                      "titles", "privileges", "active", "all"
+        }) if (s.equalsIgnoreCase(title))
+            throw new IllegalArgumentException("Reserved title.");
         if (privilege.equals("customer"))
             throw new IllegalArgumentException("Reserved privilege.");
         if (!getValidPrivileges().contains(privilege))
