@@ -1,7 +1,6 @@
 package com.hotdog.ctbs.service.implementation;
 
 import com.hotdog.ctbs.entity.LoyaltyPoint;
-import com.hotdog.ctbs.entity.UserAccount;
 import com.hotdog.ctbs.repository.*;
 import com.hotdog.ctbs.service.LoyaltyPointService;
 import org.springframework.stereotype.Service;
@@ -9,7 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class LoyaltyPointImpl implements LoyaltyPointService{
+public class LoyaltyPointImpl implements LoyaltyPointService {
 
     final LoyaltyPointRepository loyaltyPointRepo;
     final UserAccountRepository userAccountRepo;
@@ -21,23 +20,47 @@ public class LoyaltyPointImpl implements LoyaltyPointService{
         this.userAccountRepo = userAccountRepo;
     }
 
-    // return a list of all loyalty point
+    /** @return the current balance of a {@code LoyaltyPoint} object. */
     @Override
-    public List<LoyaltyPoint> getAllLoyaltyPoint(){
+    public Integer getAvailablePoint(LoyaltyPoint loyaltyPoint)
+    {
+        return loyaltyPoint.getPointsTotal() - loyaltyPoint.getPointsRedeemed();
+    }
+
+    /** @return a list of all {@code LoyaltyPoint} objects. */
+    @Override
+    public List<LoyaltyPoint> getAllLoyaltyPoints()
+    {
         return loyaltyPointRepo.findAll();
     }
 
-    // get the loyalty point of a user
-    public LoyaltyPoint getLoyaltyPointByUser(String username){
-        UserAccount userAccount = userAccountRepo.findUserAccountByUsername(username).orElse(null);
-        //if null, throw exception
-        if(userAccount == null){
-            throw new IllegalArgumentException("User does not exist");
-        }
-        return loyaltyPointRepo.findByUserAccount(userAccount);
+    /** @return a list of active {@code LoyaltyPoint} objects. */
+    @Override
+    public List<LoyaltyPoint> getActiveLoyaltyPoints()
+    {
+        return loyaltyPointRepo.findAll()
+                               .stream()
+                               .filter(e -> e.getUserAccount().getIsActive())
+                               .toList();
     }
 
+    /** @return a {@code LoyaltyPoint} object based on the username of a {@code UserAccount} object. */
+    @Override
+    public LoyaltyPoint getLoyaltyPointByUsername(String username)
+    {
+        return loyaltyPointRepo.findByUserAccountUsername(username).orElseThrow(
+                () -> new IllegalArgumentException("Username " + username + " does not exist.")
+        );
+    }
 
-
-
+    // TODO :
+    //  Should this be called from a TicketController, LoyaltyPointController, or UserAccountController???
+    //  Feedbacks welcome, thanks.
+    @Override
+    public void redeem(String username, Integer point)
+    {
+        LoyaltyPoint loyaltyPoint = getLoyaltyPointByUsername(username);
+        loyaltyPoint.setPointsRedeemed(loyaltyPoint.getPointsRedeemed() + point);
+        loyaltyPointRepo.save(loyaltyPoint);
+    }
 }
