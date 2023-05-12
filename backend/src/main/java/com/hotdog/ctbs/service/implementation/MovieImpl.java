@@ -128,15 +128,14 @@ public class MovieImpl implements MovieService{
 
 
     // MovieUpdateController
-    //  - updateMovieByAllAttributes(String title, String genre, String description, LocalDate releaseDate,
-    //                                String imageUrl, String landscapeImageUrl, boolean isActive,
-    //                                String contentRating) - updates movie by all attributes.
+    //  - updateMovie(String targetTitle, String newTitle, String newGenre, String newDescription,
+    //                 LocalDate newReleaseDate, String newImageUrl, String newLandscapeImageUrl,
+    //                 String newContentRating) - updates a movie.
 
-    // update the movie by all attributes
-    // update a movie with entering all attributes
+    // update all attribute of movie except isActive (will be used in Suspend method)
     @Override
-    public void updateMovieByAllAttributes(String targetTitle, String newTitle, String newGenre, String newDescription,
-                                           LocalDate newReleaseDate, String newImageUrl, String newLandscapeImageUrl, boolean newIsActive, String newContentRating) {
+    public void updateMovie(String targetTitle, String newTitle, String newGenre, String newDescription,
+                            LocalDate newReleaseDate, String newImageUrl, String newLandscapeImageUrl, String newContentRating) {
         boolean movieFound = false;
 
         // make sure new movie title is not same as other existing movie titles
@@ -153,7 +152,6 @@ public class MovieImpl implements MovieService{
                 exsitingMovie.setReleaseDate(newReleaseDate);
                 exsitingMovie.setImageUrl(newImageUrl);
                 exsitingMovie.setLandscapeImageUrl(newLandscapeImageUrl);
-                exsitingMovie.setActive(newIsActive);
                 exsitingMovie.setContentRating(newContentRating);
                 movieRepository.save(exsitingMovie);
                 movieFound = true;
@@ -169,13 +167,32 @@ public class MovieImpl implements MovieService{
 
     }
 
+
     ///////////////// end of MovieUpdateController //////////////////////
 
-    // MovieDeleteController
-    //  - deleteMovieByTitle(String title) - deletes movie by title.
+    // MovieSuspendController
+    //  - suspendMovie(String title) - suspends movie by title.
 
-    // delete the movie by input its title
-    // Note: the movie cannot be deleted if it has screenings
+    // suspend the movie by input its title
+    @Override
+    public void suspendMovie (String targetTitle) {
+        boolean movieFound = false;
+        // update the movie's active status if found the existing movie title
+        for (Movie exsitingMovie : movieRepository.findAll()) {
+            if (exsitingMovie.getTitle().equalsIgnoreCase(targetTitle)){
+                exsitingMovie.setActive(false);
+                movieRepository.save(exsitingMovie);
+                movieFound = true;
+                break;
+            }
+
+        }
+        // if the movie title that would to be updated is not found, throw an exception
+        if (!movieFound){
+            throw new IllegalArgumentException("The movie title you would " +
+                    "like to update does not exist.");
+        }
+    }
     @Transactional
     @Override
     public void deleteMovieByTitle(String title)
@@ -545,9 +562,17 @@ public class MovieImpl implements MovieService{
     }
 
     /////////////////////// consider suspend method ///////////////////////
+
+
+
+
+
+
+    ///////////////////////////////////////////////////////////////////////////////
+
     @Override
-    public void updateMovie(String targetTitle, String newTitle, String newGenre, String newDescription,
-                                           LocalDate newReleaseDate, String newImageUrl, String newLandscapeImageUrl, String newContentRating) {
+    public void updateMovieByAllAttributes(String targetTitle, String newTitle, String newGenre, String newDescription,
+                                           LocalDate newReleaseDate, String newImageUrl, String newLandscapeImageUrl, boolean newIsActive, String newContentRating) {
         boolean movieFound = false;
 
         // make sure new movie title is not same as other existing movie titles
@@ -564,6 +589,7 @@ public class MovieImpl implements MovieService{
                 exsitingMovie.setReleaseDate(newReleaseDate);
                 exsitingMovie.setImageUrl(newImageUrl);
                 exsitingMovie.setLandscapeImageUrl(newLandscapeImageUrl);
+                exsitingMovie.setActive(newIsActive);
                 exsitingMovie.setContentRating(newContentRating);
                 movieRepository.save(exsitingMovie);
                 movieFound = true;
@@ -579,25 +605,6 @@ public class MovieImpl implements MovieService{
 
     }
 
-    @Override
-    public void suspendMovie (String targetTitle) {
-        boolean movieFound = false;
-        // update the movie's active status if found the existing movie title
-        for (Movie exsitingMovie : movieRepository.findAll()) {
-            if (exsitingMovie.getTitle().equalsIgnoreCase(targetTitle)){
-                exsitingMovie.setActive(false);
-                movieRepository.save(exsitingMovie);
-                movieFound = true;
-                break;
-            }
-
-        }
-        // if the movie title that would to be updated is not found, throw an exception
-        if (!movieFound){
-            throw new IllegalArgumentException("The movie title you would " +
-                    "like to update does not exist.");
-        }
-    }
 
 
 
