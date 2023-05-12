@@ -67,11 +67,14 @@ public class Screening {
     {
         if (this == o) return true;
         if (!(o instanceof Screening that)) return false;
-        return id.equals(that.id) && movie.equals(that.movie) && showTime.equals(that.showTime) && cinemaRoom.equals(that.cinemaRoom) && isActive.equals(that.isActive) && showDate.equals(that.showDate);
+        return id.equals(that.id) &&
+               showTime.equals(that.showTime) &&
+               cinemaRoom.equals(that.cinemaRoom) &&
+               showDate.equals(that.showDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, movie, showTime, cinemaRoom, isActive, showDate);
+        return Objects.hash(id, showTime, cinemaRoom, showDate);
     }
 }

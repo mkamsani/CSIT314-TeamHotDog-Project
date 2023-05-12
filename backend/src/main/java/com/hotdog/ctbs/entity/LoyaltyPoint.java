@@ -39,30 +39,24 @@ public class LoyaltyPoint {
     @SneakyThrows
     @Override
     public String toString(){
-
         ObjectNode json = new ObjectMapper().createObjectNode();
-        //json.put("id", id.toString());
         json.put("userName", userAccount.getUsername());
         json.put("pointsRedeemed", pointsRedeemed);
         json.put("pointsTotal", pointsTotal);
         return json.toString();
-
     }
 
     @Override
-    public boolean equals(Object o){
-        if(this == o) return true;
-        if(!(o instanceof LoyaltyPoint)) return false;
-        LoyaltyPoint loyaltyPoint = (LoyaltyPoint) o;
-        return Objects.equals(this.id, loyaltyPoint.id) &&
-                Objects.equals(this.userAccount, loyaltyPoint.userAccount) &&
-                Objects.equals(this.pointsRedeemed, loyaltyPoint.pointsRedeemed) &&
-                Objects.equals(this.pointsTotal, loyaltyPoint.pointsTotal);
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (!(o instanceof LoyaltyPoint that)) return false;
+        return id.equals(that.id) && userAccount.equals(that.userAccount);
     }
 
     @Override
-    public int hashCode(){
-        return Objects.hash(this.id, this.userAccount, this.pointsRedeemed, this.pointsTotal);
+    public int hashCode()
+    {
+        return Objects.hash(id, userAccount);
     }
-
 }

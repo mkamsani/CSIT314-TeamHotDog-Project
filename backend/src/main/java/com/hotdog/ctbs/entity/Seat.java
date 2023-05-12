@@ -43,23 +43,12 @@ public class Seat {
     public boolean equals(Object o)
     {
         if (this == o) return true;
-        if (!(o instanceof Seat)) return false;
-        Seat seat = (Seat) o;
-        return Objects.equals(id, seat.id) && Objects.equals(cinemaRoom, seat.cinemaRoom)
-                && Objects.equals(seatRow, seat.seatRow)
-                && Objects.equals(seatColumn, seat.seatColumn);
-    }
-
-
-   /* public boolean equals(Object o)
-    {
-        if (this == o) return true;
         if (!(o instanceof Seat that)) return false;
-        return id.equals(that.id) &&
-                cinemaRoom.equals(that.cinemaRoom) &&
-                seatRow.equals(that.seatRow) &&
-                seatColumn.equals(that.seatColumn);
-    }*/
+        return id.equals(that.id)
+               && cinemaRoom.equals(that.cinemaRoom)
+               && seatRow == that.seatRow
+               && seatColumn.equals(that.seatColumn);
+    }
 
     @Override
     public int hashCode()
@@ -73,7 +62,6 @@ public class Seat {
         // int seat column = 20
         // output = 1A20
         return cinemaRoom.getId().toString() + seatRow + seatColumn;
-
     }
 
     @Override
@@ -83,8 +71,7 @@ public class Seat {
         json.put("row",      String.valueOf(seatRow));
         json.put("column",   String.valueOf(seatColumn));
         json.put("room",     cinemaRoom.getId().toString());
-        json.put("seatCode",     getName());
+        json.put("seatCode", cinemaRoom.getId().toString() + seatRow + seatColumn);
         return json.toString();
     }
-
 }

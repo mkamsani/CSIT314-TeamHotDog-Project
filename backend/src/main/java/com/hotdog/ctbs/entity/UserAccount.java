@@ -96,13 +96,14 @@ public class UserAccount {
     {
         if (this == o) return true;
         if (!(o instanceof UserAccount that)) return false;
-        return id.equals(that.id) && username.equals(that.username) && email.equals(that.email) && userProfile.equals(
-                that.userProfile);
+        return id.equals(that.id)
+               && username.equals(that.username)
+               && email.equals(that.email);
     }
 
     @Override
     public int hashCode()
     {
-        return Objects.hash(id, username, email, userProfile);
+        return Objects.hash(id, username, email);
     }
 }

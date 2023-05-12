@@ -83,7 +83,7 @@ public class Movie {
     {
         if (this == o) return true;
         if (!(o instanceof Movie that)) return false;
-        return id.equals(that.id) && title.equals(that.title);
+        return id.equals(that.id) && title.equalsIgnoreCase(that.title);
     }
 
     @Override
