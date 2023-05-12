@@ -225,17 +225,33 @@ CREATE TABLE rating_review
   review TEXT    NOT NULL CHECK (LENGTH(review) > 0) -- e.g. "The cinema's popcorn is the best!"
 );
 
-CREATE VIEW monthly_revenue_report AS
-SELECT ticket.purchase_date::DATE  AS date,
-       ticket.ticket_type          AS type,
-       ticket_type.type_price      AS price,
+CREATE OR REPLACE VIEW monthly_revenue_report AS
+SELECT ticket.purchase_date::DATE  AS ticketpurchasedate,
+       ticket.ticket_type          AS tickettype,
+       ticket_type.type_price      AS tickettypeprice,
        SUM(ticket_type.type_price) AS total_revenue, -- pick one
        COUNT(ticket.ticket_type)   AS total_tickets  -- of these two
 FROM ticket
        JOIN ticket_type ON ticket.ticket_type = ticket_type.type_name
-WHERE ticket.purchase_date::DATE > NOW() - INTERVAL '1 month'
+WHERE ticket.purchase_date::DATE BETWEEN NOW() - INTERVAL '30 days' AND NOW()
 GROUP BY ticket.purchase_date::DATE, ticket.ticket_type, ticket_type.type_price
 ORDER BY ticket.purchase_date::DATE DESC;
+
+CREATE OR REPLACE VIEW weekly_revenue_report AS
+SELECT *
+FROM monthly_revenue_report
+WHERE ticketpurchasedate > NOW() - INTERVAL '7 days';
+
+CREATE OR REPLACE VIEW daily_revenue_report AS
+SELECT *
+FROM monthly_revenue_report
+WHERE ticketpurchasedate > NOW() - INTERVAL '1 day';
+
+SELECT now();
+-- 30 days ago
+SELECT now() - INTERVAL '30 days';
+
+
 
 /*
 reasons:

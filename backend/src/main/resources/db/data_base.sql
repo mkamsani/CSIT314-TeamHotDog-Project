@@ -111,7 +111,7 @@ ORDER BY user_account.username;
 
 CREATE OR REPLACE VIEW dev_ticket_view AS
 SELECT ticket.uuid, username, screening.cinema_room, show_date, show_time, concat(seat_row, seat_column) seat_concat,
-       type_name t_type, type_price price
+       type_name t_type, type_price price, purchase_date
 FROM ticket
          INNER JOIN user_account ON user_account.uuid = ticket.customer
          INNER JOIN ticket_type ON ticket_type.type_name = ticket.ticket_type
