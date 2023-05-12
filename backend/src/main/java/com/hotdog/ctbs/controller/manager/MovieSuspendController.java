@@ -28,12 +28,14 @@ public class MovieSuspendController {
         suspendMovie(String targetMovieTitle) - suspend movie by title.
      */
 
+    // curl.exe -X DELETE http://localhost:8000/api/manager/movie/suspend/I%20am%20Number%20Four
+    // %20 is space.
     @DeleteMapping("/suspend/{targetMovieTitle}")
     public String SuspendMovie(@PathVariable String targetMovieTitle) {
 
         try {
             movieImpl.suspendMovie(targetMovieTitle);
-            return "Success deleted movie.";
+            return "Success suspend movie.";
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }

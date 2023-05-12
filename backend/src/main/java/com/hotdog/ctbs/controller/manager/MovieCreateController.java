@@ -41,6 +41,7 @@ public class MovieCreateController {
      */
 
     // create a new movie
+    // Invoke-WebRequest -Method POST -Headers @{"Content-Type"="application/json"} -Body '{"title":"The Haha","genre":"Action","description":"A computer hacker learns from mysterious rebels about the true nature of his controllers.","releaseDate":"1999-03-31","imageUrl":"https://www.themoviedb.org/t/p/w600_and_h900_bestv2/hEpWvX6Bp79eLxY1kX5ZZJcme5U.jpg","landscapeImageUrl":"https://www.themoviedb.org/t/p/w1920/3KN24PrOheHVYs9ypuOIdFBEpX.jpg","isActive":true,"contentRating":"pg13"}' -Uri http://localhost:8000/api/manager/movie/create/movie
     @PostMapping("/create/movie")
     public String CreateMovie(@RequestBody final String json)
     {

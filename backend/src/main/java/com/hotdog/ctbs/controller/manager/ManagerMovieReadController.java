@@ -42,8 +42,11 @@ public class ManagerMovieReadController {
      getMovieByTitle(String title) - returns movie by title.
      */
 
+    // curl.exe -X GET http://localhost:8000/api/manager/movie/read/all
+    // curl.exe -X GET http://localhost:8000/api/manager/movie/read/I%20am%20Number%20Four
+    // %20 is space.
     @GetMapping(value = "/read/{param}")
-    public String CustomerReadMovie(@PathVariable final String param)
+    public String ManagerReadMovie(@PathVariable final String param)
     {
         try {
             switch (param) {

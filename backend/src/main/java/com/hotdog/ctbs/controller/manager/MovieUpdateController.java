@@ -42,6 +42,7 @@ public class MovieUpdateController{
 
      */
 
+    // Invoke-WebRequest -Method PUT -Uri 'http://localhost:8000/api/manager/movie/update/Matrix' -Headers @{'Content-Type'='application/json'} -Body '{"title":"XXXXX","genre":"Action","description":"A computer hacker learns from mysterious rebels about the true nature of his controllers.","releaseDate":"1999-03-31","imageUrl":"https://www.themoviedb.org/t/p/w600_and_h900_bestv2/hEpWvX6Bp79eLxY1kX5ZZJcme5U.jpg","landscapeImageUrl":"https://www.themoviedb.org/t/p/w1920/3KN24PrOheHVYs9ypuOIdFBEpX.jpg","contentRating":"pg13"}'
     @PutMapping("/update/{targetMovieTitle}")
     public String UpdateMovie(@RequestBody String json, @PathVariable String targetMovieTitle)
     {
