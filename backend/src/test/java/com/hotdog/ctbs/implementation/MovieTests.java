@@ -100,7 +100,6 @@ public class MovieTests {
                 LocalDate.of(1997, 5, 3),
                 "pokemon image URL",
                 "pokemon landscape URL",
-                true,
                 "pg13");
         System.out.println();
         // To check the list of movies if the movie is created
@@ -214,13 +213,6 @@ public class MovieTests {
         System.out.println("The list of existing movie before an update made");
         for (String title : movieImpl.getAllMovieTitles())
             System.out.println(movieImpl.getMovieByTitle(title));
-
-        movieImpl.updateMovieByAllAttributes("I am Number Four",
-                "DUMMY DATA", "DUMMY Comedy", "DUMMY DATA DESCRIPTION",
-                LocalDate.of(1997, 5, 25),
-                "DUMMY Spider Man2 newImageURL.INPUT",
-                "DUMMY Spider Man 2 newLandscapeImageURL.INPUT",
-                false, "pg13");
 
         // display all details for all movies
         for (String title : movieImpl.getAllMovieTitles())

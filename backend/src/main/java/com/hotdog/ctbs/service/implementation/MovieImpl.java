@@ -76,7 +76,7 @@ public class MovieImpl implements MovieService{
     @Override
     public void createMovie (String title, String genre, String description,
                              LocalDate releaseDate, String imageUrl, String landscapeImageUrl,
-                             boolean isActive, String contentRating)
+                             String contentRating)
     {
         // the new movie Title must not be the same as any existing title in database (1st check)
         // the content rating must be in lowercase form (2nd check)
@@ -100,7 +100,6 @@ public class MovieImpl implements MovieService{
                         .releaseDate(releaseDate)
                         .imageUrl(imageUrl)
                         .landscapeImageUrl(landscapeImageUrl)
-                        .isActive(isActive)
                         .contentRating(contentRating)
                         .build()
         );
@@ -135,7 +134,8 @@ public class MovieImpl implements MovieService{
     // update all attribute of movie except isActive (will be used in Suspend method)
     @Override
     public void updateMovie(String targetTitle, String newTitle, String newGenre, String newDescription,
-                            LocalDate newReleaseDate, String newImageUrl, String newLandscapeImageUrl, String newContentRating) {
+                            LocalDate newReleaseDate, String newImageUrl, String newLandscapeImageUrl,
+                            String newContentRating) {
         boolean movieFound = false;
 
         // make sure new movie title is not same as other existing movie titles
@@ -570,7 +570,7 @@ public class MovieImpl implements MovieService{
 
     ///////////////////////////////////////////////////////////////////////////////
 
-    @Override
+   /* @Override
     public void updateMovieByAllAttributes(String targetTitle, String newTitle, String newGenre, String newDescription,
                                            LocalDate newReleaseDate, String newImageUrl, String newLandscapeImageUrl, boolean newIsActive, String newContentRating) {
         boolean movieFound = false;
@@ -603,7 +603,7 @@ public class MovieImpl implements MovieService{
                     "like to update does not exist.");
         }
 
-    }
+    }*/
 
 
 

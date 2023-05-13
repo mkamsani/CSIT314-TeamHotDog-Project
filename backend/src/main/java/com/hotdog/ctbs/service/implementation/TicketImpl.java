@@ -66,7 +66,7 @@ public class TicketImpl implements TicketService{
 
 
         // check if screening is active
-        if (!screening.getIsActive())
+        if (screening.getStatus() == "suspended")
             throw new IllegalArgumentException("Screening is not active");
 
         System.out.println("Done checking for screening");
@@ -109,16 +109,6 @@ public class TicketImpl implements TicketService{
 
 
         ticketRepo.save(ticket);
-
-
-        // inactive the screening if all seats are booked
-        if (tickets.size() == screening.getCinemaRoom().getNumberOfSeats())
-        {
-            screening.setIsActive(false);
-            screeningRepo.save(screening);
-        }
-
-
     }
 
 
@@ -208,7 +198,7 @@ public class TicketImpl implements TicketService{
 
 
         // check if screening is active
-        if (!screening.getIsActive())
+        if (screening.getStatus() == "suspended")
             throw new IllegalArgumentException("Screening is not active");
 
         // get all seats

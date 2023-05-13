@@ -83,11 +83,6 @@ public class ScreeningTests {
             System.out.println(screeningImpl.getAllActiveScreeningsByMovieTitle("Spider-Man"));
             System.out.println();
 
-            System.out.println("Testing getAllActiveScreeningsByMovieTitle method");
-            System.out.println(screeningImpl.getAllActiveScreeningsByMovieTitle("Spider-Man"));
-            System.out.println();
-
-
     }
 
     @Test
@@ -105,13 +100,9 @@ public class ScreeningTests {
 
     @Test
     void suspendMethod() {
-        System.out.println("Testing suspendScreeningByIsActive method");
-        screeningImpl.suspendScreeningByIsActive(
-                "Spider-Man",
-                "midnight",
-                LocalDate.of(2023, 5, 23), 1,
-                false
-        );
+
+        System.out.println("Testing suspendScreening method");
+        screeningImpl.suspendScreening("Spider-Man", "morning", LocalDate.of(2023, 5, 23), 1);
 
         System.out.println(screeningImpl.getAllScreenings());
         System.out.println();

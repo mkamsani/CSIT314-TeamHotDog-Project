@@ -43,7 +43,7 @@ EXECUTE PROCEDURE loyalty_point_create();
  * Creates a new screening with random movie, cinema_room, show_date and show_time.
  * Prerequisites: movie, cinema_room, screening TABLE must be created.
  */
-CREATE OR REPLACE PROCEDURE random_screening()
+/*CREATE OR REPLACE PROCEDURE random_screening()
     LANGUAGE plpgsql
 AS $$
 DECLARE
@@ -51,12 +51,14 @@ DECLARE
     random_cinema_room integer;
     random_show_date date;
     random_show_time varchar(20);
+    screening varchar(20);
     yyyy integer;
     mm integer;
     dd integer;
 BEGIN
     SELECT uuid FROM movie ORDER BY RANDOM() LIMIT 1 INTO random_movie;
     SELECT id FROM cinema_room ORDER BY RANDOM() LIMIT 1 INTO random_cinema_room;
+    screening  := 'active'
     yyyy := 2023;
     mm := CEIL(RANDOM() * 12);
     dd := CEIL(RANDOM() * 31);
@@ -86,7 +88,7 @@ BEGIN
             (random_movie, random_cinema_room, random_show_date, random_show_time);
     END IF;
 END;
-$$;
+$$;*/
 
 /*
  * Do an insert statement of 280 seats.

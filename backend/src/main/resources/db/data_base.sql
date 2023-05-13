@@ -56,22 +56,22 @@ INSERT INTO cinema_room (id) VALUES (1), (2), (3), (4), (5), (6), (7), (8);
 
 -- Insert 5 default screenings, with a fixed date and time.
 INSERT INTO screening
-    (movie_id, cinema_room, show_date, show_time, is_active)
+    (movie_id, cinema_room, show_date, show_time)
 VALUES
-    ((SELECT uuid FROM movie WHERE title = 'Spider-Man'), 1, '2023-05-23', 'morning',   TRUE),
-    ((SELECT uuid FROM movie WHERE title = 'Spider-Man'), 1, '2023-05-23', 'afternoon', TRUE),
-    ((SELECT uuid FROM movie WHERE title = 'Spider-Man'), 1, '2023-05-23', 'evening',   TRUE),
-    ((SELECT uuid FROM movie WHERE title = 'Spider-Man'), 1, '2023-05-23', 'midnight',  TRUE),
-    ((SELECT uuid FROM movie WHERE title = 'Spider-Man'), 5, '2023-01-01', 'afternoon', FALSE);
+    ((SELECT uuid FROM movie WHERE title = 'Spider-Man'), 1, '2023-05-23', 'morning'),
+    ((SELECT uuid FROM movie WHERE title = 'Spider-Man'), 1, '2023-05-23', 'afternoon'),
+    ((SELECT uuid FROM movie WHERE title = 'Spider-Man'), 1, '2023-05-23', 'evening'),
+    ((SELECT uuid FROM movie WHERE title = 'Spider-Man'), 1, '2023-05-23', 'midnight'),
+    ((SELECT uuid FROM movie WHERE title = 'Spider-Man'), 5, '2023-01-01', 'afternoon');
 -- Insert a maximum of 495 random screenings.
-DO $$
+/*DO $$
   DECLARE
   BEGIN
     WHILE (SELECT COUNT(*) FROM screening) < 495 LOOP
       CALL random_screening();
     END LOOP;
   END
-$$;
+$$;*/
 
 -- Insert default ticket types.
 INSERT INTO ticket_type
@@ -81,15 +81,15 @@ VALUES
   ('child',   5.50,  TRUE),
   ('senior',  6.50,  TRUE),
   ('student', 8.50,  TRUE),
-  ('test',    10.00, TRUE);
+  ('redemption',    10.00, TRUE);
 
 -- Development views, to present data in a more readable format.
-CREATE OR REPLACE VIEW dev_screening_view AS
+/*CREATE OR REPLACE VIEW dev_screening_view AS
 SELECT TO_CHAR(show_date, 'Mon DD') AS show_date, cinema_room, show_time, title
 FROM screening
 INNER JOIN movie ON movie.uuid = screening.movie_id
 WHERE screening.is_active = TRUE
-ORDER BY show_date, cinema_room, show_time, title;
+ORDER BY show_date, cinema_room, show_time, title;*/
 
 CREATE OR REPLACE VIEW dev_cinema_room_view AS
 SELECT id, is_active, COUNT(seat.*) AS total_seats

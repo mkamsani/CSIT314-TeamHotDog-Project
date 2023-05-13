@@ -35,8 +35,12 @@ public class Screening {
     @Column(name = "show_time", nullable = false)
     private String showTime; // ONLY 'morning', 'afternoon', 'evening', 'midnight'
 
-    @Column(name = "is_active" , nullable = false)
+    @Column(name = "status", nullable = false)
+    private String status; // ONLY 'active', 'suspended', 'cancelled'
+
+    /*@Column(name = "is_active" , nullable = false)
     private Boolean isActive;
+*/
 
     @Column(name = "show_date", nullable = false)
     private LocalDate showDate;
@@ -56,7 +60,7 @@ public class Screening {
         ObjectNode json = new ObjectMapper().createObjectNode();
         json.put("movie", movie.getTitle());
         json.put("showTime",   showTime);
-        json.put("isActive",   isActive);
+        json.put("status",   status);
         json.put("showDate",   showDate.toString());
         json.put("cinemaRoom", cinemaRoom.getId());
         return json.toString();

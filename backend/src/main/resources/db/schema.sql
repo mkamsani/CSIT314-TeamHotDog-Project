@@ -116,7 +116,7 @@ CREATE TABLE movie
 (
   PRIMARY KEY (uuid),
   uuid           Uuid         NOT NULL DEFAULT uuid_generate_v4(),
-  is_active      BOOL         NOT NULL, -- Suspends a movie.
+  is_active      BOOL         NOT NULL DEFAULT TRUE, -- Suspends a movie.
   title          VARCHAR(255) NOT NULL,
   genre          VARCHAR(255) NOT NULL, -- .toLowerCase() wikipedia
   description    VARCHAR(255) NOT NULL,
@@ -137,10 +137,10 @@ CREATE TABLE cinema_room
 CREATE TABLE screening
 (
   PRIMARY KEY (uuid),
-  uuid        Uuid       NOT NULL DEFAULT    uuid_generate_v4(),
-  is_active   BOOLEAN    NOT NULL DEFAULT    TRUE,
-  movie_id    Uuid       NOT NULL REFERENCES movie (uuid),
-  cinema_room INTEGER    NOT NULL REFERENCES cinema_room (id),
+  uuid        Uuid         NOT NULL DEFAULT    uuid_generate_v4(),
+  status      VARCHAR(255) NOT NULL DEFAULT 'active'  CHECK  (status IN ('active', 'suspended', 'cancelled')),
+  movie_id    Uuid         NOT NULL REFERENCES movie (uuid),
+  cinema_room INTEGER      NOT NULL REFERENCES cinema_room (id),
 
   -- Java:     if (screening.getShowDate().isBefore(LocalDate.now())) { screening.setIsActive(false); }
   -- Postgres: CREATE FUNCTION + CREATE TRIGGER TODO

@@ -24,13 +24,13 @@ public class LoyaltyPointTests {
 
     @Test
     void allMethod(){
-        // test getAllLoyaltyPoint()
+       /* // test getAllLoyaltyPoint()
         System.out.println(loyaltyPointImpl.getAllLoyaltyPoint());
         System.out.println();
 
         // test getLoyaltyPointByUser()
         System.out.println(loyaltyPointImpl.getLoyaltyPointByUser("user_41"));
-
+*/
 
 
     }

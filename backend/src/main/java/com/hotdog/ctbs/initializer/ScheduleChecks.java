@@ -39,12 +39,14 @@ public class ScheduleChecks {
     @Scheduled(cron = "0 0 0 * * *") // Run every midnight.
     public void check() {
         List<Screening> screenings = screeningImpl.getAllScreenings()
-                                                  .stream()
-                                                  .filter(e -> !e.getIsActive())
-                                                  .toList();
+                .stream()
+                .filter(e -> !e.getStatus().equals("suspended"))
+
+                .toList();
         for (Screening screening : screenings) {
             if (screening.getShowDate().isBefore(LocalDate.now())) {
-                screening.setIsActive(false);
+                //screening.setIsActive(true);
+                screening.setStatus("active");
                 // screening.setIsActive("cancelled");
             }
             // TODO : code to award loyalty points to users who have watched the movie.

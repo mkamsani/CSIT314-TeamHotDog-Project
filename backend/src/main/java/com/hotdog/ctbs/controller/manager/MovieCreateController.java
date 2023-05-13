@@ -36,12 +36,12 @@ public class MovieCreateController {
      MovieCreateController
      Method will be used:
      createMovie(String title, String genre, String description, LocalDate releaseDate,
-                 String imageUrl, String landscapeImageUrl, boolean isActive,
+                 String imageUrl, String landscapeImageUrl,
                  String contentRating)   - creates a new movie.
      */
 
     // create a new movie
-    // Invoke-WebRequest -Method POST -Headers @{"Content-Type"="application/json"} -Body '{"title":"The Haha","genre":"Action","description":"A computer hacker learns from mysterious rebels about the true nature of his controllers.","releaseDate":"1999-03-31","imageUrl":"https://www.themoviedb.org/t/p/w600_and_h900_bestv2/hEpWvX6Bp79eLxY1kX5ZZJcme5U.jpg","landscapeImageUrl":"https://www.themoviedb.org/t/p/w1920/3KN24PrOheHVYs9ypuOIdFBEpX.jpg","isActive":true,"contentRating":"pg13"}' -Uri http://localhost:8000/api/manager/movie/create/movie
+    // Invoke-WebRequest -Method POST -Headers @{"Content-Type"="application/json"} -Body '{"title":"The Haha","genre":"Action","description":"A computer hacker learns from mysterious rebels about the true nature of his controllers.","releaseDate":"1999-03-31","imageUrl":"https://www.themoviedb.org/t/p/w600_and_h900_bestv2/hEpWvX6Bp79eLxY1kX5ZZJcme5U.jpg","landscapeImageUrl":"https://www.themoviedb.org/t/p/w1920/3KN24PrOheHVYs9ypuOIdFBEpX.jpg","contentRating":"pg13"}' -Uri http://localhost:8000/api/manager/movie/create/movie
     @PostMapping("/create/movie")
     public String CreateMovie(@RequestBody final String json)
     {
@@ -56,7 +56,6 @@ public class MovieCreateController {
                     LocalDate.parse(jsonNode.get("releaseDate").asText()),
                     jsonNode.get("imageUrl").asText(),
                     jsonNode.get("landscapeImageUrl").asText(),
-                    jsonNode.get("isActive").asBoolean(),
                     jsonNode.get("contentRating").asText()
 
             );

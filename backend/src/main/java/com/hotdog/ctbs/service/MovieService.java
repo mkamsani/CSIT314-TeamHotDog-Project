@@ -38,12 +38,13 @@ public interface MovieService {
     // return the movie id by input its title
     UUID getMovieIdByTitle(final String title);
 
+    // create a new movie
+    void createMovie(String title, String genre, String description,
+                     LocalDate releaseDate, String imageUrl, String landscapeImageUrl,
+                     String contentRating);
+
     // return a list of all movies
     List<Movie> getAllMoviesDetails();
-
-    // create a new movie
-    void createMovie (String title, String genre, String description,
-                             LocalDate releaseDate, String imageUrl, String landscapeImageUrl,boolean isActive,String contentRating);
 
     // all the methods to update movie with different attributes
     // update the movie's title by input its title and new title
@@ -94,15 +95,21 @@ public interface MovieService {
 
     // updateMovieByAllAttributes
     // update the movie's all attributes by input its title and new attributes
-    void updateMovieByAllAttributes(String targetTitle, String newTitle, String newGenre, String newDescription,
-                                    LocalDate newReleaseDate, String newImageUrl, String newLandscapeImageUrl, boolean newIsActive, String newContentRating);
+   /* void updateMovieByAllAttributes(String targetTitle, String newTitle, String newGenre, String newDescription,
+                                    LocalDate newReleaseDate, String newImageUrl, String newLandscapeImageUrl, boolean newIsActive, String newContentRating);*/
 
     // get active movie by its title
     Movie getActiveMovieByTitle(String title);
 
-    /////////////////////// consider suspend method ///////////////////////
+    // update all attribute of movie except isActive (will be used in Suspend method)
+    /*void updateMovie(String targetTitle, String newTitle, String newGenre, String newDescription,
+                     LocalDate newReleaseDate, String newImageUrl, String newLandscapeImageUrl,
+                     String newContentRating, boolean isActive);*/
+
+    // update all attribute of movie except isActive (will be used in Suspend method)
     void updateMovie(String targetTitle, String newTitle, String newGenre, String newDescription,
-                     LocalDate newReleaseDate, String newImageUrl, String newLandscapeImageUrl, String newContentRating);
+                     LocalDate newReleaseDate, String newImageUrl, String newLandscapeImageUrl,
+                     String newContentRating);
 
     void suspendMovie(String targetTitle);
 }
