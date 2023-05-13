@@ -201,6 +201,10 @@ public class TicketImpl implements TicketService{
         if (screening.getStatus() == "suspended")
             throw new IllegalArgumentException("Screening is not active");
 
+        // check if screening is cancelled
+        if (screening.getStatus() == "cancelled")
+            throw new IllegalArgumentException("Screening is cancelled");
+
         // get all seats
         List<Seat> seats = seatRepo.findSeatsByCinemaRoom(screening.getCinemaRoom());
 

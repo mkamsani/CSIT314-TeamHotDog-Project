@@ -50,6 +50,10 @@ VALUES
   ('Avengers: Infinity War',   'adventure', 'The superhero blockbuster "Avengers: Infinity War" features Robert Downey Jr., Chris Hemsworth, and Chris Evans as the Avengers, ' ||
                                             'who fight against Thanos to prevent the destruction of the universe.',                                                                                  '2018-04-27', 'https://www.themoviedb.org/t/p/original/rcV5bQjDoPNfI4wRpWAgZXtE0ON.jpg', 'https://www.themoviedb.org/t/p/original/lmZFxXgJE3vgrciwuDib0N8CfQo.jpg', TRUE, 'pg13');
 
+
+
+
+
 -- Insert 8 default cinema rooms.
 -- No further cinema rooms can be added.
 INSERT INTO cinema_room (id) VALUES (1), (2), (3), (4), (5), (6), (7), (8);
