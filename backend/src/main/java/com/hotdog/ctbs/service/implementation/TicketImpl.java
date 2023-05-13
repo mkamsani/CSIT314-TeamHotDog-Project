@@ -21,27 +21,36 @@ public class TicketImpl implements TicketService{
     final TicketRepository ticketRepo;
     final SeatRepository seatRepo;
     final TicketTypeRepository ticketTypeRepo;
-    //final LoyaltyPointRepository loyaltyPointRepo;
+    final LoyaltyPointRepository loyaltyPointRepo;
 
     public TicketImpl(ScreeningRepository screeningRepo,
                       UserAccountRepository userAccountRepo,
                       TicketRepository ticketRepo,
                       SeatRepository seatRepo,
-                      TicketTypeRepository ticketTypeRepo)
+                      TicketTypeRepository ticketTypeRepo,
+                      LoyaltyPointRepository loyaltyPointRepo)
     {
         this.screeningRepo = screeningRepo;
         this.userAccountRepo = userAccountRepo;
         this.ticketRepo = ticketRepo;
         this.seatRepo = seatRepo;
         this.ticketTypeRepo = ticketTypeRepo;
+        this.loyaltyPointRepo = loyaltyPointRepo;
     }
 
+    // points to redeem for a ticket (1 point = 1 dollar) ==> might follow redemption from Ticket Type?
+    private final Integer loyaltyPointsToRedeemTicket = 10;
+
+
     // create a ticket
+    // so far this method pass thru testing based on the design now
+    // it updates the total of redeem point of loyalty point also done checking total available point
     @Transactional
     public void createTicket(String userName,
                              String TicketTypeName,
                              String movieTitle, String showTime, LocalDate showDate, Integer cinemaRoomId,
-                             char row, Integer column){
+                             char row, Integer column,
+                             boolean isLoyaltyPointUsed){
 
 
         // get user account if null throw exception
@@ -49,11 +58,13 @@ public class TicketImpl implements TicketService{
         if (userAccount == null)
             throw new IllegalArgumentException("User account does not exist");
 
-
         // check user account is active?
         if (!userAccount.getIsActive())
             throw new IllegalArgumentException("User account is not active");
 
+        // check if user account is customer
+        if (!userAccount.getUserProfile().getPrivilege().equals("customer"))
+            throw new IllegalArgumentException("User account is not customer");
 
         System.out.println("Done checking for user account");
 
@@ -64,10 +75,11 @@ public class TicketImpl implements TicketService{
         if (screening == null)
             throw new IllegalArgumentException("Screening does not exist");
 
-
-        // check if screening is active
-        if (screening.getStatus() == "suspended")
-            throw new IllegalArgumentException("Screening is not active");
+        // check if screening is suspended or cancelled
+        if (screening.getStatus().equals("suspended"))
+            throw new IllegalArgumentException("Screening is suspended");
+        else if (screening.getStatus().equals("cancelled"))
+            throw new IllegalArgumentException("Screening is cancelled");
 
         System.out.println("Done checking for screening");
 
@@ -97,6 +109,27 @@ public class TicketImpl implements TicketService{
 
         System.out.println("Done checking for ticket type");
 
+        // check if loyalty point is used
+        if (isLoyaltyPointUsed){
+
+            // get loyalty point if null throw exception
+            LoyaltyPoint loyaltyPointForUser = loyaltyPointRepo.findByUserAccountUsername(userName).orElse(null);
+            if (loyaltyPointForUser == null)
+                throw new IllegalArgumentException("Loyalty point does not exist");
+
+            // check if loyalty point is enough
+            if ((loyaltyPointForUser.getPointsTotal() - loyaltyPointForUser.getPointsRedeemed()) < loyaltyPointsToRedeemTicket)
+                throw new IllegalArgumentException("Loyalty point is not enough");
+
+            // update loyalty point for user (redeem points increase)
+            loyaltyPointForUser.setPointsRedeemed(loyaltyPointForUser.getPointsRedeemed() + loyaltyPointsToRedeemTicket);
+            loyaltyPointRepo.save(loyaltyPointForUser);
+
+            // update ticket type (assign to particular redemption ticket type)
+            ticketType = ticketTypeRepo.findByTypeName("redemption");
+
+        }
+
         // create a ticket
         Ticket ticket = Ticket.builder()
                 .id(UUID.randomUUID())
@@ -111,8 +144,40 @@ public class TicketImpl implements TicketService{
         ticketRepo.save(ticket);
     }
 
+    /////////////////////////////////////*******************************************/////////////////////////////////////
+    // Method to list out the available seats for a particular screening (important for customer to choose the seat)
+    // but hardly to know this method will be used by which controller
+    @Transactional
+    public List<Seat> listAvailableSeats(String movieTitle, String showTime, LocalDate showDate, Integer cinemaRoomId){
+        // get screening if null throw exception
+        Screening screening = screeningRepo.findScreeningByMovieTitleAndShowTimeAndShowDateAndCinemaRoomId(
+                movieTitle, showTime, showDate, cinemaRoomId);
+        if (screening == null)
+            throw new IllegalArgumentException("Screening does not exist");
 
 
+        // check if screening is active
+        if (screening.getStatus() == "suspended")
+            throw new IllegalArgumentException("Screening is not active");
+
+        // check if screening is cancelled
+        if (screening.getStatus() == "cancelled")
+            throw new IllegalArgumentException("Screening is cancelled");
+
+        // get all seats
+        List<Seat> seats = seatRepo.findSeatsByCinemaRoom(screening.getCinemaRoom());
+
+        // get all tickets
+        List<Ticket> tickets = ticketRepo.findTicketsByScreening(screening).orElse(null);
+
+        // remove booked seats
+        for (Ticket ticket : tickets) {
+            seats.remove(ticket.getSeat());
+        }
+
+
+        return seats;
+    }
 
     // get all tickets
     @Transactional
@@ -183,41 +248,6 @@ public class TicketImpl implements TicketService{
         // this results in less comparison and less code
         currentTicket.setSeat(newSeat);
         currentTicket.setScreening(newScreening);
-    }
-
-
-    /////////////////////////////////////*******************************************/////////////////////////////////////
-    // Method to list out the available seats for a particular screening (important for customer to choose the seat)
-    @Transactional
-    public List<Seat> listAvailableSeats(String movieTitle, String showTime, LocalDate showDate, Integer cinemaRoomId){
-        // get screening if null throw exception
-        Screening screening = screeningRepo.findScreeningByMovieTitleAndShowTimeAndShowDateAndCinemaRoomId(
-                movieTitle, showTime, showDate, cinemaRoomId);
-        if (screening == null)
-            throw new IllegalArgumentException("Screening does not exist");
-
-
-        // check if screening is active
-        if (screening.getStatus() == "suspended")
-            throw new IllegalArgumentException("Screening is not active");
-
-        // check if screening is cancelled
-        if (screening.getStatus() == "cancelled")
-            throw new IllegalArgumentException("Screening is cancelled");
-
-        // get all seats
-        List<Seat> seats = seatRepo.findSeatsByCinemaRoom(screening.getCinemaRoom());
-
-        // get all tickets
-        List<Ticket> tickets = ticketRepo.findTicketsByScreening(screening).orElse(null);
-
-        // remove booked seats
-        for (Ticket ticket : tickets) {
-            seats.remove(ticket.getSeat());
-        }
-
-
-        return seats;
     }
 
 

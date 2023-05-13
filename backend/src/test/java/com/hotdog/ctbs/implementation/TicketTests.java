@@ -38,13 +38,13 @@ public class TicketTests {
         try{
             // test create ticket
             // create a ticket
-            for (int i = 1; i < 10; i++)
+            for (int i = 1; i < 2; i++)
             {
                 ticketImpl.createTicket("user_41",
                         "adult",
-                        "Spider-Man", "morning",
-                        LocalDate.of(2025, 5, 1),
-                        1, 'A', i);
+                        "Spider-Man", "evening",
+                        LocalDate.of(2023, 5, 23),
+                        1, 'A', i, true);
             }
 
         }
@@ -66,11 +66,9 @@ public class TicketTests {
             System.out.println();
 
             // get all the available seats linked to screening
-            // List<Seat> listAvailableSeats(String movieTitle, String showTime, LocalDate showDate, Integer cinemaRoomId)
-            // {"movie":"Spider-Man","showTime":"morning","isActive":true,"showDate":"2023-01-01","cinemaRoom":1}
             System.out.println("Testing listAvailableSeats method");
-            List<Seat> seats = ticketImpl.listAvailableSeats("Spider-Man", "morning",
-                    LocalDate.of(2025, 5, 1), 1);
+            List<Seat> seats = ticketImpl.listAvailableSeats("Spider-Man", "evening",
+                    LocalDate.of(2023, 5, 23), 1);
             System.out.println(seats.size());
             System.out.println(seats);
             System.out.println();

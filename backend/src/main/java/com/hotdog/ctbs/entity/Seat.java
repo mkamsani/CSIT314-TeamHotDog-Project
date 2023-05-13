@@ -56,14 +56,6 @@ public class Seat {
         return Objects.hash(id, cinemaRoom, seatRow, seatColumn);
     }
 
-    public String getName(){
-        // int cinema room id = 1
-        // char seat row = 'A'
-        // int seat column = 20
-        // output = 1A20
-        return cinemaRoom.getId().toString() + seatRow + seatColumn;
-    }
-
     @Override
     public String toString()
     {

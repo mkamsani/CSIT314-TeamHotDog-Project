@@ -56,6 +56,10 @@ public class LoyaltyPointImpl implements LoyaltyPointService {
     // TODO :
     //  Should this be called from a TicketController, LoyaltyPointController, or UserAccountController???
     //  Feedbacks welcome, thanks.
+    // just some feed back: abit hard to justify where it should fall under
+    // if it is other class controller, can it be called? since it is part of loyalty point impl
+    // but its seems would be very related to create ticket... pls see ticket impl create ticket method
+    // which has include loyaltypoint option
     @Override
     public void redeem(String username, Integer point)
     {
