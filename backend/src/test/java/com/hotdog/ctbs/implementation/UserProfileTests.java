@@ -1,14 +1,9 @@
 package com.hotdog.ctbs.implementation;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import com.hotdog.ctbs.entity.*;
 import com.hotdog.ctbs.service.implementation.*;
-import org.springframework.util.Assert;
-
-import java.util.UUID;
 
 /**
  * Tests for {@link UserProfileImpl}.
@@ -43,25 +38,8 @@ public class UserProfileTests {
     {
         long time = testStarter();
 
-        System.out.println("userProfileImpl.getAllTitles()");
-        System.out.println(userProfileImpl.getAllTitles());
-        System.out.println();
-
-        System.out.println("userProfileImpl.getAllPrivileges()");
-        System.out.println(userProfileImpl.getAllPrivileges());
-        System.out.println();
-
-        System.out.println("userProfileImpl.getValidPrivileges()");
-        System.out.println(userProfileImpl.getValidPrivileges());
-        System.out.println();
-
         System.out.println("userProfileImpl.getUserProfilesByPrivilege(\"admin\")");
         System.out.println(userProfileImpl.getUserProfilesByPrivilege("admin"));
-        System.out.println();
-
-        System.out.println("userProfileImpl.getIdByTitle(\"Customer\")");
-        UUID getIdByTitle = userProfileImpl.getIdByTitle("Customer");
-        System.out.println(getIdByTitle);
         System.out.println();
 
         testEnder(time);
@@ -80,12 +58,12 @@ public class UserProfileTests {
         };
 
         System.out.println("userProfileImpl.createByTitle(\"Test Manager\", \"manager\")");
-        userProfileImpl.createUserProfile("manager", "Test Manager");
+        userProfileImpl.create("manager", "Test Manager");
         System.out.println();
         getAllTitles.run();
 
         System.out.println("userProfileImpl.deleteByTitle(\"Test Manager Updated\")");
-        userProfileImpl.suspendUserProfileByTitle("Test Manager Updated");
+        userProfileImpl.suspend("Test Manager Updated");
         System.out.println();
 
         getAllTitles.run();

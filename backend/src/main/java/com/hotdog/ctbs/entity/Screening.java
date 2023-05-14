@@ -35,8 +35,12 @@ public class Screening {
     @Column(name = "show_time", nullable = false)
     private String showTime; // ONLY 'morning', 'afternoon', 'evening', 'midnight'
 
-    @Column(name = "is_active" , nullable = false)
+    @Column(name = "status", nullable = false)
+    private String status; // ONLY 'active', 'suspended', 'cancelled'
+
+    /*@Column(name = "is_active" , nullable = false)
     private Boolean isActive;
+*/
 
     @Column(name = "show_date", nullable = false)
     private LocalDate showDate;
@@ -56,7 +60,7 @@ public class Screening {
         ObjectNode json = new ObjectMapper().createObjectNode();
         json.put("movie", movie.getTitle());
         json.put("showTime",   showTime);
-        json.put("isActive",   isActive);
+        json.put("status",   status);
         json.put("showDate",   showDate.toString());
         json.put("cinemaRoom", cinemaRoom.getId());
         return json.toString();
@@ -67,11 +71,14 @@ public class Screening {
     {
         if (this == o) return true;
         if (!(o instanceof Screening that)) return false;
-        return id.equals(that.id) && movie.equals(that.movie) && showTime.equals(that.showTime) && cinemaRoom.equals(that.cinemaRoom) && isActive.equals(that.isActive) && showDate.equals(that.showDate);
+        return id.equals(that.id) &&
+               showTime.equals(that.showTime) &&
+               cinemaRoom.equals(that.cinemaRoom) &&
+               showDate.equals(that.showDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, movie, showTime, cinemaRoom, isActive, showDate);
+        return Objects.hash(id, showTime, cinemaRoom, showDate);
     }
 }

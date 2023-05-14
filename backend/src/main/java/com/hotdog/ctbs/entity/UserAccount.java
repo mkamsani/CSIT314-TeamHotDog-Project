@@ -9,7 +9,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
-import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
+// import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
@@ -96,13 +96,14 @@ public class UserAccount {
     {
         if (this == o) return true;
         if (!(o instanceof UserAccount that)) return false;
-        return id.equals(that.id) && username.equals(that.username) && email.equals(that.email) && userProfile.equals(
-                that.userProfile);
+        return id.equals(that.id)
+               && username.equals(that.username)
+               && email.equals(that.email);
     }
 
     @Override
     public int hashCode()
     {
-        return Objects.hash(id, username, email, userProfile);
+        return Objects.hash(id, username, email);
     }
 }

@@ -1,44 +1,100 @@
 package com.hotdog.ctbs.controller.admin;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+// Application imports.
 import com.hotdog.ctbs.service.implementation.UserAccountImpl;
-import org.springframework.web.bind.annotation.*;
 
+// Java imports.
 import java.time.LocalDate;
 
+// JSON deserialization imports.
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
+// Spring imports.
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+/**
+ * The {@code UserAccountCreateController} class exposes
+ * the {@code /api/admin/user-account/create} endpoint.
+ * <p />
+ *
+ * The expected JSON format is:
+ * <blockquote><pre>
+ * {
+ *   "username":    "mscott",
+ *   "email":       "mscott@hotdogbuns.com",
+ *   "password":    "password-employee",
+ *   "firstName":   "Michael",
+ *   "lastName":    "Scott",
+ *   "dateOfBirth": "1962-08-16",
+ *   "address":     "621 Court Kellum, Not Narcs, AP 01581",
+ *   "title":       "senior manager"
+ * }
+ * </pre></blockquote>
+ *
+ * The HTML form should GET {@link UserAccountReadController#Read(String) /api/admin/user-profile/read/titles} to obtain the list of titles.
+ * <br />
+ * The suggested HTML form format is:
+ * <blockquote><pre>
+ * &lt;form&gt;
+ *   &lt;input type="text" name="username"&gt;
+ *   &lt;input type="text" name="email"&gt;
+ *   &lt;input type="text" name="password"&gt;
+ *   &lt;input type="text" name="firstName"&gt;
+ *   &lt;input type="text" name="lastName"&gt;
+ *   &lt;input type="text" name="dateOfBirth"&gt;
+ *   &lt;input type="text" name="address"&gt;
+ *   &lt;select name="title"&gt;
+ *     &lt;option value="senior manager"&gt;Senior Manager&lt;/option&gt;
+ *     &lt;option value="junior manager"&gt;Manager&lt;/option&gt;
+ *     &lt;option value="customer"&gt;Customer&lt;/option&gt;
+ *   &lt;/select&gt;
+ *   &lt;button type="submit"&gt;Submit&lt;/button&gt;
+ * &lt;/form&gt;
+ * </pre></blockquote>
+ *
+ * @author Baraq Kamsani
+ */
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
-@RequestMapping("/admin")
+@RequestMapping("/admin/user-account")
 public class UserAccountCreateController {
 
-    final UserAccountImpl userAccountImpl;
+    private final UserAccountImpl userAccountImpl;
+    private final ObjectMapper objectMapper;
 
     public UserAccountCreateController(UserAccountImpl userAccountImpl)
     {
         this.userAccountImpl = userAccountImpl;
+        this.objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
     }
 
-    // RequestBody: {"username":"a","email":"a@a.com","password":"a","firstName":"fn1","lastName":"ln1","dateOfBirth":"2023-05-03","address":"address1","title":"customer"}
+    /** Create a {@code UserAccount} based on the given JSON. */
     @PostMapping("/create")
-    public String Create(@RequestBody String json)
+    public String Create(@RequestBody final String json)
     {
+        System.out.println("UserAccountCreateController.Create() called.");
         try {
-            JsonNode jsonNode = new ObjectMapper().readTree(json);
+            JsonNode jsonNode = objectMapper.readTree(json);
             String username = jsonNode.get("username").asText();
-            String email = jsonNode.get("email").asText();
-            String password = jsonNode.get("password").asText();
-            String firstName = jsonNode.get("firstName").asText();
-            String lastName = jsonNode.get("lastName").asText();
-            String address = jsonNode.get("address").asText();
-            LocalDate dateOfBirth = LocalDate.parse(jsonNode.get("dateOfBirth").asText());
-            String title = jsonNode.get("title").asText();
-            userAccountImpl.createUserAccount(username, password, email, firstName, lastName, address, dateOfBirth, title);
-            System.out.println("User account " + username + " created successfully.");
-            return "User account " + username + " created successfully.";
+            userAccountImpl.create(
+                    username,
+                    jsonNode.get("password").asText(),
+                    jsonNode.get("email").asText(),
+                    jsonNode.get("firstName").asText(),
+                    jsonNode.get("lastName").asText(),
+                    jsonNode.get("address").asText(),
+                    LocalDate.parse(jsonNode.get("dateOfBirth").asText()),
+                    jsonNode.get("title").asText()
+            );
+            return "Success";
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }
     }
-
 }

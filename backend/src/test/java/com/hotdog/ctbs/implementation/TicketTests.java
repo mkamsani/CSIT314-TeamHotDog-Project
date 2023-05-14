@@ -32,27 +32,65 @@ public class TicketTests {
     @Test
     void createMethod(){
 
+        // TEMPORARY PUT TRY STATEMENT HERE
+        // ONCE HAS FAKE DATA THEN CAN REMOVE TRY STATEMENT
 
-        // test create ticket
-        // create a ticket
-        ticketImpl.createTicket("jim",
-                "adult",
-                "Spider-Man", "morning",
-                LocalDate.of(2025, 5, 1),
-                1, 'A', 20);
+        try{
+            // test create ticket
+            // create a ticket
+            for (int i = 1; i < 2; i++)
+            {
+                ticketImpl.createTicket("user_41",
+                        "adult",
+                        "Spider-Man", "evening",
+                        LocalDate.of(2023, 5, 23),
+                        1, 'A', i, true);
+            }
+
+        }
+        catch (Exception e){
+            System.out.println(e.getMessage());
+        }
 
     }
 
     @Test
     void getter(){
 
-        // test get all tickets
-        System.out.println("Testing getAllTickets method");
-        System.out.println(ticketImpl.getAllTickets());
-        System.out.println();
+        // TEMPORARY PUT TRY STATEMENT HERE
+        // ONCE HAS FAKE DATA THEN CAN REMOVE TRY STATEMENT
+        try{
+            // test get all tickets
+            System.out.println("Testing getAllTickets method");
+            System.out.println(ticketImpl.getAllTickets());
+            System.out.println();
+
+            // get all the available seats linked to screening
+            System.out.println("Testing listAvailableSeats method");
+            List<Seat> seats = ticketImpl.listAvailableSeats("Spider-Man", "evening",
+                    LocalDate.of(2023, 5, 23), 1);
+            System.out.println(seats.size());
+            System.out.println(seats);
+            System.out.println();
+        }
+        catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+
+
     }
 
-
+//    void updateMethod(){
+//
+//        try{
+//            //test to update any current ticket
+//            System.out.println("Testing updateTicket method");
+//            System.out.println(ticketImpl.updateTicket("dwallace",
+//                    ));
+//            System.out.println();
+//        }
+//
+//    }
 
 
 }

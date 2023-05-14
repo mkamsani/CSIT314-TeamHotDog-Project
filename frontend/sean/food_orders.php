@@ -37,7 +37,7 @@ include('header.php');
 <body>
 <div class="container-fluid p-5 bg-danger text-white text-center">
     <h1>Food Orders</h1>
-    <p>Admin ID: <?php echo $_SESSION["userId"] ?></p>
+    <p>Admin ID: <?php echo $_SESSION["username"] ?></p>
 </div>
 <?php include('footer.php') ?>
 

@@ -44,7 +44,7 @@ $username = $_GET['username'];
 
 // Retrieve the user data from the API
 $ch = curl_init();
-curl_setopt($ch, CURLOPT_URL, 'http://localhost:8000/api/user-account/read/' . $username);
+curl_setopt($ch, CURLOPT_URL, 'http://localhost:8000/api/admin/user-account/read/' . $username);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 $result = curl_exec($ch);
 $data = json_decode($result, true);
@@ -66,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
     );
 
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, 'http://localhost:8000/api/user-account/' . urlencode($username));
+    curl_setopt($ch, CURLOPT_URL, 'http://localhost:8000/api/admin/user-account/' . urlencode($username));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PATCH');
     curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($updatedUser));
@@ -143,7 +143,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
                     <input class="btn btn-primary" type="submit" name="submit" value="Update">
             </div>
         </div>
-
+</div>
 </form>
 </body>
 <?php include('footer.php') ?>

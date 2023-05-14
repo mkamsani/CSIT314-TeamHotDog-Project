@@ -41,8 +41,7 @@ public class CinemaRoom {
         ObjectNode json = new ObjectMapper().createObjectNode();
         json.put("id",          id.toString());
         json.put("isActive",    isActive.toString());
-        json.put("capacity",    countSeats());
-
+        json.put("capacity",    seats.size()); // Number of seats linked cinema room.
         return json.toString();
     }
 
@@ -70,12 +69,7 @@ public class CinemaRoom {
         return this.getId().compareTo(cinemaRoom.getId());
     }
 
-    // count number of seats linked cinema room
-    public int countSeats() {
-
+    public int getNumberOfSeats() {
         return this.getSeats().size();
-
     }
-
-
 }

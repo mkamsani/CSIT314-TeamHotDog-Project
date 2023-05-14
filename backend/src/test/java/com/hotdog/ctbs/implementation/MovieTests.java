@@ -100,7 +100,6 @@ public class MovieTests {
                 LocalDate.of(1997, 5, 3),
                 "pokemon image URL",
                 "pokemon landscape URL",
-                true,
                 "pg13");
         System.out.println();
         // To check the list of movies if the movie is created
@@ -191,12 +190,11 @@ public class MovieTests {
         for (String title : movieImpl.getAllMovieTitles())
             System.out.println(movieImpl.getMovieByTitle(title));
 
-        movieImpl.updateMovieByIsActive("Spider-Man", false);
+        movieImpl.updateMovieByIsActive("Inception", false);
         // display all details for all movies
         for (String title : movieImpl.getAllMovieTitles())
             System.out.println(movieImpl.getMovieByTitle(title));
         System.out.println("Done for update movie status method");
-
 
         //
         // test update movie method (using content rating)
@@ -215,13 +213,6 @@ public class MovieTests {
         System.out.println("The list of existing movie before an update made");
         for (String title : movieImpl.getAllMovieTitles())
             System.out.println(movieImpl.getMovieByTitle(title));
-
-        movieImpl.updateMovieByAllAttributes("Spider-Man",
-                "Spider-Man2", "Comedy", "A story about an alien superhero",
-                LocalDate.of(1997, 5, 25),
-                "Spider Man2 newImageURL.INPUT",
-                "Spider Man 2 newLandscapeImageURL.INPUT",
-                false, "pg13");
 
         // display all details for all movies
         for (String title : movieImpl.getAllMovieTitles())
@@ -244,5 +235,23 @@ public class MovieTests {
             Assertions.assertEquals("The movie cannot be deleted because it has screenings.", e.getMessage());
         }
     }
+
+    @Test
+    void controllerMethod()
+    {
+        // test getActiveMovieByTitle method
+        System.out.println("movieController.getActiveMovieByTitle(\"Avatar\")");
+        System.out.println(movieImpl.getActiveMovieByTitle("Avatar"));
+        System.out.println();
+
+
+    }
+
+    @Test
+    void violationMethod(){
+
+    }
+
+
 
 }

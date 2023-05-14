@@ -50,28 +50,32 @@ VALUES
   ('Avengers: Infinity War',   'adventure', 'The superhero blockbuster "Avengers: Infinity War" features Robert Downey Jr., Chris Hemsworth, and Chris Evans as the Avengers, ' ||
                                             'who fight against Thanos to prevent the destruction of the universe.',                                                                                  '2018-04-27', 'https://www.themoviedb.org/t/p/original/rcV5bQjDoPNfI4wRpWAgZXtE0ON.jpg', 'https://www.themoviedb.org/t/p/original/lmZFxXgJE3vgrciwuDib0N8CfQo.jpg', TRUE, 'pg13');
 
+
+
+
+
 -- Insert 8 default cinema rooms.
 -- No further cinema rooms can be added.
 INSERT INTO cinema_room (id) VALUES (1), (2), (3), (4), (5), (6), (7), (8);
 
 -- Insert 5 default screenings, with a fixed date and time.
 INSERT INTO screening
-    (movie_id, cinema_room, show_date, show_time, is_active)
+    (movie_id, cinema_room, show_date, show_time)
 VALUES
-    ((SELECT uuid FROM movie WHERE title = 'Spider-Man'), 1, '2023-01-01', 'morning',   TRUE),
-    ((SELECT uuid FROM movie WHERE title = 'Spider-Man'), 1, '2023-01-01', 'afternoon', TRUE),
-    ((SELECT uuid FROM movie WHERE title = 'Spider-Man'), 1, '2023-01-01', 'evening',   TRUE),
-    ((SELECT uuid FROM movie WHERE title = 'Spider-Man'), 1, '2023-01-01', 'midnight',  TRUE),
-    ((SELECT uuid FROM movie WHERE title = 'Spider-Man'), 5, '2023-02-03', 'afternoon', TRUE);
+    ((SELECT uuid FROM movie WHERE title = 'Spider-Man'), 1, '2023-05-23', 'morning'),
+    ((SELECT uuid FROM movie WHERE title = 'Spider-Man'), 1, '2023-05-23', 'afternoon'),
+    ((SELECT uuid FROM movie WHERE title = 'Spider-Man'), 1, '2023-05-23', 'evening'),
+    ((SELECT uuid FROM movie WHERE title = 'Spider-Man'), 1, '2023-05-23', 'midnight'),
+    ((SELECT uuid FROM movie WHERE title = 'Spider-Man'), 5, '2023-01-01', 'afternoon');
 -- Insert a maximum of 495 random screenings.
-DO $$
+/*DO $$
   DECLARE
   BEGIN
     WHILE (SELECT COUNT(*) FROM screening) < 495 LOOP
       CALL random_screening();
     END LOOP;
   END
-$$;
+$$;*/
 
 -- Insert default ticket types.
 INSERT INTO ticket_type
@@ -81,15 +85,15 @@ VALUES
   ('child',   5.50,  TRUE),
   ('senior',  6.50,  TRUE),
   ('student', 8.50,  TRUE),
-  ('test',    10.00, TRUE);
+  ('redemption',    10.00, TRUE);
 
 -- Development views, to present data in a more readable format.
-CREATE OR REPLACE VIEW dev_screening_view AS
+/*CREATE OR REPLACE VIEW dev_screening_view AS
 SELECT TO_CHAR(show_date, 'Mon DD') AS show_date, cinema_room, show_time, title
 FROM screening
 INNER JOIN movie ON movie.uuid = screening.movie_id
 WHERE screening.is_active = TRUE
-ORDER BY show_date, cinema_room, show_time, title;
+ORDER BY show_date, cinema_room, show_time, title;*/
 
 CREATE OR REPLACE VIEW dev_cinema_room_view AS
 SELECT id, is_active, COUNT(seat.*) AS total_seats
@@ -108,5 +112,14 @@ SELECT username, email, title, privilege,
 FROM user_account
 INNER JOIN user_profile ON user_profile.uuid = user_account.user_profile
 ORDER BY user_account.username;
+
+CREATE OR REPLACE VIEW dev_ticket_view AS
+SELECT ticket.uuid, username, screening.cinema_room, show_date, show_time, concat(seat_row, seat_column) seat_concat,
+       type_name t_type, type_price price, purchase_date
+FROM ticket
+         INNER JOIN user_account ON user_account.uuid = ticket.customer
+         INNER JOIN ticket_type ON ticket_type.type_name = ticket.ticket_type
+         INNER JOIN seat ON seat.uuid = ticket.seat
+         INNER JOIN screening ON screening.uuid = ticket.screening;
 
 SELECT 'Success' AS result;

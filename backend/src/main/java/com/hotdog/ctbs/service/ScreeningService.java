@@ -1,6 +1,7 @@
 package com.hotdog.ctbs.service;
 
 import com.hotdog.ctbs.entity.Screening;
+import jakarta.transaction.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -37,9 +38,25 @@ public interface ScreeningService {
 
         // get all active screening method for customers usage
         // (customer does not need to see inactive screenings)
-        List<Screening> getAllActiveScreenings();
+        /*List<Screening> getAllActiveScreenings();
 
         // get all active screenings by movie title
+        List<Screening> getAllActiveScreeningsByMovieTitle(String movieTitle);*/
+
+
+        // get all active screening method for customers usage
+        // (customer does not need to see inactive screenings)
+        // ** customer should only able to see active screenings
+        // 1st order ==> show date in ascending order
+        // 2nd order ==> show time in ascending order
+        // 3rd order ==> cinema room in ascending order
+        // 4th order ==> movie in ascending order
+        @Transactional
+        List<Screening> getAllActiveScreenings();
+
+        // get all active screenings by movie title (condition getStatus == "active")
+        // (customer does not need to see inactive screenings)
+        @Transactional
         List<Screening> getAllActiveScreeningsByMovieTitle(String movieTitle);
 
         // 3. Update screening
@@ -51,13 +68,10 @@ public interface ScreeningService {
                              String newMovieTitle, String newShowTime, LocalDate newShowDate, Integer newCinemaRoomId);
 
 
-        // 4. Suspend the screening (update screening isActive to false)
-        void suspendScreeningByIsActive(String movieTitle,
-                                                       String currentShowTime,
-                                                       LocalDate curreshowDate,
-                                                       Integer cinemaRoomId, Boolean newIsActive);
-
-
-
-
+    // suspend screening method (not used)
+    @Transactional
+    void suspendScreening(String movieTitle,
+                          String currentShowTime,
+                          LocalDate currentShowDate,
+                          Integer cinemaRoomId);
 }

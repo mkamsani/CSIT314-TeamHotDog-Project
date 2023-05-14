@@ -44,7 +44,9 @@ include('header.php');
 if ($_SERVER['REQUEST_METHOD'] == 'POST')
 {
     $json = json_encode($_POST);
-    $ch = curl_init("http://localhost:8000/api/user-profile/update");
+    $url = "http://localhost:8000/api/admin/user-profile/update/" . $_POST['title-selector'];
+    $url = str_replace(' ', '%20', $url); // replace spaces with %20 (URL-safe)
+    $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
     curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -56,9 +58,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 ?>
 <div class="container mt-4" style="margin-left: 20%; width: 20%">
     <label class = "form-label" for="title-selector">Select the user profile to update:</label>
+    <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" class ="form-registration">
     <select class = "form-select" name="title-selector" id="title-selector">
     <?php
-    $ch = curl_init("http://localhost:8000/api/user-profile/read/active-user-profiles");
+    $ch = curl_init("http://localhost:8000/api/admin/user-profile/read/active");
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     $user_profiles = curl_exec($ch); // [{"privilege":"customer","title":"customer"},...,{"privilege":"admin","title":"chief information officer"}]
     curl_close($ch);
@@ -74,7 +77,6 @@ EOF;
     }
     ?>
     </select>
-    <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" class ="form-registration">
         <div class="mt-3">
             <label class = "form-label">Title:</label>
             <input type="text" class="form-control" required placeholder="Original Value" id="title" name="target-title"  disabled>

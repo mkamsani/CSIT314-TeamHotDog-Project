@@ -21,6 +21,12 @@ public class ScreeningImpl implements ScreeningService{
 
     private static final List<String> SHOW_TIME_ORDER = Arrays.asList("morning", "afternoon", "evening", "midnight");
 
+    private enum status {
+        active,
+        suspended,
+        cancelled
+    }
+
     public ScreeningImpl(ScreeningRepository screeningRepo,
                          MovieRepository movieRepo,
                          CinemaRoomRepository cinemaRoomRepo)
@@ -70,9 +76,9 @@ public class ScreeningImpl implements ScreeningService{
         if (movie == null)
             throw new IllegalArgumentException("Movie does not exist.");
         else if(movie.isActive() == false)
-            throw new IllegalArgumentException("Movie is not active.");
+//            throw new IllegalArgumentException("Movie is not active.");
 
-        System.out.println("Done checking movie");
+            System.out.println("Done checking movie");
 
         // Screening's date cannot be in the past.
         if (showDate.isBefore(LocalDate.now()))
@@ -118,7 +124,7 @@ public class ScreeningImpl implements ScreeningService{
                 .id(UUID.randomUUID())
                 .movie(movie)
                 .showTime(showTime)
-                .isActive(true)
+                .status("active")
                 .showDate(showDate)
                 .cinemaRoom(cinemaRoom)
                 .build();
@@ -288,7 +294,7 @@ public class ScreeningImpl implements ScreeningService{
     {
 
         // get all active screenings with local date today
-        List<Screening> screenings = screeningRepo.findByIsActiveAndShowDateGreaterThanEqual(true, LocalDate.now()).orElse(null);
+        List<Screening> screenings = screeningRepo.findActiveScreeningsLaterOrEqual(LocalDate.now());
         // = screeningRepo.findScreeningsByIsActive(true).orElse(null);
 
         if (screenings.isEmpty() || screenings == null) {
@@ -301,28 +307,27 @@ public class ScreeningImpl implements ScreeningService{
         return screenings;
     }
 
-    // get all active screenings by movie title
+    // get all active screenings by movie title (condition getStatus == "active")
+    // (customer does not need to see inactive screenings)
     @Override
     @Transactional
-    public List<Screening> getAllActiveScreeningsByMovieTitle(String movieTitle)
-    {
+    public List<Screening> getAllActiveScreeningsByMovieTitle(String movieTitle){
+
         // check if movie exists
         Movie movie = movieRepo.findMovieByTitle(movieTitle);
         if (movie == null)
             throw new IllegalArgumentException("Movie does not exist.");
 
-        List<Screening> screenings = screeningRepo.findScreeningsByMovieTitleAndIsActiveAndShowDateGreaterThanEqual(movieTitle, true, LocalDate.now()).orElse(null);
-        // check if there is any active screening for this movie
+        List<Screening> screenings = screeningRepo.findActiveScreeningsForMovieAndLaterOrEqual(LocalDate.now(), movie);
+
         if (screenings.isEmpty() || screenings == null) {
             throw new IllegalArgumentException("No active screenings found for the specified movie.");
         }
-        else{
-            // sort the screening details using self defined comparator
-            Collections.sort(screenings, new ScreeningComparator());
-            return screenings;
-        }
 
+        return screenings;
     }
+
+
 
     // 3. Update screening
     // *** can update all attribute of a screening except the "isActive" (status)
@@ -331,8 +336,8 @@ public class ScreeningImpl implements ScreeningService{
     @Override
     @Transactional
     public void updateScreening(String currentMovieTitle, String currentShowTime,
-                                  LocalDate currentShowDate, Integer currentCinemaRoomId,
-                                  String newMovieTitle, String newShowTime, LocalDate newShowDate, Integer newCinemaRoomId){
+                                LocalDate currentShowDate, Integer currentCinemaRoomId,
+                                String newMovieTitle, String newShowTime, LocalDate newShowDate, Integer newCinemaRoomId){
 
         // find current screening objects first
         Screening currentScreening = getScreeningByMovieTitleAndShowTimeAndShowDateAndCinemaRoomId(currentMovieTitle, currentShowTime, currentShowDate, currentCinemaRoomId);
@@ -341,12 +346,11 @@ public class ScreeningImpl implements ScreeningService{
         if (currentScreening.getShowDate().isBefore(LocalDate.now()))
             throw new IllegalArgumentException("Cannot update a screening that has already passed.");
 
-        // check if current screening is active
-        if (currentScreening.getIsActive() == false)
-            throw new IllegalArgumentException("Cannot update an inactive screening.");
+        // check if current screening status(string) is suspended or cancelled then throw illegal argumemt
+        if (currentScreening.getStatus().equals(status.suspended) || currentScreening.getStatus().equals(status.cancelled))
+            throw new IllegalArgumentException("Cannot update a screening that is suspended or cancelled.");
 
         System.out.println("Done checking for the current screenings.");
-
         // check if new movie title exists
         Movie newMovie = movieRepo.findMovieByTitle(newMovieTitle);
         if (newMovie == null)
@@ -394,7 +398,7 @@ public class ScreeningImpl implements ScreeningService{
     }
 
     // 4. Suspend the screening (update screening isActive to false)
-    @Override
+    /*@Override
     @Transactional
     public void suspendScreeningByIsActive(String movieTitle,
                                   String currentShowTime,
@@ -415,8 +419,30 @@ public class ScreeningImpl implements ScreeningService{
         // save updated screening details
         screeningRepo.save(currentScreening);
 
-    }
+    }*/
 
-    // Spare suspend method (not used) ==> expect one suspend button for each screening
+    // suspend screening method (not used)
+    @Override
+    @Transactional
+    public void suspendScreening(String movieTitle,
+                                 String currentShowTime,
+                                 LocalDate currentShowDate,
+                                 Integer cinemaRoomId) {
+
+        // find current screening objects first (illegal argument exception if any invalid input)
+        Screening currentScreening = getScreeningByMovieTitleAndShowTimeAndShowDateAndCinemaRoomId(
+                movieTitle, currentShowTime, currentShowDate, cinemaRoomId);
+
+        // check if current screening is already and cannot suspend cancel movie
+        if (currentScreening.getStatus().equals(status.suspended) || currentScreening.getStatus().equals(status.cancelled))
+            throw new IllegalArgumentException("The screening is already suspended or cancelled.");
+
+        // update screening isActive to false
+        currentScreening.setStatus(String.valueOf(status.suspended));
+
+        // save updated screening details
+        screeningRepo.save(currentScreening);
+
+    }
 
 }
