@@ -3,7 +3,6 @@ use PHPUnit\Framework\TestCase;
 
 class indexTest extends TestCase
 {
-    private $handle = null;
 
     public function testLoginTrue()
     {
