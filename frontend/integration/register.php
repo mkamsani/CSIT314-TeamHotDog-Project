@@ -27,7 +27,28 @@ include('idx_nav.php');
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
         $result = curl_exec($ch);
         curl_close($ch);
-        echo "<p>$result</p></section>";
+
+        if (stripos($result, "successful") == true)
+        {
+            echo '
+                    <div class="container mt-5">
+                        <div class="alert alert-success mb-3 mt-3" id="successMsg" style="width: 75%;">
+                        <strong> ' . $result . '</strong>. Head over to the <a href="index.php" class="alert-link">Homepage</a>
+                        to Log in.
+                        </div>
+                    </div>';
+        }
+
+        else
+        {
+            // Error message
+            echo '
+        <div class="container mt-3">
+            <div class="alert alert-danger" style="width: 75%;">
+                <strong>Error:</strong> ' . $result . '
+            </div>
+        </div>';
+        }
 }
 ?>
 <div class="container mt-4" style="margin-left: 20%; width: 20%">
@@ -83,7 +104,17 @@ include('idx_nav.php');
     </section>
 </div>
 
+<style>
+    .navbar .nav-link
+    {
+        color: white;
+    }
 
+    .navbar .nav-link:hover
+    {
+        transform: scale(1.1);
+    }
+</style>
 
 </body>
 <?php include('footer.php') ?>

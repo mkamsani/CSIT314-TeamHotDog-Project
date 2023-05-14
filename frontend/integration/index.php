@@ -10,9 +10,8 @@ include('header.php');
 include('idx_nav.php');
 ?>
 
-
+<head>
 <body>
-
 <?php
 $result = '';
 if(isset($_POST['submit']) && !empty($_POST['username']) && !empty($_POST['password']))
@@ -75,22 +74,19 @@ if(isset($_SESSION['privilege']))
                 aria-label="Slide 3"></button>
     </div>
     <div class="carousel-inner">
-        <div class="carousel-item active" data-bs-interval="5000">
-            <img src="Pics\carousel-1.png" class="d-block w-100" alt="...">
-            <div class="carousel-caption d-none d-md-block">
-                <h1 style ="color: red; text-shadow: 2px 2px #000">HOTDOG CINEMAS</h1>
-            </div>
-        </div>
-        <div class="carousel-item" data-bs-interval="5000">
+        <div class="carousel-item active" data-bs-interval="3000">
             <img src="Pics\carousel-2.png" class="d-block w-100" alt="...">
             <div class="carousel-caption d-none d-md-block">
-                <h1 style ="color: red; text-shadow: 2px 2px #000;">HOTDOG CINEMAS</h1>
             </div>
         </div>
-        <div class="carousel-item" data-bs-interval="5000">
+        <div class="carousel-item" data-bs-interval="3000">
+            <img src="Pics\carousel-1.png" class="d-block w-100" alt="...">
+            <div class="carousel-caption d-none d-md-block">
+            </div>
+        </div>
+        <div class="carousel-item" data-bs-interval="3000">
             <img src="Pics\carousel-3.png" class="d-block w-100" alt="...">
             <div class="carousel-caption d-none d-md-block">
-                <h1 style ="color: red; text-shadow: 2px 2px #000;">HOTDOG CINEMAS</h1>
             </div>
         </div>
     </div>
@@ -120,9 +116,12 @@ if(isset($_SESSION['privilege']))
         <span class="error" style="color:red" id = "result"><?php echo $result; ?></span>
         <div class="mt-3 d-grid col-6 gap-2 mx-auto">
             <input class="btn btn-danger" type="submit" name="submit" value="Log In">
-            <label>Don't have an account?</label>
+            <label class = "text-white">Don't have an account?</label>
             <a class="btn btn-danger" href="register.php">Register</a>
         </div>
     </form>
 </div>
 </body>
+
+</head>
+</html>

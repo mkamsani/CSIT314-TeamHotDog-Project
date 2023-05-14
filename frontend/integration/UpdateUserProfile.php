@@ -11,7 +11,7 @@ include('header.php');
 <nav class="navbar navbar-expand-sm">
     <div class="container">
         <a class="navbar-brand" href="index.php">
-            <img src="Pics/hotdog_cinemas.png" alt="Avatar Logo" style="width:25px; margin-bottom: 5px"> Hotdog Cinemas
+            <h1 class="text-center">HOTDOG CINEMAS</h1>
         </a>
         <ul class="nav nav-pills">
             <li class="nav-item">
@@ -35,10 +35,6 @@ include('header.php');
 </nav>
 
 <body>
-<div class="container-fluid p-5 bg-danger text-white text-center">
-    <h1>Update a User Profile</h1>
-</div>
-
 <?php
 // Code for update
 if ($_SERVER['REQUEST_METHOD'] == 'POST')
@@ -54,31 +50,36 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
     echo $result;
 }
 ?>
-<div class="container mt-4" style="margin-left: 20%; width: 20%">
-    <label class = "form-label" for="title-selector">Select the user profile to update:</label>
-    <select class = "form-select" name="title-selector" id="title-selector">
-    <?php
-    $ch = curl_init("http://localhost:8000/api/user-profile/read/active-user-profiles");
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    $user_profiles = curl_exec($ch); // [{"privilege":"customer","title":"customer"},...,{"privilege":"admin","title":"chief information officer"}]
-    curl_close($ch);
-    $user_profiles = json_decode($user_profiles, true);
-    foreach ($user_profiles as $user_profile) {
-        if ($user_profile['title'] === 'customer') continue;
-        $titleCapitalized = ucwords($user_profile['title']);
-        $privilegeCapitalized = ucwords($user_profile['privilege']);
-    // if {$user_profile['title']}, move to the next iteration
-        echo <<<EOF
-    <option value="{$user_profile['title']}">$privilegeCapitalized: $titleCapitalized</option>\n
-EOF;
-    }
-    ?>
-    </select>
-    <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" class ="form-registration">
+
+<?php
+$profiletitle = $_GET['title'];
+// Retrieve the user data from the API
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, 'http://localhost:8000/api/admin/user-profile/read/' . $profiletitle);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+$result = curl_exec($ch);
+$data = json_decode($result, true);
+echo $data;
+
+?>
+<div class="container-fluid p-5 bg-danger text-white text-center">
+    <h1>Update a User Profile</h1>
+</div>
+<div class="container mt-4" style=" width: 30%">
+    <div class="row">
+        <div class="col-4 mx-auto">
+            <input class="btn btn-danger" onclick="location.href='UserProfiles.php'" value = "Go back"></input>
+        </div>
+    <form action="<?php echo $_SERVER['PHP_SELF'] . '?' . 'title=' . $profile['title']; ?>" method="POST" class ="form-registration">
+        <input type="hidden" name="targetTitle" value="<?php echo $profile['title']; ?>">
+        <div class="col-auto">
+            <input class="btn btn-outline-danger text-white" value="Suspend" type="submit" name ="action">
+        </div>
+
         <div class="mt-3">
-            <label class = "form-label">Title:</label>
-            <input type="text" class="form-control" required placeholder="Original Value" id="title" name="target-title"  disabled>
-            <input type="text" class="form-control" required placeholder="Updated Value"             name="title">
+            <label class = "form-control">Title:</label>
+            <input type="text" class="form-control" required placeholder="Original Value" id="title" name="target-title" value="<?php echo $profile["title"] ?>"  disabled>
+            <input type="text" class="form-control" required placeholder="Updated Value"name="new-title">
         </div>
 
         <div class="mt-3">
@@ -117,6 +118,24 @@ EOF;
 </script>
     <?php include('footer.php') ?>
 </body>
+<style>
+    .navbar .nav-link
+    {
+        color: white;
+    }
 
+    .navbar .nav-link:hover
+    {
+        transform: scale(1.1);
+    }
+
+    .navbar-brand
+    {
+        font-family: 'Cinzel', Arial, sans-serif;
+        font-size: 36px;
+        color: #e50914;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+</style>
 
 </html>

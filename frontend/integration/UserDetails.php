@@ -11,7 +11,7 @@ include('header.php');
 <nav class="navbar navbar-expand-sm">
     <div class="container">
         <a class="navbar-brand" href="index.php">
-            <img src="Pics/hotdog_cinemas.png" alt="Avatar Logo" style="width:25px; margin-bottom: 5px"> Hotdog Cinemas
+            <h1 class="text-center">HOTDOG CINEMAS</h1>
         </a>
         <ul class="nav nav-pills">
             <li class="nav-item">
@@ -93,9 +93,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
                     </div>';
         }
 
-        else
-        {
-            echo '<span class="error" style="color:red" id = "result"><?php echo $result; ?></span>';
+        else {
+            // Error message
+            echo '
+            <div class="container mt-3">
+                <div class="alert alert-danger" style="width: 75%;">
+                    <strong>Error:</strong> ' . $result . '
+                </div>
+            </div>';
         }
     }
 
@@ -141,7 +146,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
                 <input class="btn btn-danger" onclick="location.href='UserAccounts.php'" value = "Go back"></input>
             </div>
             <div class="col-auto">
-                <input class="btn btn-outline-danger" value="Suspend" type="submit" name ="action">
+                <input class="btn btn-outline-danger text-white" value="Suspend" type="submit" name ="action">
             </div>
         </div>
 
@@ -205,5 +210,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 </div>
 </form>
 </body>
+<style>
+    .navbar .nav-link
+    {
+        color: white;
+    }
+
+    .navbar .nav-link:hover
+    {
+        transform: scale(1.1);
+    }
+
+    .navbar-brand
+    {
+        font-family: 'Cinzel', Arial, sans-serif;
+        font-size: 36px;
+        color: #e50914;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+</style>
 <?php include('footer.php') ?>
 </html>
