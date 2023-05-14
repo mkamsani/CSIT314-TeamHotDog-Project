@@ -39,30 +39,30 @@ include('header.php');
     <h1>View User Accounts</h1>
 </div>
 
-<div class="container mt-3 center">
-    <div class="input-group mb-3" style="width: 40%; margin: auto;">
+<div class="container">
+    <div class="input-group mb-3" style="margin: auto; width: 40%">
         <span class="input-group-text" id="searchLbl">Search:</span>
         <input type="text" class="form-control" id="searchBox" onkeyup="tableSearch()">
     </div>
     <?php
 
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, 'http://localhost:8000/api/admin/user-account/read/all');
+    curl_setopt($ch, CURLOPT_URL, 'http://localhost:8000/api/admin/user-account/read/active');
     curl_setopt($ch, CURLOPT_HTTPGET, true);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     $result = curl_exec($ch);
     $data = json_decode($result, true);
-    $tableHtml = '<table id="accountsTable" class="table table-hover" style="margin: auto; width: 100%; table-layout: fixed">';
-    $tableHtml.= '<tr><th>Username</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Address</th><th>Title</th></tr>';
+    $tableHtml = '<table id="accountsTable" class="table table-hover">';
+    $tableHtml.= '<thead><tr><th>Username</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Address</th><th>Title</th></tr></thead>';
     foreach ($data as $row)
     {
         $tableHtml .= '<tr>';
         $tableHtml .= '<td><a href="UserDetails.php?username=' . $row['username'] . '">' . $row['username'] . '</a></td>';
-        $tableHtml .= '<td>' . $row['firstName'] . '</td>';
-        $tableHtml .= '<td>' . $row['lastName'] . '</td>';
-        $tableHtml .= '<td>' . $row['email'] . '</td>';
-        $tableHtml .= '<td>' . $row['address'] . '</td>';
-        $tableHtml .= '<td>' . $row['title'] . '</td>';
+        $tableHtml .= '<td style="padding-bottom: 5%;">' . $row['firstName'] . '</td>';
+        $tableHtml .= '<td style="padding-bottom: 5%;">' . $row['lastName'] . '</td>';
+        $tableHtml .= '<td style="padding-bottom: 5%;">' . $row['email'] . '</td>';
+        $tableHtml .= '<td style="padding-bottom: 5%;">' . $row['address'] . '</td>';
+        $tableHtml .= '<td style="padding-bottom: 5%;">' . $row['title'] . '</td>';
         $tableHtml .= '</tr>';
 
     }

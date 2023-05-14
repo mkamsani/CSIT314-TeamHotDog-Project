@@ -49,11 +49,16 @@ curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 $result = curl_exec($ch);
 $data = json_decode($result, true);
 $user = $data[0];
+
+$year = $user['dateOfBirth'][0];
+$month = sprintf('%02d', $user['dateOfBirth'][1]);
+$day = sprintf('%02d', $user['dateOfBirth'][2]);
+$dateOfBirth = $year . '-' . $month . '-' . $day;
+
 curl_close($ch);
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST')
 {
-    $_SESSION['username'] = $_POST['username'];
 
     if ($_POST['action'] == 'Update')
     {
@@ -63,36 +68,71 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
             'lastName' => $_POST['lastName'],
             'email' => $_POST['email'],
             'address' => $_POST['address'],
+            'dateOfBirth' => $_POST['dateOfBirth'],
             'title' => $_POST['title'],
         );
 
+        $jsonData = json_encode($updatedUser);
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'http://localhost:8000/api/user-account/update/' . $_POST['targetUsername']);
+        curl_setopt($ch, CURLOPT_URL, 'http://localhost:8000/api/admin/user-account/update/' . $_POST['targetUsername']);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
-        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($updatedUser));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
         $result = curl_exec($ch);
-        var_dump($result);
         curl_close($ch);
+
+        if ($result == "Success")
+        {
+            echo '
+                    <div class="container mt-5">
+                        <div class="alert alert-success mb-3 mt-3" id="successMsg" style="width: 75%;">
+                        <strong>Success!</strong> Account has been updated. Head over to the <a href="UserAccounts.php" class="alert-link">User Accounts</a>
+                        to view accounts, or go <a href="UserAdmin.php" class="alert-link">main page</a>.
+                        </div>
+                    </div>';
+        }
+
+        else
+        {
+            echo '<span class="error" style="color:red" id = "result"><?php echo $result; ?></span>';
+        }
     }
 
     // Suspend user account when the form is submitted
     if ($_POST['action'] == 'Suspend')
     {
+        // Create a JSON payload with the target username
+        $payload = json_encode(['username' => $_POST['targetUsername']]);
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'http://localhost:8000/api/user-account/suspend/' . $_POST['targetUsername']);
+        curl_setopt($ch, CURLOPT_URL, 'http://localhost:8000/api/admin/user-account/suspend/' . $_POST['targetUsername']);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
         $result = curl_exec($ch);
-        echo $result;
-    }
 
+        if ($result == "Success")
+        {
+            echo '
+                    <div class="container mt-5">
+                        <div class="alert alert-success mb-3 mt-3" id="successMsg" style="width: 75%;">
+                        <strong>Success!</strong> Account has been suspended. Head over to the <a href="UserAccounts.php" class="alert-link">User Accounts</a>
+                        to view accounts, or go <a href="UserAdmin.php" class="alert-link">main page</a>.
+                        </div>
+                    </div>';
+        }
+
+        else
+        {
+            echo '<span class="error" style="color:red" id = "result"><?php echo $result; ?></span>';
+        }
+
+    }
 }
 
 ?>
-
-
-<form action="<?php echo $_SERVER['PHP_SELF'] . '?' . 'username=' . $_SESSION["username"]; ?>" method="POST">
+<form action="<?php echo $_SERVER['PHP_SELF'] . '?' . 'username=' . $user['username']; ?>" method="POST">
 <div class="container mt-4">
     <input type="hidden" name="targetUsername" value="<?php echo $user['username']; ?>">
     <div class="mt-4 mx-auto" style="width: 40%;">
@@ -101,7 +141,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
                 <input class="btn btn-danger" onclick="location.href='UserAccounts.php'" value = "Go back"></input>
             </div>
             <div class="col-auto">
-                <input class="btn btn-outline-danger" value="Suspend Account" type="submit" name ="action">
+                <input class="btn btn-outline-danger" value="Suspend" type="submit" name ="action">
             </div>
         </div>
 
@@ -137,15 +177,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
                     </div>
                 </div>
             </div>
-<!--            <div class="mt-2 row g-1 mx-auto">-->
-<!--                <div class="col-md">-->
-<!--                    <div class="form-floating">-->
-<!--                        <input type="text" class="form-control" id="dateOfBirth" name="dateOfBirth"-->
-<!--                            value="--><?php //echo $user['dateOfBirth']; ?><!--">-->
-<!--                        <label for="dateOfBirth">DOB: </label>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
+            <div class="mt-2 row g-1 mx-auto">
+                <div class="col-md">
+                    <div class="form-floating">
+                        <input type="date" class="form-control" name="dateOfBirth" id="dateOfBirth" value="<?php echo $dateOfBirth; ?>">
+                        <label for="dateOfBirth">Date of Birth:</label>
+                    </div>
+                </div>
+            </div>
             <div class="mt-2 row g-1 mx-auto">
                 <div class="form-floating">
                     <input type="text" class="form-control" id="title" name="title" value="<?php echo $user['title']; ?>">
