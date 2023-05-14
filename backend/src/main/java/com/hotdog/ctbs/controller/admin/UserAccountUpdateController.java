@@ -37,7 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
  * }
  * </pre></blockquote>
  *
- * See {@link UserAccountCreateController#Create(String)} for the suggested HTML form format.
+ * See {@link AdminUserAccountCreateController#Create(String)} for the suggested HTML form format.
  *
  * @author Baraq Kamsani
  */
