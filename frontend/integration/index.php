@@ -15,16 +15,16 @@ include('idx_nav.php');
 
 <?php
 $result = '';
-if(isset($_POST['submit']) && !empty($_POST['userId']) && !empty($_POST['password']))
+if(isset($_POST['submit']) && !empty($_POST['username']) && !empty($_POST['password']))
 {
-    $userId = $_POST['userId'];
+    $userId = $_POST['username'];
     $password = $_POST['password'];
     $ch = curl_init();
-    $loginarr = array('userId' => $userId, 'password' => $password);
+    $loginarr = array('username' => $userId, 'password' => $password);
 
     $json_data = json_encode($loginarr);
 
-    curl_setopt($ch, CURLOPT_URL, "http://localhost:8000/api/user-account/login");
+    curl_setopt($ch, CURLOPT_URL, "http://localhost:8000/api/login");
     curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json','Content-Length: ' . strlen($json_data)]);
     curl_setopt($ch,CURLOPT_POSTFIELDS, $json_data);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -37,6 +37,7 @@ if(isset($_POST['submit']) && !empty($_POST['userId']) && !empty($_POST['passwor
     {
         // Set session variable.
         $_SESSION["privilege"] = $result;
+        $_SESSION["username"] = $_POST['username']; // Store the username in the session
     }
 }
 
@@ -77,19 +78,19 @@ if(isset($_SESSION['privilege']))
         <div class="carousel-item active" data-bs-interval="5000">
             <img src="Pics\carousel-1.png" class="d-block w-100" alt="...">
             <div class="carousel-caption d-none d-md-block">
-                <h1 style ="color: red; text-shadow: 2px 2px #000">HotDog Cinemas</h1>
+                <h1 style ="color: red; text-shadow: 2px 2px #000">HOTDOG CINEMAS</h1>
             </div>
         </div>
         <div class="carousel-item" data-bs-interval="5000">
             <img src="Pics\carousel-2.png" class="d-block w-100" alt="...">
             <div class="carousel-caption d-none d-md-block">
-                <h1 style ="color: red; text-shadow: 2px 2px #000;">HotDog Cinemas</h1>
+                <h1 style ="color: red; text-shadow: 2px 2px #000;">HOTDOG CINEMAS</h1>
             </div>
         </div>
         <div class="carousel-item" data-bs-interval="5000">
             <img src="Pics\carousel-3.png" class="d-block w-100" alt="...">
             <div class="carousel-caption d-none d-md-block">
-                <h1 style ="color: red; text-shadow: 2px 2px #000;">HotDog Cinemas</h1>
+                <h1 style ="color: red; text-shadow: 2px 2px #000;">HOTDOG CINEMAS</h1>
             </div>
         </div>
     </div>
@@ -110,7 +111,7 @@ if(isset($_SESSION['privilege']))
           method='POST' name ="form1" style="width: 30%">
         <div class="input-group mt-3">
             <span class='input-group-text'>User ID : </span>
-            <input class='form-control' type='text' name='userId' required>
+            <input class='form-control' type='text' name='username' required>
         </div>
         <div class="input-group mt-3">
             <span class='input-group-text'>Password : </span>

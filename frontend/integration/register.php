@@ -20,7 +20,7 @@ include('idx_nav.php');
         // echo $_SERVER['PHP_SELF'] . "<br />\n" . "<pre>";
         // echo "<pre>" . print_r($_POST, true) . "</pre>";
         // echo "</pre>" . "<br />" . $json . "</section>";
-        $ch = curl_init("http://localhost:8000/api/user-account/create-customer");
+        $ch = curl_init("http://localhost:8000/api/customer/user-account/create");
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);

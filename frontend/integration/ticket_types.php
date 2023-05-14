@@ -87,9 +87,6 @@ if (isset($_POST['createTicket'])) {
 
 ?>
 
-
-
-
 <nav class="navbar navbar-expand-sm">
     <div class="container">
         <a class="navbar-brand" href="index.php">
@@ -146,10 +143,10 @@ if (isset($_POST['createTicket'])) {
     </form>
 
     <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" class="showTicket">
-        <br>
-        <br>
-        <br>
-        <br>
+        </br>
+        </br>
+        </br>
+        </br>
         <h1>Update Ticket Form</h1>
         <div class="mt-3">
             <table class="table table-hover" style="margin: auto; width: 100%; table-layout: fixed">

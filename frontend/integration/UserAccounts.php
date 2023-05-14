@@ -47,13 +47,13 @@ include('header.php');
     <?php
 
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, 'http://localhost:8000/api/user-account/read/all');
+    curl_setopt($ch, CURLOPT_URL, 'http://localhost:8000/api/admin/user-account/read/all');
     curl_setopt($ch, CURLOPT_HTTPGET, true);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     $result = curl_exec($ch);
     $data = json_decode($result, true);
     $tableHtml = '<table id="accountsTable" class="table table-hover" style="margin: auto; width: 100%; table-layout: fixed">';
-    $tableHtml.= '<tr><th>Username</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Address</th></tr>';
+    $tableHtml.= '<tr><th>Username</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Address</th><th>Title</th></tr>';
     foreach ($data as $row)
     {
         $tableHtml .= '<tr>';
@@ -62,6 +62,7 @@ include('header.php');
         $tableHtml .= '<td>' . $row['lastName'] . '</td>';
         $tableHtml .= '<td>' . $row['email'] . '</td>';
         $tableHtml .= '<td>' . $row['address'] . '</td>';
+        $tableHtml .= '<td>' . $row['title'] . '</td>';
         $tableHtml .= '</tr>';
 
     }

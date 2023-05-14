@@ -5,6 +5,32 @@
 <?php
 session_start();
 include('header.php');
+
+$username = "";
+$privilege = "";
+
+if (isset($_SESSION["username"]))
+{
+    $username = $_SESSION["username"];
+    // Use the $username variable as needed
+}
+
+if (isset($_SESSION["privilege"]))
+{
+    $privilege = $_SESSION["privilege"];
+    // Use the $username variable as needed
+}
+
+// Retrieve the user data from the API
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, 'http://localhost:8000/api/admin/user-account/read/' . $username);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+$result = curl_exec($ch);
+$data = json_decode($result, true);
+$user = $data[0];
+curl_close($ch);
+
+
 ?>
 
 
@@ -37,44 +63,43 @@ include('header.php');
 <body>
 <div class="container-fluid p-5 bg-danger text-white text-center">
     <h1>Welcome User Administrator!</h1>
-    <p>Admin ID: </p>
+    <p>Username: <?php echo $username; ?></p>
 </div>
 
 <div class="container mt-6 row g-3 mx-auto" style="width: 20%">
     <h1 class="text-center">User Admin Information</h1>
     <div class="col-md">
         <div class="form-floating">
-            <input type="text" class="form-control" id="name" readonly>
-            <label for="name">Name: </label>
+            <input type="text" class="form-control" id="name" value = "<?php echo $user['firstName']; ?>" readonly>
+            <label for="name">First Name: </label>
         </div>
     </div>
     <div class="col-md">
         <div class="form-floating">
-            <input type="text" class="form-control" id="surname" readonly>
+            <input type="text" class="form-control" id="surname" value = "<?php echo $user['lastName']; ?>" readonly>
             <label for="surname">Last name: </label>
         </div>
     </div>
     <div>
         <div class="form-floating">
-            <input type="email" class="form-control" id="email" readonly>
+            <input type="email" class="form-control" id="email" value = "<?php echo $user['email']; ?>" readonly>
             <label for="email">E-Mail: </label>
         </div>
     </div>
     <div class="col-md">
         <div class="form-floating">
-            <input type="text" class="form-control" id="phone" readonly>
-            <label for="phone">Phone No: </label>
+            <input type="text" class="form-control" id="title" value = "<?php echo $user['title']; ?>" readonly>
+            <label for="phone">Title: </label>
         </div>
     </div>
     <div class="col-md">
         <div class="form-floating">
-            <input type="text" class="form-control" id="type" readonly>
-            <label for="type">Type: </label>
+            <input type="text" class="form-control" id="privilege" value = "<?php echo $privilege ?>" readonly>
+            <label for="phone">Privilege: </label>
         </div>
     </div>
-
-
 </div>
+
 <div class="text-center mt-3">
     <a class="btn btn-danger" href="UserAccounts.php" role="button" style="margin-right: 2.7%">View User Accounts</a>
     <a class="btn btn-danger" href="UserProfiles.php" role="button">View User Profiles</a>

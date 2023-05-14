@@ -51,6 +51,29 @@ include('header.php');
         <input class="btn btn-danger" onclick = "location.href='UpdateUserProfile.php'" name="return" value="Update User Profiles">
     </div>
 </div>
+
+<?php
+
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, 'http://localhost:8000/api/admin/user-profile/read');
+curl_setopt($ch, CURLOPT_HTTPGET, true);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+$result = curl_exec($ch);
+$data = json_decode($result, true);
+$tableHtml = '<table id="profilesTable" class="table table-hover" style="margin: auto; width: 100%; table-layout: fixed">';
+$tableHtml.= '<tr><th>Title</th><th>Privilege</th></tr>';
+var_dump($result);
+foreach ($data as $row)
+{
+    $tableHtml .= '<tr>';
+    $tableHtml .= '<td>' . $row['title'] . '</td>';
+    $tableHtml .= '<td>' . $row['privilege'] . '</td>';
+    $tableHtml .= '</tr>';
+}
+$tableHtml .= '</table>';
+echo $tableHtml;
+?>
+
     <?php include('footer.php') ?>
 </body>
 
@@ -61,7 +84,7 @@ include('header.php');
         var input, filter, table, tr, td, i;
         input = document.getElementById("searchBox");
         filter = input.value.toUpperCase();
-        table = document.getElementById("accountsTable");
+        table = document.getElementById("profilesTable");
         tr = table.getElementsByTagName("tr"),
             th = table.getElementsByTagName("th");
 
