@@ -138,7 +138,7 @@ CREATE TABLE screening
 (
   PRIMARY KEY (uuid),
   uuid        Uuid         NOT NULL DEFAULT    uuid_generate_v4(),
-  status      VARCHAR(255) NOT NULL DEFAULT 'active'  CHECK  (status IN ('active', 'suspended', 'cancelled')),
+  status      VARCHAR(9)   NOT NULL DEFAULT    'active' CHECK (status IN ('active', 'suspended', 'cancelled')),
   movie_id    Uuid         NOT NULL REFERENCES movie (uuid),
   cinema_room INTEGER      NOT NULL REFERENCES cinema_room (id),
 
@@ -250,8 +250,6 @@ WHERE ticketpurchasedate > NOW() - INTERVAL '1 day';
 SELECT now();
 -- 30 days ago
 SELECT now() - INTERVAL '30 days';
-
-
 
 /*
 reasons:
