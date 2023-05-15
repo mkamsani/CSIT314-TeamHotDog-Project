@@ -35,6 +35,8 @@ public class UserAccountImpl implements UserAccountService {
         if (userAccount == null || !userAccountRepo.existsUserAccountByUsernameAndPassword(username, password))
             throw new IllegalArgumentException("Invalid username or password.");
 
+        if (!userAccount.getIsActive())
+            throw new IllegalArgumentException("Account suspended.");
         String privilege = userAccount.getUserProfile().getPrivilege();
         if (privilege == null)
             throw new IllegalArgumentException("Invalid privilege.");
