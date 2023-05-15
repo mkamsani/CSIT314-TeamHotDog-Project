@@ -11,6 +11,10 @@
 *.iml
 *.ipr
 
+### Frontend ###
+/frontend/**/dashboard/
+/frontend/**/xampp/
+
 ### Backend ###
 backend/.apt_generated
 backend/.classpath
