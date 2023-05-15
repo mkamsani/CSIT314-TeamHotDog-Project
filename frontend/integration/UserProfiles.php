@@ -18,9 +18,6 @@ include('header.php');
                 <a class="nav-link" href="UserAdmin.php">Home</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="CreateUser.php">Create User Account</a>
-            </li>
-            <li class="nav-item">
                 <a class="nav-link" href="UserAccounts.php">User Accounts</a>
             </li>
             <li class="nav-item">
@@ -40,16 +37,23 @@ include('header.php');
 </div>
 
 <div class="container mt-3 center">
-    <div class="input-group mb-3" style="width: 40%; margin: auto;">
+    <div class="input-group mb-3" style="margin: auto; width: 50%">
         <span class="input-group-text" id="searchLbl">Search:</span>
         <input type="text" class="form-control" id="searchBox" onkeyup="tableSearch()">
+        &nbsp;
+        &nbsp;
+        &nbsp;
+        &nbsp;
+        <div>
+            <a class="btn btn-danger" href="CreateUserProfile.php" role="button">Create User Profile</a>
+        </div>
     </div>
 </div>
 
 <?php
 
 $ch = curl_init();
-curl_setopt($ch, CURLOPT_URL, 'http://localhost:8000/api/admin/user-profile/read/all');
+curl_setopt($ch, CURLOPT_URL, 'http://localhost:8000/api/admin/user-profile/read/active');
 curl_setopt($ch, CURLOPT_HTTPGET, true);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 $result = curl_exec($ch);
@@ -83,7 +87,7 @@ echo $tableHtml;
 
     .navbar-brand
     {
-        font-family: 'Cinzel', Arial, sans-serif;
+        font-family: Cinzel, Arial, sans-serif;
         font-size: 36px;
         color: #e50914;
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);

@@ -18,9 +18,6 @@ include('header.php');
                 <a class="nav-link" href="UserAdmin.php">Home</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="CreateUser.php">Create User Account</a>
-            </li>
-            <li class="nav-item">
                 <a class="nav-link active bg-danger" href="UserAccounts.php">User Accounts</a>
             </li>
             <li class="nav-item">
@@ -137,17 +134,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 }
 
 ?>
+
 <form action="<?php echo $_SERVER['PHP_SELF'] . '?' . 'username=' . $user['username']; ?>" method="POST">
 <div class="container mt-4">
     <input type="hidden" name="targetUsername" value="<?php echo $user['username']; ?>">
     <div class="mt-4 mx-auto" style="width: 40%;">
-        <div class="row">
-            <div class="col-4 mx-auto">
-                <input class="btn btn-danger" onclick="location.href='UserAccounts.php'" value = "Go back"></input>
-            </div>
-            <div class="col-auto">
-                <input class="btn btn-outline-danger text-white" value="Suspend" type="submit" name ="action">
-            </div>
+        <div class="col-4 mx-auto">
+            <input class="btn btn-danger" onclick="location.href='UserAccounts.php'" value = "Go back"></input>
+        </div>
+
+        <div class="col-auto">
+            <input class="btn btn-outline-danger text-white" value="Suspend" type="submit" name ="action">
         </div>
 
         <div class="mt-3 row g-1 mx-auto">
@@ -203,8 +200,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
                 </div>
             </div>
 
-            <div class="row g-2 col-4 mx-auto">
-                    <input class="btn btn-primary" type="submit" name="action" value="Update">
+            <div class="mt-2 row g-2 col-4 mx-auto">
+                    <input class="btn btn-outline-primary" type="submit" name="action" value="Update">
             </div>
         </div>
 </div>
@@ -223,7 +220,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 
     .navbar-brand
     {
-        font-family: 'Cinzel', Arial, sans-serif;
+        font-family: Cinzel, Arial, sans-serif;
         font-size: 36px;
         color: #e50914;
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);

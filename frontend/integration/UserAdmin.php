@@ -44,9 +44,6 @@ curl_close($ch);
                 <a class="nav-link active bg-danger" href="UserAdmin.php">Home</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="CreateUser.php">Create User Account</a>
-            </li>
-            <li class="nav-item">
                 <a class="nav-link" href="UserAccounts.php">User Accounts</a>
             </li>
             <li class="nav-item">
@@ -101,8 +98,10 @@ curl_close($ch);
 </div>
 
 <div class="text-center mt-3">
-    <a class="btn btn-danger" href="UserAccounts.php" role="button" style="margin-right: 2.7%">View User Accounts</a>
+    <a class="btn btn-danger" href="UserAccounts.php" role="button">View User Accounts</a>
     <a class="btn btn-danger" href="UserProfiles.php" role="button">View User Profiles</a>
+    <a class="btn btn-danger" href="CreateUser.php" role="button">Create User Account</a>
+    <a class="btn btn-danger" href="CreateUserProfile.php" role="button">Create User Profile</a>
 </div>
 
 </body>
@@ -119,7 +118,7 @@ curl_close($ch);
 
     .navbar-brand
     {
-        font-family: 'Cinzel', Arial, sans-serif;
+        font-family: Cinzel, Arial, sans-serif;
         font-size: 36px;
         color: #e50914;
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);

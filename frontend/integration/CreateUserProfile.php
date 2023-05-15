@@ -33,7 +33,7 @@ include('header.php');
 
 <body>
 <div class="container-fluid p-5 bg-danger text-white text-center">
-    <h1>Create a User Account</h1>
+    <h1>Create a User Profile</h1>
 </div>
 
 <?php
@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 // echo "</pre>" . "<br />" . $json . "</section>";
 
 // Step 4: Send the JSON to the backend.
-    $ch = curl_init("http://localhost:8000/api/admin/user-account/create");
+    $ch = curl_init("http://localhost:8000/api/admin/user-profile/create");
     curl_setopt($ch, CURLOPT_POST, 1);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -64,8 +64,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
         echo '
                     <div class="container mt-5">
                         <div class="alert alert-success mb-3 mt-3" id="successMsg" style="width: 75%;">
-                        <strong>Success!</strong> Account has been created. Head over to the <a href="UserAccounts.php" class="alert-link">User Accounts</a>
-                        to view accounts, or go <a href="UserAdmin.php" class="alert-link">main page</a>.
+                        <strong>Success!</strong> User Profile has been created. Head over to the <a href="UserProfiles.php" class="alert-link">User Profiles</a>
+                        to view profiles, or go <a href="UserAdmin.php" class="alert-link">main page</a>.
                         </div>
                     </div>';
     }
@@ -95,55 +95,22 @@ $user_profiles = json_decode($userprofile, true);
     <section id="registration">
         <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" class="form-registration">
             <div class="mt-3">
-                <label for="username" class="form-label">Username:</label>
-                <input type="text" class="form-control" name="username" id="username" placeholder="Enter your username for login" required>
+                <label for="title" class="form-label">Title:</label>
+                <input type="text" class="form-control" name="title" id="title" placeholder="Enter user profile title" required>
             </div>
-
             <div class="mt-3">
-                <label for="email" class="form-label">Email:</label>
-                <input type="email" class="form-control" name="email" id="email" placeholder="Enter your email eg. seanissofunn@gmail.com" required>
+                <label for="title">Privilege:</label>
+                <div class="form-floating">
+                    <select class = "form-select" name="privilege" id="privilege">
+                        <option value="customer">Customer</option>
+                        <option value="manager">Manager</option>
+                        <option value="owner">Owner</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                    <label for="privilege">New Privilege:</label>
+                </div>
             </div>
 
-            <div class="mt-3">
-                <label for="password" class="form-label">Password:</label>
-                <input type="password" class="form-control" name="password" id="password" placeholder="Enter your password minimum 6 characters" required>
-            </div>
-
-            <div class="mt-3">
-                <label for="password-confirm" class="form-label">Confirm Password:</label>
-                <input type="password" class="form-control" name="password" id="password-confirm" placeholder="Confirm password" required>
-            </div>
-
-            <div class="mt-3">
-                <label for="firstName" class="form-label">First Name:</label>
-                <input type="text" class="form-control" name="firstName" id="firstName" placeholder="Enter your first name" required>
-            </div>
-
-            <div class="mt-3">
-                <label for="lastName" class="form-label">Last Name:</label>
-                <input type="text" class="form-control" name="lastName" id="lastName" placeholder="Enter your last name" required>
-            </div>
-
-            <div class="mt-3">
-                <label for="dateOfBirth" class="form-label">Date of Birth:</label>
-                <input type="date" class="form-control" name="dateOfBirth" id="dateOfBirth" placeholder="Select date of birth" required>
-            </div>
-
-            <div class="mt-3">
-                <label for="address" class="form-label">Address:</label>
-                <textarea name="address" class="form-control" id="address" placeholder="Enter your address" cols="30" rows="10" required></textarea>
-            </div>
-
-            <label for="title">Title:</label>
-            <select class = "form-select" name="title" id="title">
-                <?php
-                foreach ($user_profiles as $profile) {
-                    $titleCapitalized = ucwords($profile['title']);
-                    $privilegeCapitalized = ucwords($profile['privilege']);
-                    echo '<option value="' . $profile['title'] . '">' . $privilegeCapitalized . ': ' . $titleCapitalized . '</option>';
-                }
-                ?>
-            </select>
 
             <div class="mt-3">
                 <input class="btn btn-danger" type="submit" name="submit" value="Create">

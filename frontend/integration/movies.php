@@ -1,10 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<style>
-    <?php  include('test.css'); ?>
-  </style>
-
   <?php
   session_start();
   include('header.php');
@@ -26,13 +22,81 @@
   $moviesDetails = json_decode($moviesDetails, true);
 
   ?>
+<head>
+    <style>
+        .movie-title {
+            font-size: 20px;
+            font-weight: bold;
+        }
 
+        .movie-description {
+            font-size: 18px;
+            font-family: "Arial", sans-serif;
+            color: #555555;
+        }
+
+        .movie-genre {
+            font-size: 16px;
+            font-family: "Arial", sans-serif;
+            color: #888888;
+            text-transform: uppercase;
+        }
+
+        .movie-poster {
+            width: 200px;
+            height: 300px;
+        }
+
+        .movie-poster-title {
+            font-weight: bold;
+        }
+
+        .fixed-forms-container {
+            position: fixed;
+            top: 16%;
+            left: 0;
+            width: 20%;
+            height: 100vh; /* Use 100vh for full screen height */
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start; /* Align forms to the top */
+            align-items: center;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0);
+            z-index: 999;
+        }
+
+        .movies-container
+        {
+            margin-left: 25%;
+            width: 75%;
+        }
+
+        .navbar .nav-link
+        {
+            color: white;
+        }
+
+        .navbar .nav-link:hover
+        {
+            transform: scale(1.1);
+        }
+
+        .navbar-brand
+        {
+            font-family: Cinzel, Arial, sans-serif;
+            font-size: 36px;
+            color: #e50914;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
 
 
 <nav class="navbar navbar-expand-sm">
     <div class="container">
         <a class="navbar-brand" href="index.php">
-            <h1 class="text-center">HOTDOG CINEMAS</h1>
+            <h1 style="width:25px; margin-bottom: 5px">HOTDOG CINEMAS</h1>
         </a>
         <ul class="nav nav-pills">
             <li class="nav-item">
@@ -40,7 +104,7 @@
             </li>
             &emsp;
             <li class="nav-item">
-                <a class="nav-link" href="food_orders.php">Food Orders</a>
+                <a class="nav-link active bg-danger" href="movies.php">Movies</a>
             </li>
             &emsp;
             <li class="nav-item">
@@ -232,85 +296,6 @@
 
     ?>
 
-<style>
-    .movie-title {
-        font-size: 20px;
-        font-weight: bold;
-    }
-
-    .movie-description {
-        font-size: 18px;
-        font-family: "Arial", sans-serif;
-        color: #555555;
-    }
-
-    .movie-genre {
-        font-size: 16px;
-        font-family: "Arial", sans-serif;
-        color: #888888;
-        text-transform: uppercase;
-    }
-
-    .movie-poster {
-        width: 200px;
-        height: 300px;
-    }
-
-    .movie-poster-title {
-        font-weight: bold;
-    }
-
-    .fixed-forms-container {
-        position: fixed;
-        top: 16%;
-        left: 0;
-        width: 20%;
-        height: 100vh; /* Use 100vh for full screen height */
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start; /* Align forms to the top */
-        align-items: center;
-        padding: 20px;
-        background-color: rgba(255, 255, 255, 0);
-        z-index: 999;
-    }
-
-    .movies-container
-    {
-        margin-left: 25%;
-        width: 75%;
-    }
-
-     .nav-link
-     {
-         color: white;
-     }
-
-    .nav-link:hover
-    {
-        transform: scale(1.1);
-    }
-
-     .navbar .nav-link
-     {
-         color: white;
-     }
-
-    .navbar .nav-link:hover
-    {
-        transform: scale(1.1);
-    }
-
-    .navbar-brand
-    {
-        font-family: 'Cinzel', Arial, sans-serif;
-        font-size: 36px;
-        color: #e50914;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-    }
-
-</style>
-
 <script>
     function tableSearch()
     {
@@ -341,8 +326,6 @@
         }
     }
 </script>
-
 </body>
 <?php include('footer.php') ?>
-
 </html>

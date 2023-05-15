@@ -18,9 +18,6 @@ include('header.php');
                 <a class="nav-link" href="UserAdmin.php">Home</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="CreateUser.php">Create User Account</a>
-            </li>
-            <li class="nav-item">
                 <a class="nav-link active bg-danger" href="UserAccounts.php">User Accounts</a>
             </li>
             <li class="nav-item">
@@ -40,10 +37,18 @@ include('header.php');
 </div>
 
 <div class="container mt-3 text-white">
-    <div class="input-group mb-3" style="margin: auto; width: 40%">
+    <div class="input-group mb-3" style="margin: auto; width: 50%">
         <span class="input-group-text" id="searchLbl">Search:</span>
         <input type="text" class="form-control" id="searchBox" onkeyup="tableSearch()">
+        &nbsp;
+        &nbsp;
+        &nbsp;
+        &nbsp;
+        <div>
+            <a class="btn btn-danger" href="CreateUser.php" role="button">Create User Account</a>
+        </div>
     </div>
+
     <?php
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, 'http://localhost:8000/api/admin/user-account/read/active');
@@ -84,7 +89,7 @@ include('header.php');
 
     .navbar-brand
     {
-        font-family: 'Cinzel', Arial, sans-serif;
+        font-family: Cinzel, Arial, sans-serif;
         font-size: 36px;
         color: #e50914;
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);

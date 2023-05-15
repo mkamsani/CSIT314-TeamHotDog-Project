@@ -1,8 +1,7 @@
 package com.hotdog.ctbs.controller.admin;
 
 import com.hotdog.ctbs.service.implementation.UserProfileImpl;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * The {@code UserProfileSuspendController} class exposes
@@ -15,6 +14,9 @@ import org.springframework.web.bind.annotation.PathVariable;
  *
  * @author Baraq Kamsani
  */
+@RestController
+@CrossOrigin(origins = "*", allowedHeaders = "*")
+@RequestMapping("/admin/user-profile")
 public class UserProfileSuspendController {
 
     private final UserProfileImpl userProfileImpl;

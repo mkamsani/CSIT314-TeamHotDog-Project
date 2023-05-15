@@ -66,7 +66,7 @@ curl_close($ch);
         </a>
         <ul class="nav nav-pills">
             <li class="nav-item">
-                <a class="nav-link active bg-danger" href="movies.php">Home</a>
+                <a class="nav-link active bg-danger" href="CinemaManager.php">Home</a>
             </li>
             &emsp;
             <li class="nav-item">
@@ -148,7 +148,7 @@ curl_close($ch);
 
     .navbar-brand
     {
-        font-family: 'Cinzel', Arial, sans-serif;
+        font-family: Cinzel, Arial, sans-serif;
         font-size: 36px;
         color: #e50914;
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
