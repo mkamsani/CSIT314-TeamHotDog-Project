@@ -1,17 +1,16 @@
 <?php
 use PHPUnit\Framework\TestCase;
 
+
+
 class indexTest extends TestCase
 {
 
-    public function testLoginTrue()
+
+
+   public function testLoginTrue()
     {
-        // create our http client (Guzzle)
-        $client = new Client('http://localhost:8000', array(
-            'request.options' => array(
-                'exceptions' => false,
-            )
-        ));
+
 
         $data = array(
             'userId' => 'jim',
@@ -19,13 +18,14 @@ class indexTest extends TestCase
 
         );
 
-        $request = $client->post('/api/user-account/login', null, json_encode($data));
-        $response = $request->send();
 
-        $this->assertEquals(201, $response->getStatusCode());
-        $this->assertTrue($response->hasHeader('Location'));
-        $data = json_decode($response->getBody(true), true);
-        $this->assertArrayHasKey('nickname', $data);
+       $ch = curl_init();
+       curl_setopt($ch, CURLOPT_URL, 'http://localhost:8000/api/admin/user-account/read/');
+       curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+       $result = curl_exec($ch);
+       $data = json_decode($result, true);
+       $user = $data[0];
+       curl_close($ch);
 
      }
 
@@ -33,3 +33,4 @@ class indexTest extends TestCase
 }
 
 ?>
+

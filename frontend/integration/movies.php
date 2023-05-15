@@ -9,17 +9,17 @@
   session_start();
   include('header.php');
 
-  $moviesCh = curl_init();
-  curl_setopt($moviesCh, CURLOPT_URL, "http://localhost:8000/api/movie/read/allMovieTitles");
-  curl_setopt($moviesCh, CURLOPT_RETURNTRANSFER, 1);
-  $movies = curl_exec($moviesCh);
-  $movies = trim($movies, '[');
-  $movies = trim($movies, ']');
-  $movies = explode(", ",$movies);
-  curl_close($moviesCh);
+//  $moviesCh = curl_init();
+//  curl_setopt($moviesCh, CURLOPT_URL, "http://localhost:8000/api/manager/movie/read/all");
+//  curl_setopt($moviesCh, CURLOPT_RETURNTRANSFER, 1);
+//  $movies = curl_exec($moviesCh);
+//  $movies = trim($movies, '[');
+//  $movies = trim($movies, ']');
+//  $movies = explode(", ",$movies);
+//  curl_close($moviesCh);
 
   $moviesDetailsCh = curl_init();
-  curl_setopt($moviesDetailsCh, CURLOPT_URL, "http://localhost:8000/api/movie/read/allMoviesDetails");
+  curl_setopt($moviesDetailsCh, CURLOPT_URL, "http://localhost:8000/api/manager/movie/read/all");
   curl_setopt($moviesDetailsCh, CURLOPT_RETURNTRANSFER, 1);
   $moviesDetails = curl_exec($moviesDetailsCh);
   curl_close($moviesDetailsCh);
@@ -69,13 +69,14 @@
         <span class="input-group-text" id="searchLbl">Search:</span>
         <input type="text" class="form-control" id="searchBox" onkeyup="tableSearch()">
     </div>
-    <table id="moviesTable" class="table table-hover" style="margin: auto; width: 100%; table-layout: fixed">
+    <table id="moviesTable" class="table table-hover text-white" style="margin: auto; width: 100%; table-layout: fixed">
         <thead>
         <tr>
             <th>Movie Title</th>
             <th>Movie Description</th>
             <th>Genre</th>
             <th>Poster</th>
+            <th>Activity</th>
         </tr>
         </thead>
         <tbody>
@@ -85,15 +86,17 @@
             $description = $movie['description'];
             $genre = $movie['genre'];
             $poster = $movie['imageUrl'];
+            $isActive = $movie['isActive'];
             ?>
             <tr>
-                <td class="movie-title"><?php echo $title; ?></td>
-                <td class="movie-description"><?php echo $description; ?></td>
-                <td class="movie-genre"><?php echo $genre; ?></td>
+                <td class="movie-title text-white"><?php echo $title; ?></td>
+                <td class="movie-description text-white"><?php echo $description; ?></td>
+                <td class="movie-genre text-white"><?php echo $genre; ?></td>
                 <td>
                     <img class="movie-poster" src="<?php echo $poster; ?>">
 
                 </td>
+                <td class="movie-isActive"><?php echo $isActive; ?></td>
             </tr>
         <?php } ?>
         </tbody>
@@ -104,80 +107,89 @@
 <div class="mt-3 fixed-forms-container">
     <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" class="updateMovie form-registration">
         <div class="mt-3">
-            <label class="form-label" for="moviesDDL">Choose a movie:</label>
+            <label class="form-label text-white" for="moviesDDL" >Choose a movie:</label>
             <select class="form-control" name="movies" id="movies">
                 <option>Select Movie</option>
                 <?php
-                foreach ($movies as $movie) {
-                    echo '<option>' . $movie . '</option>';
+                foreach ($moviesDetails as $movie) {
+                    $title = $movie['title'];
+                    echo '<option>' . $title . '</option>';
                 }
+                ?>
+            </select>
+
+            <div class="mt-3">
+                <label class="form-label text-white">Insert New Movie:</label>
+                <input type="text" class="form-control" name="movieName" id="movieName" placeholder="Enter Movie title">
+            </div>
+
+            <div class="mt-3">
+                <input type="text" class="form-control" name="movieGenre" id="movieGenre" placeholder="Enter Movie genre">
+            </div>
+
+            <div class="mt-3">
+                <textarea class="form-control" name="movieDesc" id="movieDesc" placeholder="Enter Movie Description"></textarea>
+            </div>
+
+            <div class="mt-3">
+                <input type="date" class="form-control" name="movieRD" id="movieRD">
+            </div>
+
+            <div class="mt-3">
+                <input type="text" class="form-control" name="moviePoster" id="moviePoster" placeholder="Enter image URL">
+                <input type="text" class="form-control" name="landScapePoster" id="landScapePoster" placeholder="Enter landscape image URL">
+            </div>
+
+            <div class="mt-3">
+                <select class="form-control" name="isActive" id="isActive">
+                    <option>Select Movie Activity</option>
+                    <option value="TRUE">Active</option>
+                    <option value="FALSE">Not Active</option>
+                </select>
+            </div>
+
+            <select class="form-control" name="moviesCR" id="moviesCR">
+                <option>Select Content Rating</option>
+                <?php
+                $data = array( "g", "pg", "pg13", "nc16", "m18", "r21");
+                foreach ($data as $CR){
+                    echo '<option>' . $CR . '</option>';
+                }
+
                 ?>
             </select>
         </div>
 
         <div class="mt-3">
-            <label class="form-label" for="movieName">Update Movie Name to update:</label>
-            <input type="text" class="form-control" name="movieName" id="movieName" placeholder="Enter Movie Name">
-        </div>
-
-        <div class="mt-3">
             <input type="submit" class="btn btn-primary" name="update" value="Update">
-            <input type="submit" class="btn btn-outline-danger" name="suspend" value="Suspend">
-        </div>
-    </form>
-
-    <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" class="createMovie form-registration">
-        <div class="mt-3">
-            <label class="form-label">Insert New Movie:</label>
-            <input type="text" class="form-control" name="movieName" id="movieName" placeholder="Enter Movie title">
-        </div>
-
-        <div class="mt-3">
-            <input type="text" class="form-control" name="movieGenre" id="movieGenre" placeholder="Enter Movie genre">
-        </div>
-
-        <div class="mt-3">
-            <textarea class="form-control" name="movieDesc" id="movieDesc" placeholder="Enter Movie Description"></textarea>
-        </div>
-
-        <div class="mt-3">
-            <input type="date" class="form-control" name="movieRD" id="movieRD">
-        </div>
-
-        <div class="mt-3">
-            <input type="text" class="form-control" name="moviePoster" id="moviePoster" placeholder="Enter image URL">
-            <input type="text" class="form-control" name="landScapePoster" id="landScapePoster" placeholder="Enter landscape image URL">
-        </div>
-
-        <div class="mt-3">
-            <select class="form-control" name="isActive" id="isActive">
-                <option>Select Movie Activity</option>
-                <option value="TRUE">Active</option>
-                <option value="FALSE">Not Active</option>
-            </select>
-        </div>
-
-        <div class="mt-3">
-            <input type="text" class="form-control" name="contentRating" id="contentRating" placeholder="Enter content Rating">
-        </div>
-
-        <div class="mt-3">
             <input type="submit" class="btn btn-primary" name="create" value="Create">
+            <input type="submit" class="btn btn-outline-danger" name="suspend" value="Suspend">
+
+
         </div>
     </form>
+
+
 </div>
     <?php
 
     if (isset($_POST['update'])) {
 
-    $title = $_POST['movies'];
+        $updatedMovieName = str_replace(' ', '%20', $_POST['movies']);
+       // echo $updatedMovieName;
+        $movieName = $_POST['movieName'];
+        $updatedMovieGenre = $_POST['movieGenre'];
+        $updatedMovieDesc = $_POST['movieDesc'];
+        $updatedMovieDate = $_POST['movieRD'];
+        $updatedMoviePoster = $_POST['moviePoster'];
+        $updatedMovieLandScapePoster = $_POST['landScapePoster'];
+        $updatedMovieRating = $_POST['moviesCR'];
+        $data = array('title' => $movieName, 'genre' => $updatedMovieGenre, 'description' => $updatedMovieDesc, 'releaseDate' => $updatedMovieDate,
+            'imageUrl' => $updatedMoviePoster, 'landscapeImageUrl' =>$updatedMovieLandScapePoster , 'contentRating' => $updatedMovieRating);
 
-    $movieName = $_POST['movieName'];
-    $updatedTitle = $movieName;
-    $data = array('targetTitle' => $title, 'title' => $updatedTitle);
     $data_json = json_encode($data);
-   // print_r(  $data_json);
-    $updateMoviesCh = curl_init( "http://localhost:8000/api/movie/update/movie/Title");
+    //print_r(  $data_json);
+    $updateMoviesCh = curl_init( 'http://localhost:8000/api/manager/movie/update/'. $updatedMovieName);
     curl_setopt($updateMoviesCh, CURLOPT_CUSTOMREQUEST, "PUT");
     curl_setopt($updateMoviesCh, CURLOPT_POSTFIELDS, $data_json);
     curl_setopt($updateMoviesCh, CURLOPT_RETURNTRANSFER, 1);
@@ -185,7 +197,7 @@
 
     $response = curl_exec($updateMoviesCh);
     curl_close($updateMoviesCh);
-    print_r ($response);
+   print_r ($response);
     }
 
     if (isset($_POST['create'])) {
@@ -197,12 +209,12 @@
         $moviePoster = $_POST['moviePoster'];
         $movieLandScapePoster = $_POST['landScapePoster'];
         $movieActive = $_POST['isActive'];
-        $movieRating = $_POST['contentRating'];
+        $movieRating = $_POST['moviesCR'];
         $data = array('title' => $movieName, 'genre' => $movieGenre, 'description' => $movieDesc, 'releaseDate' => $movieDate,
             'imageUrl' => $moviePoster, 'landscapeImageUrl' =>$movieLandScapePoster , 'isActive' => $movieActive, 'contentRating' => $movieRating);
         $data_json = json_encode($data);
-//        print_r(  $data_json);
-        $createMoviesCh = curl_init("http://localhost:8000/api/movie/create/movie");
+       //print_r(  $data_json);
+        $createMoviesCh = curl_init('http://localhost:8000/api/manager/movie/create/movie');
         curl_setopt($createMoviesCh, CURLOPT_POST, "1");
         curl_setopt($createMoviesCh, CURLOPT_POSTFIELDS, $data_json);
         curl_setopt($createMoviesCh, CURLOPT_RETURNTRANSFER, 1);
@@ -210,23 +222,20 @@
 
         $response = curl_exec($createMoviesCh);
         curl_close($createMoviesCh);
-//        print_r ($response);
+        //print_r ($response);
     }
-    if (isset($_POST['delete'])) {
-        $movieName = $_POST['movies'];
-       // echo $movieName;
-        $deletingTitle = $movieName;
-        $data = array('title' => $deletingTitle);
-        $data_json = json_encode($data);
+    if (isset($_POST['suspend'])) {
+        $suspendMovieName = str_replace(' ', '%20', $_POST['movies']);
+        //echo $suspendMovieName;
+        $suspendMoviesCh = curl_init( 'http://localhost:8000/api/manager/movie/suspend/'.$suspendMovieName);
        // print_r(  $data_json);
-        $deleteMoviesCh = curl_init( "http://localhost:8000/api/movie/delete/movie");
-        curl_setopt($deleteMoviesCh, CURLOPT_CUSTOMREQUEST, "DELETE");
-        curl_setopt($deleteMoviesCh, CURLOPT_POSTFIELDS, $data_json);
-        curl_setopt($deleteMoviesCh, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($deleteMoviesCh, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+        curl_setopt($suspendMoviesCh, CURLOPT_CUSTOMREQUEST, "DELETE");
+        curl_setopt($suspendMoviesCh, CURLOPT_POSTFIELDS, $suspendMovieName);
+        curl_setopt($suspendMoviesCh, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($suspendMoviesCh, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
 
-        $response = curl_exec($deleteMoviesCh);
-        curl_close($deleteMoviesCh);
+        $response = curl_exec($suspendMoviesCh);
+        curl_close($suspendMoviesCh);
         print_r ($response);
         }
 
