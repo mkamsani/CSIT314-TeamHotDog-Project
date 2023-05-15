@@ -7,7 +7,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import com.hotdog.ctbs.entity.Movie;
+import com.hotdog.ctbs.entity.Screening;
 import com.hotdog.ctbs.repository.MovieRepository;
+import com.hotdog.ctbs.repository.ScreeningRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import com.hotdog.ctbs.service.MovieService;
@@ -22,14 +24,17 @@ public class MovieImpl implements MovieService{
 
     private final MovieRepository movieRepository;
 
+    private final ScreeningRepository screeningRepository;
+
     //this is the enum for content rating (follow the movie "constraints"
     private enum ContentRating {
         g, pg, pg13, nc16, m18, r21
     }
 
-    public MovieImpl(MovieRepository movieRepository)
+    public MovieImpl(MovieRepository movieRepository, ScreeningRepository screeningRepository)
     {
         this.movieRepository = movieRepository;
+        this.screeningRepository = screeningRepository;
     }
 
     // CustomerMovieReadController
@@ -211,7 +216,8 @@ public class MovieImpl implements MovieService{
                     "like to delete does not exist.");
         }
 
-        for (Movie existingMovie : movieRepository.findAll()) {
+        // check if the movie has screenings
+        /*for (Movie existingMovie : movieRepository.findAll()) {
 
             if (existingMovie.getTitle().equals(title)){
 
@@ -226,7 +232,38 @@ public class MovieImpl implements MovieService{
 
             }
 
+        }*/
+
+        // make sure the movie has no future screening
+        for (Screening existingScreening : screeningRepository.findAll()) {
+            if (existingScreening.getMovie().getTitle().equalsIgnoreCase(title)){
+                // check any future screening
+                if (existingScreening.getShowDate().isAfter(LocalDate.now())){
+                    System.out.println(existingScreening.getShowDate());
+                    throw new IllegalArgumentException("The movie you would " +
+                            "like to delete has the screening in the future.");
+                }
+            }
         }
+
+        boolean checkPastMovieScreeningMoreThan30Days = false;
+
+        // if dont have future screening, i want to delete the movie if all screening is in the past more than 30 days
+        for (Screening existingScreening : screeningRepository.findAll()) {
+            if (existingScreening.getMovie().getTitle().equalsIgnoreCase(title)){
+                // check any future screening
+                if (existingScreening.getShowDate().isAfter(LocalDate.now().minusDays(30))){
+                    throw new IllegalArgumentException("You cant delete a movie that" +
+                            " has the screening in the past less than 30 days.");
+                }
+            }
+        }
+
+        if(checkPastMovieScreeningMoreThan30Days){
+            movieRepository.delete(movieRepository.findMovieByTitle(title));
+        }
+
+
     }
 
     ///////////////// end of MovieDeleteController //////////////////////

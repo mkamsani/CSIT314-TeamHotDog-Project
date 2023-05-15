@@ -38,13 +38,13 @@ public class TicketTests {
         try{
             // test create ticket
             // create a ticket
-            for (int i = 1; i < 2; i++)
+            for (int i = 1; i < 15; i++)
             {
                 ticketImpl.createTicket("user_41",
                         "adult",
-                        "Spider-Man", "evening",
+                        "Spider-Man", "morning",
                         LocalDate.of(2023, 5, 23),
-                        1, 'A', i, true);
+                        1, 'A', i, false);
             }
 
         }

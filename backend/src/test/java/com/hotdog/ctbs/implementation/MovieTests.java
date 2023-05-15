@@ -1,6 +1,5 @@
 package com.hotdog.ctbs.implementation;
 
-import com.hotdog.ctbs.entity.Movie;
 import com.hotdog.ctbs.service.implementation.MovieImpl;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Assertions;
@@ -9,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
-import java.util.UUID;
 
 @SpringBootTest
 public class MovieTests {
@@ -234,6 +232,7 @@ public class MovieTests {
             System.out.println("IllegalArgumentException thrown");
             Assertions.assertEquals("The movie cannot be deleted because it has screenings.", e.getMessage());
         }
+
     }
 
     @Test
@@ -249,6 +248,10 @@ public class MovieTests {
 
     @Test
     void violationMethod(){
+
+        System.out.println("movieImpl.deleteMovieByTitle(\"Spider-Man\")");
+        movieImpl.deleteMovieByTitle("Spider-Man");
+        System.out.println();
 
     }
 

@@ -1,8 +1,6 @@
 package com.hotdog.ctbs.service.implementation;
 
-import com.hotdog.ctbs.entity.Screening;
-import com.hotdog.ctbs.entity.Movie;
-import com.hotdog.ctbs.entity.CinemaRoom;
+import com.hotdog.ctbs.entity.*;
 import com.hotdog.ctbs.repository.*;
 import com.hotdog.ctbs.service.ScreeningService;
 import jakarta.transaction.Transactional;
@@ -13,13 +11,18 @@ import java.util.*;
 import java.util.List;
 
 @Service
-public class ScreeningImpl implements ScreeningService{
+public class ScreeningImpl implements ScreeningService {
 
     final ScreeningRepository screeningRepo;
     final MovieRepository movieRepo;
     final CinemaRoomRepository cinemaRoomRepo;
 
+    final TicketRepository ticketRepo;
+
+    final LoyaltyPointRepository loyaltyPointRepo;
+
     private static final List<String> SHOW_TIME_ORDER = Arrays.asList("morning", "afternoon", "evening", "midnight");
+
 
     private enum status {
         active,
@@ -29,11 +32,14 @@ public class ScreeningImpl implements ScreeningService{
 
     public ScreeningImpl(ScreeningRepository screeningRepo,
                          MovieRepository movieRepo,
-                         CinemaRoomRepository cinemaRoomRepo)
-    {
+                         CinemaRoomRepository cinemaRoomRepo,
+                         TicketRepository ticketRepo,
+                         LoyaltyPointRepository loyaltyPointRepo) {
         this.screeningRepo = screeningRepo;
         this.movieRepo = movieRepo;
         this.cinemaRoomRepo = cinemaRoomRepo;
+        this.ticketRepo = ticketRepo;
+        this.loyaltyPointRepo = loyaltyPointRepo;
     }
 
     // Compare method
@@ -62,8 +68,7 @@ public class ScreeningImpl implements ScreeningService{
     // 1. Create screening
     @Override
     @Transactional
-    public void createScreening(String movieTitle, String showTime, LocalDate showDate, Integer cinemaRoomId)
-    {
+    public void createScreening(String movieTitle, String showTime, LocalDate showDate, Integer cinemaRoomId) {
         // checking flow
         // 1 ==> MOVIE (exists? && isActive?)
         // 2 ==> SHOW DATE (is valid?)
@@ -75,14 +80,13 @@ public class ScreeningImpl implements ScreeningService{
         Movie movie = movieRepo.findMovieByTitle(movieTitle);
         if (movie == null)
             throw new IllegalArgumentException("Movie does not exist.");
-        else if(movie.isActive() == false)
+        else if (movie.isActive() == false)
 //            throw new IllegalArgumentException("Movie is not active.");
 
             System.out.println("Done checking movie");
 
         // Screening's date cannot be in the past.
-        if (showDate.isBefore(LocalDate.now()))
-        {
+        if (showDate.isBefore(LocalDate.now())) {
             System.out.println("showDate: " + showDate);
             System.out.println("LocalDate.now(): " + LocalDate.now());
             throw new IllegalArgumentException("Invalid date.");
@@ -90,9 +94,9 @@ public class ScreeningImpl implements ScreeningService{
 
         System.out.println("Done checking if show date is valid");
 
-        if (!showTime.equals("morning")   &&
+        if (!showTime.equals("morning") &&
                 !showTime.equals("afternoon") &&
-                !showTime.equals("evening")   &&
+                !showTime.equals("evening") &&
                 !showTime.equals("midnight"))
             throw new IllegalArgumentException("Invalid time.");
 
@@ -137,8 +141,7 @@ public class ScreeningImpl implements ScreeningService{
     // get screening by id
     @Override
     @Transactional
-    public Screening getScreeningById(UUID id)
-    {
+    public Screening getScreeningById(UUID id) {
         return screeningRepo.findScreeningById(id);
     }
 
@@ -159,8 +162,7 @@ public class ScreeningImpl implements ScreeningService{
     // get all screenings by movie title follow the sort order
     @Override
     @Transactional
-    public List<Screening> getAllScreeningsByMovieTitle(String movieTitle)
-    {
+    public List<Screening> getAllScreeningsByMovieTitle(String movieTitle) {
         // check if movie exists
         Movie movie = movieRepo.findMovieByTitle(movieTitle);
         if (movie == null)
@@ -181,8 +183,7 @@ public class ScreeningImpl implements ScreeningService{
     // get all screenings by show date follow the sort order
     @Override
     @Transactional
-    public List<Screening> getAllScreeningsByShowDate(LocalDate showDate)
-    {
+    public List<Screening> getAllScreeningsByShowDate(LocalDate showDate) {
 
         List<Screening> screenings = screeningRepo.findScreeningsByShowDate(showDate).orElse(null);
 
@@ -200,8 +201,7 @@ public class ScreeningImpl implements ScreeningService{
     // get all screenings by show time follow the sort order
     @Override
     @Transactional
-    public List<Screening> getAllScreeningsByShowTime(String showTime)
-    {
+    public List<Screening> getAllScreeningsByShowTime(String showTime) {
 
         List<Screening> screenings = screeningRepo.findScreeningsByShowTime(showTime).orElse(null);
 
@@ -219,8 +219,7 @@ public class ScreeningImpl implements ScreeningService{
     // get all screenings by cinema room id follow the sort order
     @Override
     @Transactional
-    public List<Screening> getAllScreeningsByCinemaRoomId(Integer cinemaRoomId)
-    {
+    public List<Screening> getAllScreeningsByCinemaRoomId(Integer cinemaRoomId) {
         //check if cinema room exists
         CinemaRoom cinemaRoom = cinemaRoomRepo.findCinemaRoomById(cinemaRoomId);
         if (cinemaRoom == null)
@@ -243,8 +242,7 @@ public class ScreeningImpl implements ScreeningService{
     // get specific screening by movie id, show time, show date, cinema room id
     @Override
     @Transactional
-    public Screening getScreeningByMovieTitleAndShowTimeAndShowDateAndCinemaRoomId(String movieTitle, String showTime, LocalDate showDate, Integer cinemaRoomId)
-    {
+    public Screening getScreeningByMovieTitleAndShowTimeAndShowDateAndCinemaRoomId(String movieTitle, String showTime, LocalDate showDate, Integer cinemaRoomId) {
         // check using same format as createScreening method
         // check if movie exists
         Movie movie = movieRepo.findMovieByTitle(movieTitle);
@@ -257,9 +255,9 @@ public class ScreeningImpl implements ScreeningService{
             throw new IllegalArgumentException("Invalid date.");*/
 
         // check if show time is valid
-        if (!showTime.equals("morning")   &&
+        if (!showTime.equals("morning") &&
                 !showTime.equals("afternoon") &&
-                !showTime.equals("evening")   &&
+                !showTime.equals("evening") &&
                 !showTime.equals("midnight"))
             throw new IllegalArgumentException("Invalid time.");
 
@@ -290,8 +288,7 @@ public class ScreeningImpl implements ScreeningService{
     // 4th order ==> movie in ascending order
     @Override
     @Transactional
-    public List<Screening> getAllActiveScreenings()
-    {
+    public List<Screening> getAllActiveScreenings() {
 
         // get all active screenings with local date today
         List<Screening> screenings = screeningRepo.findActiveScreeningsLaterOrEqual(LocalDate.now());
@@ -311,7 +308,7 @@ public class ScreeningImpl implements ScreeningService{
     // (customer does not need to see inactive screenings)
     @Override
     @Transactional
-    public List<Screening> getAllActiveScreeningsByMovieTitle(String movieTitle){
+    public List<Screening> getAllActiveScreeningsByMovieTitle(String movieTitle) {
 
         // check if movie exists
         Movie movie = movieRepo.findMovieByTitle(movieTitle);
@@ -328,7 +325,6 @@ public class ScreeningImpl implements ScreeningService{
     }
 
 
-
     // 3. Update screening
     // *** can update all attribute of a screening except the "isActive" (status)
     // update a screening require all 4 fields (movieTitle, showTime, showDate, cinemaRoomId)
@@ -337,7 +333,7 @@ public class ScreeningImpl implements ScreeningService{
     @Transactional
     public void updateScreening(String currentMovieTitle, String currentShowTime,
                                 LocalDate currentShowDate, Integer currentCinemaRoomId,
-                                String newMovieTitle, String newShowTime, LocalDate newShowDate, Integer newCinemaRoomId){
+                                String newMovieTitle, String newShowTime, LocalDate newShowDate, Integer newCinemaRoomId) {
 
         // find current screening objects first
         Screening currentScreening = getScreeningByMovieTitleAndShowTimeAndShowDateAndCinemaRoomId(currentMovieTitle, currentShowTime, currentShowDate, currentCinemaRoomId);
@@ -361,9 +357,9 @@ public class ScreeningImpl implements ScreeningService{
             throw new IllegalArgumentException("Cannot set the date to past.");
 
         // check if new show time is valid
-        if (!newShowTime.equals("morning")   &&
+        if (!newShowTime.equals("morning") &&
                 !newShowTime.equals("afternoon") &&
-                !newShowTime.equals("evening")   &&
+                !newShowTime.equals("evening") &&
                 !newShowTime.equals("midnight"))
             throw new IllegalArgumentException("Invalid time.");
 
@@ -397,31 +393,7 @@ public class ScreeningImpl implements ScreeningService{
 
     }
 
-    // 4. Suspend the screening (update screening isActive to false)
-    /*@Override
-    @Transactional
-    public void suspendScreeningByIsActive(String movieTitle,
-                                  String currentShowTime,
-                                  LocalDate currentShowDate,
-                                  Integer cinemaRoomId, Boolean newIsActive) {
-
-        // find current screening objects first (illegal argument exception if any invalid input)
-        Screening currentScreening = getScreeningByMovieTitleAndShowTimeAndShowDateAndCinemaRoomId(
-                movieTitle, currentShowTime, currentShowDate, cinemaRoomId);
-
-        // check if current screening is active
-        if (currentScreening.getIsActive() == false)
-            throw new IllegalArgumentException("The screening is already suspended.");
-
-        // update screening isActive to false
-        currentScreening.setIsActive(newIsActive);
-
-        // save updated screening details
-        screeningRepo.save(currentScreening);
-
-    }*/
-
-    // suspend screening method (not used)
+    // 4. Suspend the screening (update screening status to "suspended")
     @Override
     @Transactional
     public void suspendScreening(String movieTitle,
@@ -445,4 +417,50 @@ public class ScreeningImpl implements ScreeningService{
 
     }
 
+    // 15 / 5 add on cancel screening
+    // cancel the screening then whoever booked the ticket for that screening will get loyalty points
+    @Override
+    @Transactional
+    public void cancelScreening(String movieTitle,
+                                String currentShowTime,
+                                LocalDate currentShowDate,
+                                Integer cinemaRoomId) {
+
+        // find current screening objects first (illegal argument exception if any invalid input)
+        Screening currentScreening = getScreeningByMovieTitleAndShowTimeAndShowDateAndCinemaRoomId(
+                movieTitle, currentShowTime, currentShowDate, cinemaRoomId);
+
+        // check if current screening is already and cannot suspend cancel movie
+        if (currentScreening.getStatus().equals(status.suspended) || currentScreening.getStatus().equals(status.cancelled))
+            throw new IllegalArgumentException("The screening is already suspended or cancelled.");
+
+        // update screening isActive to false
+        currentScreening.setStatus(String.valueOf(status.cancelled));
+
+        // save updated screening details
+        screeningRepo.save(currentScreening);
+
+        // get all the tickets for the screening
+        Optional<List<Ticket>> tickets = ticketRepo.findTicketsByScreening(currentScreening);
+
+        // if there are no tickets,
+        if (tickets.isPresent()) {
+
+
+            // for each ticket, get the customer and add loyalty points
+            for (Ticket ticket : tickets.get()) {
+                UserAccount customer = ticket.getCustomer();
+                Optional<LoyaltyPoint> loyaltyPoint = loyaltyPointRepo.findByUserAccountUsername(customer.getUsername());
+                if (loyaltyPoint.isPresent()) {
+                    LoyaltyPoint loyaltyPoint1 = loyaltyPoint.get();
+                    loyaltyPoint1.setPointsTotal(loyaltyPoint1.getPointsTotal() + 1000);
+                    loyaltyPointRepo.save(loyaltyPoint1);
+                }
+
+            }
+
+        }
+
+
+    }
 }
