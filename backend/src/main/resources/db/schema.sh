@@ -45,7 +45,7 @@ sleep 3 && "$oci" container list -a | grep pg && "$oci" rm -f pg
 -e POSTGRES_PASSWORD="pg"                \
 cgr.dev/chainguard/postgres:latest
 # Allow time for postgres to start.
-sleep 3
+sleep 5
 
 # Copy the schema.sql file to the container
 "$oci" cp "$(find "$(pwd)" -name "schema.sql"    -type f -exec realpath {} \;)" pg:/home/postgres
