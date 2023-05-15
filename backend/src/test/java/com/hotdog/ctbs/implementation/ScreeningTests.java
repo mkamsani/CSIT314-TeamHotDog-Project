@@ -123,5 +123,11 @@ public class ScreeningTests {
         }
 
     }
+
+    @Test
+    void cancelMethod()
+    {
+        screeningImpl.cancelScreening("Spider-Man", "morning", LocalDate.of(2023, 5, 23), 1);
+    }
 }
 

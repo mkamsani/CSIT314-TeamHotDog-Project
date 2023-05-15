@@ -21,7 +21,6 @@ public interface UserAccountRepository extends JpaRepository<UserAccount, UUID> 
                     (
                         SELECT password_hash FROM user_account
                         WHERE  username      = ?1
-                        AND    is_active     = TRUE
                         AND    password_hash = crypt(?2, password_hash)
                     )""",
             nativeQuery = true

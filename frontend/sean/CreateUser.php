@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 // echo "</pre>" . "<br />" . $json . "</section>";
 
 // Step 4: Send the JSON to the backend.
-    $ch = curl_init("http://localhost:8000/api/user-account/create");
+    $ch = curl_init("http://localhost:8000/api/admin/user-account/create");
     curl_setopt($ch, CURLOPT_POST, 1);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);

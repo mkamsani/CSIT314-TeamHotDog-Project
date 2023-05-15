@@ -74,4 +74,12 @@ public interface ScreeningService {
                           String currentShowTime,
                           LocalDate currentShowDate,
                           Integer cinemaRoomId);
+
+    // 15 / 5 add on cancel screening
+    // cancel the screening then whoever booked the ticket for that screening will get loyalty points
+    @Transactional
+    void cancelScreening(String movieTitle,
+                         String currentShowTime,
+                         LocalDate currentShowDate,
+                         Integer cinemaRoomId);
 }

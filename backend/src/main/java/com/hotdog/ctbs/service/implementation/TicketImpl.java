@@ -129,6 +129,16 @@ public class TicketImpl implements TicketService{
             ticketType = ticketTypeRepo.findByTypeName("redemption");
 
         }
+        else{
+            // add one loyalty point for user
+            LoyaltyPoint loyaltyPointForUser = loyaltyPointRepo.findByUserAccountUsername(userName).orElse(null);
+            if (loyaltyPointForUser == null)
+                throw new IllegalArgumentException("Loyalty point does not exist");
+
+            loyaltyPointForUser.setPointsTotal(loyaltyPointForUser.getPointsTotal() + 1);
+            loyaltyPointRepo.save(loyaltyPointForUser);
+
+        }
 
         // create a ticket
         Ticket ticket = Ticket.builder()
@@ -249,6 +259,38 @@ public class TicketImpl implements TicketService{
         currentTicket.setSeat(newSeat);
         currentTicket.setScreening(newScreening);
     }
+
+   /* // return a list of ticket by particular date
+    @Transactional
+    public List<Ticket> getTicketsByDate(LocalDate date){
+        // check if any ticket exists
+        List<Ticket> ticketList = ticketRepo.findTicketsByPurchaseDate(date).orElse(null);
+        if (ticketList == null)
+            throw new IllegalArgumentException("No ticket exists");
+        return ticketList;
+    }
+
+    // return a list of ticket from one date to another date (weekly)
+    @Transactional
+    public List<Ticket> getTicketsByDateRange(LocalDate startDate, LocalDate endDate){
+        // check if any ticket exists
+        List<Ticket> ticketList = ticketRepo.findTicketsByPurchaseDateBetween(startDate, endDate);
+        if (ticketList == null)
+            throw new IllegalArgumentException("No ticket exists");
+        return ticketList;
+    }
+
+    // return a list of ticket by particular month
+    @Transactional
+    public List<Ticket> getTicketsByMonth(Integer month){
+        // check if any ticket exists
+        List<Ticket> ticketList = ticketRepo.findTicketsByPurchaseDateMonth(month).orElse(null);
+        if (ticketList == null)
+            throw new IllegalArgumentException("No ticket exists");
+        return ticketList;
+    }*/
+
+
 
 
 

@@ -87,13 +87,10 @@ if (isset($_POST['createTicket'])) {
 
 ?>
 
-
-
-
 <nav class="navbar navbar-expand-sm">
     <div class="container">
         <a class="navbar-brand" href="index.php">
-            <img src="Pics/hotdog_cinemas.png" alt="Avatar Logo" style="width:25px; margin-bottom: 5px"> Hotdog Cinemas
+            <h1 class="text-center">HOTDOG CINEMAS</h1>
         </a>
         <ul class="nav nav-pills">
             <li class="nav-item">
@@ -146,10 +143,10 @@ if (isset($_POST['createTicket'])) {
     </form>
 
     <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" class="showTicket">
-        <br>
-        <br>
-        <br>
-        <br>
+        </br>
+        </br>
+        </br>
+        </br>
         <h1>Update Ticket Form</h1>
         <div class="mt-3">
             <table class="table table-hover" style="margin: auto; width: 100%; table-layout: fixed">
@@ -226,6 +223,26 @@ if (isset($_POST['createTicket'])) {
         </div>
     </form>
 </div>
+</body>
+<style>
+    .navbar .nav-link
+    {
+        color: white;
+    }
+
+    .navbar .nav-link:hover
+    {
+        transform: scale(1.1);
+    }
+
+    .navbar-brand
+    {
+        font-family: 'Cinzel', Arial, sans-serif;
+        font-size: 36px;
+        color: #e50914;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+</style>
 
 <?php include('footer.php') ?>
 

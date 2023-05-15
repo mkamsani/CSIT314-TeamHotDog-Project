@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * The {@code UserAccountCreateController} class exposes
+ * The {@code AdminUserAccountCreateController} class exposes
  * the {@code /api/admin/user-account/create} endpoint.
  * <p />
  *
@@ -63,12 +63,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/admin/user-account")
-public class UserAccountCreateController {
+public class AdminUserAccountCreateController {
 
     private final UserAccountImpl userAccountImpl;
     private final ObjectMapper objectMapper;
 
-    public UserAccountCreateController(UserAccountImpl userAccountImpl)
+    public AdminUserAccountCreateController(UserAccountImpl userAccountImpl)
     {
         this.userAccountImpl = userAccountImpl;
         this.objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
@@ -78,7 +78,7 @@ public class UserAccountCreateController {
     @PostMapping("/create")
     public String Create(@RequestBody final String json)
     {
-        System.out.println("UserAccountCreateController.Create() called.");
+        System.out.println("AdminUserAccountCreateController.Create() called.");
         try {
             JsonNode jsonNode = objectMapper.readTree(json);
             String username = jsonNode.get("username").asText();

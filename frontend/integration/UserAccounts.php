@@ -11,7 +11,7 @@ include('header.php');
 <nav class="navbar navbar-expand-sm">
     <div class="container">
         <a class="navbar-brand" href="index.php">
-            <img src="Pics/hotdog_cinemas.png" alt="Avatar Logo" style="width:25px; margin-bottom: 5px"> Hotdog Cinemas
+            <h1 class="text-center">HOTDOG CINEMAS</h1>
         </a>
         <ul class="nav nav-pills">
             <li class="nav-item">
@@ -39,29 +39,29 @@ include('header.php');
     <h1>View User Accounts</h1>
 </div>
 
-<div class="container mt-3 center">
-    <div class="input-group mb-3" style="width: 40%; margin: auto;">
+<div class="container mt-3 text-white">
+    <div class="input-group mb-3" style="margin: auto; width: 40%">
         <span class="input-group-text" id="searchLbl">Search:</span>
         <input type="text" class="form-control" id="searchBox" onkeyup="tableSearch()">
     </div>
     <?php
-
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, 'http://localhost:8000/api/user-account/read/all');
+    curl_setopt($ch, CURLOPT_URL, 'http://localhost:8000/api/admin/user-account/read/active');
     curl_setopt($ch, CURLOPT_HTTPGET, true);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     $result = curl_exec($ch);
     $data = json_decode($result, true);
-    $tableHtml = '<table id="accountsTable" class="table table-hover" style="margin: auto; width: 100%; table-layout: fixed">';
-    $tableHtml.= '<tr><th>Username</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Address</th></tr>';
+    $tableHtml = '<table id="accountsTable" class="table table-hover-dark table-sm table-responsive text-white">';
+    $tableHtml.= '<thead><tr><th>Username</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Address</th><th>Title</th></tr></thead>';
     foreach ($data as $row)
     {
         $tableHtml .= '<tr>';
         $tableHtml .= '<td><a href="UserDetails.php?username=' . $row['username'] . '">' . $row['username'] . '</a></td>';
-        $tableHtml .= '<td>' . $row['firstName'] . '</td>';
-        $tableHtml .= '<td>' . $row['lastName'] . '</td>';
-        $tableHtml .= '<td>' . $row['email'] . '</td>';
-        $tableHtml .= '<td>' . $row['address'] . '</td>';
+        $tableHtml .= '<td style="padding-bottom: 5%;">' . $row['firstName'] . '</td>';
+        $tableHtml .= '<td style="padding-bottom: 5%;">' . $row['lastName'] . '</td>';
+        $tableHtml .= '<td style="padding-bottom: 5%;">' . $row['email'] . '</td>';
+        $tableHtml .= '<td style="padding-bottom: 5%;">' . $row['address'] . '</td>';
+        $tableHtml .= '<td style="padding-bottom: 5%;">' . $row['title'] . '</td>';
         $tableHtml .= '</tr>';
 
     }
@@ -71,6 +71,30 @@ include('header.php');
 
 </div>
 </body>
+<style>
+    .navbar .nav-link
+    {
+        color: white;
+    }
+
+    .navbar .nav-link:hover
+    {
+        transform: scale(1.1);
+    }
+
+    .navbar-brand
+    {
+        font-family: 'Cinzel', Arial, sans-serif;
+        font-size: 36px;
+        color: #e50914;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .table-hover-dark tbody tr:hover
+    {
+        background-color: #333; /* Replace with your desired hover color */
+    }
+</style>
 <?php include('footer.php') ?>
 <script>
     function tableSearch()
