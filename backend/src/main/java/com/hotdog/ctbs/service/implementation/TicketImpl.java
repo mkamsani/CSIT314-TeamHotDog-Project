@@ -260,7 +260,7 @@ public class TicketImpl implements TicketService{
         currentTicket.setScreening(newScreening);
     }
 
-    // return a list of ticket by particular date
+   /* // return a list of ticket by particular date
     @Transactional
     public List<Ticket> getTicketsByDate(LocalDate date){
         // check if any ticket exists
@@ -288,7 +288,7 @@ public class TicketImpl implements TicketService{
         if (ticketList == null)
             throw new IllegalArgumentException("No ticket exists");
         return ticketList;
-    }
+    }*/
 
 
 
