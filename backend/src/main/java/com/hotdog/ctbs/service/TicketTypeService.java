@@ -21,17 +21,24 @@ public interface TicketTypeService {
 
     List<Boolean> getAllTicketTypeIsActives();
 
-    List<Double> getAllTicketTypePricesFromTicketTypeIsActives();
-
-    List<String> getAllTicketTypeNamesFromTicketTypeIsActives();
-
-    List<String> getAllTicketTypeNamesAndPricesFromTicketTypeIsActives();
+//    List<Double> getAllTicketTypePricesFromTicketTypeIsActives();
+//
+//    List<String> getAllTicketTypeNamesFromTicketTypeIsActives();
+//
+//    List<String> getAllTicketTypeNamesAndPricesFromTicketTypeIsActives();
+//
+//    void checkTicketTypeExistsByTypeName(String typeName);
+    // return a list of all ticket type details
+    List<TicketType> getAllTicketTypes();
 
     void createTicketType(String typeName, Double typePrice, Boolean isActive );
 
-    void checkTicketTypeExistsByTypeName(String typeName);
+
 
     TicketType getTicketTypeByTypeName(String typeName);
+
+    //update Ticket_Type by typeName, method will take targetTypeName and update all details about it
+    void updateTicketType(String targetTypeName, String newTypeName, Double newTypePrice, Boolean newIsActive);
 
     void updateTicketTypeByTypeName(String targetTypeName, String newTypeName);
 

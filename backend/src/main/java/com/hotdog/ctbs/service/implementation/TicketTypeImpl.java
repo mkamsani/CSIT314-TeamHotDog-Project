@@ -42,34 +42,40 @@ public class TicketTypeImpl implements TicketTypeService {
     }
 
     // return a list of all ticket type prices from ticket type isActives
-    @Override
-    public List<Double> getAllTicketTypePricesFromTicketTypeIsActives(){
-        return ticketTypeRepository.findAll().stream()
-                .filter(TicketType::getIsActive)
-                .map(TicketType::getTypePrice)
-                .toList();
-    }
-
-    // return a list of all ticket type names from ticket type isActives
-    @Override
-    public List<String> getAllTicketTypeNamesFromTicketTypeIsActives(){
-        return ticketTypeRepository.findAll().stream()
-                .filter(TicketType::getIsActive)
-                .map(TicketType::getTypeName)
-                .toList();
-    }
-
-    // return a list of all ticket type names and prices from ticket type isActives
-    @Override
-    public List<String> getAllTicketTypeNamesAndPricesFromTicketTypeIsActives(){
-        return ticketTypeRepository.findAll().stream()
-                .filter(TicketType::getIsActive)
-                .map(ticketType -> ticketType.getTypeName() + " - $" + ticketType.getTypePrice())
-                .toList();
-    }
+//    @Override
+//    public List<Double> getAllTicketTypePricesFromTicketTypeIsActives(){
+//        return ticketTypeRepository.findAll().stream()
+//                .filter(TicketType::getIsActive)
+//                .map(TicketType::getTypePrice)
+//                .toList();
+//    }
+//
+//    // return a list of all ticket type names from ticket type isActives
+//    @Override
+//    public List<String> getAllTicketTypeNamesFromTicketTypeIsActives(){
+//        return ticketTypeRepository.findAll().stream()
+//                .filter(TicketType::getIsActive)
+//                .map(TicketType::getTypeName)
+//                .toList();
+//    }
+//
+//    // return a list of all ticket type names and prices from ticket type isActives
+//    @Override
+//    public List<String> getAllTicketTypeNamesAndPricesFromTicketTypeIsActives(){
+//        return ticketTypeRepository.findAll().stream()
+//                .filter(TicketType::getIsActive)
+//                .map(ticketType -> ticketType.getTypeName() + " - $" + ticketType.getTypePrice())
+//                .toList();
+//    }
 
 
     public List<TicketType> getAllTicketTypesDetails(){
+        return ticketTypeRepository.findAll();
+    }
+
+    // return a list of all ticket type details
+    @Override
+    public List<TicketType> getAllTicketTypes(){
         return ticketTypeRepository.findAll();
     }
 
@@ -90,15 +96,15 @@ public class TicketTypeImpl implements TicketTypeService {
     }
 
     // check if TicketType exists by typeName and throw exception if exists
-    @Override
-    public void checkTicketTypeExistsByTypeName(String typeName){
-        for (TicketType existingTicketType : ticketTypeRepository.findAll()) {
-            if (existingTicketType.getTypeName().equals(typeName)) {
-                throw new IllegalStateException("Ticket Type already exists");
-            }
-        }
-        System.out.println("Ticket Type does not exist");
-    }
+//    @Override
+//    public void checkTicketTypeExistsByTypeName(String typeName){
+//        for (TicketType existingTicketType : ticketTypeRepository.findAll()) {
+//            if (existingTicketType.getTypeName().equals(typeName)) {
+//                throw new IllegalStateException("Ticket Type already exists");
+//            }
+//        }
+//        System.out.println("Ticket Type does not exist");
+//    }
     // retrieve Ticket_type by UUID
 
     // find ticketType by typeName
@@ -106,6 +112,17 @@ public class TicketTypeImpl implements TicketTypeService {
     public TicketType getTicketTypeByTypeName(String typeName){
         TicketType ticketType = ticketTypeRepository.findByTypeName(typeName);
         return ticketType;
+    }
+
+    //update Ticket_Type by typeName, method will take targetTypeName and update all details about it
+    @Override
+    public void updateTicketType(String targetTypeName, String newTypeName, Double newTypePrice, Boolean newIsActive){
+        //checkTicketTypeExistsByTypeName(targetTypeName);
+        TicketType ticketType = ticketTypeRepository.findByTypeName(targetTypeName);
+        ticketType.setTypeName(newTypeName);
+        ticketType.setTypePrice(newTypePrice);
+        ticketType.setIsActive(newIsActive);
+        ticketTypeRepository.save(ticketType);
     }
 
     //update Ticket_Type by typeName, method will take targetTypeName and newTypeName as input

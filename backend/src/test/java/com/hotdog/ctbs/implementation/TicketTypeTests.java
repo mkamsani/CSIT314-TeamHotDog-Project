@@ -17,41 +17,41 @@ public class TicketTypeTests {
     @Test
     void getter()
     {
-        //test getter methods
-        System.out.println("ticketTypeImpl.getAllTicketTypeNames()");
-        System.out.println(ticketTypeImpl.getAllTicketTypeNames());
-        System.out.println();
-
-        System.out.println("ticketTypeImpl.getAllTicketTypePrices()");
-        System.out.println(ticketTypeImpl.getAllTicketTypePrices());
-        System.out.println();
-
-        System.out.println("ticketTypeImpl.getAllTicketTypeIsActives()");
-        System.out.println(ticketTypeImpl.getAllTicketTypeIsActives());
-        System.out.println();
-
-        System.out.println("ticketTypeImpl.getAllTicketTypePricesFromTicketTypeIsActives()");
-        System.out.println(ticketTypeImpl.getAllTicketTypePricesFromTicketTypeIsActives());
-        System.out.println();
-
-        System.out.println("ticketTypeImpl.getAllTicketTypeNamesFromTicketTypeIsActives()");
-        System.out.println(ticketTypeImpl.getAllTicketTypeNamesFromTicketTypeIsActives());
-        System.out.println();
-
-        System.out.println("ticketTypeImpl.getAllTicketTypeNamesAndPricesFromTicketTypeIsActives()");
-        System.out.println(ticketTypeImpl.getAllTicketTypeNamesAndPricesFromTicketTypeIsActives());
-        System.out.println();
-
-        /*
-        System.out.println("ticketTypeImpl.getTicketTypeByUUID(UUID.fromString(\"690464fc-5beb-4ed8-90b3-cd2454b53496\"))");
-        System.out.println(ticketTypeImpl.getTicketTypeByUUID(UUID.fromString("690464fc-5beb-4ed8-90b3-cd2454b53496")));
-        System.out.println();
-
-        */
-
-        System.out.println("ticketTypeImpl.getTicketTypeByTypeName(\"testType\")");
-        System.out.println(ticketTypeImpl.getTicketTypeByTypeName("testType"));
-        System.out.println();
+//        //test getter methods
+//        System.out.println("ticketTypeImpl.getAllTicketTypeNames()");
+//        System.out.println(ticketTypeImpl.getAllTicketTypeNames());
+//        System.out.println();
+//
+//        System.out.println("ticketTypeImpl.getAllTicketTypePrices()");
+//        System.out.println(ticketTypeImpl.getAllTicketTypePrices());
+//        System.out.println();
+//
+//        System.out.println("ticketTypeImpl.getAllTicketTypeIsActives()");
+//        System.out.println(ticketTypeImpl.getAllTicketTypeIsActives());
+//        System.out.println();
+//
+//        System.out.println("ticketTypeImpl.getAllTicketTypePricesFromTicketTypeIsActives()");
+//        System.out.println(ticketTypeImpl.getAllTicketTypePricesFromTicketTypeIsActives());
+//        System.out.println();
+//
+//        System.out.println("ticketTypeImpl.getAllTicketTypeNamesFromTicketTypeIsActives()");
+//        System.out.println(ticketTypeImpl.getAllTicketTypeNamesFromTicketTypeIsActives());
+//        System.out.println();
+//
+//        System.out.println("ticketTypeImpl.getAllTicketTypeNamesAndPricesFromTicketTypeIsActives()");
+//        System.out.println(ticketTypeImpl.getAllTicketTypeNamesAndPricesFromTicketTypeIsActives());
+//        System.out.println();
+//
+//        /*
+//        System.out.println("ticketTypeImpl.getTicketTypeByUUID(UUID.fromString(\"690464fc-5beb-4ed8-90b3-cd2454b53496\"))");
+//        System.out.println(ticketTypeImpl.getTicketTypeByUUID(UUID.fromString("690464fc-5beb-4ed8-90b3-cd2454b53496")));
+//        System.out.println();
+//
+//        */
+//
+//        System.out.println("ticketTypeImpl.getTicketTypeByTypeName(\"testType\")");
+//        System.out.println(ticketTypeImpl.getTicketTypeByTypeName("testType"));
+//        System.out.println();
     }
 
     @Test
