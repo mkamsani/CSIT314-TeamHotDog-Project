@@ -2,18 +2,16 @@ package com.hotdog.ctbs.controller.manager;
 
 import com.hotdog.ctbs.service.implementation.TicketTypeImpl;
 import org.springframework.web.bind.annotation.*;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/manager/ticketType")
-public class ManagerTicketTypeRetrieveController {
+public class ManagerTicketTypeReadController {
 
     private final TicketTypeImpl ticketTypeImpl;
 
-    public ManagerTicketTypeRetrieveController(TicketTypeImpl ticketTypeImpl) {
+    public ManagerTicketTypeReadController(TicketTypeImpl ticketTypeImpl) {
         this.ticketTypeImpl = ticketTypeImpl;
     }
 
