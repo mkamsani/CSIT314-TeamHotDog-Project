@@ -1,25 +1,17 @@
 package com.hotdog.ctbs.controller.admin;
 
 // Application imports.
-import com.hotdog.ctbs.service.implementation.UserAccountImpl;
-import com.hotdog.ctbs.entity.UserAccount;
 
-// Java imports.
-import java.util.List;
-
-// JSON serialization imports.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-
-// Spring imports.
+import com.hotdog.ctbs.entity.UserAccount;
+import com.hotdog.ctbs.service.implementation.UserAccountImpl;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * The {@code AdminUserAccountReadController} class exposes
@@ -30,23 +22,30 @@ import org.springframework.web.bind.annotation.RestController;
  * <blockquote><pre>
  * [
  *   {
- *     "username":    "mscott",
- *     "email":       "mscott@hotdogbuns.com",
- *     "firstName":   "Michael",
- *     "lastName":    "Scott",
- *     "dateOfBirth": "1962-08-16",
- *     "address":     "621 Court Kellum, Not Narcs, AP 01581",
- *     "title":       "senior manager",
- *     "privilege":   "manager"
+ *     "username":      "mscott",
+ *     "email":         "mscott@hotdogbuns.com",
+ *     "firstName":     "Michael",
+ *     "lastName":      "Scott",
+ *     "dateOfBirth":   "1962-08-16",
+ *     "address":       "621 Court Kellum, Not Narcs, AP 01581",
+ *     "title":         "senior manager",
+ *     "privilege":     "manager",
+ *     "isActive":      "true",
+ *     "timeCreated":   "2021-04-01T00:00:00.000+00:00",
+ *     "timeLastLogin": "2021-04-01T00:00:00.000+00:00",
  *   },
  *   {
- *     "username":    "dwallace",
- *     "email":       "dwallace@hotdogbuns.com",
- *     "firstName":   "David",
- *     "lastName":    "Wallace",
- *     "dateOfBirth": "1965-02-13",
- *     "address":     "6818 Smith Lake, Schimmelland, RI 93473",
- *     "title":       "chief financial officer"
+ *     "username":      "dwallace",
+ *     "email":         "dwallace@hotdogbuns.com",
+ *     "firstName":     "David",
+ *     "lastName":      "Wallace",
+ *     "dateOfBirth":   "1965-02-13",
+ *     "address":       "6818 Smith Lake, Schimmelland, RI 93473",
+ *     "title":         "chief financial officer",
+ *     "privilege":     "owner",
+ *     "isActive":      "true",
+ *     "timeCreated":   "2021-04-01T00:00:00.000+00:00",
+ *     "timeLastLogin": "2021-04-01T00:00:00.000+00:00"
  *   }
  * ]
  * </pre></blockquote>
@@ -93,14 +92,6 @@ public class AdminUserAccountReadController {
                 default ->
                         List.of(userAccountImpl.getUserAccountByUsername(param));
             };
-            // Sort list by TimeLastLogin, then Username.
-            uaList.sort((ua1, ua2) -> {
-                            int timeLastLogin = ua2.getTimeLastLogin().compareTo(ua1.getTimeLastLogin());
-                            if (timeLastLogin == 0)
-                                return ua1.getUsername().compareTo(ua2.getUsername());
-                            return timeLastLogin;
-                        }
-            );
             ArrayNode an = objectMapper.createArrayNode();
             for (UserAccount ua : uaList) {
                 ObjectNode on = objectMapper.createObjectNode();
