@@ -146,7 +146,7 @@ public class ScreeningImpl implements ScreeningService {
     public List<Screening> getAllScreenings() {
         List<Screening> screenings = screeningRepo.findAll();
         // sort the screening details using self defined comparator
-        Collections.sort(screenings, new ScreeningComparator());
+        screenings.sort(new ScreeningComparator());
         return screenings;
     }
 
@@ -161,12 +161,12 @@ public class ScreeningImpl implements ScreeningService {
 
         List<Screening> screenings = screeningRepo.findScreeningsByMovieTitle(movieTitle).orElse(null);
 
-        if (screenings.isEmpty() || screenings == null) {
+        if (screenings == null || screenings.isEmpty()) {
             throw new IllegalArgumentException("No screenings found for the specified movie.");
         }
 
         // sort the screening details using self defined comparator
-        Collections.sort(screenings, new ScreeningComparator());
+        screenings.sort(new ScreeningComparator());
         return screenings;
     }
 
@@ -178,13 +178,13 @@ public class ScreeningImpl implements ScreeningService {
 
         List<Screening> screenings = screeningRepo.findScreeningsByShowDate(showDate).orElse(null);
 
-        if (screenings.isEmpty() || screenings == null) {
+        if (screenings == null || screenings.isEmpty()) {
             throw new IllegalArgumentException("No screenings found for the specified date.");
         }
 
 
         // sort the screening details using self defined comparator
-        Collections.sort(screenings, new ScreeningComparator());
+        screenings.sort(new ScreeningComparator());
 
         return screenings;
     }
@@ -196,12 +196,12 @@ public class ScreeningImpl implements ScreeningService {
 
         List<Screening> screenings = screeningRepo.findScreeningsByShowTime(showTime).orElse(null);
 
-        if (screenings.isEmpty() || screenings == null) {
+        if (screenings == null || screenings.isEmpty()) {
             throw new IllegalArgumentException("No screenings found for the specified time.");
         }
 
         // sort the screening details using self defined comparator
-        Collections.sort(screenings, new ScreeningComparator());
+        screenings.sort(new ScreeningComparator());
 
         return screenings;
     }
@@ -219,12 +219,12 @@ public class ScreeningImpl implements ScreeningService {
 
         List<Screening> screenings = screeningRepo.findScreeningsByCinemaRoom(cinemaRoom).orElse(null);
 
-        if (screenings.isEmpty() || screenings == null) {
+        if (screenings == null || screenings.isEmpty()) {
             throw new IllegalArgumentException("No screenings found for the specified cinema room.");
         }
 
         // sort the screening details using self defined comparator
-        Collections.sort(screenings, new ScreeningComparator());
+        screenings.sort(new ScreeningComparator());
 
         return screenings;
     }
@@ -285,12 +285,12 @@ public class ScreeningImpl implements ScreeningService {
         List<Screening> screenings = screeningRepo.findActiveScreeningsLaterOrEqual(LocalDate.now());
         // = screeningRepo.findScreeningsByIsActive(true).orElse(null);
 
-        if (screenings.isEmpty() || screenings == null) {
+        if (screenings == null || screenings.isEmpty()) {
             throw new IllegalArgumentException("No active screenings found.");
         }
 
         // sort the screening details using self defined comparator
-        Collections.sort(screenings, new ScreeningComparator());
+        screenings.sort(new ScreeningComparator());
 
         return screenings;
     }
@@ -308,7 +308,7 @@ public class ScreeningImpl implements ScreeningService {
 
         List<Screening> screenings = screeningRepo.findActiveScreeningsForMovieAndLaterOrEqual(LocalDate.now(), movie);
 
-        if (screenings.isEmpty() || screenings == null) {
+        if (screenings == null || screenings.isEmpty()) {
             throw new IllegalArgumentException("No active screenings found for the specified movie.");
         }
 
@@ -334,7 +334,8 @@ public class ScreeningImpl implements ScreeningService {
             throw new IllegalArgumentException("Cannot update a screening that has already passed.");
 
         // check if current screening status(string) is suspended or cancelled then throw illegal argumemt
-        if (currentScreening.getStatus().equals(status.suspended) || currentScreening.getStatus().equals(status.cancelled))
+        status currentStatus = status.valueOf(currentScreening.getStatus());
+        if (currentStatus.equals(status.suspended) || currentStatus.equals(status.cancelled))
             throw new IllegalArgumentException("Cannot update a screening that is suspended or cancelled.");
 
         System.out.println("Done checking for the current screenings.");
@@ -397,7 +398,8 @@ public class ScreeningImpl implements ScreeningService {
                 movieTitle, currentShowTime, currentShowDate, cinemaRoomId);
 
         // check if current screening is already and cannot suspend cancel movie
-        if (currentScreening.getStatus().equals(status.suspended) || currentScreening.getStatus().equals(status.cancelled))
+        status currentStatus = status.valueOf(currentScreening.getStatus());
+        if (currentStatus.equals(status.suspended) || currentStatus.equals(status.cancelled))
             throw new IllegalArgumentException("The screening is already suspended or cancelled.");
 
         // update screening isActive to false
@@ -422,7 +424,8 @@ public class ScreeningImpl implements ScreeningService {
                 movieTitle, currentShowTime, currentShowDate, cinemaRoomId);
 
         // check if current screening is already and cannot suspend cancel movie
-        if (currentScreening.getStatus().equals(status.suspended) || currentScreening.getStatus().equals(status.cancelled))
+        status currentStatus = status.valueOf(currentScreening.getStatus());
+        if (currentStatus.equals(status.suspended) || currentStatus.equals(status.cancelled))
             throw new IllegalArgumentException("The screening is already suspended or cancelled.");
 
         // update screening isActive to false

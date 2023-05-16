@@ -1,14 +1,13 @@
 package com.hotdog.ctbs.entity;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.UUID;
 import java.util.Objects;
+import java.util.UUID;
 
 @Builder
 @AllArgsConstructor
