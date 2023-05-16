@@ -82,8 +82,7 @@ public class TicketTypeImpl implements TicketTypeService {
                 || newTypeName.equals("redemption"))
             throw new IllegalArgumentException("TicketType" + newTypeName + " is reserved");
 
-        if(newTypeName != null && !newTypeName.isEmpty())
-            ticketType.setTypeName(newTypeName);
+        ticketType.setTypeName(newTypeName);
 
         if(newTypePrice != null)
             ticketType.setTypePrice(newTypePrice);

@@ -56,7 +56,7 @@ public class ManagerTicketTypeReadController {
 
     private final ObjectMapper objectMapper;
 
-    public ManagerTicketTypeReadController(TicketTypeImpl ticketTypeImpl, ObjectMapper objectMapper) {
+    public ManagerTicketTypeReadController(TicketTypeImpl ticketTypeImpl) {
         this.ticketTypeImpl = ticketTypeImpl;
         this.objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
     }

@@ -48,8 +48,8 @@ public class ManagerTicketTypeUpdateController {
     /*
       UpdateController Method will update a specific ticket type.
      */
-    @PutMapping(value = "/update/{targetTypeName}")
-    public String ManagerUpdateTicketType(@RequestBody String json, @PathVariable final String targetTicketTypeName)
+    @PutMapping(value = "/update/{targetTicketTypeName}")
+    public String ManagerUpdateTicketType(@RequestBody String json, @PathVariable String targetTicketTypeName)
     {
         System.out.println("TicketTypeUpdateController.UpdateTicketType is called");
         try {

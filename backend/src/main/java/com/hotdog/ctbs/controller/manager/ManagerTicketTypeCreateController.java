@@ -37,7 +37,7 @@ public class ManagerTicketTypeCreateController {
 
     private final ObjectMapper objectMapper;
 
-    public ManagerTicketTypeCreateController(TicketTypeImpl ticketTypeImpl, ObjectMapper objectMapper) {
+    public ManagerTicketTypeCreateController(TicketTypeImpl ticketTypeImpl) {
         this.ticketTypeImpl = ticketTypeImpl;
         this.objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
     }
@@ -47,7 +47,7 @@ public class ManagerTicketTypeCreateController {
     @PostMapping("/create/ticketType")
     public String CreateTicketType(@RequestBody final String json) {
         try{
-            JsonNode jsonNode = new ObjectMapper().readTree(json);
+            JsonNode jsonNode = objectMapper.readTree(json);
             String typeName = jsonNode.get("typename").asText();
             Double typePrice = jsonNode.get("typeprice").asDouble();
             Boolean isactive = jsonNode.get("isactive").asBoolean();
