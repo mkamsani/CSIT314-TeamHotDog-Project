@@ -7,6 +7,7 @@ import com.hotdog.ctbs.service.implementation.ScreeningImpl;
 // Java imports.
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 // JSON serialization imports.
 import com.fasterxml.jackson.databind.JsonNode;
@@ -68,4 +69,32 @@ public class ManagerScreeningReadController {
 
     }
 
+    // 2 parameters, the second one is optional.
+    // Bit of a hack, but everything is in one method. Not necessarily more readable.
+    @GetMapping(value = "/read/{param}/{cinemaRoomID}")
+    public String Read(@PathVariable(name = "param") final String param,
+                       @PathVariable(name = "cinemaRoomID", required = false) final Optional<String> cinemaRoomID)
+    {
+        try {
+            List<Screening> screeningList = switch (param) {
+                case "all" -> screeningImpl.getAllScreenings();
+                case "active" -> screeningImpl.getAllActiveScreenings();
+                case "cinemaRoomID" -> {
+                    if (cinemaRoomID.isPresent() && cinemaRoomID.get().matches("[0-9]+"))
+                        yield screeningImpl.getAllScreeningsByCinemaRoomId(Integer.parseInt(cinemaRoomID.get()));
+                    throw new Exception("Invalid cinema room ID.");
+                }
+                default -> screeningImpl.getAllScreeningsByMovieTitle(param);
+            };
+            return String.valueOf(screeningList);
+        } catch (Exception e) {
+            return "Error: " + e.getMessage();
+        }
+    }
+
+    // Most correct way: logic is split.
+    // @GetMapping(value = "/read/fixed/{param}")
+    // @GetMapping(value = "/read/cinema-room-id/{param}")
+    // @GetMapping(value = "/read/movie-title/{param}")
+    // @GetMapping(value = "/read/date/{param}")
 }
