@@ -1,11 +1,8 @@
 package com.hotdog.ctbs.entity;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Objects;
 import java.util.UUID;
 
 @Builder
@@ -30,27 +27,5 @@ public class TicketType {
     @Column(name = "is_active")
     private Boolean isActive;
 
-    /** @return JSON string of the object. */
-    @SneakyThrows
-    @Override
-    public String toString()
-    {
-        return new ObjectMapper().registerModule(new JavaTimeModule())
-                                 .writeValueAsString(this);
-    }
 
-    @Override
-    public boolean equals(Object o)
-    {
-        if (this == o) return true;
-        if (!(o instanceof TicketType that)) return false;
-        return uuid.equals(that.uuid) &&
-               typeName.equalsIgnoreCase(that.typeName);
-    }
-
-    @Override
-    public int hashCode()
-    {
-        return Objects.hash(uuid, typeName, typePrice, isActive);
-    }
 }
