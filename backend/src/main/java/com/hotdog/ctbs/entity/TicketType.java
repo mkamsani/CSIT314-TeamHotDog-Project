@@ -1,16 +1,10 @@
 package com.hotdog.ctbs.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
-import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -36,12 +30,13 @@ public class TicketType {
     @Column(name = "is_active")
     private Boolean isActive;
 
+    /** @return JSON string of the object. */
     @SneakyThrows
     @Override
     public String toString()
     {
         return new ObjectMapper().registerModule(new JavaTimeModule())
-                .writeValueAsString(this);
+                                 .writeValueAsString(this);
     }
 
     @Override
@@ -49,13 +44,13 @@ public class TicketType {
     {
         if (this == o) return true;
         if (!(o instanceof TicketType that)) return false;
-        return uuid.equals(that.uuid) && typeName.equals(that.typeName);
+        return uuid.equals(that.uuid) &&
+               typeName.equalsIgnoreCase(that.typeName);
     }
 
     @Override
-    public int hashCode() {
+    public int hashCode()
+    {
         return Objects.hash(uuid, typeName, typePrice, isActive);
     }
-
-
 }

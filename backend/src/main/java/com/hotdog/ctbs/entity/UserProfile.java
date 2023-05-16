@@ -36,9 +36,7 @@ public class UserProfile {
     @Column(name = "is_active", nullable = false)
     private Boolean isActive;
 
-    /**
-     * @return JSON string of the user profile.
-     */
+    /** @return JSON string of the object. */
     @SneakyThrows
     @Override
     public String toString()
@@ -52,7 +50,8 @@ public class UserProfile {
         if (this == o) return true;
         if (!(o instanceof UserProfile that)) return false;
         // Prevent duplicates like "Senior Admin" and "senior admin".
-        return id.equals(that.id) && title.equalsIgnoreCase(that.title);
+        return id.equals(that.id) &&
+               title.equalsIgnoreCase(that.title);
     }
 
     @Override

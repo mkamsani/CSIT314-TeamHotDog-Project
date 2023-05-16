@@ -20,7 +20,6 @@ import java.util.Set;
 @Table(name = "cinema_room")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class CinemaRoom {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -39,9 +38,9 @@ public class CinemaRoom {
     public String toString()
     {
         ObjectNode json = new ObjectMapper().createObjectNode();
-        json.put("id",          id.toString());
-        json.put("isActive",    isActive.toString());
-        json.put("capacity",    seats.size()); // Number of seats linked cinema room.
+        json.put("id", id.toString());
+        json.put("isActive", isActive.toString());
+        json.put("capacity", seats.size()); // Number of seats linked cinema room.
         return json.toString();
     }
 
@@ -50,7 +49,8 @@ public class CinemaRoom {
     {
         if (this == o) return true;
         if (!(o instanceof CinemaRoom that)) return false;
-        return id.equals(that.id) && isActive.equals(that.isActive);
+        return id.equals(that.id) &&
+               isActive.equals(that.isActive);
     }
 
     @Override

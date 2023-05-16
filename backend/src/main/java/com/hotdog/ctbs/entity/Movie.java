@@ -3,7 +3,6 @@ package com.hotdog.ctbs.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.*;
 import lombok.*;
@@ -52,9 +51,6 @@ public class Movie {
     @Column(name = "content_rating", nullable = false, length = Integer.MAX_VALUE)
     private String contentRating;
 
-    /*@OneToMany(mappedBy = "movie")
-    private Set<Screening> screenings = new LinkedHashSet<>();*/
-
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private Set<Screening> screenings = new LinkedHashSet<>();
@@ -63,16 +59,14 @@ public class Movie {
     @Override
     public String toString()
     {
-
         ObjectNode json = new ObjectMapper().createObjectNode();
-        //json.put("id",          id.toString());
-        json.put("title",         title);
-        json.put("genre",         genre);
-        json.put("description",   description);
-        json.put("releaseDate",   releaseDate.toString());
-        json.put("imageUrl",      imageUrl);
+        json.put("title", title);
+        json.put("genre", genre);
+        json.put("description", description);
+        json.put("releaseDate", releaseDate.toString());
+        json.put("imageUrl", imageUrl);
         json.put("landscapeImageUrl", landscapeImageUrl);
-        json.put("isActive",      isActive);
+        json.put("isActive", isActive);
         json.put("contentRating", contentRating);
         return json.toString();
     }
@@ -83,16 +77,13 @@ public class Movie {
     {
         if (this == o) return true;
         if (!(o instanceof Movie that)) return false;
-        return id.equals(that.id) && title.equalsIgnoreCase(that.title);
+        return id.equals(that.id) &&
+               title.equalsIgnoreCase(that.title);
     }
 
     @Override
     public int hashCode()
     {
         return Objects.hash(id, title);
-    }
-
-    public int compareTo(Movie movie) {
-        return this.getId().compareTo(movie.getId());
     }
 }

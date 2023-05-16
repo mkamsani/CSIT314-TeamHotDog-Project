@@ -50,9 +50,9 @@ public class Screening {
     {
         ObjectNode json = new ObjectMapper().createObjectNode();
         json.put("movie", movie.getTitle());
-        json.put("showTime",   showTime);
-        json.put("status",   status);
-        json.put("showDate",   showDate.toString());
+        json.put("showTime", showTime);
+        json.put("status", status);
+        json.put("showDate", showDate.toString());
         json.put("cinemaRoom", cinemaRoom.getId());
         return json.toString();
     }
@@ -69,7 +69,8 @@ public class Screening {
     }
 
     @Override
-    public int hashCode() {
+    public int hashCode()
+    {
         return Objects.hash(id, showTime, cinemaRoom, showDate);
     }
 }

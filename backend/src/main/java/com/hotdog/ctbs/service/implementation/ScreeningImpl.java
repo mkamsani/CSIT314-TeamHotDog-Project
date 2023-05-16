@@ -60,7 +60,7 @@ public class ScreeningImpl implements ScreeningService {
             if (result != 0) {
                 return result;
             }
-            return s1.getMovie().compareTo(s2.getMovie());
+            return s1.getMovie().getId().compareTo(s2.getMovie().getId());
         }
     }
 
