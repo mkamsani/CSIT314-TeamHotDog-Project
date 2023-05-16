@@ -65,17 +65,25 @@ public class TicketTypeImpl implements TicketTypeService {
                                  final Double newTypePrice,
                                  final Boolean newIsActive)
     {
+        System.out.println("checking for target TicketType name");
+
         TicketType ticketType = ticketTypeRepository.findByTypeName(targetTypeName).orElseThrow(
                 () -> new IllegalArgumentException("Ticket Type not found.")
         );
+
+        System.out.println("checking new TicketType name");
 
         //check if newTypeName is the same as any other existing Ticket Types in database (1st check)
         if (ticketTypeRepository.findByTypeName(newTypeName).isPresent() &&
                 !ticketType.getTypeName().equals(newTypeName))
             throw new IllegalArgumentException("Ticket Type name already exists.");
 
+        System.out.println("checking new TicketType name format");
+
         if (!newTypeName.matches("[a-zA-Z0-9]+"))
             throw new IllegalArgumentException("Ticket Type name must be alphanumeric.");
+
+        System.out.println("checking new TicketType name reserved");
 
         if (newTypeName.equals("adult") || newTypeName.equals("child") ||
                 newTypeName.equals("student") || newTypeName.equals("senior")
