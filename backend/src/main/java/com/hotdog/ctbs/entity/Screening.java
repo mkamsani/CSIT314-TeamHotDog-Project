@@ -24,10 +24,7 @@ public class Screening {
     @Column(name = "uuid", nullable = false)
     private UUID id;
 
-    /*@ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "movie_id", nullable = false)
-    private Movie movie;*/
-
+    // @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "movie_id", nullable = false)
     private Movie movie;
@@ -39,15 +36,10 @@ public class Screening {
     private String status; // ONLY 'active', 'suspended', 'cancelled'
 
     /*@Column(name = "is_active" , nullable = false)
-    private Boolean isActive;
-*/
+    private Boolean isActive;*/
 
     @Column(name = "show_date", nullable = false)
     private LocalDate showDate;
-
-    /*@ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "cinema_room", nullable = false)
-    private CinemaRoom cinemaRoom;*/
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "cinema_room", nullable = false)

@@ -28,6 +28,7 @@ public class CinemaRoom {
     private Integer id;
 
     @Column(name = "is_active", nullable = false)
+    @JsonIgnore
     private Boolean isActive;
 
     @OneToMany(mappedBy = "cinemaRoom", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
@@ -57,19 +58,5 @@ public class CinemaRoom {
     public int hashCode()
     {
         return Objects.hash(id, isActive);
-    }
-
-    // try to solve hibernate session issues
-    @JsonIgnore
-    public boolean getIsActive() {
-        return isActive;
-    }
-
-    public int compareTo(CinemaRoom cinemaRoom) {
-        return this.getId().compareTo(cinemaRoom.getId());
-    }
-
-    public int getNumberOfSeats() {
-        return this.getSeats().size();
     }
 }

@@ -11,7 +11,6 @@ import java.util.UUID;
 public interface ScreeningService {
 
         void createScreening(String movieTitle, String showTime, LocalDate showDate, Integer cinemaRoomId);
-        Screening getScreeningById(UUID id);
 
         List<Screening> getAllScreenings();
 

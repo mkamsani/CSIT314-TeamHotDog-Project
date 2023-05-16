@@ -14,8 +14,6 @@ import java.util.UUID;
 
 public interface ScreeningRepository extends JpaRepository<Screening, UUID> {
 
-    Screening findScreeningById(UUID id);
-
     Optional<List<Screening>> findScreeningsByMovieTitle(String movieTitle);
 
     Optional<List<Screening>> findScreeningsByShowTime(String showTime);

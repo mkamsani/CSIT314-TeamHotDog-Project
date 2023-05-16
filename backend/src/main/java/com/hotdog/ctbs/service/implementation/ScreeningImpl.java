@@ -56,7 +56,7 @@ public class ScreeningImpl implements ScreeningService {
             if (result != 0) {
                 return result;
             }
-            result = s1.getCinemaRoom().compareTo(s2.getCinemaRoom());
+            result = s1.getId().compareTo(s2.getId());
             if (result != 0) {
                 return result;
             }
@@ -81,9 +81,9 @@ public class ScreeningImpl implements ScreeningService {
         if (movie == null)
             throw new IllegalArgumentException("Movie does not exist.");
         else if (movie.isActive() == false)
-//            throw new IllegalArgumentException("Movie is not active.");
+           throw new IllegalArgumentException("Movie is not active.");
 
-            System.out.println("Done checking movie");
+        System.out.println("Done checking movie");
 
         // Screening's date cannot be in the past.
         if (showDate.isBefore(LocalDate.now())) {
@@ -134,15 +134,6 @@ public class ScreeningImpl implements ScreeningService {
                 .build();
 
         screeningRepo.save(screening);
-
-    }
-
-    // 2. Read screening
-    // get screening by id
-    @Override
-    @Transactional
-    public Screening getScreeningById(UUID id) {
-        return screeningRepo.findScreeningById(id);
     }
 
     // get all screenings (includes all inactive) for manager usage***
@@ -241,7 +232,7 @@ public class ScreeningImpl implements ScreeningService {
 
     // get specific screening by movie id, show time, show date, cinema room id
     @Override
-    @Transactional
+    @Transactional                                                                 ////notneeded////
     public Screening getScreeningByMovieTitleAndShowTimeAndShowDateAndCinemaRoomId(String movieTitle, String showTime, LocalDate showDate, Integer cinemaRoomId) {
         // check using same format as createScreening method
         // check if movie exists
