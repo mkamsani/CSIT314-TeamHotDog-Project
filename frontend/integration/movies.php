@@ -85,8 +85,6 @@
 </head>
 
 
-
-
 <nav class="navbar navbar-expand-sm">
     <div class="container">
         <a class="navbar-brand" href="index.php">
@@ -257,7 +255,7 @@ if (isset($_POST['suspend'])) {
         <span class="input-group-text" id="searchLbl">Search:</span>
         <input type="text" class="form-control" id="searchBox" onkeyup="tableSearch()">
     </div>
-    <table id="moviesTable" class="table table-hover text-white" style="margin: auto; width: 100%; table-layout: fixed">
+    <table id="moviesTable" class="table text-white" style="margin: auto; width: 100%; table-layout: fixed">
         <thead>
         <tr>
             <th>Movie Title</th>
@@ -274,13 +272,15 @@ if (isset($_POST['suspend'])) {
             $description = $movie['description'];
             $genre = $movie['genre'];
             $poster = $movie['imageUrl'];
+            $CR = $movie['contentRating'];
             $isActive = $movie['isActive'];
             ?>
             <tr>
-                <td class="movie-title text-white"><?php echo $title; ?></td>
+                <td class="movie-title text-white"><?php echo $title ." (" .$CR .")"; ?></td>
                 <td class="movie-description text-white"><?php echo $description; ?></td>
                 <td class="movie-genre text-white"><?php echo $genre; ?></td>
                 <td>
+
                     <img class="movie-poster" src="<?php echo $poster; ?>">
 
                 </td>

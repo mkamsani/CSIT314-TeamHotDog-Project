@@ -7,20 +7,8 @@ include('header.php');
 
 
 
-    $ticketCh = curl_init();
-    curl_setopt($ticketCh, CURLOPT_URL, "http://localhost:8000/api/ticketType/read/allTicketTypes");
-    curl_setopt($ticketCh, CURLOPT_RETURNTRANSFER, 1);
-    $ticket = curl_exec($ticketCh);
-    curl_close($ticketCh);
-    $ticket = trim($ticket, '[');
-    $ticket = trim($ticket, ']');
-    $ticket = explode(", ",$ticket);
-    //print_r($ticket);
-
-
-
     $ticketDetailCh = curl_init();
-    curl_setopt($ticketDetailCh, CURLOPT_URL, "http://localhost:8000/api/ticketType/read/allTicketTypesDetails");
+    curl_setopt($ticketDetailCh, CURLOPT_URL, "http://localhost:8000/api/manager/ticketType/read/all");
     curl_setopt($ticketDetailCh, CURLOPT_RETURNTRANSFER, 1);
     $ticketDetails = curl_exec($ticketDetailCh);
     curl_close($ticketDetailCh);
@@ -30,8 +18,8 @@ include('header.php');
 
 if (isset($_POST['updateTicket'])) {
 
-    $ticketTypeName = $_POST['typeName'];
-    $newTicketTypeName = $_POST['newTypeName'];
+    $ticketTypeName =  $_POST['updateTypeName'];
+    $newTicketTypeName = $_POST['updateNewTypeName'];
     $newPrice = $_POST['newPrice'];
     $ticketActivity = $_POST['updateIsActive'];
     if(  $ticketActivity == "TRUE"){
@@ -42,10 +30,10 @@ if (isset($_POST['updateTicket'])) {
     }
 
     $updateTicketCh = curl_init();
-    $data = array('targettypename' => $ticketTypeName, 'newtypename'=> $newTicketTypeName, 'typeprice' => $newPrice, 'isactive' => $ticketActivity);
+    $data = array('ticketTypeName'=> $newTicketTypeName, 'ticketTypePrice' => $newPrice, 'ticketTypeIsActive' => $ticketActivity);
     $data_json = json_encode($data);
-    //print_r($data_json);
-    curl_setopt($updateTicketCh, CURLOPT_URL, "http://localhost:8000/api/ticketType/update/ticketType");
+    print_r($data_json);
+    curl_setopt($updateTicketCh, CURLOPT_URL, 'http://localhost:8000/api/manager/ticketType/update/'.$ticketTypeName);
     curl_setopt($updateTicketCh, CURLOPT_CUSTOMREQUEST, "PUT");
     curl_setopt($updateTicketCh, CURLOPT_POSTFIELDS, $data_json);
     curl_setopt($updateTicketCh, CURLOPT_RETURNTRANSFER, 1);
@@ -53,14 +41,14 @@ if (isset($_POST['updateTicket'])) {
     $updateTicket = curl_exec($updateTicketCh);
     curl_close($updateTicketCh);
     $updateTicket = json_decode($updateTicket, true);
-   // print_r($updateTicket);
+    print_r($updateTicket);
 }
 
 
 if (isset($_POST['createTicket'])) {
 
-    $ticketTypeName = $_POST['ticketType'];
-    $ticketTypePrice = $_POST['typePrice'];
+    $ticketTypeName = $_POST['createTicketType'];
+    $ticketTypePrice = $_POST['createTypePrice'];
     $isActive = $_POST['createIsActive'];
     if(  $isActive == "TRUE"){
         $isActive = true;
@@ -71,8 +59,8 @@ if (isset($_POST['createTicket'])) {
     setlocale(LC_MONETARY, "zh_SG");
     $data = array('typename' => $ticketTypeName, 'typeprice' => $ticketTypePrice, 'isactive' => $isActive);
     $data_json = json_encode($data);
-    print_r($data_json);
-    $ticketTypeCh = curl_init("http://localhost:8000/api/ticketType/create/ticketType");
+    //print_r($data_json);
+    $ticketTypeCh = curl_init("http://localhost:8000/api/manager/ticketType/create/ticketType");
     curl_setopt($ticketTypeCh, CURLOPT_POST, "1");
     curl_setopt($ticketTypeCh, CURLOPT_POSTFIELDS, $data_json);
     curl_setopt($ticketTypeCh, CURLOPT_RETURNTRANSFER, 1);
@@ -80,12 +68,30 @@ if (isset($_POST['createTicket'])) {
 
     $response = curl_exec($ticketTypeCh);
     curl_close($ticketTypeCh);
-   // print_r($response);
+    print_r($response);
+
+}
+
+
+if (isset($_POST['suspendTicket'])) {
+
+    $suspendTicketTypeName =  str_replace(' ', '%20',$_POST['updateTypeName']);
+    print_r($suspendTicketTypeName);
+    $suspendTicketTypeCh = curl_init('http://localhost:8000/api/manager/ticketType/suspend/'.$suspendTicketTypeName);
+    curl_setopt($suspendTicketTypeCh, CURLOPT_CUSTOMREQUEST, "DELETE");
+    curl_setopt($suspendTicketTypeCh, CURLOPT_POSTFIELDS, $suspendTicketTypeName);
+    curl_setopt($suspendTicketTypeCh, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($suspendTicketTypeCh, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+    $response = curl_exec($suspendTicketTypeCh);
+    curl_close($suspendTicketTypeCh);
+    print_r($response);
 
 }
 
 
 ?>
+
+
 
 <nav class="navbar navbar-expand-sm">
     <div class="container">
@@ -121,35 +127,12 @@ if (isset($_POST['createTicket'])) {
 <!--    <p>Admin ID: --><?php //echo $_SESSION["userId"] ?><!--</p>-->
 </div>
 
+
 <div class="container mt-4" style="margin-left: 20%; width: 40%">
     <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" class="showTicket">
-        <h1>Create Ticket Form</h1>
-        <div class="mt-3">
-            <input type="text" class="form-control" name="ticketType" id="ticketType" placeholder="Enter ticket type">
-            <input type="number" class="form-control" step="0.01" name="typePrice" id="typePrice" placeholder="Enter ticket price">
-        </div>
 
-        <div class="mt-3">
-            <select class = "form-select" name="createIsActive" id="createIsActive">
-                <option>Select ticket type Activity</option>
-                <option value="TRUE">Active</option>
-                <option value="FALSE">Not Active</option>
-            </select>
-        </div>
-
-        <div class="mt-3">
-            <input type="submit" name="createTicket" class = "btn btn-primary" value="Create Ticket">
-        </div>
-    </form>
-
-    <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" class="showTicket">
-        </br>
-        </br>
-        </br>
-        </br>
-        <h1>Update Ticket Form</h1>
-        <div class="mt-3">
-            <table class="table table-hover" style="margin: auto; width: 100%; table-layout: fixed">
+        <div class="mt-3 ">
+            <table class="table text-white" style="margin: auto; width: 100%; table-layout: fixed">
                 <thead>
                 <tr>
                     <th>Type Name</th>
@@ -187,9 +170,37 @@ if (isset($_POST['createTicket'])) {
                 </tbody>
             </table>
         </div>
+        <br>
+        <br>
+        <h1>Create Ticket Form</h1>
+        <div class="mt-3">
+            <input type="text" class="form-control" name="createTicketType" id="createTicketType" placeholder="Enter ticket type">
+            <input type="number" class="form-control" step="0.01" name="createTypePrice" id="createTypePrice" placeholder="Enter ticket price">
+        </div>
 
         <div class="mt-3">
-            <select class = "form-select" name="typeName" id="typeName">
+            <select class = "form-select" name="createIsActive" id="createIsActive">
+                <option>Select ticket type Activity</option>
+                <option value="TRUE">Active</option>
+                <option value="FALSE">Not Active</option>
+            </select>
+        </div>
+
+        <div class="mt-3">
+            <input type="submit" name="createTicket" class = "btn btn-primary" value="Create Ticket">
+        </div>
+    </form>
+
+    <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" class="showTicket">
+        </br>
+        </br>
+        </br>
+        </br>
+        <h1>Update Ticket Form</h1>
+
+
+        <div class="mt-3">
+            <select class = "form-select" name="updateTypeName" id="updateTypeName">
                 <option>Select Ticket Type</option>
                 <?php
                 $typeName = array_column($ticketDetails, 'typeName');
@@ -203,7 +214,7 @@ if (isset($_POST['createTicket'])) {
         </div>
 
         <div class="mt-3">
-            <input type="text" class = "form-control" name="newTypeName" id="newTypeName" placeholder="Enter new type name">
+            <input type="text" class = "form-control" name="updateNewTypeName" id="updateNewTypeName" placeholder="Enter new type name">
         </div>
 
         <div class="mt-3">
@@ -220,6 +231,7 @@ if (isset($_POST['createTicket'])) {
 
         <div class="mt-3">
             <input type="submit" class = "btn btn-primary" name="updateTicket" value="Update Ticket">
+            <input type="submit" class = "btn btn-primary" name="suspendTicket" value="Suspend Ticket">
         </div>
     </form>
 </div>
