@@ -5,14 +5,6 @@
   session_start();
   include('header.php');
 
-//  $moviesCh = curl_init();
-//  curl_setopt($moviesCh, CURLOPT_URL, "http://localhost:8000/api/manager/movie/read/all");
-//  curl_setopt($moviesCh, CURLOPT_RETURNTRANSFER, 1);
-//  $movies = curl_exec($moviesCh);
-//  $movies = trim($movies, '[');
-//  $movies = trim($movies, ']');
-//  $movies = explode(", ",$movies);
-//  curl_close($moviesCh);
 
   $moviesDetailsCh = curl_init();
   curl_setopt($moviesDetailsCh, CURLOPT_URL, "http://localhost:8000/api/manager/movie/read/all");
@@ -93,6 +85,8 @@
 </head>
 
 
+
+
 <nav class="navbar navbar-expand-sm">
     <div class="container">
         <a class="navbar-brand" href="index.php">
@@ -127,7 +121,78 @@
 <!--    <p>Admin ID: --><?php //echo $_SESSION["userId"] ?><!--</p>-->
 </div>
 
+<?php
 
+if (isset($_POST['update'])) {
+
+    $updatedMovieName = str_replace(' ', '%20', $_POST['movies']);
+    // echo $updatedMovieName;
+    $movieName = $_POST['movieName'];
+    $updatedMovieGenre = $_POST['movieGenre'];
+    $updatedMovieDesc = $_POST['movieDesc'];
+    $updatedMovieDate = $_POST['movieRD'];
+    $updatedMoviePoster = $_POST['moviePoster'];
+    $updatedMovieLandScapePoster = $_POST['landScapePoster'];
+    $updatedMovieRating = $_POST['moviesCR'];
+    $data = array('title' => $movieName, 'genre' => $updatedMovieGenre, 'description' => $updatedMovieDesc, 'releaseDate' => $updatedMovieDate,
+        'imageUrl' => $updatedMoviePoster, 'landscapeImageUrl' =>$updatedMovieLandScapePoster , 'contentRating' => $updatedMovieRating);
+
+    $data_json = json_encode($data);
+    //print_r(  $data_json);
+    $updateMoviesCh = curl_init( 'http://localhost:8000/api/manager/movie/update/'. $updatedMovieName);
+    curl_setopt($updateMoviesCh, CURLOPT_CUSTOMREQUEST, "PUT");
+    curl_setopt($updateMoviesCh, CURLOPT_POSTFIELDS, $data_json);
+    curl_setopt($updateMoviesCh, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($updateMoviesCh, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+
+    $updateResponse = curl_exec($updateMoviesCh);
+    curl_close($updateMoviesCh);
+    echo '<script>alert("Movie Updated")</script>';
+    echo "<meta http-equiv='refresh' content='0'>";
+
+}
+
+if (isset($_POST['create'])) {
+
+    $movieName = $_POST['movieName'];
+    $movieGenre = $_POST['movieGenre'];
+    $movieDesc = $_POST['movieDesc'];
+    $movieDate = $_POST['movieRD'];
+    $moviePoster = $_POST['moviePoster'];
+    $movieLandScapePoster = $_POST['landScapePoster'];
+    $movieActive = $_POST['isActive'];
+    $movieRating = $_POST['moviesCR'];
+    $data = array('title' => $movieName, 'genre' => $movieGenre, 'description' => $movieDesc, 'releaseDate' => $movieDate,
+        'imageUrl' => $moviePoster, 'landscapeImageUrl' =>$movieLandScapePoster , 'isActive' => $movieActive, 'contentRating' => $movieRating);
+    $data_json = json_encode($data);
+    //print_r(  $data_json);
+    $createMoviesCh = curl_init('http://localhost:8000/api/manager/movie/create/movie');
+    curl_setopt($createMoviesCh, CURLOPT_POST, "1");
+    curl_setopt($createMoviesCh, CURLOPT_POSTFIELDS, $data_json);
+    curl_setopt($createMoviesCh, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($createMoviesCh, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+
+    $createResponse = curl_exec($createMoviesCh);
+    curl_close($createMoviesCh);
+    //print_r ($createResponse);
+    echo '<script>alert("Movie Created")</script>';
+    echo "<meta http-equiv='refresh' content='0'>";
+}
+if (isset($_POST['suspend'])) {
+    $suspendMovieName = str_replace(' ', '%20', $_POST['movies']);
+    //echo $suspendMovieName;
+    $suspendMoviesCh = curl_init( 'http://localhost:8000/api/manager/movie/suspend/'.$suspendMovieName);
+    // print_r(  $data_json);
+    curl_setopt($suspendMoviesCh, CURLOPT_CUSTOMREQUEST, "DELETE");
+    curl_setopt($suspendMoviesCh, CURLOPT_POSTFIELDS, $suspendMovieName);
+    curl_setopt($suspendMoviesCh, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($suspendMoviesCh, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+    $suspendResponse = curl_exec($suspendMoviesCh);
+    curl_close($suspendMoviesCh);
+    echo '<script>alert("Movie Suspended")</script>';
+    echo "<meta http-equiv='refresh' content='0'>";
+}
+?>
 <div class="container mt-3 center movies-container">
     <div class="input-group mb-3" style="width: 40%; margin: auto;">
         <span class="input-group-text" id="searchLbl">Search:</span>
@@ -235,75 +300,7 @@
 
 
 </div>
-    <?php
 
-    if (isset($_POST['update'])) {
-
-        $updatedMovieName = str_replace(' ', '%20', $_POST['movies']);
-       // echo $updatedMovieName;
-        $movieName = $_POST['movieName'];
-        $updatedMovieGenre = $_POST['movieGenre'];
-        $updatedMovieDesc = $_POST['movieDesc'];
-        $updatedMovieDate = $_POST['movieRD'];
-        $updatedMoviePoster = $_POST['moviePoster'];
-        $updatedMovieLandScapePoster = $_POST['landScapePoster'];
-        $updatedMovieRating = $_POST['moviesCR'];
-        $data = array('title' => $movieName, 'genre' => $updatedMovieGenre, 'description' => $updatedMovieDesc, 'releaseDate' => $updatedMovieDate,
-            'imageUrl' => $updatedMoviePoster, 'landscapeImageUrl' =>$updatedMovieLandScapePoster , 'contentRating' => $updatedMovieRating);
-
-    $data_json = json_encode($data);
-    //print_r(  $data_json);
-    $updateMoviesCh = curl_init( 'http://localhost:8000/api/manager/movie/update/'. $updatedMovieName);
-    curl_setopt($updateMoviesCh, CURLOPT_CUSTOMREQUEST, "PUT");
-    curl_setopt($updateMoviesCh, CURLOPT_POSTFIELDS, $data_json);
-    curl_setopt($updateMoviesCh, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($updateMoviesCh, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
-
-    $response = curl_exec($updateMoviesCh);
-    curl_close($updateMoviesCh);
-   print_r ($response);
-    }
-
-    if (isset($_POST['create'])) {
-
-        $movieName = $_POST['movieName'];
-        $movieGenre = $_POST['movieGenre'];
-        $movieDesc = $_POST['movieDesc'];
-        $movieDate = $_POST['movieRD'];
-        $moviePoster = $_POST['moviePoster'];
-        $movieLandScapePoster = $_POST['landScapePoster'];
-        $movieActive = $_POST['isActive'];
-        $movieRating = $_POST['moviesCR'];
-        $data = array('title' => $movieName, 'genre' => $movieGenre, 'description' => $movieDesc, 'releaseDate' => $movieDate,
-            'imageUrl' => $moviePoster, 'landscapeImageUrl' =>$movieLandScapePoster , 'isActive' => $movieActive, 'contentRating' => $movieRating);
-        $data_json = json_encode($data);
-       //print_r(  $data_json);
-        $createMoviesCh = curl_init('http://localhost:8000/api/manager/movie/create/movie');
-        curl_setopt($createMoviesCh, CURLOPT_POST, "1");
-        curl_setopt($createMoviesCh, CURLOPT_POSTFIELDS, $data_json);
-        curl_setopt($createMoviesCh, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($createMoviesCh, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
-
-        $response = curl_exec($createMoviesCh);
-        curl_close($createMoviesCh);
-        //print_r ($response);
-    }
-    if (isset($_POST['suspend'])) {
-        $suspendMovieName = str_replace(' ', '%20', $_POST['movies']);
-        //echo $suspendMovieName;
-        $suspendMoviesCh = curl_init( 'http://localhost:8000/api/manager/movie/suspend/'.$suspendMovieName);
-       // print_r(  $data_json);
-        curl_setopt($suspendMoviesCh, CURLOPT_CUSTOMREQUEST, "DELETE");
-        curl_setopt($suspendMoviesCh, CURLOPT_POSTFIELDS, $suspendMovieName);
-        curl_setopt($suspendMoviesCh, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($suspendMoviesCh, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
-
-        $response = curl_exec($suspendMoviesCh);
-        curl_close($suspendMoviesCh);
-        print_r ($response);
-        }
-
-    ?>
 
 <script>
     function tableSearch()
