@@ -214,6 +214,7 @@ public class TicketImpl implements TicketService{
         return ticketRepo.findTicketsByScreening(screening).orElse(null);
     }
 
+    //can remove later
     // update a ticket
     // Ticket type should not be updated
     @Transactional
