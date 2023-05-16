@@ -1,16 +1,14 @@
 package com.hotdog.ctbs.entity;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import java.time.LocalDate;
-import java.util.UUID;
 import java.util.Objects;
+import java.util.UUID;
 
 @Builder
 @AllArgsConstructor
@@ -51,7 +49,8 @@ public class LoyaltyPoint {
     {
         if (this == o) return true;
         if (!(o instanceof LoyaltyPoint that)) return false;
-        return id.equals(that.id) && userAccount.equals(that.userAccount);
+        return id.equals(that.id) &&
+               userAccount.equals(that.userAccount);
     }
 
     @Override

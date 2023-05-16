@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 // Spring imports.
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -20,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * The {@code UserAccountUpdateController} class exposes
+ * The {@code AdminUserAccountUpdateController} class exposes
  * the {@code /api/admin/user-account/update} endpoint.
  * <p />
  *
@@ -44,12 +45,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/admin/user-account")
-public class UserAccountUpdateController {
+public class AdminUserAccountUpdateController {
 
     private final UserAccountImpl userAccountImpl;
     private final ObjectMapper objectMapper;
 
-    public UserAccountUpdateController(UserAccountImpl userAccountImpl)
+    public AdminUserAccountUpdateController(UserAccountImpl userAccountImpl)
     {
         this.userAccountImpl = userAccountImpl;
         this.objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
@@ -57,9 +58,9 @@ public class UserAccountUpdateController {
 
     /** Update a {@code UserAccount} based on the given JSON. */
     @PutMapping("/update/{targetUsername}")
-    public String Update(@RequestBody String json, @PathVariable String targetUsername)
+    public ResponseEntity<String> Update(@RequestBody String json, @PathVariable String targetUsername)
     {
-        System.out.println("UserAccountUpdateController.Update() called.");
+        System.out.println("AdminUserAccountUpdateController.Update() called.");
         try {
             JsonNode jsonNode = objectMapper.readTree(json);
             String username = jsonNode.get("username").asText();
@@ -73,9 +74,9 @@ public class UserAccountUpdateController {
                     LocalDate.parse(jsonNode.get("dateOfBirth").asText()),
                     jsonNode.get("title").asText()
             );
-            return "Success";
+            return ResponseEntity.ok("Success");
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }

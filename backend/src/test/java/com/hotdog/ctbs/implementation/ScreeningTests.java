@@ -35,7 +35,6 @@ public class ScreeningTests {
 
         System.out.println("Testing createScreening method");
         // date to be 2025-05-01
-
         screeningImpl.createScreening("Spider-Man", "morning",
                 LocalDate.of(2025, 5, 1), 1);
 
@@ -71,7 +70,7 @@ public class ScreeningTests {
 
             // test Screening getScreeningByMovieTitleAndShowTimeAndShowDateAndCinemaRoomId(String movieTitle, String showTime, LocalDate showDate, Integer cinemaRoomId);
             System.out.println("Testing getScreeningByMovieTitleAndShowTimeAndShowDateAndCinemaRoomId method");
-            System.out.println(screeningImpl.getScreeningByMovieTitleAndShowTimeAndShowDateAndCinemaRoomId("Spider-Man", "morning", LocalDate.of(2023, 5, 23), 1));
+            System.out.println(screeningImpl.getScreeningByShowTimeAndShowDateAndCinemaRoomId("morning", LocalDate.of(2023, 5, 23), 1));
             System.out.println();
 
             // test List<Screening> getAllActiveScreenings();
@@ -89,12 +88,12 @@ public class ScreeningTests {
     void updateMethod() {
 
             System.out.println("Testing updateScreening method");
-            screeningImpl.updateScreening(
-                    "Spider-Man", "afternoon", LocalDate.of(2023, 5, 23), 1,
+            screeningImpl.updateScreening("afternoon", LocalDate.of(2023, 5, 23), 1,
                     "Avatar", "afternoon", LocalDate.of(2055, 5, 5), 5
             );
             System.out.println(screeningImpl.getAllScreenings());
             System.out.println();
+
 
     }
 
@@ -102,7 +101,7 @@ public class ScreeningTests {
     void suspendMethod() {
 
         System.out.println("Testing suspendScreening method");
-        screeningImpl.suspendScreening("Spider-Man", "morning", LocalDate.of(2023, 5, 23), 1);
+        screeningImpl.suspendScreening("morning", LocalDate.of(2023, 5, 23), 1);
 
         System.out.println(screeningImpl.getAllScreenings());
         System.out.println();
@@ -127,7 +126,9 @@ public class ScreeningTests {
     @Test
     void cancelMethod()
     {
-        screeningImpl.cancelScreening("Spider-Man", "morning", LocalDate.of(2023, 5, 23), 1);
+        screeningImpl.cancelScreening( "morning", LocalDate.of(2023, 5, 23), 1);
     }
+
+
 }
 

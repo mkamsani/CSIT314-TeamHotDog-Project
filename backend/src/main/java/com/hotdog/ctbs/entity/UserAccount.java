@@ -1,7 +1,6 @@
 package com.hotdog.ctbs.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -9,7 +8,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
-// import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
@@ -65,12 +63,10 @@ public class UserAccount {
     @Fetch(FetchMode.JOIN)
     private UserProfile userProfile;
 
-
-
     /**
-     * Returns a JSON string of the user account.
-     *
-     * <p>To support Java 8 date types,
+     * Returns a JSON string of the object.
+     * <p>
+     * To support Java 8 date types,
      * {@link com.fasterxml.jackson.databind.ObjectMapper#registerModule(Module)} is used.<br />
      * {@link java.time.OffsetDateTime} corresponds to Postgres'
      * {@code TIMESTAMP WITH TIME ZONE}.
@@ -96,9 +92,9 @@ public class UserAccount {
     {
         if (this == o) return true;
         if (!(o instanceof UserAccount that)) return false;
-        return id.equals(that.id)
-               && username.equals(that.username)
-               && email.equals(that.email);
+        return id.equals(that.id) &&
+               username.equalsIgnoreCase(that.username) &&
+               email.equalsIgnoreCase(that.email);
     }
 
     @Override

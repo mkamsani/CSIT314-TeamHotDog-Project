@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 // Spring imports.
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,7 +38,7 @@ import org.springframework.web.bind.annotation.RestController;
  * }
  * </pre></blockquote>
  *
- * The HTML form should GET {@link UserAccountReadController#Read(String) /api/admin/user-profile/read/titles} to obtain the list of titles.
+ * The HTML form should GET {@link AdminUserAccountReadController#Read(String) /api/admin/user-profile/read/titles} to obtain the list of titles.
  * <br />
  * The suggested HTML form format is:
  * <blockquote><pre>
@@ -76,7 +77,7 @@ public class AdminUserAccountCreateController {
 
     /** Create a {@code UserAccount} based on the given JSON. */
     @PostMapping("/create")
-    public String Create(@RequestBody final String json)
+    public ResponseEntity<String> Create(@RequestBody final String json)
     {
         System.out.println("AdminUserAccountCreateController.Create() called.");
         try {
@@ -92,9 +93,9 @@ public class AdminUserAccountCreateController {
                     LocalDate.parse(jsonNode.get("dateOfBirth").asText()),
                     jsonNode.get("title").asText()
             );
-            return "Success";
+            return ResponseEntity.ok("Success");
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }

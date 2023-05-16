@@ -1,7 +1,6 @@
 package com.hotdog.ctbs.controller.admin;
 
 // Application imports.
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.hotdog.ctbs.entity.UserProfile;
@@ -13,12 +12,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 // Spring imports.
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 /**
- * The {@code UserProfileReadController} class exposes
+ * The {@code AdminUserProfileReadController} class exposes
  * the {@code /api/admin/user-profile/read} endpoint.
  * <p />
  *
@@ -41,25 +41,25 @@ import java.util.List;
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/admin/user-profile")
-public class UserProfileReadController {
+public class AdminUserProfileReadController {
 
     private final UserProfileImpl userProfileImpl;
     private final ObjectMapper objectMapper;
 
-    public UserProfileReadController(UserProfileImpl userProfileImpl)
+    public AdminUserProfileReadController(UserProfileImpl userProfileImpl)
     {
         this.userProfileImpl = userProfileImpl;
         this.objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
     }
 
     @GetMapping("/read/{param}")
-    public String Read(@PathVariable String param)
+    public ResponseEntity<String> Read(@PathVariable String param)
     {
         try {
             if (param.equals("titles"))
-                return userProfileImpl.getAllTitles().toString();
+                return ResponseEntity.ok(userProfileImpl.getAllTitles().toString());
             if (param.equals("privileges"))
-                return userProfileImpl.getAllPrivileges().toString();
+                return ResponseEntity.ok(userProfileImpl.getAllPrivileges().toString());
             List<UserProfile> userProfileList = switch (param) {
                 case "admin", "owner", "manager", "customer"
                         -> userProfileImpl.getUserProfilesByPrivilege(param);
@@ -77,9 +77,9 @@ public class UserProfileReadController {
                 ((ObjectNode) jsonNodes[i]).remove("id");
                 arrayNode.add(jsonNodes[i]);
             }
-            return objectMapper.writeValueAsString(arrayNode);
+            return ResponseEntity.ok(objectMapper.writeValueAsString(arrayNode));
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }

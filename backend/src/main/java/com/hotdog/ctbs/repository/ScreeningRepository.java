@@ -26,7 +26,9 @@ public interface ScreeningRepository extends JpaRepository<Screening, UUID> {
 
     Optional<List<Screening>> findScreeningsByCinemaRoomIdAndShowDate(Integer cinemaRoomId, LocalDate showDate);
 
-    Screening findScreeningByMovieTitleAndShowTimeAndShowDateAndCinemaRoomId(String movieTitle, String showTime, LocalDate showDate, Integer cinemaRoomId);
+    //Screening findScreeningByMovieTitleAndShowTimeAndShowDateAndCinemaRoomId(String movieTitle, String showTime, LocalDate showDate, Integer cinemaRoomId);
+
+    Screening findScreeningByShowTimeAndShowDateAndCinemaRoomId(String showTime, LocalDate showDate, Integer cinemaRoomId);
 
     @Query("SELECT s FROM Screening s WHERE s.status = 'active' AND s.showDate >= :today")
     List<Screening> findActiveScreeningsLaterOrEqual(@Param("today") LocalDate today);

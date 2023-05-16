@@ -42,7 +42,7 @@ public class TicketTests {
             {
                 ticketImpl.createTicket("user_41",
                         "adult",
-                        "Spider-Man", "morning",
+                        "morning",
                         LocalDate.of(2023, 5, 23),
                         1, 'A', i, false);
             }
@@ -67,7 +67,7 @@ public class TicketTests {
 
             // get all the available seats linked to screening
             System.out.println("Testing listAvailableSeats method");
-            List<Seat> seats = ticketImpl.listAvailableSeats("Spider-Man", "evening",
+            List<Seat> seats = ticketImpl.listAvailableSeats("evening",
                     LocalDate.of(2023, 5, 23), 1);
             System.out.println(seats.size());
             System.out.println(seats);

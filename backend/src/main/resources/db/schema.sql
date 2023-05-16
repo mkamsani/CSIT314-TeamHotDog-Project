@@ -191,31 +191,6 @@ CREATE TABLE ticket
 -- Do not edit anything below until we are done with what's above.
 -----------------------------------------------------------------------------------------------------------------------
 
--- We are not going to be doing food_combo and food_order.
-CREATE TABLE food_combo
-(
-  PRIMARY KEY (uuid),
-  uuid        Uuid           DEFAULT uuid_generate_v4(),
-  description TEXT           NOT NULL    UNIQUE,            -- e.g. "Popcorn and Coke"
-  price       NUMERIC(10, 2) NOT NULL    CHECK (price >= 0) -- e.g. 10.00
-);
-
--- Not doing this.
--- Frontend should handle ticket purchase,
--- send data to us,
--- then redirect customer to optional food_order purchase.
-CREATE TABLE food_order
-(
-    PRIMARY KEY (uuid),
-  uuid         Uuid NOT NULL DEFAULT uuid_generate_v4(),
-  combo_number Uuid NOT NULL REFERENCES food_combo (uuid),
-
-  -- For consideration, no ideas for functionalities with order_time yet:
-  ticket       Uuid NOT NULL REFERENCES ticket (uuid)
-  -- order_time   TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-);
-
-
 -- Rating review will be done with along with loyalty.
 CREATE TABLE rating_review
 (

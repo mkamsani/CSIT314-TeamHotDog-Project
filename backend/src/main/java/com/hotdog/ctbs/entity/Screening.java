@@ -1,14 +1,13 @@
 package com.hotdog.ctbs.entity;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.UUID;
 import java.util.Objects;
+import java.util.UUID;
 
 @Builder
 @AllArgsConstructor
@@ -24,10 +23,7 @@ public class Screening {
     @Column(name = "uuid", nullable = false)
     private UUID id;
 
-    /*@ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "movie_id", nullable = false)
-    private Movie movie;*/
-
+    // @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "movie_id", nullable = false)
     private Movie movie;
@@ -39,15 +35,10 @@ public class Screening {
     private String status; // ONLY 'active', 'suspended', 'cancelled'
 
     /*@Column(name = "is_active" , nullable = false)
-    private Boolean isActive;
-*/
+    private Boolean isActive;*/
 
     @Column(name = "show_date", nullable = false)
     private LocalDate showDate;
-
-    /*@ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "cinema_room", nullable = false)
-    private CinemaRoom cinemaRoom;*/
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "cinema_room", nullable = false)
@@ -59,9 +50,9 @@ public class Screening {
     {
         ObjectNode json = new ObjectMapper().createObjectNode();
         json.put("movie", movie.getTitle());
-        json.put("showTime",   showTime);
-        json.put("status",   status);
-        json.put("showDate",   showDate.toString());
+        json.put("showTime", showTime);
+        json.put("status", status);
+        json.put("showDate", showDate.toString());
         json.put("cinemaRoom", cinemaRoom.getId());
         return json.toString();
     }
@@ -78,7 +69,8 @@ public class Screening {
     }
 
     @Override
-    public int hashCode() {
+    public int hashCode()
+    {
         return Objects.hash(id, showTime, cinemaRoom, showDate);
     }
 }

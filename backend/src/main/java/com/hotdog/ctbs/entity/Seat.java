@@ -20,7 +20,6 @@ import java.util.UUID;
 @Table(name = "seat")
 @JsonIgnoreProperties({"tickets"})
 public class Seat {
-
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "uuid", nullable = false)
@@ -40,30 +39,30 @@ public class Seat {
     private Set<Ticket> tickets = new LinkedHashSet<>();
 
     @Override
+    public String toString()
+    {
+        ObjectNode json = new ObjectMapper().createObjectNode();
+        json.put("row", String.valueOf(seatRow));
+        json.put("column", String.valueOf(seatColumn));
+        json.put("room", cinemaRoom.getId().toString());
+        json.put("seatCode", cinemaRoom.getId().toString() + seatRow + seatColumn);
+        return json.toString();
+    }
+
+    @Override
     public boolean equals(Object o)
     {
         if (this == o) return true;
         if (!(o instanceof Seat that)) return false;
-        return id.equals(that.id)
-               && cinemaRoom.equals(that.cinemaRoom)
-               && seatRow == that.seatRow
-               && seatColumn.equals(that.seatColumn);
+        return id.equals(that.id) &&
+               cinemaRoom.equals(that.cinemaRoom) &&
+               seatRow == that.seatRow &&
+               seatColumn.equals(that.seatColumn);
     }
 
     @Override
     public int hashCode()
     {
         return Objects.hash(id, cinemaRoom, seatRow, seatColumn);
-    }
-
-    @Override
-    public String toString()
-    {
-        ObjectNode json = new ObjectMapper().createObjectNode();
-        json.put("row",      String.valueOf(seatRow));
-        json.put("column",   String.valueOf(seatColumn));
-        json.put("room",     cinemaRoom.getId().toString());
-        json.put("seatCode", cinemaRoom.getId().toString() + seatRow + seatColumn);
-        return json.toString();
     }
 }

@@ -5,13 +5,10 @@ import jakarta.transaction.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 public interface ScreeningService {
 
         void createScreening(String movieTitle, String showTime, LocalDate showDate, Integer cinemaRoomId);
-        Screening getScreeningById(UUID id);
 
         List<Screening> getAllScreenings();
 
@@ -34,7 +31,7 @@ public interface ScreeningService {
 
 
         // get specific screening by movie id, show time, show date, cinema room id
-        Screening getScreeningByMovieTitleAndShowTimeAndShowDateAndCinemaRoomId(String movieTitle, String showTime, LocalDate showDate, Integer cinemaRoomId);
+        //Screening getScreeningByMovieTitleAndShowTimeAndShowDateAndCinemaRoomId(String movieTitle, String showTime, LocalDate showDate, Integer cinemaRoomId);
 
         // get all active screening method for customers usage
         // (customer does not need to see inactive screenings)
@@ -44,7 +41,11 @@ public interface ScreeningService {
         List<Screening> getAllActiveScreeningsByMovieTitle(String movieTitle);*/
 
 
-        // get all active screening method for customers usage
+    // get specific screening by movie id, show time, show date, cinema room id
+        @Transactional
+        Screening getScreeningByShowTimeAndShowDateAndCinemaRoomId(String showTime, LocalDate showDate, Integer cinemaRoomId);
+
+    // get all active screening method for customers usage
         // (customer does not need to see inactive screenings)
         // ** customer should only able to see active screenings
         // 1st order ==> show date in ascending order
@@ -63,23 +64,44 @@ public interface ScreeningService {
         // *** can update all attribute of a screening except the "isActive" (status)
         // update a screening require all 4 fields (movieTitle, showTime, showDate, cinemaRoomId)
         // if a screening is inactive, cant update
-        void updateScreening(String currentMovieTitle, String currentShowTime,
+        /*void updateScreening(String currentMovieTitle, String currentShowTime,
                              LocalDate currentShowDate, Integer currentCinemaRoomId,
                              String newMovieTitle, String newShowTime, LocalDate newShowDate, Integer newCinemaRoomId);
-
+*/
 
     // suspend screening method (not used)
-    @Transactional
+    /*@Transactional
     void suspendScreening(String movieTitle,
                           String currentShowTime,
+                          LocalDate currentShowDate,
+                          Integer cinemaRoomId);*/
+
+    // 3. Update screening
+    // *** can update all attribute of a screening except the "isActive" (status)
+    // update a screening require all 4 fields (movieTitle, showTime, showDate, cinemaRoomId)
+    // if a screening is inactive, cant update
+    @Transactional
+    void updateScreening(String currentShowTime,
+                         LocalDate currentShowDate, Integer currentCinemaRoomId,
+                         String newMovieTitle, String newShowTime, LocalDate newShowDate, Integer newCinemaRoomId);
+
+    @Transactional
+    void suspendScreening(String currentShowTime,
                           LocalDate currentShowDate,
                           Integer cinemaRoomId);
 
     // 15 / 5 add on cancel screening
     // cancel the screening then whoever booked the ticket for that screening will get loyalty points
-    @Transactional
+    /*@Transactional
     void cancelScreening(String movieTitle,
                          String currentShowTime,
+                         LocalDate currentShowDate,
+                         Integer cinemaRoomId);*/
+
+    // 15 / 5 add on cancel screening
+    // cancel the screening then whoever booked the ticket for that screening will get loyalty points
+    @Transactional
+    void cancelScreening(String currentShowTime,
                          LocalDate currentShowDate,
                          Integer cinemaRoomId);
 }
