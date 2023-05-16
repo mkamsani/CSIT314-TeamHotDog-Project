@@ -34,14 +34,17 @@ public class ScreeningUpdateController {
         this.objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
     }
 
-    @PutMapping("/update/{targetMovieTitle}/{targetShowTime}/{targetShowDate}/{targetCinemaRoomId}")
-    public String UpdateScreening(@RequestBody String json, @PathVariable String targetMovieTitle, @PathVariable String targetShowTime,
+
+    // update a screening using curl
+    // Invoke-WebRequest -Method PUT -Headers @{"Content-Type"="application/json"} -Body '{"newMovieTitle":"Up","newShowTime":"midnight","newShowDate":"2026-05-25","newCinemaRoomId":1}' -Uri http://localhost:8000/api/manager/screening/update/afternoon/2026-05-31/1
+    @PutMapping("/update/{targetShowTime}/{targetShowDate}/{targetCinemaRoomId}")
+    public String UpdateScreening(@RequestBody String json, @PathVariable String targetShowTime,
                                   @PathVariable LocalDate targetShowDate, @PathVariable Integer targetCinemaRoomId)
     {
         System.out.println("ScreeningUpdateController.UpdateScreening() called.");
         try {
             JsonNode jsonNode = objectMapper.readTree(json);
-            screeningImpl.updateScreening(targetMovieTitle, targetShowTime,
+            screeningImpl.updateScreening(targetShowTime,
                     targetShowDate, targetCinemaRoomId,
                     jsonNode.get("newMovieTitle").asText(),
                     jsonNode.get("newShowTime").asText(),
@@ -51,7 +54,7 @@ public class ScreeningUpdateController {
             );
             return "Successfully update screening.";
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return e.getMessage();
         }
     }
 }

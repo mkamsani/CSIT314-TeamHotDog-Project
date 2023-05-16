@@ -34,6 +34,7 @@ public class ManagerScreeningReadController {
      */
 
     // curl.exe -X GET http://localhost:8000/api/manager/screening/read/all
+    // curl.exe -X GET http://localhost:8000/api/manager/screening/read/Thor
     @GetMapping(value = "/read/{param}")
     public String ManagerReadScreening(@PathVariable final String param)
     {
@@ -52,12 +53,12 @@ public class ManagerScreeningReadController {
             }
 
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return e.getMessage();
         }
 
     }
 
-    // 2 parameters, the second one is optional.
+    /*// 2 parameters, the second one is optional.
     // Bit of a hack, but everything is in one method. Not necessarily more readable.
     @GetMapping(value = "/read/{param}/{cinemaRoomID}")
     public String Read(@PathVariable(name = "param") final String param,
@@ -78,7 +79,7 @@ public class ManagerScreeningReadController {
         } catch (Exception e) {
             return "Error: " + e.getMessage();
         }
-    }
+    }*/
 
     // Most correct way: logic is split.
     // @GetMapping(value = "/read/fixed/{param}")

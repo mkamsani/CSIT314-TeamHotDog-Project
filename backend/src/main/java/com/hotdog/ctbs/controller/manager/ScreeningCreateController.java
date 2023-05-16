@@ -42,7 +42,7 @@ public class ScreeningCreateController {
      */
 
     // create a new screening
-    // Invoke-WebRequest -Method POST -Headers @{"Content-Type"="application/json"} -Body '{"MovieTitle":"The Haha","ShowTime":"12:00","ShowDate":"2021-05-31","CinemaRoomId":1}' -Uri http://localhost:8000/api/manager/screening/create/screening
+    // Invoke-WebRequest -Method POST -Headers @{"Content-Type"="application/json"} -Body '{"MovieTitle":"Thor","ShowTime":"morning","ShowDate":"2026-05-31","CinemaRoomId":1}' -Uri http://localhost:8000/api/manager/screening/create/screening
     @PostMapping("/create/screening")
     public String CreateScreening(@RequestBody final String json)
     {
