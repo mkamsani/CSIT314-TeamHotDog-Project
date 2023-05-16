@@ -20,7 +20,10 @@ test -z "$oci" && printf %s\\n "No OCI runtime found" && exit 1
 # Unset set -e to allow the script to continue if the container is not running.
 set +e
 # Kill and remove the container (to reset) if it's running.
-sleep 3 && "$oci" container list -a | grep pg && "$oci" rm -f pg
+if test "$("$oci" container list -a | grep pg)"; then
+"$oci" kill pg
+"$oci" rm -f pg
+fi
 
 # Start the container in the background.
 # --rm                    : Automatically remove the container when it exits.
