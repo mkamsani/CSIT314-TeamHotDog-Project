@@ -5,10 +5,8 @@
 session_start();
 include('header.php');
 
-
-
     $ticketDetailCh = curl_init();
-    curl_setopt($ticketDetailCh, CURLOPT_URL, "http://localhost:8000/api/manager/ticketType/read/all");
+    curl_setopt($ticketDetailCh, CURLOPT_URL, 'http://localhost:8000/api/manager/ticketType/read/all');
     curl_setopt($ticketDetailCh, CURLOPT_RETURNTRANSFER, 1);
     $ticketDetails = curl_exec($ticketDetailCh);
     curl_close($ticketDetailCh);
@@ -32,7 +30,7 @@ if (isset($_POST['updateTicket'])) {
     $updateTicketCh = curl_init();
     $data = array('ticketTypeName'=> $newTicketTypeName, 'ticketTypePrice' => $newPrice, 'ticketTypeIsActive' => $ticketActivity);
     $data_json = json_encode($data);
-    print_r($data_json);
+    //print_r($data_json);
     curl_setopt($updateTicketCh, CURLOPT_URL, 'http://localhost:8000/api/manager/ticketType/update/'.$ticketTypeName);
     curl_setopt($updateTicketCh, CURLOPT_CUSTOMREQUEST, "PUT");
     curl_setopt($updateTicketCh, CURLOPT_POSTFIELDS, $data_json);
@@ -129,7 +127,7 @@ if (isset($_POST['suspendTicket'])) {
 
 
 <div class="container mt-4" style="margin-left: 20%; width: 40%">
-    <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" class="showTicket">
+    <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" class="showTicket text-white"">
 
         <div class="mt-3 ">
             <table class="table text-white" style="margin: auto; width: 100%; table-layout: fixed">
@@ -144,7 +142,7 @@ if (isset($_POST['suspendTicket'])) {
                 <tr>
                     <td>
                         <?php
-                        $ticketTypeName = array_column($ticketDetails, 'typeName');
+                        $ticketTypeName = array_column($ticketDetails, 'typename');
                         foreach ($ticketTypeName as $ticketTypeKey) {
                             echo '' . $ticketTypeKey . '<br/>';
                         }
@@ -152,7 +150,7 @@ if (isset($_POST['suspendTicket'])) {
                     </td>
                     <td>
                         <?php
-                        $ticketPrice = array_column($ticketDetails, 'typePrice');
+                        $ticketPrice = array_column($ticketDetails, 'typeprice');
                         foreach ($ticketPrice as $ticketPriceKey) {
                             echo '' . $ticketPriceKey . '<br/>';
                         }
@@ -160,7 +158,7 @@ if (isset($_POST['suspendTicket'])) {
                     </td>
                     <td>
                         <?php
-                        $isActive = array_column($ticketDetails, 'isActive');
+                        $isActive = array_column($ticketDetails, 'isactive');
                         foreach ($isActive as $isActiveKey) {
                             echo '' . $isActiveKey . '<br/>';
                         }
@@ -172,7 +170,7 @@ if (isset($_POST['suspendTicket'])) {
         </div>
         <br>
         <br>
-        <h1>Create Ticket Form</h1>
+        <h1 >Create Ticket Form</h1>
         <div class="mt-3">
             <input type="text" class="form-control" name="createTicketType" id="createTicketType" placeholder="Enter ticket type">
             <input type="number" class="form-control" step="0.01" name="createTypePrice" id="createTypePrice" placeholder="Enter ticket price">
@@ -191,7 +189,7 @@ if (isset($_POST['suspendTicket'])) {
         </div>
     </form>
 
-    <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" class="showTicket">
+    <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" class="showTicket text-white"">
         </br>
         </br>
         </br>
@@ -203,7 +201,7 @@ if (isset($_POST['suspendTicket'])) {
             <select class = "form-select" name="updateTypeName" id="updateTypeName">
                 <option>Select Ticket Type</option>
                 <?php
-                $typeName = array_column($ticketDetails, 'typeName');
+                $typeName = array_column($ticketDetails, 'typename');
                 foreach ($typeName as $typeNameKey) {
                     ?>
                     <option><?php echo '' . $typeNameKey . '<br/>'; ?></option>
