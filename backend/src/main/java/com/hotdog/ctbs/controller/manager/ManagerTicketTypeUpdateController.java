@@ -47,6 +47,10 @@ public class ManagerTicketTypeUpdateController {
     }
     /*
       UpdateController Method will update a specific ticket type.
+      public void updateTicketType(final String targetTypeName,
+                                 final String newTypeName,
+                                 final Double newTypePrice,
+                                 final Boolean newIsActive)
      */
     @PutMapping(value = "/update/{targetTicketTypeName}")
     public String ManagerUpdateTicketType(@RequestBody String json, @PathVariable String targetTicketTypeName)
@@ -63,6 +67,9 @@ public class ManagerTicketTypeUpdateController {
             );
         }
         catch (Exception e){
+            // delete later
+            System.out.println("updateTicketType() failed");
+            //
             return e.getMessage();
         }
         return "Ticket Type Updated";
