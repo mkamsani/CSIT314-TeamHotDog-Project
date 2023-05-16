@@ -1,7 +1,6 @@
 package com.hotdog.ctbs.controller.admin;
 
 // Application imports.
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.hotdog.ctbs.entity.UserProfile;
@@ -18,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * The {@code UserProfileReadController} class exposes
+ * The {@code AdminUserProfileReadController} class exposes
  * the {@code /api/admin/user-profile/read} endpoint.
  * <p />
  *
@@ -41,12 +40,12 @@ import java.util.List;
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/admin/user-profile")
-public class UserProfileReadController {
+public class AdminUserProfileReadController {
 
     private final UserProfileImpl userProfileImpl;
     private final ObjectMapper objectMapper;
 
-    public UserProfileReadController(UserProfileImpl userProfileImpl)
+    public AdminUserProfileReadController(UserProfileImpl userProfileImpl)
     {
         this.userProfileImpl = userProfileImpl;
         this.objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());

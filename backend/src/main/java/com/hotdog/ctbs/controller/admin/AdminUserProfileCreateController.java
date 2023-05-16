@@ -12,8 +12,8 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * The {@code UserProfileUpdateController} class exposes
- * the {@code /api/admin/user-profile/update} endpoint.
+ * The {@code AdminUserProfileCreateController} class exposes
+ * the {@code /api/admin/user-profile/create} endpoint.
  * <p />
  *
  * The expected JSON format is:
@@ -29,25 +29,24 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/admin/user-profile")
-public class UserProfileUpdateController {
+public class AdminUserProfileCreateController {
 
     private final UserProfileImpl userProfileImpl;
     private final ObjectMapper objectMapper;
 
-    public UserProfileUpdateController(UserProfileImpl userProfileImpl)
+    public AdminUserProfileCreateController(UserProfileImpl userProfileImpl)
     {
         this.userProfileImpl = userProfileImpl;
         this.objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
     }
 
-    /** Update a {@code UserProfile} based on the given JSON. */
-    @PutMapping("/update/{targetTitle}")
-    public String Update(@RequestBody String json, @PathVariable String targetTitle)
+    /** Create a {@code UserProfile} based on the given JSON. */
+    @PostMapping("/create")
+    public String Create(@RequestBody String json)
     {
         try {
             JsonNode jsonNode = objectMapper.readTree(json);
-            userProfileImpl.update(
-                    targetTitle,
+            userProfileImpl.create(
                     jsonNode.get("privilege").asText(),
                     jsonNode.get("title").asText()
             );

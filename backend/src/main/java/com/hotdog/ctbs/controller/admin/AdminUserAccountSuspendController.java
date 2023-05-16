@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * The {@code UserAccountSuspendController} class exposes
+ * The {@code AdminUserAccountSuspendController} class exposes
  * the {@code /api/admin/user-account/suspend} endpoint.
  * <p />
  *
@@ -24,11 +24,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/admin/user-account")
-public class UserAccountSuspendController {
+public class AdminUserAccountSuspendController {
 
     private final UserAccountImpl userAccountImpl;
 
-    public UserAccountSuspendController(UserAccountImpl userAccountImpl)
+    public AdminUserAccountSuspendController(UserAccountImpl userAccountImpl)
     {
         this.userAccountImpl = userAccountImpl;
     }

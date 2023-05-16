@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * The {@code UserAccountUpdateController} class exposes
+ * The {@code AdminUserAccountUpdateController} class exposes
  * the {@code /api/admin/user-account/update} endpoint.
  * <p />
  *
@@ -44,12 +44,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/admin/user-account")
-public class UserAccountUpdateController {
+public class AdminUserAccountUpdateController {
 
     private final UserAccountImpl userAccountImpl;
     private final ObjectMapper objectMapper;
 
-    public UserAccountUpdateController(UserAccountImpl userAccountImpl)
+    public AdminUserAccountUpdateController(UserAccountImpl userAccountImpl)
     {
         this.userAccountImpl = userAccountImpl;
         this.objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
@@ -59,7 +59,7 @@ public class UserAccountUpdateController {
     @PutMapping("/update/{targetUsername}")
     public String Update(@RequestBody String json, @PathVariable String targetUsername)
     {
-        System.out.println("UserAccountUpdateController.Update() called.");
+        System.out.println("AdminUserAccountUpdateController.Update() called.");
         try {
             JsonNode jsonNode = objectMapper.readTree(json);
             String username = jsonNode.get("username").asText();
