@@ -60,11 +60,11 @@ public class MovieUpdateController{
                     jsonNode.get("landscapeImageUrl").asText(),
                     jsonNode.get("contentRating").asText()
             );
-
-            return "Success update movie";
+            // return the movie title message that has been updated.
+            return "Successfully update from " + targetMovieTitle  + " to " + jsonNode.get("title").asText();
 
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return e.getMessage();
         }
     }
 

@@ -87,8 +87,13 @@ public class MovieImpl implements MovieService{
         // the content rating must be in lowercase form (2nd check)
         // the content rating must be one of the valid content rating (3trd check)
         for (String existingMovieTitle : getAllMovieTitles())
-            if (existingMovieTitle.equalsIgnoreCase(title))
-                throw new IllegalArgumentException("The movie title already exists.");
+            if (existingMovieTitle.equalsIgnoreCase(title)){
+
+                // return the movie title message that already exists
+                throw new IllegalArgumentException( title + "already exists. Cannot create new movie." +
+                        " Please enter a new movie title.");
+            }
+
 
         if (!contentRating.equals(contentRating.toLowerCase())) {
             throw new IllegalArgumentException("The content rating given must be in lowercase form.");}
@@ -146,8 +151,11 @@ public class MovieImpl implements MovieService{
 
         // make sure new movie title is not same as other existing movie titles
         for (String existingMovieTitle : getAllMovieTitles())
-            if (existingMovieTitle.equalsIgnoreCase(newTitle))
-                throw new IllegalArgumentException("The new movie title already exists.");
+            if (existingMovieTitle.equalsIgnoreCase(newTitle)){
+
+                throw new IllegalArgumentException("The new movie title" + newTitle + "already exists.");
+            }
+
 
         // update everything if found the existing movie title
         for (Movie exsitingMovie : movieRepository.findAll()) {
@@ -167,8 +175,7 @@ public class MovieImpl implements MovieService{
         }
         // if the movie that would to be updated is not found, throw an exception
         if (!movieFound) {
-            throw new IllegalArgumentException("The movie you would " +
-                    "like to update does not exist.");
+            throw new IllegalArgumentException("The movie title " + targetTitle +  "you would like to update does not exist.");
         }
 
     }
@@ -195,8 +202,8 @@ public class MovieImpl implements MovieService{
         }
         // if the movie title that would to be updated is not found, throw an exception
         if (!movieFound){
-            throw new IllegalArgumentException("The movie title you would " +
-                    "like to update does not exist.");
+            // throw an exception including targetTitle name if the movie title is not found
+        throw new IllegalArgumentException("The movie " + targetTitle + "you would like to suspend does not exist.");
         }
     }
 
@@ -214,8 +221,7 @@ public class MovieImpl implements MovieService{
         }
 
         if (!movieFound){
-            throw new IllegalArgumentException("The movie you would " +
-                    "like to delete does not exist.");
+            throw new IllegalArgumentException("The movie "+ title + " you would like to delete does not exist.");
         }
 
         // check if the movie has screenings
@@ -241,9 +247,9 @@ public class MovieImpl implements MovieService{
             if (existingScreening.getMovie().getTitle().equalsIgnoreCase(title)){
                 LocalDate showDate = existingScreening.getShowDate();
                 if (showDate.isAfter(LocalDate.now()))
-                    throw new IllegalArgumentException("The movie you would like to delete has the screening in the future.");
+                    throw new IllegalArgumentException("The movie " + title + " you would like to delete has the screening in the future.");
                 if (showDate.isAfter(LocalDate.now().minusDays(30)))
-                    throw new IllegalArgumentException("You cant delete a movie that has the screening in the past less than 30 days.");
+                    throw new IllegalArgumentException("You cant delete a movie" + title + "that has the screening in the past less than 30 days.");
             }
         }
         movieRepository.delete(movieRepository.findMovieByTitle(title));

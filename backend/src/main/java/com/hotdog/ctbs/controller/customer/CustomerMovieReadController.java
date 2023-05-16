@@ -61,7 +61,7 @@ public class CustomerMovieReadController {
             }
 
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return e.getMessage();
         }
     }
 

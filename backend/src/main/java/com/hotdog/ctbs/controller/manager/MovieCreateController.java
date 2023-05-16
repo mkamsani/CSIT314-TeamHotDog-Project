@@ -59,9 +59,11 @@ public class MovieCreateController {
                     jsonNode.get("contentRating").asText()
 
             );
-            return "Movie was created successfully.";
+            // return the movie title message are created successfully.
+            return "Successfully create movie: " + jsonNode.get("title").asText();
+
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return e.getMessage();
         }
     }
 

@@ -53,7 +53,7 @@ public class CustomerScreeningReadController {
             }
 
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return e.getMessage();
         }
 
     }
