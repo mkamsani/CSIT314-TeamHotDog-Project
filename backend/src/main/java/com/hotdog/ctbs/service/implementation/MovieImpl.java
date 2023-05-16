@@ -100,6 +100,7 @@ public class MovieImpl implements MovieService{
                 Movie.builder()
                         .id(UUID.randomUUID())
                         .title(title)
+                        .isActive(true) // just added, from Yao Hui
                         .genre(genre.toLowerCase())
                         .description(description)
                         .releaseDate(releaseDate)
@@ -198,6 +199,7 @@ public class MovieImpl implements MovieService{
                     "like to update does not exist.");
         }
     }
+
     @Transactional
     @Override
     public void deleteMovieByTitle(String title)
@@ -237,33 +239,14 @@ public class MovieImpl implements MovieService{
         // make sure the movie has no future screening
         for (Screening existingScreening : screeningRepository.findAll()) {
             if (existingScreening.getMovie().getTitle().equalsIgnoreCase(title)){
-                // check any future screening
-                if (existingScreening.getShowDate().isAfter(LocalDate.now())){
-                    System.out.println(existingScreening.getShowDate());
-                    throw new IllegalArgumentException("The movie you would " +
-                            "like to delete has the screening in the future.");
-                }
+                LocalDate showDate = existingScreening.getShowDate();
+                if (showDate.isAfter(LocalDate.now()))
+                    throw new IllegalArgumentException("The movie you would like to delete has the screening in the future.");
+                if (showDate.isAfter(LocalDate.now().minusDays(30)))
+                    throw new IllegalArgumentException("You cant delete a movie that has the screening in the past less than 30 days.");
             }
         }
-
-        boolean checkPastMovieScreeningMoreThan30Days = false;
-
-        // if dont have future screening, i want to delete the movie if all screening is in the past more than 30 days
-        for (Screening existingScreening : screeningRepository.findAll()) {
-            if (existingScreening.getMovie().getTitle().equalsIgnoreCase(title)){
-                // check any future screening
-                if (existingScreening.getShowDate().isAfter(LocalDate.now().minusDays(30))){
-                    throw new IllegalArgumentException("You cant delete a movie that" +
-                            " has the screening in the past less than 30 days.");
-                }
-            }
-        }
-
-        if(checkPastMovieScreeningMoreThan30Days){
-            movieRepository.delete(movieRepository.findMovieByTitle(title));
-        }
-
-
+        movieRepository.delete(movieRepository.findMovieByTitle(title));
     }
 
     ///////////////// end of MovieDeleteController //////////////////////
