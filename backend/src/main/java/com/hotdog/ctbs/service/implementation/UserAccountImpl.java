@@ -156,7 +156,7 @@ public class UserAccountImpl implements UserAccountService {
     public UserAccount getUserAccountByUsername(final String username)
     {
         return userAccountRepo.findUserAccountByUsername(username).orElseThrow(
-                () -> new IllegalArgumentException("User account " + username + " does not exist.")
+                () -> new IllegalArgumentException("User account does not exist.")
         );
     }
 
@@ -178,10 +178,10 @@ public class UserAccountImpl implements UserAccountService {
     {
         if (!privilege.equals("admin") && !privilege.equals("customer") &&
             !privilege.equals("owner") && !privilege.equals("manager"))
-            throw new IllegalArgumentException("Invalid privilege: " + privilege);
+            throw new IllegalArgumentException("Invalid privilege.");
         List<UserProfile> userProfiles = userProfileRepo.findUserProfilesByPrivilege(privilege).orElse(null);
         if (userProfiles == null)
-            return null;
+            throw new IllegalArgumentException("No user accounts exist with given privilege.");
 
         return userProfiles.stream().flatMap(userProfile -> userProfile.getUserAccounts().stream()).toList();
     }

@@ -27,5 +27,4 @@ public class RatingReview {
 
     @Column(name = "review", nullable = false, length = Integer.MAX_VALUE)
     private String review;
-
 }

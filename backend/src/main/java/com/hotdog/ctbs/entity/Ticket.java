@@ -17,7 +17,6 @@ import java.util.UUID;
 @Entity
 @Table(name = "ticket")
 public class Ticket {
-
     @Id
     @Column(name = "uuid", nullable = false)
     private UUID id;
@@ -44,7 +43,6 @@ public class Ticket {
     @Column(name = "purchase_date", nullable = false)
     private OffsetDateTime purchaseDate;
 
-
     /**
      * Returns a JSON representation of the ticket.
      * <br />
@@ -68,14 +66,14 @@ public class Ticket {
     {
         ObjectNode json = new ObjectMapper().createObjectNode();
         json.put("customer", customer.getUsername());
-        json.put("type",     ticketType.getTypeName());
-        json.put("price",    ticketType.getTypePrice());
-        json.put("movie",    screening.getMovie().getTitle());
-        json.put("cinemaRoom",     String.valueOf(seat.getCinemaRoom().getId()));
-        json.put("row",      String.valueOf(seat.getSeatRow()));
-        json.put("column",   seat.getSeatColumn());
-        json.put("showTime",     screening.getShowTime());
-        json.put("showDate",     screening.getShowDate().toString());
+        json.put("type", ticketType.getTypeName());
+        json.put("price", ticketType.getTypePrice());
+        json.put("movie", screening.getMovie().getTitle());
+        json.put("cinemaRoom", String.valueOf(seat.getCinemaRoom().getId()));
+        json.put("row", String.valueOf(seat.getSeatRow()));
+        json.put("column", seat.getSeatColumn());
+        json.put("showTime", screening.getShowTime());
+        json.put("showDate", screening.getShowDate().toString());
         json.put("purchaseDate", purchaseDate.toString());
         return json.toString();
     }
@@ -95,6 +93,4 @@ public class Ticket {
     {
         return Objects.hash(id, screening, seat);
     }
-
-
 }

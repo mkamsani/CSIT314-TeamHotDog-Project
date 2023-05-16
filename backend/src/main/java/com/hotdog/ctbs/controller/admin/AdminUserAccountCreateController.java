@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 // Spring imports.
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -76,7 +77,7 @@ public class AdminUserAccountCreateController {
 
     /** Create a {@code UserAccount} based on the given JSON. */
     @PostMapping("/create")
-    public String Create(@RequestBody final String json)
+    public ResponseEntity<String> Create(@RequestBody final String json)
     {
         System.out.println("AdminUserAccountCreateController.Create() called.");
         try {
@@ -92,9 +93,9 @@ public class AdminUserAccountCreateController {
                     LocalDate.parse(jsonNode.get("dateOfBirth").asText()),
                     jsonNode.get("title").asText()
             );
-            return "Success";
+            return ResponseEntity.ok("Success");
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }
