@@ -49,11 +49,15 @@ if(isset($_SESSION['privilege']))
             echo "<script>document.getElementById('result').innerHTML = '" . $_SESSION["privilege"] . "';</script>";
             break;
         case 'owner':
-//        header("location: owner/index.php"); TODO
+            header("location: CinemaOwner.php");
             echo "<script>document.getElementById('result').innerHTML = '" . $_SESSION["privilege"] . "';</script>";
             break;
-        case 'manager': header("location: CinemaManager.php"); break;
-        case 'customer': header("location: Customer.php"); break;
+        case 'manager': header("location: CinemaManager.php");
+            echo "<script>document.getElementById('result').innerHTML = '" . $_SESSION["privilege"] . "';</script>";
+            break;
+        case 'customer': header("location: Customer.php");
+            echo "<script>document.getElementById('result').innerHTML = '" . $_SESSION["privilege"] . "';</script>";
+            break;
         default:
             echo "<script>document.getElementById('result').innerHTML = '" . $_SESSION["privilege"] . "';</script>";
             break;

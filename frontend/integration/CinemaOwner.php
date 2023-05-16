@@ -44,12 +44,8 @@ curl_close($ch);
                 <a class="nav-link active bg-danger" href="CinemaOwner.php">Home</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="">User Accounts</a>
+                <a class="nav-link" href="Reports.php">View Reports</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="">User Profiles</a>
-            </li>
-            &emsp;
             <form method="get" class="d-flex">
                 <a class="btn btn-outline-danger" href="logout.php">Log Out</a>
             </form>
@@ -59,12 +55,12 @@ curl_close($ch);
 
 <body>
 <div class="container-fluid p-5 bg-danger text-white text-center">
-    <h1>Welcome User Administrator!</h1>
+    <h1>Welcome <?php echo $user["firstName"]; ?>!</h1>
     <p>Username: <?php echo $username; ?></p>
 </div>
 
 <div class="container mt-6 row g-3 mx-auto" style="width: 20%">
-    <h1 class="text-center text-white">User Admin Information</h1>
+    <h1 class="text-center text-white">Cinema Owner Information</h1>
     <div class="col-md">
         <div class="form-floating">
             <input type="text" class="form-control" id="name" value = "<?php echo $user['firstName']; ?>" readonly>
@@ -98,10 +94,7 @@ curl_close($ch);
 </div>
 
 <div class="text-center mt-3">
-    <a class="btn btn-danger" href="UserAccounts.php" role="button">View User Accounts</a>
-    <a class="btn btn-danger" href="UserProfiles.php" role="button">View User Profiles</a>
-    <a class="btn btn-danger" href="CreateUser.php" role="button">Create User Account</a>
-    <a class="btn btn-danger" href="CreateUserProfile.php" role="button">Create User Profile</a>
+    <a class="btn btn-danger" href="Reports.php" role="button">View Reports</a>
 </div>
 
 </body>
