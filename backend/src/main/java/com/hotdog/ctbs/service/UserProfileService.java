@@ -16,8 +16,6 @@ public interface UserProfileService {
 
     List<UserProfile> getAllUserProfiles();
 
-    List<UserProfile> getAllUserProfilesByPrivilege(String privilege);
-
     /** SELECT title FROM user_profile; */
     List<String> getAllTitles();
 

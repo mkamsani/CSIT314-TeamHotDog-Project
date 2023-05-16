@@ -66,15 +66,7 @@ public class UserProfileImpl implements UserProfileService {
         return userProfileRepo.findAll();
     }
 
-    @Override
-    public List<UserProfile> getAllUserProfilesByPrivilege(String privilege)
-    {
-        return userProfileRepo.findAll().stream()
-                              .filter(userProfile -> userProfile.getPrivilege().equals(privilege))
-                              .toList();
-    }
-
-    /** @deprecated */
+    /** @return [ "junior manager", ... , "chief information officer" ] */
     @Override
     public List<String> getAllTitles()
     {
@@ -83,7 +75,7 @@ public class UserProfileImpl implements UserProfileService {
                               .toList();
     }
 
-    /** @deprecated */
+    /** @return [ "admin", "owner", "manager", "customer" ] */
     @Override
     public List<String> getAllPrivileges()
     {
@@ -93,7 +85,7 @@ public class UserProfileImpl implements UserProfileService {
                               .toList();
     }
 
-    /** @deprecated */
+    /** @return [ "admin", "owner", "manager" ] */
     @Override
     public List<String> getValidPrivileges()
     {
@@ -124,19 +116,17 @@ public class UserProfileImpl implements UserProfileService {
     public String suspend(String targetTitle)
     {
         UserProfile userProfile = userProfileRepo.findUserProfileByTitle(targetTitle).orElse(null);
+        if (targetTitle.equalsIgnoreCase("customer"))
+            throw new IllegalArgumentException("Cannot suspend Customer.");
         if (userProfile == null)
-            return "Not found.";
+            throw new IllegalArgumentException("User profile not found.");
         if (!userProfile.getIsActive())
-            return targetTitle + " is already suspended.";
+            throw new IllegalArgumentException("User profile is already suspended.");
 
         userProfile.setIsActive(false);
         userProfileRepo.save(userProfile);
 
-        int size = userProfile.getUserAccounts().size();
-        if (size == 0)
-            return targetTitle + " has been suspended.";
-        else
-            return targetTitle + " has been suspended. " + size + " user account(s) have been suspended.";
+        return "User profile successfully suspended.";
     }
 
     @Override
@@ -145,9 +135,11 @@ public class UserProfileImpl implements UserProfileService {
         UserProfile userProfile = userProfileRepo.findUserProfileByTitle(targetTitle).orElse(null);
         if (userProfile == null)
             throw new IllegalArgumentException("User profile not found.");
-        if (title.equals("Customer"))
+        if (title.equalsIgnoreCase("customer") ||
+            targetTitle.equalsIgnoreCase("customer") ||
+            userProfile.getPrivilege().equalsIgnoreCase("customer"))
             throw new IllegalArgumentException("Cannot modify Customer.");
-        if (privilege.equals("customer"))
+        if (privilege.equalsIgnoreCase("customer"))
             throw new IllegalArgumentException("Reserved privilege.");
         if (!getValidPrivileges().contains(privilege))
             throw new IllegalArgumentException("Invalid privilege.");
