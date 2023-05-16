@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
  * <p />
  *
  * The HTML form should GET
- * {@link UserAccountReadController#Read(String) /api/admin/user-account/read/active}
+ * {@link AdminUserAccountReadController#Read(String) /api/admin/user-account/read/active}
  * to obtain the list of usernames.
  *
  * @author Baraq Kamsani

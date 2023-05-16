@@ -8,13 +8,13 @@ import com.hotdog.ctbs.entity.UserAccount;
 import java.util.List;
 
 // JSON serialization imports.
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 // Spring imports.
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * The {@code UserAccountReadController} class exposes
+ * The {@code AdminUserAccountReadController} class exposes
  * the {@code /api/admin/user-account/read} endpoint.
  * <p />
  *
@@ -67,12 +67,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/admin/user-account")
-public class UserAccountReadController {
+public class AdminUserAccountReadController {
 
     private final UserAccountImpl userAccountImpl;
     private final ObjectMapper objectMapper;
 
-    public UserAccountReadController(UserAccountImpl userAccountImpl)
+    public AdminUserAccountReadController(UserAccountImpl userAccountImpl)
     {
         this.userAccountImpl = userAccountImpl;
         this.objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
@@ -80,10 +80,10 @@ public class UserAccountReadController {
 
     /** Read a JSON array of {@code UserAccount} object(s). */
     @GetMapping(value = "/read/{param}")
-    public String Read(@PathVariable final String param)
+    public ResponseEntity<String> Read(@PathVariable final String param)
     {
         try {
-            List<UserAccount> userAccountList = switch (param) {
+            List<UserAccount> uaList = switch (param) {
                 case "admin", "owner", "manager", "customer" ->
                         userAccountImpl.getUserAccountsByPrivilege(param);
                 case "active" ->
@@ -93,22 +93,33 @@ public class UserAccountReadController {
                 default ->
                         List.of(userAccountImpl.getUserAccountByUsername(param));
             };
-            JsonNode[] jsonNodes = new JsonNode[userAccountList.size()];
-            ArrayNode arrayNode = objectMapper.createArrayNode();
-            for (int i = userAccountList.size() - 1; i >= 0; i--) {
-                UserAccount userAccount = userAccountList.get(i);
-                String title = userAccount.getUserProfile().getTitle();
-                String privilege = userAccount.getUserProfile().getPrivilege();
-                jsonNodes[i] = objectMapper.valueToTree(userAccount);
-                ((ObjectNode) jsonNodes[i]).remove("id");
-                ((ObjectNode) jsonNodes[i]).remove("passwordHash");
-                ((ObjectNode) jsonNodes[i]).put("title", title);
-                ((ObjectNode) jsonNodes[i]).put("privilege", privilege);
-                arrayNode.add(jsonNodes[i]);
+            // Sort list by TimeLastLogin, then Username.
+            uaList.sort((ua1, ua2) -> {
+                            int timeLastLogin = ua2.getTimeLastLogin().compareTo(ua1.getTimeLastLogin());
+                            if (timeLastLogin == 0)
+                                return ua1.getUsername().compareTo(ua2.getUsername());
+                            return timeLastLogin;
+                        }
+            );
+            ArrayNode an = objectMapper.createArrayNode();
+            for (UserAccount ua : uaList) {
+                ObjectNode on = objectMapper.createObjectNode();
+                on.put("username",      ua.getUsername());
+                on.put("email",         ua.getEmail());
+                on.put("firstName",     ua.getFirstName());
+                on.put("lastName",      ua.getLastName());
+                on.put("dateOfBirth",   ua.getDateOfBirth().toString());
+                on.put("address",       ua.getAddress());
+                on.put("isActive",      ua.getIsActive().toString());
+                on.put("timeCreated",   ua.getTimeCreated().toString());
+                on.put("timeLastLogin", ua.getTimeLastLogin().toString());
+                on.put("title",         ua.getUserProfile().getTitle());
+                on.put("privilege",     ua.getUserProfile().getPrivilege());
+                an.add(on);
             }
-            return objectMapper.writeValueAsString(arrayNode);
+            return ResponseEntity.ok(objectMapper.writeValueAsString(an));
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }

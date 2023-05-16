@@ -37,7 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
  * }
  * </pre></blockquote>
  *
- * The HTML form should GET {@link UserAccountReadController#Read(String) /api/admin/user-profile/read/titles} to obtain the list of titles.
+ * The HTML form should GET {@link AdminUserAccountReadController#Read(String) /api/admin/user-profile/read/titles} to obtain the list of titles.
  * <br />
  * The suggested HTML form format is:
  * <blockquote><pre>
