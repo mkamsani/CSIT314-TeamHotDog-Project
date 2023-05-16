@@ -43,12 +43,13 @@ public class ManagerMovieDeleteController {
     {
         try {
             movieImpl.deleteMovieByTitle(targetMovieTitle);
-            return "Success delete movie.";
+            // return the movie title message that has been deleted.
+            return "Successfully delete movie: " + targetMovieTitle;
+
         } catch (Exception e) {
             return e.getMessage();
         }
     }
-
 
 
 }

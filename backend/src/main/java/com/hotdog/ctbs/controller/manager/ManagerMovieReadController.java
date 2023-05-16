@@ -61,7 +61,7 @@ public class ManagerMovieReadController {
             }
 
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return e.getMessage();
         }
     }
 

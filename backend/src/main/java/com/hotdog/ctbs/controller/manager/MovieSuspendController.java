@@ -35,9 +35,11 @@ public class MovieSuspendController {
 
         try {
             movieImpl.suspendMovie(targetMovieTitle);
-            return "Success suspend movie.";
+            // return the movie title message that has been suspended.
+            return "Successfully suspend movie: " + targetMovieTitle;
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+
+            return e.getMessage();
         }
 
     }
