@@ -61,8 +61,7 @@ public class TicketImpl implements TicketService{
 
         System.out.println("Done checking for user account");
 
-        Screening screening = screeningRepo.findScreeningByMovieTitleAndShowTimeAndShowDateAndCinemaRoomId(
-                movieTitle, showTime, showDate, cinemaRoomId);
+        Screening screening = screeningRepo.findScreeningByShowTimeAndShowDateAndCinemaRoomId(showTime, showDate, cinemaRoomId);
         if (screening == null)
             throw new IllegalArgumentException("Screening does not exist");
 
@@ -148,8 +147,7 @@ public class TicketImpl implements TicketService{
     @Transactional
     public List<Seat> listAvailableSeats(String movieTitle, String showTime, LocalDate showDate, Integer cinemaRoomId){
         // get screening if null throw exception
-        Screening screening = screeningRepo.findScreeningByMovieTitleAndShowTimeAndShowDateAndCinemaRoomId(
-                movieTitle, showTime, showDate, cinemaRoomId);
+        Screening screening = screeningRepo.findScreeningByShowTimeAndShowDateAndCinemaRoomId(showTime, showDate, cinemaRoomId);
         if (screening == null)
             throw new IllegalArgumentException("Screening does not exist");
 
@@ -192,8 +190,7 @@ public class TicketImpl implements TicketService{
 
     @Transactional
     public List<Ticket> getAllTicketsByScreening(String movieTitle, String showTime, LocalDate showDate, Integer cinemaRoomId){
-        Screening screening = screeningRepo.findScreeningByMovieTitleAndShowTimeAndShowDateAndCinemaRoomId(
-                movieTitle, showTime, showDate, cinemaRoomId);
+        Screening screening = screeningRepo.findScreeningByShowTimeAndShowDateAndCinemaRoomId(showTime, showDate, cinemaRoomId);
         if (screening == null)
             throw new IllegalArgumentException("Screening does not exist");
         return ticketRepo.findTicketsByScreening(screening).orElse(null);
@@ -202,48 +199,7 @@ public class TicketImpl implements TicketService{
     // TODO TODO TODO TODO TODO TODO TODO TODO : can remove later
     // update a ticket
     // Ticket type should not be updated
-    @Transactional
-    public void updateTicket(String userName, String currentMovieTitle, String newMovieTitle,
-                             String currentShowTime, String newShowTime,
-                             LocalDate currentShowDate, LocalDate newShowDate, Integer currentCinemaRoomId, Integer newCinemaRoomId,
-                             char currentRow, char newRow, Integer currentColumn, Integer newColumn){
-        Screening currentScreening = screeningRepo.findScreeningByMovieTitleAndShowTimeAndShowDateAndCinemaRoomId(
-                currentMovieTitle, currentShowTime, currentShowDate, currentCinemaRoomId);
-        Seat currentSeat = seatRepo.findSeatBySeatRowAndAndSeatColumnAndCinemaRoom(currentRow, currentColumn, currentScreening.getCinemaRoom());
-        // use currentScreening and currentSeats to find specific ticket
-        Ticket currentTicket = ticketRepo.findTicketByScreeningAndSeat(currentScreening, currentSeat);
 
-        UserAccount userAccount = userAccountRepo.findUserAccountByUsername(userName).orElse(null);
-        if (userAccount == null)
-            throw new IllegalArgumentException("User account does not exist");
-
-        if (!userAccount.getIsActive())
-            throw new IllegalArgumentException("User account is not active");
-
-        Screening newScreening = screeningRepo.findScreeningByMovieTitleAndShowTimeAndShowDateAndCinemaRoomId(
-                newMovieTitle, newShowTime, newShowDate, newCinemaRoomId);
-        if (newScreening == null)
-            throw new IllegalArgumentException("Screening does not exist");
-
-        Seat newSeat = seatRepo.findSeatBySeatRowAndAndSeatColumnAndCinemaRoom(newRow, newColumn, newScreening.getCinemaRoom());
-        if (newSeat == null)
-            throw new IllegalArgumentException("Seat does not exist");
-
-        // check if new seat in new screening is booked
-        List<Ticket> tickets = ticketRepo.findTicketsByScreening(newScreening).orElseThrow(
-                () -> new IllegalArgumentException("Ticket does not exist")
-        );
-        for (Ticket ticket : tickets) {
-            if (ticket.getSeat().equals(newSeat))
-                throw new IllegalArgumentException("Seat is already taken");
-        }
-
-        // use new screening and new seat to update currentTicket
-        // even if the values are the same
-        // this results in less comparison and less code
-        currentTicket.setSeat(newSeat);
-        currentTicket.setScreening(newScreening);
-    }
 
    /* // return a list of ticket by particular date
     @Transactional
