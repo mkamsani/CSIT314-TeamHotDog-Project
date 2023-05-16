@@ -1,6 +1,7 @@
 package com.hotdog.ctbs.controller.admin;
 
 import com.hotdog.ctbs.service.implementation.UserProfileImpl;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -28,13 +29,13 @@ public class AdminUserProfileSuspendController {
 
     /** Suspend a {@code UserProfile} based on the given {@code PathVariable}. */
     @DeleteMapping("/suspend/{targetTitle}")
-    public String Suspend(@PathVariable String targetTitle)
+    public ResponseEntity<String> Suspend(@PathVariable String targetTitle)
     {
         try {
             userProfileImpl.suspend(targetTitle);
-            return "Success";
+            return ResponseEntity.ok("Success");
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }

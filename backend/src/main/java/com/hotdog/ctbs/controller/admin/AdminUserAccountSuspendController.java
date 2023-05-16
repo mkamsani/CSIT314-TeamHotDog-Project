@@ -4,6 +4,7 @@ package com.hotdog.ctbs.controller.admin;
 import com.hotdog.ctbs.service.implementation.UserAccountImpl;
 
 // Spring imports.
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,13 +36,13 @@ public class AdminUserAccountSuspendController {
 
     /** Suspend a {@code UserAccount} based on the given {@code PathVariable}. */
     @DeleteMapping("/suspend/{targetUsername}")
-    public String Suspend(@PathVariable String targetUsername)
+    public ResponseEntity<String> Suspend(@PathVariable String targetUsername)
     {
         try {
             userAccountImpl.suspend(targetUsername);
-            return "Success";
+            return ResponseEntity.ok("Success");
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }

@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 // Spring imports.
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -42,7 +43,7 @@ public class AdminUserProfileCreateController {
 
     /** Create a {@code UserProfile} based on the given JSON. */
     @PostMapping("/create")
-    public String Create(@RequestBody String json)
+    public ResponseEntity<String> Create(@RequestBody String json)
     {
         try {
             JsonNode jsonNode = objectMapper.readTree(json);
@@ -50,9 +51,9 @@ public class AdminUserProfileCreateController {
                     jsonNode.get("privilege").asText(),
                     jsonNode.get("title").asText()
             );
-            return "Success";
+            return ResponseEntity.ok("Success");
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }

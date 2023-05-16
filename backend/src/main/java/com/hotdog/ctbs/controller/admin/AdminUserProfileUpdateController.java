@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 // Spring imports.
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -42,7 +43,7 @@ public class AdminUserProfileUpdateController {
 
     /** Update a {@code UserProfile} based on the given JSON. */
     @PutMapping("/update/{targetTitle}")
-    public String Update(@RequestBody String json, @PathVariable String targetTitle)
+    public ResponseEntity<String> Update(@RequestBody String json, @PathVariable String targetTitle)
     {
         try {
             JsonNode jsonNode = objectMapper.readTree(json);
@@ -51,9 +52,9 @@ public class AdminUserProfileUpdateController {
                     jsonNode.get("privilege").asText(),
                     jsonNode.get("title").asText()
             );
-            return "Success";
+            return ResponseEntity.ok("Success");
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }

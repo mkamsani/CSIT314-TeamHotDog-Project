@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 // Spring imports.
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -52,13 +53,13 @@ public class AdminUserProfileReadController {
     }
 
     @GetMapping("/read/{param}")
-    public String Read(@PathVariable String param)
+    public ResponseEntity<String> Read(@PathVariable String param)
     {
         try {
             if (param.equals("titles"))
-                return userProfileImpl.getAllTitles().toString();
+                return ResponseEntity.ok(userProfileImpl.getAllTitles().toString());
             if (param.equals("privileges"))
-                return userProfileImpl.getAllPrivileges().toString();
+                return ResponseEntity.ok(userProfileImpl.getAllPrivileges().toString());
             List<UserProfile> userProfileList = switch (param) {
                 case "admin", "owner", "manager", "customer"
                         -> userProfileImpl.getUserProfilesByPrivilege(param);
@@ -76,9 +77,9 @@ public class AdminUserProfileReadController {
                 ((ObjectNode) jsonNodes[i]).remove("id");
                 arrayNode.add(jsonNodes[i]);
             }
-            return objectMapper.writeValueAsString(arrayNode);
+            return ResponseEntity.ok(objectMapper.writeValueAsString(arrayNode));
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }

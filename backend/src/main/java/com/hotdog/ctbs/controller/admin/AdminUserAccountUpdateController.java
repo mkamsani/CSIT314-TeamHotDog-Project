@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 // Spring imports.
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -57,7 +58,7 @@ public class AdminUserAccountUpdateController {
 
     /** Update a {@code UserAccount} based on the given JSON. */
     @PutMapping("/update/{targetUsername}")
-    public String Update(@RequestBody String json, @PathVariable String targetUsername)
+    public ResponseEntity<String> Update(@RequestBody String json, @PathVariable String targetUsername)
     {
         System.out.println("AdminUserAccountUpdateController.Update() called.");
         try {
@@ -73,9 +74,9 @@ public class AdminUserAccountUpdateController {
                     LocalDate.parse(jsonNode.get("dateOfBirth").asText()),
                     jsonNode.get("title").asText()
             );
-            return "Success";
+            return ResponseEntity.ok("Success");
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }
