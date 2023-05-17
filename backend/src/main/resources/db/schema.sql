@@ -130,7 +130,7 @@ CREATE TABLE movie
 CREATE TABLE cinema_room
 (
   PRIMARY KEY (id),
-  id        INTEGER NOT NULL CHECK (id > 0 AND id <= 8), -- Room number, max 8.
+  id        INTEGER NOT NULL CHECK (id > 0 AND id <= 100), -- Room number, max 8.
   is_active BOOLEAN NOT NULL    DEFAULT TRUE             -- FALSE if room is under maintenance.
 );
 
