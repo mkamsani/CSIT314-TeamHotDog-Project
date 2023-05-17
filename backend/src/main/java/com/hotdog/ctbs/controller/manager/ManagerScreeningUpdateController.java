@@ -1,7 +1,10 @@
 package com.hotdog.ctbs.controller.manager;
 
 // Application imports.
-import com.hotdog.ctbs.service.implementation.ScreeningImpl;
+import com.hotdog.ctbs.repository.CinemaRoomRepository;
+import com.hotdog.ctbs.repository.MovieRepository;
+import com.hotdog.ctbs.repository.ScreeningRepository;
+import com.hotdog.ctbs.entity.Screening;
 
 // Java imports.
 import java.time.LocalDate;
@@ -12,7 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 // Spring imports.
-import com.hotdog.ctbs.service.implementation.UserAccountImpl;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -23,14 +26,20 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/manager/screening")
-public class ScreeningUpdateController {
+public class ManagerScreeningUpdateController {
 
-    private final ScreeningImpl screeningImpl;
+    private final ScreeningRepository screeningRepo;
+    private final MovieRepository movieRepo;
+    private final CinemaRoomRepository cinemaRoomRepo;
     private final ObjectMapper objectMapper;
 
-    public ScreeningUpdateController(ScreeningImpl screeningImpl)
+    public ManagerScreeningUpdateController(MovieRepository movieRepo,
+                                            ScreeningRepository screeningRep,
+                                            CinemaRoomRepository cinemaRoomRepo)
     {
-        this.screeningImpl = screeningImpl;
+        this.movieRepo = movieRepo;
+        this.screeningRepo = screeningRep;
+        this.cinemaRoomRepo = cinemaRoomRepo;
         this.objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
     }
 
@@ -38,23 +47,29 @@ public class ScreeningUpdateController {
     // update a screening using curl
     // Invoke-WebRequest -Method PUT -Headers @{"Content-Type"="application/json"} -Body '{"newMovieTitle":"Up","newShowTime":"midnight","newShowDate":"2026-05-25","newCinemaRoomId":1}' -Uri http://localhost:8000/api/manager/screening/update/afternoon/2026-05-31/1
     @PutMapping("/update/{targetShowTime}/{targetShowDate}/{targetCinemaRoomId}")
-    public String UpdateScreening(@RequestBody String json, @PathVariable String targetShowTime,
-                                  @PathVariable LocalDate targetShowDate, @PathVariable Integer targetCinemaRoomId)
+    public ResponseEntity<String> Update(@RequestBody String json,
+                                         @PathVariable String targetShowTime,
+                                         @PathVariable LocalDate targetShowDate,
+                                         @PathVariable Integer targetCinemaRoomId)
     {
         System.out.println("ScreeningUpdateController.UpdateScreening() called.");
         try {
             JsonNode jsonNode = objectMapper.readTree(json);
-            screeningImpl.updateScreening(targetShowTime,
-                    targetShowDate, targetCinemaRoomId,
+            Screening.updateScreening(
+                    movieRepo,
+                    screeningRepo,
+                    cinemaRoomRepo,
+                    targetShowTime,
+                    targetShowDate,
+                    targetCinemaRoomId,
                     jsonNode.get("newMovieTitle").asText(),
                     jsonNode.get("newShowTime").asText(),
                     LocalDate.parse(jsonNode.get("newShowDate").asText()),
                     jsonNode.get("newCinemaRoomId").asInt()
-
             );
-            return "Successfully update screening.";
+            return ResponseEntity.ok().body("Successfully update screening.");
         } catch (Exception e) {
-            return e.getMessage();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }

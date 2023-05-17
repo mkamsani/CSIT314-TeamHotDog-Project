@@ -2,17 +2,10 @@ package com.hotdog.ctbs.controller.manager;
 
 // Java imports.
 import java.time.LocalDate;
-import java.util.List;
-
-// JSON serialization imports.
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 // Spring imports.
-import com.hotdog.ctbs.service.implementation.ScreeningImpl;
+import com.hotdog.ctbs.repository.ScreeningRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -20,28 +13,27 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/manager/screening")
 public class ManagerScreeningCancelController {
 
-    private final ScreeningImpl screeningImpl;
+    private final ScreeningRepository screeningRepo;
 
-    public ManagerScreeningCancelController(ScreeningImpl screeningImpl)
+    public ManagerScreeningCancelController(ScreeningRepository screeningRepo)
     {
-        this.screeningImpl = screeningImpl;
+        this.screeningRepo = screeningRepo;
     }
 
-
-
-    // curl.exe -X DELETE http://localhost:8000/api/manager/screening/10:00/2021-05-01/1
     @PutMapping("/cancel/{currentShowTime}/{currentShowDate}/{cinemaRoomId}")
-    public String CancelMovie(@PathVariable String currentShowTime,
-                               @PathVariable String currentShowDate,
-                               @PathVariable Integer cinemaRoomId) {
-
+    public ResponseEntity<String> CancelMovie(@PathVariable String currentShowTime,
+                                              @PathVariable String currentShowDate,
+                                              @PathVariable Integer cinemaRoomId) {
         try {
-            screeningImpl.cancelScreening(currentShowTime, LocalDate.parse(currentShowDate), cinemaRoomId);
-            return "Successfully cancel the screening.";
-
+            // TODO: replace with Screening.cancelScreening IF WE HAVE THE TIME.
+            //  screeningImpl.cancelScreening(screeningRepo,
+            //                                currentShowTime,
+            //                                LocalDate.parse(currentShowDate),
+            //                                cinemaRoomId
+            //  );
+            return ResponseEntity.ok("Successfully cancel the screening.");
         } catch (Exception e) {
-            return e.getMessage();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-
     }
 }

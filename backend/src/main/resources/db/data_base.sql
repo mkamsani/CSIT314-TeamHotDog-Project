@@ -54,9 +54,20 @@ VALUES
 
 
 
--- Insert 8 default cinema rooms.
+-- Insert 100 default cinema rooms.
 -- No further cinema rooms can be added.
-INSERT INTO cinema_room (id) VALUES (1), (2), (3), (4), (5), (6), (7), (8);
+DO $$
+    DECLARE
+        i INTEGER := 1;
+    BEGIN
+        WHILE i <= 100 LOOP
+                INSERT INTO cinema_room (id, is_active)
+                VALUES (i, true);
+                i := i + 1;
+            END LOOP;
+    END
+$$;
+
 
 -- Insert 5 default screenings, with a fixed date and time.
 INSERT INTO screening

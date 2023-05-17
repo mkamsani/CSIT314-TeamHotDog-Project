@@ -28,7 +28,7 @@ if (isset($_POST['updateTicket'])) {
     }
 
     $updateTicketCh = curl_init();
-    $data = array('ticketTypeName'=> $newTicketTypeName, 'ticketTypePrice' => $newPrice, 'ticketTypeIsActive' => $ticketActivity);
+    $data = array('tickettypename'=> $newTicketTypeName, 'tickettypeprice' => $newPrice, 'tickettypeisactive' => $ticketActivity);
     $data_json = json_encode($data);
     //print_r($data_json);
     curl_setopt($updateTicketCh, CURLOPT_URL, 'http://localhost:8000/api/manager/ticketType/update/'.$ticketTypeName);

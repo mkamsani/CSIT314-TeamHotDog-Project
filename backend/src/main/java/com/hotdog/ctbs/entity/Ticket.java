@@ -1,13 +1,17 @@
 package com.hotdog.ctbs.entity;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.hotdog.ctbs.repository.*;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.OffsetDateTime;
-import java.util.Objects;
+import java.util.List;
 import java.util.UUID;
+import java.time.LocalDate;
 
 @Builder
 @AllArgsConstructor
@@ -19,29 +23,94 @@ import java.util.UUID;
 public class Ticket {
     @Id
     @Column(name = "uuid", nullable = false)
-    private UUID id;
+    protected UUID id;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "customer", nullable = false)
-    private UserAccount customer;
+    protected UserAccount customer;
 
     //@ManyToOne(fetch = FetchType.LAZY, optional = false)
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "ticket_type", nullable = false, referencedColumnName = "type_name")
-    private TicketType ticketType;
+    protected TicketType ticketType;
 
     //@ManyToOne(fetch = FetchType.LAZY, optional = false)
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "screening", nullable = false)
-    private Screening screening;
+    protected Screening screening;
 
     //@ManyToOne(fetch = FetchType.LAZY, optional = false)
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "seat", nullable = false)
-    private Seat seat;
+    protected Seat seat;
 
     @Column(name = "purchase_date", nullable = false)
-    private OffsetDateTime purchaseDate;
+    protected OffsetDateTime purchaseDate;
+
+    @Transient
+    public static ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
+
+    public static void createTicket(UserAccountRepository  userAccountRepository,
+                                    TicketTypeRepository   ticketTypeRepository,
+                                    ScreeningRepository    screeningRepository,
+                                    SeatRepository         seatRepository,
+                                    LoyaltyPointRepository loyaltyPointRepository,
+                                    CinemaRoomRepository   cinemaRoomRepository,
+                                    TicketRepository       ticketRepository,
+                                    String                 userName,
+                                    String                 ticketTypeName,
+                                    String                 showTime,
+                                    LocalDate              showDate,
+                                    int                    cinemaRoomId,
+                                    String                 row,
+                                    int                    column,
+                                    Boolean                isLoyaltyPointUsed)
+    {
+        UserAccount userAccount = userAccountRepository.findUserAccountByUsername(userName).orElse(null);
+        if (userAccount == null)
+            throw new IllegalArgumentException("Username is invalid");
+
+        TicketType ticketType = ticketTypeRepository.findByTypeName(ticketTypeName).orElse(null);
+        if (ticketType == null)
+            throw new IllegalArgumentException("TicketType is invalid");
+
+        CinemaRoom cinemaRoom = cinemaRoomRepository.findById(cinemaRoomId).orElse(null);
+        if (cinemaRoom == null){
+            throw new IllegalArgumentException("CinemaRoomID is invalid");
+        }
+
+        Screening screening = screeningRepository.findScreeningByShowTimeAndAndShowDateAndAndCinemaRoom(showTime, showDate, cinemaRoomId).orElse(null);
+        if (screening == null) {
+            throw new IllegalArgumentException("Screening is invalid");
+        }
+
+        Seat seat = seatRepository.findSeatBySeatRowAndAndSeatColumnAndCinemaRoom(row.charAt(0), column, cinemaRoom);
+        if (seat == null)
+            throw new IllegalArgumentException("Seat is invalid");
+
+        // Earmarked to move to CustomerLoyaltyPointUpdate Controller
+        LoyaltyPoint loyaltyPointForUser = loyaltyPointRepository.findByUserAccountUsername(userName).orElse(null);
+        if (loyaltyPointForUser == null)
+            throw new IllegalArgumentException("User does not have any loyalty point");
+
+        if (isLoyaltyPointUsed) {
+            Double pointsBalance = Double.valueOf(loyaltyPointForUser.pointsBalance());
+            if (pointsBalance < ticketTypeRepository.findByTypeName("redemption").get().typePrice)
+                throw new IllegalArgumentException("Loyalty point is not enough");
+        }
+        else {
+            loyaltyPointForUser.setPointsTotal(loyaltyPointForUser.getPointsTotal() + 1);
+        }
+
+        Ticket ticket = new Ticket();
+        ticket.id = UUID.randomUUID();
+        ticket.customer = userAccount;
+        ticket.ticketType = ticketType;
+        ticket.screening = screening;
+        ticket.seat = seat;
+        ticket.purchaseDate = OffsetDateTime.now();
+        ticketRepository.save(ticket);
+    }
 
     /**
      * Returns a JSON representation of the ticket.
@@ -61,36 +130,29 @@ public class Ticket {
      *     "movie":      "Wonder Woman" <br />
      * }</pre>
      */
-    @Override
-    public String toString()
+    public static String readTicket(UserAccountRepository userAccountRepository,
+                                    TicketRepository ticketRepository,
+                                    String username)
     {
-        ObjectNode json = new ObjectMapper().createObjectNode();
-        json.put("customer", customer.getUsername());
-        json.put("type", ticketType.getTypeName());
-        json.put("price", ticketType.getTypePrice());
-        json.put("movie", screening.getMovie().getTitle());
-        json.put("cinemaRoom", String.valueOf(seat.getCinemaRoom().getId()));
-        json.put("row", String.valueOf(seat.getSeatRow()));
-        json.put("column", seat.getSeatColumn());
-        json.put("showTime", screening.getShowTime());
-        json.put("showDate", screening.getShowDate().toString());
-        json.put("purchaseDate", purchaseDate.toString());
-        return json.toString();
-    }
+        UserAccount userAccount = userAccountRepository.findUserAccountByUsername(username).orElse(null);
+        if (userAccount == null)
+            throw new IllegalArgumentException("Username is invalid");
 
-    @Override
-    public boolean equals(Object o)
-    {
-        if (this == o) return true;
-        if (!(o instanceof Ticket that)) return false;
-        return id.equals(that.id) &&
-               screening.equals(that.screening) &&
-               seat.equals(that.seat);
-    }
-
-    @Override
-    public int hashCode()
-    {
-        return Objects.hash(id, screening, seat);
+        List<Ticket> tickets = ticketRepository.findTicketsByCustomer_Username(username);
+        ArrayNode an = objectMapper.createArrayNode();
+        for (Ticket ticket : tickets) {
+            ObjectNode on = objectMapper.createObjectNode();
+            on.put("type", ticket.ticketType.typeName);
+            on.put("price", ticket.ticketType.typePrice);
+            on.put("movie", ticket.screening.movie.title);
+            on.put("cinemaRoom", String.valueOf(ticket.seat.cinemaRoom.id));
+            on.put("row", String.valueOf(ticket.seat.seatRow));
+            on.put("column", ticket.seat.seatColumn);
+            on.put("showTime", ticket.screening.showTime);
+            on.put("showDate", ticket.screening.showDate.toString());
+            on.put("purchaseDate", ticket.purchaseDate.toString());
+            an.add(on);
+        }
+        return an.toString();
     }
 }

@@ -15,16 +15,16 @@ import java.util.UUID;
 public class RatingReview {
     @Id
     @Column(name = "uuid", nullable = false)
-    private UUID id;
+    protected UUID id;
 
     @MapsId
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "uuid", nullable = false)
-    private LoyaltyPoint loyaltyPoint;
+    protected LoyaltyPoint loyaltyPoint;
 
     @Column(name = "rating", nullable = false)
-    private Integer rating;
+    protected Integer rating;
 
     @Column(name = "review", nullable = false, length = Integer.MAX_VALUE)
-    private String review;
+    protected String review;
 }

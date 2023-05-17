@@ -1,20 +1,23 @@
 package com.hotdog.ctbs.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.hotdog.ctbs.repository.UserAccountRepository;
+import com.hotdog.ctbs.repository.UserProfileRepository;
 import jakarta.persistence.*;
 import lombok.*;
+
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
-import java.util.Objects;
+import java.util.List;
 import java.util.UUID;
 
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -26,80 +29,198 @@ public class UserAccount {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "uuid", nullable = false)
-    private UUID id;
+    protected UUID id;
 
     @Column(name = "is_active", nullable = false)
-    private Boolean isActive;
+    protected Boolean isActive;
 
     @Column(name = "password_hash", nullable = false, length = 72)
-    private String passwordHash;
+    protected String passwordHash;
 
     @Column(name = "username", nullable = false)
-    private String username;
+    protected String username;
 
     @Column(name = "email", nullable = false)
-    private String email;
+    protected String email;
 
     @Column(name = "first_name", nullable = false)
-    private String firstName;
+    protected String firstName;
 
     @Column(name = "last_name", nullable = false)
-    private String lastName;
+    protected String lastName;
 
     @Column(name = "address", nullable = false)
-    private String address;
+    protected String address;
 
     @Column(name = "date_of_birth", nullable = false)
-    private LocalDate dateOfBirth;
+    protected LocalDate dateOfBirth;
 
     @Column(name = "time_created", nullable = false)
-    private OffsetDateTime timeCreated;
+    protected OffsetDateTime timeCreated;
 
     @Column(name = "time_last_login", nullable = false)
-    private OffsetDateTime timeLastLogin;
+    protected OffsetDateTime timeLastLogin;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_profile", nullable = false)
     @Fetch(FetchMode.JOIN)
-    private UserProfile userProfile;
+    protected UserProfile userProfile;
 
-    /**
-     * Returns a JSON string of the object.
-     * <p>
-     * To support Java 8 date types,
-     * {@link com.fasterxml.jackson.databind.ObjectMapper#registerModule(Module)} is used.<br />
-     * {@link java.time.OffsetDateTime} corresponds to Postgres'
-     * {@code TIMESTAMP WITH TIME ZONE}.
-     *
-     * @return JSON string of the user account.
-     * @see <a href="https://www.baeldung.com/jpa-java-time#after-java-8">
-     * Baeldung: Mapping Java 8 Date Types
-     * </a>
-     * @see <a href="https://www.baeldung.com/jackson-serialize-dates#java-8">
-     * Baeldung: Serialize Java 8 Date With Jackson
-     * </a>
-     */
-    @SneakyThrows
-    @Override
-    public String toString()
+    @Transient
+    private static final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
+
+    //////////////////////////////// Service /////////////////////////////////
+
+    public static String validateLogin(UserAccountRepository userAccountRepo,
+                                       String username,
+                                       String password)
     {
-        return new ObjectMapper().registerModule(new JavaTimeModule())
-                                 .writeValueAsString(this);
+        UserAccount userAccount = userAccountRepo.findUserAccountByUsernameAndPassword(username, password)
+                                                 .orElse(null);
+        if (userAccount == null)
+            throw new IllegalArgumentException("Invalid username or password.");
+        if (!userAccount.isActive)
+            throw new IllegalArgumentException("Account suspended.");
+        String privilege = userAccount.userProfile.getPrivilege();
+        return switch (privilege) {
+            case "admin", "owner", "manager", "customer" -> {
+                userAccount.timeLastLogin = OffsetDateTime.now();
+                userAccountRepo.save(userAccount);
+                yield privilege;
+            }
+            default -> throw new IllegalArgumentException("Invalid privilege.");
+        };
     }
 
-    @Override
-    public boolean equals(Object o)
+    public static void createUserAccount(UserAccountRepository userAccountRepo,
+                                         UserProfileRepository userProfileRepo,
+                                         final String username,
+                                         final String password,
+                                         final String email,
+                                         final String firstName,
+                                         final String lastName,
+                                         final String address,
+                                         final LocalDate dateOfBirth,
+                                         final String title)
     {
-        if (this == o) return true;
-        if (!(o instanceof UserAccount that)) return false;
-        return id.equals(that.id) &&
-               username.equalsIgnoreCase(that.username) &&
-               email.equalsIgnoreCase(that.email);
+        // This validation is only required when an admin creates a new user account.
+        UserProfile userProfile = userProfileRepo.findUserProfileByTitle(title).orElse(null);
+        if (userProfile == null)
+            throw new IllegalArgumentException("Invalid title.");
+        // The following validations are required when an admin/customer creates a new user account.
+        if (userAccountRepo.findUserAccountByUsername(username).isPresent())
+            throw new IllegalArgumentException("Username " + username + " already exists.");
+        if (userAccountRepo.findUserAccountByEmail(email).isPresent())
+            throw new IllegalArgumentException("Email " + email + " already exists.");
+        if (!username.matches("[a-zA-Z0-9]+"))
+            throw new IllegalArgumentException("Username " + username + " must only contain alphanumeric characters.");
+        if (username.equals("admin") || username.equals("customer") ||
+            username.equals("owner") || username.equals("manager"))
+            throw new IllegalArgumentException("Username " + username + " is reserved.");
+        UserAccount userAccount = new UserAccount();
+        userAccount.id = UUID.randomUUID();
+        userAccount.isActive = true;
+        userAccount.timeCreated = OffsetDateTime.now();
+        userAccount.timeLastLogin = OffsetDateTime.now();
+        userAccount.userProfile = userProfile;
+        userAccount.username = username.toLowerCase();
+        userAccount.passwordHash = password;
+        userAccount.email = email.toLowerCase();
+        userAccount.firstName = firstName;
+        userAccount.lastName = lastName;
+        userAccount.address = address;
+        userAccount.dateOfBirth = dateOfBirth;
+        userAccountRepo.save(userAccount);
     }
 
-    @Override
-    public int hashCode()
+    public static String readUserAccount(UserAccountRepository userAccountRepo,
+                                         String param)
     {
-        return Objects.hash(id, username, email);
+        List<UserAccount> uaList = switch (param) {
+            case "admin", "owner", "manager", "customer" ->
+                    userAccountRepo.findUserAccountsByUserProfile_Privilege(param);
+            case "active" ->
+                    userAccountRepo.findUserAccountsByIsActiveTrue();
+            case "all" ->
+                    userAccountRepo.findAll();
+            default -> {
+                UserAccount userAccount = userAccountRepo.findUserAccountByUsername(param)
+                                                         .orElse(null);
+                if (userAccount == null)
+                    throw new IllegalArgumentException("Invalid username.");
+                yield List.of(userAccount);
+            }
+        };
+        ArrayNode an = objectMapper.createArrayNode();
+        for (UserAccount ua : uaList) {
+            ObjectNode on = objectMapper.createObjectNode();
+            on.put("username",      ua.username);
+            on.put("email",         ua.email);
+            on.put("firstName",     ua.firstName);
+            on.put("lastName",      ua.lastName);
+            on.put("dateOfBirth",   ua.dateOfBirth.toString());
+            on.put("address",       ua.address);
+            on.put("isActive",      ua.isActive.toString());
+            on.put("timeCreated",   ua.timeCreated.toString());
+            on.put("timeLastLogin", ua.timeLastLogin.toString());
+            on.put("title",         ua.userProfile.title);
+            on.put("privilege",     ua.userProfile.privilege);
+            an.add(on);
+        }
+        return an.toString();
+    }
+
+    public static void updateUserAccount(final UserAccountRepository userAccountRepo,
+                                         final UserProfileRepository userProfileRepo,
+                                         final String targetUsername,
+                                         final String username,
+                                         final String firstName,
+                                         final String lastName,
+                                         final String email,
+                                         final String address,
+                                         final LocalDate dateOfBirth,
+                                         final String title)
+    {
+        UserAccount userAccount = userAccountRepo.findUserAccountByUsername(targetUsername).orElse(null);
+        if (userAccount == null)
+            throw new IllegalArgumentException("Invalid username.");
+        UserProfile userProfile = userProfileRepo.findUserProfileByTitle(title).orElse(null);
+        if (userProfile == null)
+            throw new IllegalArgumentException("Invalid title.");
+
+        if (userAccountRepo.findUserAccountByUsername(username).isPresent() &&
+            !userAccount.username.equals(username))
+            throw new IllegalArgumentException("Username already exists: " + username);
+        if (userAccountRepo.findUserAccountByEmail(email).isPresent() &&
+            !userAccount.email.equals(email))
+            throw new IllegalArgumentException("Email already exists: " + email);
+        if (!username.matches("[a-zA-Z0-9]+"))
+            throw new IllegalArgumentException("Username must be alphanumeric: " + username);
+        if (username.equals("admin") || username.equals("customer") ||
+            username.equals("owner") || username.equals("manager"))
+            throw new IllegalArgumentException("Username is reserved: " + username);
+        if (dateOfBirth.isAfter(LocalDate.now()))
+            throw new IllegalArgumentException("Invalid date of birth: " + dateOfBirth);
+
+        userAccount.username = username.toLowerCase();
+        userAccount.email = email.toLowerCase();
+        userAccount.firstName = firstName;
+        userAccount.lastName = lastName;
+        userAccount.address = address;
+        userAccount.dateOfBirth = dateOfBirth;
+        userAccount.userProfile = userProfile;
+        userAccountRepo.save(userAccount);
+    }
+
+    public static void suspendUserAccount(UserAccountRepository userAccountRepo,
+                                          String targetUsername)
+    {
+        UserAccount userAccount = userAccountRepo.findUserAccountByUsername(targetUsername).orElse(null);
+        if (userAccount == null)
+            throw new IllegalArgumentException("Invalid username: " + targetUsername);
+        if (!userAccount.getIsActive())
+            throw new IllegalArgumentException("User account is already suspended: " + targetUsername);
+        userAccount.isActive = false;
+        userAccountRepo.save(userAccount);
     }
 }

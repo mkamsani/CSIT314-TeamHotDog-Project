@@ -1,7 +1,9 @@
 package com.hotdog.ctbs.controller.customer;
 
 // Application imports.
-import com.hotdog.ctbs.service.implementation.UserAccountImpl;
+import com.hotdog.ctbs.entity.UserAccount;
+import com.hotdog.ctbs.repository.UserAccountRepository;
+import com.hotdog.ctbs.repository.UserProfileRepository;
 
 // Java imports.
 import java.time.LocalDate;
@@ -57,12 +59,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/customer/user-account")
 public class CustomerAccountCreateController {
 
-    final UserAccountImpl userAccountImpl;
-    final ObjectMapper objectMapper;
+    private final UserAccountRepository userAccountRepo;
+    private final UserProfileRepository userProfileRepo;
+    private final ObjectMapper objectMapper;
 
-    public CustomerAccountCreateController(UserAccountImpl userAccountImpl)
+    public CustomerAccountCreateController(UserAccountRepository userAccountRepo,
+                                           UserProfileRepository userProfileRepo)
     {
-        this.userAccountImpl = userAccountImpl;
+        this.userAccountRepo = userAccountRepo;
+        this.userProfileRepo = userProfileRepo;
         this.objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
     }
 
@@ -71,9 +76,11 @@ public class CustomerAccountCreateController {
     public String CreateCustomer(@RequestBody String json)
     {
         try {
-            JsonNode jsonNode = new ObjectMapper().readTree(json);
+            JsonNode jsonNode = objectMapper.readTree(json);
             String username = jsonNode.get("username").asText();
-            userAccountImpl.create(
+            UserAccount.createUserAccount(
+                    userAccountRepo,
+                    userProfileRepo,
                     username,
                     jsonNode.get("password").asText(),
                     jsonNode.get("email").asText(),

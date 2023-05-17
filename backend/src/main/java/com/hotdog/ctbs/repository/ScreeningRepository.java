@@ -1,6 +1,5 @@
 package com.hotdog.ctbs.repository;
 
-import com.hotdog.ctbs.entity.CinemaRoom;
 import com.hotdog.ctbs.entity.Movie;
 import com.hotdog.ctbs.entity.Screening;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,17 +17,11 @@ public interface ScreeningRepository extends JpaRepository<Screening, UUID> {
 
     Optional<List<Screening>> findScreeningsByMovieTitle(String movieTitle);
 
-    Optional<List<Screening>> findScreeningsByShowTime(String showTime);
+    /** Check if a {@code CinemaRoom} object is a duplicate. */
+    Boolean existsByShowTimeAndAndShowDateAndAndCinemaRoom(String showTime, LocalDate showDate, Integer cinemaRoomId);
 
-    Optional<List<Screening>> findScreeningsByShowDate(LocalDate showDate);
-
-    Optional<List<Screening>> findScreeningsByCinemaRoom(CinemaRoom cinemaRoom);
-
-    Optional<List<Screening>> findScreeningsByCinemaRoomIdAndShowDate(Integer cinemaRoomId, LocalDate showDate);
-
-    //Screening findScreeningByMovieTitleAndShowTimeAndShowDateAndCinemaRoomId(String movieTitle, String showTime, LocalDate showDate, Integer cinemaRoomId);
-
-    Screening findScreeningByShowTimeAndShowDateAndCinemaRoomId(String showTime, LocalDate showDate, Integer cinemaRoomId);
+    Optional <Screening> findScreeningByShowTimeAndAndShowDateAndAndCinemaRoom(String showTime, LocalDate showDate, Integer cinemaRoomId);
+    List<Screening> findScreeningsByShowDateAndCinemaRoom(LocalDate showDate, Integer cinemaRoomId);
 
     @Query("SELECT s FROM Screening s WHERE s.status = 'active' AND s.showDate >= :today")
     List<Screening> findActiveScreeningsLaterOrEqual(@Param("today") LocalDate today);

@@ -1,7 +1,8 @@
 package com.hotdog.ctbs.controller.admin;
 
 // Application imports.
-import com.hotdog.ctbs.service.implementation.UserAccountImpl;
+import com.hotdog.ctbs.entity.UserAccount;
+import com.hotdog.ctbs.repository.UserAccountRepository;
 
 // Java imports.
 import java.time.LocalDate;
@@ -12,6 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 // Spring imports.
+import com.hotdog.ctbs.repository.UserProfileRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -47,12 +49,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/admin/user-account")
 public class AdminUserAccountUpdateController {
 
-    private final UserAccountImpl userAccountImpl;
+    private final UserAccountRepository userAccountRepo;
+    private final UserProfileRepository userProfileRepo;
     private final ObjectMapper objectMapper;
 
-    public AdminUserAccountUpdateController(UserAccountImpl userAccountImpl)
+    public AdminUserAccountUpdateController(UserAccountRepository userAccountRepo,
+                                            UserProfileRepository userProfileRepo)
     {
-        this.userAccountImpl = userAccountImpl;
+        this.userAccountRepo = userAccountRepo;
+        this.userProfileRepo = userProfileRepo;
         this.objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
     }
 
@@ -63,16 +68,16 @@ public class AdminUserAccountUpdateController {
         System.out.println("AdminUserAccountUpdateController.Update() called.");
         try {
             JsonNode jsonNode = objectMapper.readTree(json);
-            String username = jsonNode.get("username").asText();
-            userAccountImpl.update(
-                    targetUsername,
-                    username,
-                    jsonNode.get("firstName").asText(),
-                    jsonNode.get("lastName").asText(),
-                    jsonNode.get("email").asText(),
-                    jsonNode.get("address").asText(),
-                    LocalDate.parse(jsonNode.get("dateOfBirth").asText()),
-                    jsonNode.get("title").asText()
+            UserAccount.updateUserAccount(userAccountRepo,
+                                          userProfileRepo,
+                                          targetUsername,
+                                          jsonNode.get("username").asText(),
+                                          jsonNode.get("firstName").asText(),
+                                          jsonNode.get("lastName").asText(),
+                                          jsonNode.get("email").asText(),
+                                          jsonNode.get("address").asText(),
+                                          LocalDate.parse(jsonNode.get("dateOfBirth").asText()),
+                                          jsonNode.get("title").asText()
             );
             return ResponseEntity.ok("Success");
         } catch (Exception e) {

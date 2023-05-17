@@ -1,18 +1,21 @@
 package com.hotdog.ctbs.controller.shared;
 
 // Application imports.
-import com.hotdog.ctbs.service.implementation.UserAccountImpl;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.hotdog.ctbs.entity.UserAccount;
 
 // JSON deserialization imports.
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 // Spring imports.
+import com.hotdog.ctbs.repository.UserAccountRepository;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 
 /**
  * The {@code LoginController} class exposes
@@ -34,24 +37,26 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/")
 public class LoginController {
 
-    private final UserAccountImpl userAccountImpl;
+    private final UserAccountRepository userAccountRepository;
+    private final ObjectMapper objectMapper;
 
-    public LoginController(UserAccountImpl userAccountImpl)
+    public LoginController(UserAccountRepository userAccountRepository)
     {
-        this.userAccountImpl = userAccountImpl;
+        this.userAccountRepository = userAccountRepository;
+        this.objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
     }
 
     /** @return the privilege of the user, or an error message */
     @PostMapping("/login")
-    public String Login(@RequestBody String json)
+    String Login(@RequestBody String json)
     {
         try {
-            JsonNode jsonNode = new ObjectMapper().readTree(json);
+            JsonNode jsonNode = objectMapper.readTree(json);
             String username = jsonNode.get("username").asText();
             String password = jsonNode.get("password").asText();
-            return userAccountImpl.login(username, password);
+            return UserAccount.validateLogin(userAccountRepository, username, password);
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return e.getMessage();
         }
     }
 }

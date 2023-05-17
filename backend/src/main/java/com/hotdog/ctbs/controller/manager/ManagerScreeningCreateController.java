@@ -1,7 +1,10 @@
 package com.hotdog.ctbs.controller.manager;
 
 // Application imports.
-import com.hotdog.ctbs.service.implementation.ScreeningImpl;
+import com.hotdog.ctbs.entity.Screening;
+import com.hotdog.ctbs.repository.CinemaRoomRepository;
+import com.hotdog.ctbs.repository.MovieRepository;
+import com.hotdog.ctbs.repository.ScreeningRepository;
 
 // Java imports.
 import java.time.LocalDate;
@@ -12,6 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 // Spring imports.
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,47 +25,43 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/manager/screening")
-public class ScreeningCreateController {
+public class ManagerScreeningCreateController {
 
-    private final ScreeningImpl screeningImpl;
+    private final ScreeningRepository screeningRepo;
+    private final MovieRepository movieRepo;
+
+    private final CinemaRoomRepository cinemaRoomRepo;
     private final ObjectMapper objectMapper;
 
-    public ScreeningCreateController(ScreeningImpl screeningImpl)
+    public ManagerScreeningCreateController(MovieRepository movieRepo,
+                                            ScreeningRepository screeningRep,
+                                            CinemaRoomRepository cinemaRoomRepo)
     {
-        this.screeningImpl = screeningImpl;
+        this.movieRepo = movieRepo;
+        this.screeningRepo = screeningRep;
+        this.cinemaRoomRepo = cinemaRoomRepo;
         this.objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
     }
 
-
-    /*
-        ScreeningCreateController
-        Method will be used:
-            createScreening(String targetMovieTitle, String targetShowTime,
-            LocalDate targetShowDate, Integer targetCinemaRoomId) - create screening.
-
-     */
-
-    // create a new screening
     // Invoke-WebRequest -Method POST -Headers @{"Content-Type"="application/json"} -Body '{"MovieTitle":"Thor","ShowTime":"morning","ShowDate":"2026-05-31","CinemaRoomId":1}' -Uri http://localhost:8000/api/manager/screening/create/screening
     @PostMapping("/create/screening")
-    public String CreateScreening(@RequestBody final String json)
+    public ResponseEntity<String> Create(@RequestBody final String json)
     {
         System.out.println("ScreeningCreateController.CreateScreening()");
-
         try {
-            JsonNode jsonNode = new ObjectMapper().readTree(json);
-            screeningImpl.createScreening(
+            JsonNode jsonNode = objectMapper.readTree(json);
+            Screening.createScreening(
+                    movieRepo,
+                    screeningRepo,
+                    cinemaRoomRepo,
                     jsonNode.get("MovieTitle").asText(),
                     jsonNode.get("ShowTime").asText(),
                     LocalDate.parse(jsonNode.get("ShowDate").asText()),
                     jsonNode.get("CinemaRoomId").asInt()
-
             );
-            return "Screening was created successfully.";
-
+            return ResponseEntity.ok("Successfully created screening.");
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
 }

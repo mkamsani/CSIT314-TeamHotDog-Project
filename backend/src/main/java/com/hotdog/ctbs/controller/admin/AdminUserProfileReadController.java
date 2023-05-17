@@ -1,12 +1,12 @@
 package com.hotdog.ctbs.controller.admin;
 
 // Application imports.
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.hotdog.ctbs.entity.UserProfile;
-import com.hotdog.ctbs.service.implementation.UserProfileImpl;
+import com.hotdog.ctbs.repository.UserProfileRepository;
 
 // JSON deserialization imports.
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -43,12 +43,12 @@ import java.util.List;
 @RequestMapping("/admin/user-profile")
 public class AdminUserProfileReadController {
 
-    private final UserProfileImpl userProfileImpl;
+    private final UserProfileRepository userProfileRepo;
     private final ObjectMapper objectMapper;
 
-    public AdminUserProfileReadController(UserProfileImpl userProfileImpl)
+    public AdminUserProfileReadController(UserProfileRepository userProfileRepo)
     {
-        this.userProfileImpl = userProfileImpl;
+        this.userProfileRepo = userProfileRepo;
         this.objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
     }
 
@@ -56,28 +56,8 @@ public class AdminUserProfileReadController {
     public ResponseEntity<String> Read(@PathVariable String param)
     {
         try {
-            if (param.equals("titles"))
-                return ResponseEntity.ok(userProfileImpl.getAllTitles().toString());
-            if (param.equals("privileges"))
-                return ResponseEntity.ok(userProfileImpl.getAllPrivileges().toString());
-            List<UserProfile> userProfileList = switch (param) {
-                case "admin", "owner", "manager", "customer"
-                        -> userProfileImpl.getUserProfilesByPrivilege(param);
-                case "active"
-                        -> userProfileImpl.getActiveUserProfiles();
-                case "all"
-                        -> userProfileImpl.getAllUserProfiles();
-                default -> List.of(userProfileImpl.getUserProfileByTitle(param));
-            };
-            JsonNode[] jsonNodes = new JsonNode[userProfileList.size()];
-            ArrayNode arrayNode = objectMapper.createArrayNode();
-            for (int i = userProfileList.size() - 1; i >= 0; i--) {
-                UserProfile userAccount = userProfileList.get(i);
-                jsonNodes[i] = objectMapper.valueToTree(userAccount);
-                ((ObjectNode) jsonNodes[i]).remove("id");
-                arrayNode.add(jsonNodes[i]);
-            }
-            return ResponseEntity.ok(objectMapper.writeValueAsString(arrayNode));
+            String json = UserProfile.readUserProfile(userProfileRepo, param);
+            return ResponseEntity.ok(json);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

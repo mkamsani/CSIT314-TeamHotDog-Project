@@ -1,16 +1,8 @@
 package com.hotdog.ctbs.initializer;
 
-import com.hotdog.ctbs.entity.Screening;
-import com.hotdog.ctbs.service.implementation.LoyaltyPointImpl;
-import com.hotdog.ctbs.service.implementation.ScreeningImpl;
-import com.hotdog.ctbs.service.implementation.UserAccountImpl;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
-
-import java.time.LocalDate;
-import java.util.List;
 
 /**
  * This class is used to schedule checks.
@@ -21,12 +13,10 @@ import java.util.List;
 @EnableScheduling
 @EnableAsync
 public class ScheduleChecks {
-
+/*
     private final ScreeningImpl screeningImpl;
 
     private final LoyaltyPointImpl loyaltyPointImpl;
-
-    private final UserAccountImpl userAccountImpl;
 
     public ScheduleChecks(ScreeningImpl screeningImpl, LoyaltyPointImpl loyaltyPointImpl,
                           UserAccountImpl userAccountImpl)
@@ -53,4 +43,6 @@ public class ScheduleChecks {
             // List<Ticket> tickets = screening.getTickets();
         }
     }
+
+*/
 }

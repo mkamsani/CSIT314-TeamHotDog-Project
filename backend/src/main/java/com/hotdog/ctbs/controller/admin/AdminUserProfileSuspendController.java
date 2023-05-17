@@ -1,6 +1,9 @@
 package com.hotdog.ctbs.controller.admin;
 
-import com.hotdog.ctbs.service.implementation.UserProfileImpl;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.hotdog.ctbs.entity.UserProfile;
+import com.hotdog.ctbs.repository.UserProfileRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,11 +23,13 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/admin/user-profile")
 public class AdminUserProfileSuspendController {
 
-    private final UserProfileImpl userProfileImpl;
+    private final UserProfileRepository userProfileRepo;
+    private final ObjectMapper objectMapper;
 
-    public AdminUserProfileSuspendController(UserProfileImpl userProfileImpl)
+    public AdminUserProfileSuspendController(UserProfileRepository userProfileRepo)
     {
-        this.userProfileImpl = userProfileImpl;
+        this.userProfileRepo = userProfileRepo;
+        this.objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
     }
 
     /** Suspend a {@code UserProfile} based on the given {@code PathVariable}. */
@@ -32,7 +37,7 @@ public class AdminUserProfileSuspendController {
     public ResponseEntity<String> Suspend(@PathVariable String targetTitle)
     {
         try {
-            userProfileImpl.suspend(targetTitle);
+            UserProfile.suspendUserProfile(userProfileRepo, targetTitle);
             return ResponseEntity.ok("Success");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());

@@ -1,3 +1,4 @@
+/*
 package com.hotdog.ctbs.implementation;
 
 import com.hotdog.ctbs.service.implementation.MovieImpl;
@@ -97,6 +98,7 @@ public class MovieTests {
     @Test
     void controllerMethod()
     {
+        // ManagerReadMovieController methods
         // test getActiveMovieByTitle method
         System.out.println("movieController.getActiveMovieByTitle(\"Avatar\")");
         System.out.println(movieImpl.getActiveMovieByTitle("Avatar"));
@@ -114,6 +116,14 @@ public class MovieTests {
 
     }
 
+    @Test
+    void latest(){
+        // test movie entity
+
+     }
+
+
 
 
 }
+*/

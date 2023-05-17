@@ -7,7 +7,6 @@ import java.util.List;
 
 public interface CinemaRoomRepository extends JpaRepository<CinemaRoom, Integer> {
 
-    CinemaRoom findCinemaRoomById(Integer id);
 
-    CinemaRoom findCinemaRoomByIsActive(Boolean isActive);
+    List<CinemaRoom> findCinemaRoomByIsActiveTrue();
 }

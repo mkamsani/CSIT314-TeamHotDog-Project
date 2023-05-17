@@ -1,7 +1,8 @@
 package com.hotdog.ctbs.controller.manager;
 
 // Application imports.
-import com.hotdog.ctbs.service.implementation.MovieImpl;
+import com.hotdog.ctbs.entity.Movie;
+import com.hotdog.ctbs.repository.MovieRepository;
 
 // Java imports.
 import java.time.LocalDate;
@@ -12,6 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 // Spring imports.
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,35 +23,28 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/manager/movie")
-public class MovieCreateController {
+public class ManagerMovieCreateController {
 
-    private final MovieImpl movieImpl;
+    private final MovieRepository movieRepo;
     private final ObjectMapper objectMapper;
 
-    public MovieCreateController(MovieImpl movieImpl)
+    public ManagerMovieCreateController(MovieRepository movieRepo)
     {
-        this.movieImpl = movieImpl;
+        this.movieRepo = movieRepo;
         this.objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
     }
-
-    /*
-     MovieCreateController
-     Method will be used:
-     createMovie(String title, String genre, String description, LocalDate releaseDate,
-                 String imageUrl, String landscapeImageUrl,
-                 String contentRating)   - creates a new movie.
-     */
-
+    
     // create a new movie
     // Invoke-WebRequest -Method POST -Headers @{"Content-Type"="application/json"} -Body '{"title":"The Haha","genre":"Action","description":"A computer hacker learns from mysterious rebels about the true nature of his controllers.","releaseDate":"1999-03-31","imageUrl":"https://www.themoviedb.org/t/p/w600_and_h900_bestv2/hEpWvX6Bp79eLxY1kX5ZZJcme5U.jpg","landscapeImageUrl":"https://www.themoviedb.org/t/p/w1920/3KN24PrOheHVYs9ypuOIdFBEpX.jpg","contentRating":"pg13"}' -Uri http://localhost:8000/api/manager/movie/create/movie
     @PostMapping("/create/movie")
-    public String CreateMovie(@RequestBody final String json)
+    public ResponseEntity<String> Create(@RequestBody final String json)
     {
-        System.out.println("MovieCreateController.CreateMovie() called.");
-
+        System.out.println("ManagerMovieCreateController.Create() called.");
         try {
-            JsonNode jsonNode = new ObjectMapper().readTree(json);
-            movieImpl.createMovie(
+            JsonNode jsonNode = objectMapper.readTree(json);
+
+            Movie.createMovie(
+                    movieRepo,
                     jsonNode.get("title").asText(),
                     jsonNode.get("genre").asText(),
                     jsonNode.get("description").asText(),
@@ -59,12 +54,14 @@ public class MovieCreateController {
                     jsonNode.get("contentRating").asText()
 
             );
-            // return the movie title message are created successfully.
-            return "Successfully create movie: " + jsonNode.get("title").asText();
+
+            return ResponseEntity.ok("Successfully create movie: " + jsonNode.get("title").asText());
 
         } catch (Exception e) {
-            return e.getMessage();
+
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
+
     }
 
 }

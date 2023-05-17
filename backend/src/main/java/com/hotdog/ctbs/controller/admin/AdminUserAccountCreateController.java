@@ -1,7 +1,9 @@
 package com.hotdog.ctbs.controller.admin;
 
 // Application imports.
-import com.hotdog.ctbs.service.implementation.UserAccountImpl;
+import com.hotdog.ctbs.entity.UserAccount;
+import com.hotdog.ctbs.repository.UserAccountRepository;
+import com.hotdog.ctbs.repository.UserProfileRepository;
 
 // Java imports.
 import java.time.LocalDate;
@@ -66,12 +68,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/admin/user-account")
 public class AdminUserAccountCreateController {
 
-    private final UserAccountImpl userAccountImpl;
+    private final UserAccountRepository userAccountRepo;
+    private final UserProfileRepository userProfileRepo;
     private final ObjectMapper objectMapper;
 
-    public AdminUserAccountCreateController(UserAccountImpl userAccountImpl)
+    public AdminUserAccountCreateController(UserAccountRepository userAccountRepo,
+                                            UserProfileRepository userProfileRepo)
     {
-        this.userAccountImpl = userAccountImpl;
+        this.userAccountRepo = userAccountRepo;
+        this.userProfileRepo = userProfileRepo;
         this.objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
     }
 
@@ -82,16 +87,16 @@ public class AdminUserAccountCreateController {
         System.out.println("AdminUserAccountCreateController.Create() called.");
         try {
             JsonNode jsonNode = objectMapper.readTree(json);
-            String username = jsonNode.get("username").asText();
-            userAccountImpl.create(
-                    username,
-                    jsonNode.get("password").asText(),
-                    jsonNode.get("email").asText(),
-                    jsonNode.get("firstName").asText(),
-                    jsonNode.get("lastName").asText(),
-                    jsonNode.get("address").asText(),
-                    LocalDate.parse(jsonNode.get("dateOfBirth").asText()),
-                    jsonNode.get("title").asText()
+            UserAccount.createUserAccount(userAccountRepo,
+                                          userProfileRepo,
+                                          jsonNode.get("username").asText(),
+                                          jsonNode.get("password").asText(),
+                                          jsonNode.get("email").asText(),
+                                          jsonNode.get("firstName").asText(),
+                                          jsonNode.get("lastName").asText(),
+                                          jsonNode.get("address").asText(),
+                                          LocalDate.parse(jsonNode.get("dateOfBirth").asText()),
+                                          jsonNode.get("title").asText()
             );
             return ResponseEntity.ok("Success");
         } catch (Exception e) {
