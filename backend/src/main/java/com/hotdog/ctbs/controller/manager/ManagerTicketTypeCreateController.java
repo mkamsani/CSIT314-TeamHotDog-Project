@@ -45,16 +45,16 @@ public class ManagerTicketTypeCreateController {
 
     /** Create a {@code TicketType} based on the given JSON. */
     @PostMapping("/create/ticketType")
-    public String Create(@RequestBody final String json) {
+    public void Create(@RequestBody final String json) {
         try{
             JsonNode jsonNode = objectMapper.readTree(json);
             String typeName = jsonNode.get("typename").asText();
             Double typePrice = jsonNode.get("typeprice").asDouble();
             Boolean isactive = jsonNode.get("isactive").asBoolean();
-            return TicketType.createTicketType(ticketTypeRepository, typeName, typePrice, isactive);
+            TicketType.createTicketType(ticketTypeRepository, typeName, typePrice, isactive);
         }
         catch (Exception e){
-            return e.getMessage();
+            System.out.println(e.getMessage());
         }
     }
 

@@ -36,43 +36,36 @@ public class TicketType {
     public static ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
 
-    public static String createTicketType(TicketTypeRepository ticketTypeRepository, String typeName, Double typePrice, Boolean isActive) {
-        try {
-            TicketType ticketType = new TicketType();
+    public static void createTicketType(TicketTypeRepository ticketTypeRepository, String typeName, Double typePrice, Boolean isActive) {
+        TicketType ticketType = new TicketType();
+        if (typeName == null || typeName == "adult" || typeName == "child" || typeName == "senior" || typeName == "student" || typeName == "redemption") {
             ticketType.typeName = typeName;
             ticketType.typePrice = typePrice;
             ticketType.isActive = isActive;
             ticketTypeRepository.save(ticketType);
         }
-        catch (Exception e) {
-            return e.getMessage();
+        else {
+            throw new IllegalArgumentException("Invalid Ticket Type Name");
         }
-        return "Ticket Type created successfully";
     }
 
-    public static String updateTicketType(TicketTypeRepository ticketTypeRepository, String targetTypeName, String newTypeName, Double typePrice, Boolean isActive ){
-        try {
-            TicketType ticketType = new TicketType();
-            ticketType = ticketTypeRepository.findByTypeName((targetTypeName)).orElse(null);
-            if(ticketType == null){
-                throw new IllegalArgumentException("Ticket Type not found");
-            }
-
-            if (newTypeName != null || newTypeName != "adult" || newTypeName != "child" || newTypeName != "senior" || newTypeName != "student" || newTypeName != "redemption") {
-                ticketType.typeName = newTypeName;
-            }
-            if (typePrice != null) {
-                ticketType.typePrice = typePrice;
-            }
-
-            ticketType.isActive = isActive;
-
-            ticketTypeRepository.save(ticketType);
+    public static void updateTicketType(TicketTypeRepository ticketTypeRepository, String targetTypeName, String newTypeName, Double typePrice, Boolean isActive ){
+        TicketType ticketType = new TicketType();
+        ticketType = ticketTypeRepository.findByTypeName((targetTypeName)).orElse(null);
+        if(ticketType == null){
+            throw new IllegalArgumentException("Ticket Type not found");
         }
-        catch (Exception e) {
-            return e.getMessage();
+
+        if (newTypeName != null || newTypeName != "adult" || newTypeName != "child" || newTypeName != "senior" || newTypeName != "student" || newTypeName != "redemption") {
+            ticketType.typeName = newTypeName;
         }
-        return "Ticket Type updated successfully";
+        if (typePrice != null) {
+            ticketType.typePrice = typePrice;
+        }
+
+        ticketType.isActive = isActive;
+
+        ticketTypeRepository.save(ticketType);
     }
 
     public static String readTicketType(TicketTypeRepository ticketTypeRepository, String param) {
@@ -97,12 +90,11 @@ public class TicketType {
         return arrayNode.toString();
     }
 
-    public static String suspendTicketType(TicketTypeRepository ticketTypeRepository , String targettypename) {
+    public static void suspendTicketType(TicketTypeRepository ticketTypeRepository , String targettypename) {
         TicketType ticketType = ticketTypeRepository.findByTypeName(targettypename).orElseThrow(
                 () -> new IllegalArgumentException("Ticket Type not found.")
         );
         ticketType.isActive = false;
         ticketTypeRepository.save(ticketType);
-        return "Successfully suspended ticket type";
     }
 }

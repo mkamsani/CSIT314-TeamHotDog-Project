@@ -25,11 +25,11 @@ public class ManagerTicketTypeSuspendController {
     }
 
     @DeleteMapping("/suspend/{targettypename}")
-    public ResponseEntity<String>Suspend(@PathVariable String targettypename) {
+    public void Suspend(@PathVariable String targettypename) {
         try {
-            return ResponseEntity.ok(TicketType.suspendTicketType(TicketTypeRepository, targettypename));
+            TicketType.suspendTicketType(TicketTypeRepository, targettypename);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            System.out.println(e.getMessage());
         }
     }
 }

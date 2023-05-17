@@ -2,6 +2,7 @@ package com.hotdog.ctbs.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -13,6 +14,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+
 
 @Builder
 @AllArgsConstructor
@@ -36,26 +38,27 @@ public class CinemaRoom {
     @JsonIgnore
     protected Set<Seat> seats = new LinkedHashSet<>();
 
+    public static ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
     public String readCinemaRoom(CinemaRoomRepository cinemaRoomRepository, final String param) {
-        try {
-            List<CinemaRoom> cinemaRooms = null;
-            if (param.matches("\\d+")){
-                cinemaRooms = List.of(cinemaRoomRepository.findById(Integer.parseInt(param)).orElse(null));
-            }
-            else if (param.equals("capacity")) {
-                int seatCapacity = seats.size();
-                return String.valueOf(seatCapacity);
-            }
-            else
-            {
-                cinemaRooms = cinemaRoomRepository.findAll();
-            }
+        List<CinemaRoom> cinemaRooms = null;
+        if (param.matches("\\d+")){
+            cinemaRooms = List.of(cinemaRoomRepository.findById(Integer.parseInt(param)).orElse(null));
+        }
+        else
+        {
+            cinemaRooms = cinemaRoomRepository.findAll();
+        }
 
+        ArrayNode arrayNode = objectMapper.createArrayNode();
+        for(CinemaRoom cinemaRoom : cinemaRooms) {
+            ObjectNode objectNode = objectMapper.createObjectNode();
+            objectNode.put("id", cinemaRoom.id);
+            objectNode.put("isActive", cinemaRoom.isActive);
+            objectNode.put("capacity", cinemaRoom.seats.size());
+            arrayNode.add(objectNode);
         }
-        catch(Exception e){
-            return e.getMessage();
-        }
-        return "Cinema Room read successfully";
+
+        return arrayNode.toString();
     }
 }
