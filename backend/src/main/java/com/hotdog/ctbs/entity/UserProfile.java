@@ -9,7 +9,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.hotdog.ctbs.repository.UserProfileRepository;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.http.ResponseEntity;
 
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -134,8 +133,8 @@ public class UserProfile {
 
         title = title.strip().replaceAll("\\s+", " ");
 
-        userProfile.setPrivilege(privilege);
-        userProfile.setTitle(title);
+        userProfile.privilege = privilege;
+        userProfile.title = title;
         userProfileRepo.save(userProfile);
     }
 
