@@ -76,8 +76,9 @@ public class TicketTypeImpl implements TicketTypeService {
         //check if newTypeName is the same as any other existing Ticket Types in database (1st check)
         if (ticketTypeRepository.findByTypeName(newTypeName).isPresent() &&
                 !ticketType.getTypeName().equals(newTypeName))
+        {
             throw new IllegalArgumentException("Ticket Type name already exists.");
-
+        }
         System.out.println("checking new TicketType name format");
 
         if (!newTypeName.matches("[a-zA-Z0-9]+"))
@@ -92,11 +93,18 @@ public class TicketTypeImpl implements TicketTypeService {
 
         ticketType.setTypeName(newTypeName);
 
-        if(newTypePrice != null)
-            ticketType.setTypePrice(newTypePrice);
+        System.out.println("newtypeprice: " + newTypePrice);
 
+        if(newTypePrice != null){
+            ticketType.setTypePrice(newTypePrice);
+            System.out.println("new type price: " + newTypePrice);
+        }
+
+        System.out.println("newisActive: " + newIsActive);
         if(newIsActive != null)
             ticketType.setIsActive(newIsActive);
+
+        ticketTypeRepository.save(ticketType);
     }
 
     public String suspend(String targetTypeName) {

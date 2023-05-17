@@ -30,7 +30,7 @@ if (isset($_POST['updateTicket'])) {
     }
 
     $updateTicketCh = curl_init();
-    $data = array('ticketTypeName'=> $newTicketTypeName, 'ticketTypePrice' => $newPrice, 'ticketTypeIsActive' => $ticketActivity);
+    $data = array('tickettypename'=> $newTicketTypeName, 'tickettypeprice' => $newPrice, 'tickettypeisactive' => $ticketActivity);
     $data_json = json_encode($data);
     print_r($data_json);
     curl_setopt($updateTicketCh, CURLOPT_URL, 'http://localhost:8000/api/manager/ticketType/update/'.$ticketTypeName);
@@ -144,7 +144,7 @@ if (isset($_POST['suspendTicket'])) {
                 <tr>
                     <td>
                         <?php
-                        $ticketTypeName = array_column($ticketDetails, 'typeName');
+                        $ticketTypeName = array_column($ticketDetails, 'typename');
                         foreach ($ticketTypeName as $ticketTypeKey) {
                             echo '' . $ticketTypeKey . '<br/>';
                         }
@@ -152,7 +152,7 @@ if (isset($_POST['suspendTicket'])) {
                     </td>
                     <td>
                         <?php
-                        $ticketPrice = array_column($ticketDetails, 'typePrice');
+                        $ticketPrice = array_column($ticketDetails, 'typeprice');
                         foreach ($ticketPrice as $ticketPriceKey) {
                             echo '' . $ticketPriceKey . '<br/>';
                         }
@@ -160,7 +160,7 @@ if (isset($_POST['suspendTicket'])) {
                     </td>
                     <td>
                         <?php
-                        $isActive = array_column($ticketDetails, 'isActive');
+                        $isActive = array_column($ticketDetails, 'isactive');
                         foreach ($isActive as $isActiveKey) {
                             echo '' . $isActiveKey . '<br/>';
                         }
@@ -203,7 +203,7 @@ if (isset($_POST['suspendTicket'])) {
             <select class = "form-select" name="updateTypeName" id="updateTypeName">
                 <option>Select Ticket Type</option>
                 <?php
-                $typeName = array_column($ticketDetails, 'typeName');
+                $typeName = array_column($ticketDetails, 'typename');
                 foreach ($typeName as $typeNameKey) {
                     ?>
                     <option><?php echo '' . $typeNameKey . '<br/>'; ?></option>
