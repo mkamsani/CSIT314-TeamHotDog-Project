@@ -153,8 +153,7 @@ if (isset($_POST['update'])) {
         echo '
                     <div class="container mt-5">
                         <div class="alert alert-success mb-3 mt-3" id="successMsg" style="width: 75%;">
-                        <strong>Success!</strong> Movie has been updated. Head over to the <a href="" class="alert-link">Movies</a>
-                        to view Movies, or go <a href="" class="alert-link">blahblahblah</a>.
+                        <strong>Success!</strong> Movie has been updated</a>.
                         </div>
                     </div>';
     }
@@ -200,8 +199,7 @@ if (isset($_POST['create'])) {
         echo '
                     <div class="container mt-5">
                         <div class="alert alert-success mb-3 mt-3" id="successMsg" style="width: 75%;">
-                        <strong>Success!</strong> Movie has been created. Head over to the <a href="" class="alert-link">Movies</a>
-                        to view Movies, or go <a href="" class="alert-link">blahblahblah</a>.
+                        <strong>Success!</strong> Movie has been created</a>.
                         </div>
                     </div>';
     }
@@ -234,8 +232,7 @@ if (isset($_POST['suspend'])) {
         echo '
                     <div class="container mt-5">
                         <div class="alert alert-success mb-3 mt-3" id="successMsg" style="width: 75%;">
-                        <strong>Success!</strong> Movie has been suspended. Head over to the <a href="" class="alert-link">Movies</a>
-                        to view Movies, or go <a href="" class="alert-link">blahblahblah</a>.
+                        <strong>Success!</strong> Movie has been suspended</a>.
                         </div>
                     </div>';
     }
@@ -270,8 +267,7 @@ if (isset($_POST['delete']) ) {
         echo '
                     <div class="container mt-5">
                         <div class="alert alert-success mb-3 mt-3" id="successMsg" style="width: 75%;">
-                        <strong>Success!</strong> Movie has been deleted. </a>
-                        to view Movies, or go <a href="" class="alert-link">blahblahblah</a>.
+                        <strong>Success!</strong> Movie has been deleted </a>.
                         </div>
                     </div>';
     }
