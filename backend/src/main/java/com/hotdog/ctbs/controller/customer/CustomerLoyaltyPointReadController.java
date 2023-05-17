@@ -1,22 +1,11 @@
 package com.hotdog.ctbs.controller.customer;
 
-/*
-TODO: convert this controller to the new format and remove its Implementation class.
-*/
-
-
-// Application imports.
-
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.hotdog.ctbs.entity.LoyaltyPoint;
-import com.hotdog.ctbs.service.implementation.LoyaltyPointImpl;
+import com.hotdog.ctbs.repository.LoyaltyPointRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * The {@code LoyaltyPointReadController} class exposes
@@ -57,47 +46,23 @@ import java.util.List;
 @RequestMapping("/customer/loyalty-point")
 public class CustomerLoyaltyPointReadController {
 
-    private final LoyaltyPointImpl loyaltyPointImpl;
+    private final LoyaltyPointRepository loyaltyPointRepo;
     private final ObjectMapper objectMapper;
 
-    public CustomerLoyaltyPointReadController(LoyaltyPointImpl loyaltyPointImpl)
+    public CustomerLoyaltyPointReadController(LoyaltyPointRepository loyaltyPointRepo)
     {
-        this.loyaltyPointImpl = loyaltyPointImpl;
+        this.loyaltyPointRepo = loyaltyPointRepo;
         this.objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
     }
 
-    /** Read a JSON array of {@code UserAccount} object(s). */
     @GetMapping("/read/{param}")
-    public String ReadAvailable(@PathVariable String param)
+    public ResponseEntity<String> Read(@PathVariable String param)
     {
         try {
-            List<LoyaltyPoint> loyaltyPointList = switch (param) {
-                case "all" ->
-                        loyaltyPointImpl.getAllLoyaltyPoints();
-                case "active" ->
-                        loyaltyPointImpl.getActiveLoyaltyPoints();
-                default ->
-                        List.of(loyaltyPointImpl.getLoyaltyPointByUsername(param));
-            };
-            JsonNode[] jsonNodes = new JsonNode[loyaltyPointList.size()];
-            ArrayNode arrayNode = objectMapper.createArrayNode();
-            for (int i = loyaltyPointList.size() - 1; i >= 0; i--) {
-                LoyaltyPoint loyaltyPoint = loyaltyPointList.get(i);
-                String username = loyaltyPoint.getUserAccount().getUsername();
-                int pointsAvailable = loyaltyPointImpl.getAvailablePoint(loyaltyPoint);
-                jsonNodes[i] = objectMapper.valueToTree(loyaltyPoint);
-                ((ObjectNode) jsonNodes[i]).remove("id");
-                ((ObjectNode) jsonNodes[i]).remove("userAccount");
-                ((ObjectNode) jsonNodes[i]).put("username", username);
-                ((ObjectNode) jsonNodes[i]).put("pointsAvailable", pointsAvailable);
-                arrayNode.add(jsonNodes[i]);
-            }
-            // if size > 1 then [ { ... }, { ... } ] else { ... }
-            return objectMapper.writeValueAsString(
-                    arrayNode.size() > 1 ? arrayNode : arrayNode.get(0)
-            );
+            String json = LoyaltyPoint.readLoyaltyPoint(loyaltyPointRepo, param);
+            return ResponseEntity.ok(json);
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }
