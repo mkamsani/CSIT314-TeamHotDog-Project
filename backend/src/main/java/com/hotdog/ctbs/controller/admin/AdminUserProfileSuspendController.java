@@ -1,5 +1,8 @@
 package com.hotdog.ctbs.controller.admin;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hotdog.ctbs.repository.UserAccountRepository;
+import com.hotdog.ctbs.repository.UserProfileRepository;
 import com.hotdog.ctbs.service.implementation.UserProfileImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +23,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/admin/user-profile")
 public class AdminUserProfileSuspendController {
 
-    private final UserProfileImpl userProfileImpl;
+    private final UserAccountRepository userAccountRepo;
+    private final UserProfileRepository userProfileRepo;
+    private final ObjectMapper objectMapper;
 
     public AdminUserProfileSuspendController(UserProfileImpl userProfileImpl)
     {

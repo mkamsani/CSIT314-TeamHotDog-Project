@@ -23,20 +23,20 @@ public class Seat {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "uuid", nullable = false)
-    private UUID id;
+    protected UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cinema_room")
-    private CinemaRoom cinemaRoom;
+    protected CinemaRoom cinemaRoom;
 
     @Column(name = "seat_row", nullable = false, length = 1)
-    private char seatRow;
+    protected char seatRow;
 
     @Column(name = "seat_column", nullable = false)
-    private Integer seatColumn;
+    protected Integer seatColumn;
 
     @OneToMany(mappedBy = "seat")
-    private Set<Ticket> tickets = new LinkedHashSet<>();
+    protected Set<Ticket> tickets = new LinkedHashSet<>();
 
     @Override
     public String toString()

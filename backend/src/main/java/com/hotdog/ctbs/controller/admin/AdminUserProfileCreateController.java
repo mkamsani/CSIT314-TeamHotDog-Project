@@ -1,6 +1,8 @@
 package com.hotdog.ctbs.controller.admin;
 
 // Application imports.
+import com.hotdog.ctbs.repository.UserAccountRepository;
+import com.hotdog.ctbs.repository.UserProfileRepository;
 import com.hotdog.ctbs.service.implementation.UserProfileImpl;
 
 // JSON deserialization imports.
@@ -32,7 +34,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/admin/user-profile")
 public class AdminUserProfileCreateController {
 
-    private final UserProfileImpl userProfileImpl;
+    private final UserAccountRepository userAccountRepo;
+    private final UserProfileRepository userProfileRepo;
     private final ObjectMapper objectMapper;
 
     public AdminUserProfileCreateController(UserProfileImpl userProfileImpl)

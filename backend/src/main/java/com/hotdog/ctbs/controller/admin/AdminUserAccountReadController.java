@@ -7,6 +7,8 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.hotdog.ctbs.entity.UserAccount;
+import com.hotdog.ctbs.repository.UserAccountRepository;
+import com.hotdog.ctbs.repository.UserProfileRepository;
 import com.hotdog.ctbs.service.implementation.UserAccountImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -68,7 +70,8 @@ import java.util.List;
 @RequestMapping("/admin/user-account")
 public class AdminUserAccountReadController {
 
-    private final UserAccountImpl userAccountImpl;
+    private final UserAccountRepository userAccountRepo;
+    private final UserProfileRepository userProfileRepo;
     private final ObjectMapper objectMapper;
 
     public AdminUserAccountReadController(UserAccountImpl userAccountImpl)

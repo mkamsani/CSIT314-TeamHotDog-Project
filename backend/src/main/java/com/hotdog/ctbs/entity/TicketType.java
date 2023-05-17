@@ -16,16 +16,16 @@ public class TicketType {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "uuid", nullable = false)
-    private UUID uuid;
+    protected UUID uuid;
 
     @Column(name = "type_name", length = 7)
-    private String typeName;
+    protected String typeName;
 
     @Column(name = "type_price", nullable = false, precision = 10, scale = 2)
-    private Double typePrice;
+    protected Double typePrice;
 
     @Column(name = "is_active")
-    private Boolean isActive;
+    protected Boolean isActive;
 
 
 }

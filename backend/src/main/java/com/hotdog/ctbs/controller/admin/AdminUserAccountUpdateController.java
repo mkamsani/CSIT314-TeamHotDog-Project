@@ -1,6 +1,8 @@
 package com.hotdog.ctbs.controller.admin;
 
 // Application imports.
+import com.hotdog.ctbs.repository.UserAccountRepository;
+import com.hotdog.ctbs.repository.UserProfileRepository;
 import com.hotdog.ctbs.service.implementation.UserAccountImpl;
 
 // Java imports.
@@ -47,7 +49,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/admin/user-account")
 public class AdminUserAccountUpdateController {
 
-    private final UserAccountImpl userAccountImpl;
+    private final UserAccountRepository userAccountRepo;
+    private final UserProfileRepository userProfileRepo;
     private final ObjectMapper objectMapper;
 
     public AdminUserAccountUpdateController(UserAccountImpl userAccountImpl)

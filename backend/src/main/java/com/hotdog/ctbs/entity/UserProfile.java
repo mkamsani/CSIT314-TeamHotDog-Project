@@ -22,19 +22,19 @@ public class UserProfile {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "uuid", nullable = false)
-    private UUID id;
+    protected UUID id;
 
     @Column(name = "privilege", nullable = false)
-    private String privilege;
+    protected String privilege;
 
     @Column(name = "title", nullable = false)
-    private String title;
+    protected String title;
 
     @OneToMany(mappedBy = "userProfile")
-    private Set<UserAccount> userAccounts = new LinkedHashSet<>();
+    protected Set<UserAccount> userAccounts = new LinkedHashSet<>();
 
     @Column(name = "is_active", nullable = false)
-    private Boolean isActive;
+    protected Boolean isActive;
 
     /** @return JSON string of the object. */
     @SneakyThrows

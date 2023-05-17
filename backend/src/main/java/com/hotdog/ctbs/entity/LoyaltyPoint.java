@@ -20,19 +20,19 @@ import java.util.UUID;
 public class LoyaltyPoint {
     @Id
     @Column(name = "uuid", nullable = false)
-    private UUID id;
+    protected UUID id;
 
     @MapsId
     @OneToOne(fetch = FetchType.EAGER, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "uuid", nullable = false)
-    private UserAccount userAccount;
+    protected UserAccount userAccount;
 
     @Column(name = "points_redeemed", nullable = false)
-    private Integer pointsRedeemed;
+    protected Integer pointsRedeemed;
 
     @Column(name = "points_total", nullable = false)
-    private Integer pointsTotal;
+    protected Integer pointsTotal;
 
     @SneakyThrows
     @Override

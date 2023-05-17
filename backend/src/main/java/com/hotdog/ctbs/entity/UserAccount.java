@@ -24,42 +24,44 @@ public class UserAccount {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "uuid", nullable = false)
-    private UUID id;
+    protected UUID id;
 
     @Column(name = "is_active", nullable = false)
-    private Boolean isActive;
+    protected Boolean isActive;
 
     @Column(name = "password_hash", nullable = false, length = 72)
-    private String passwordHash;
+    protected String passwordHash;
 
     @Column(name = "username", nullable = false)
-    private String username;
+    protected String username;
 
     @Column(name = "email", nullable = false)
-    private String email;
+    protected String email;
 
     @Column(name = "first_name", nullable = false)
-    private String firstName;
+    protected String firstName;
 
     @Column(name = "last_name", nullable = false)
-    private String lastName;
+    protected String lastName;
 
     @Column(name = "address", nullable = false)
-    private String address;
+    protected String address;
 
     @Column(name = "date_of_birth", nullable = false)
-    private LocalDate dateOfBirth;
+    protected LocalDate dateOfBirth;
 
     @Column(name = "time_created", nullable = false)
-    private OffsetDateTime timeCreated;
+    protected OffsetDateTime timeCreated;
 
     @Column(name = "time_last_login", nullable = false)
-    private OffsetDateTime timeLastLogin;
+    protected OffsetDateTime timeLastLogin;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_profile", nullable = false)
     @Fetch(FetchMode.JOIN)
-    private UserProfile userProfile;
+    protected UserProfile userProfile;
+
+    //////////////////////////////// Service /////////////////////////////////
 
     public static String validateLogin(UserAccountRepository userAccountRepo,
                                        String username,
@@ -73,8 +75,7 @@ public class UserAccount {
             throw new IllegalArgumentException("Account suspended.");
         String privilege = userAccount.userProfile.getPrivilege();
         return switch (privilege) {
-            case "admin", "owner", "manager", "customer" ->
-            {
+            case "admin", "owner", "manager", "customer" -> {
                 userAccount.timeLastLogin = OffsetDateTime.now();
                 userAccountRepo.save(userAccount);
                 yield privilege;
@@ -84,21 +85,20 @@ public class UserAccount {
     }
 
     public static void createUserAccount(UserAccountRepository userAccountRepo,
-                                    UserProfileRepository userProfileRepo,
-                                    final String username,
-                                    final String password,
-                                    final String email,
-                                    final String firstName,
-                                    final String lastName,
-                                    final String address,
-                                    final LocalDate dateOfBirth,
-                                    final String title)
+                                         UserProfileRepository userProfileRepo,
+                                         final String username,
+                                         final String password,
+                                         final String email,
+                                         final String firstName,
+                                         final String lastName,
+                                         final String address,
+                                         final LocalDate dateOfBirth,
+                                         final String title)
     {
-        System.out.println("Method UserAccountImpl.createUserAccount() called.");
         // This validation is only required when an admin creates a new user account.
-        UserProfile userProfile = userProfileRepo.findUserProfileByTitle(title).orElseThrow(
-                () -> new IllegalArgumentException("Invalid title.")
-        );
+        UserProfile userProfile = userProfileRepo.findUserProfileByTitle(title).orElse(null);
+        if (userProfile == null)
+            throw new IllegalArgumentException("Invalid title.");
         // The following validations are required when an admin/customer creates a new user account.
         if (userAccountRepo.findUserAccountByUsername(username).isPresent())
             throw new IllegalArgumentException("Username " + username + " already exists.");
@@ -109,20 +109,19 @@ public class UserAccount {
         if (username.equals("admin") || username.equals("customer") ||
             username.equals("owner") || username.equals("manager"))
             throw new IllegalArgumentException("Username " + username + " is reserved.");
-
         UserAccount userAccount = new UserAccount();
-        userAccount.setId(UUID.randomUUID());
-        userAccount.setIsActive(true);
-        userAccount.setTimeCreated(OffsetDateTime.now());
-        userAccount.setTimeLastLogin(OffsetDateTime.now());
-        userAccount.setUserProfile(userProfile);
-        userAccount.setUsername(username.toLowerCase());
-        userAccount.setPasswordHash(password); // Hashed in Postgres.
-        userAccount.setEmail(email.toLowerCase());
-        userAccount.setFirstName(firstName);
-        userAccount.setLastName(lastName);
-        userAccount.setAddress(address);
-        userAccount.setDateOfBirth(dateOfBirth);
+        userAccount.id = UUID.randomUUID();
+        userAccount.isActive = true;
+        userAccount.timeCreated = OffsetDateTime.now();
+        userAccount.timeLastLogin = OffsetDateTime.now();
+        userAccount.userProfile = userProfile;
+        userAccount.username = username.toLowerCase();
+        userAccount.passwordHash = password;
+        userAccount.email = email.toLowerCase();
+        userAccount.firstName = firstName;
+        userAccount.lastName = lastName;
+        userAccount.address = address;
+        userAccount.dateOfBirth = dateOfBirth;
         userAccountRepo.save(userAccount);
     }
 }

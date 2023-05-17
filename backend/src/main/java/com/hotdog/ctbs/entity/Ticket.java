@@ -19,29 +19,29 @@ import java.util.UUID;
 public class Ticket {
     @Id
     @Column(name = "uuid", nullable = false)
-    private UUID id;
+    protected UUID id;
 
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "customer", nullable = false)
-    private UserAccount customer;
+    protected UserAccount customer;
 
     //@ManyToOne(fetch = FetchType.LAZY, optional = false)
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "ticket_type", nullable = false, referencedColumnName = "type_name")
-    private TicketType ticketType;
+    protected TicketType ticketType;
 
     //@ManyToOne(fetch = FetchType.LAZY, optional = false)
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "screening", nullable = false)
-    private Screening screening;
+    protected Screening screening;
 
     //@ManyToOne(fetch = FetchType.LAZY, optional = false)
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "seat", nullable = false)
-    private Seat seat;
+    protected Seat seat;
 
     @Column(name = "purchase_date", nullable = false)
-    private OffsetDateTime purchaseDate;
+    protected OffsetDateTime purchaseDate;
 
     /**
      * Returns a JSON representation of the ticket.

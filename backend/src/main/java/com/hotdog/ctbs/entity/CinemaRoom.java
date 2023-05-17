@@ -23,15 +23,15 @@ public class CinemaRoom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private Integer id;
+    protected Integer id;
 
     @Column(name = "is_active", nullable = false)
     @JsonIgnore
-    private Boolean isActive;
+    protected Boolean isActive;
 
     @OneToMany(mappedBy = "cinemaRoom", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JsonIgnore
-    private Set<Seat> seats = new LinkedHashSet<>();
+    protected Set<Seat> seats = new LinkedHashSet<>();
 
     @SneakyThrows
     @Override

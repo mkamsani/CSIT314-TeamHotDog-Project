@@ -21,28 +21,28 @@ public class Screening {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "uuid", nullable = false)
-    private UUID id;
+    protected UUID id;
 
     // @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "movie_id", nullable = false)
-    private Movie movie;
+    protected Movie movie;
 
     @Column(name = "show_time", nullable = false)
-    private String showTime; // ONLY 'morning', 'afternoon', 'evening', 'midnight'
+    protected String showTime; // ONLY 'morning', 'afternoon', 'evening', 'midnight'
 
     @Column(name = "status", nullable = false)
-    private String status; // ONLY 'active', 'suspended', 'cancelled'
+    protected String status; // ONLY 'active', 'suspended', 'cancelled'
 
     /*@Column(name = "is_active" , nullable = false)
-    private Boolean isActive;*/
+    protected Boolean isActive;*/
 
     @Column(name = "show_date", nullable = false)
-    private LocalDate showDate;
+    protected LocalDate showDate;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "cinema_room", nullable = false)
-    private CinemaRoom cinemaRoom;
+    protected CinemaRoom cinemaRoom;
 
     @SneakyThrows
     @Override

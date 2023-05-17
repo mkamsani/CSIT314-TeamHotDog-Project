@@ -4,6 +4,8 @@ package com.hotdog.ctbs.controller.admin;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.hotdog.ctbs.entity.UserProfile;
+import com.hotdog.ctbs.repository.UserAccountRepository;
+import com.hotdog.ctbs.repository.UserProfileRepository;
 import com.hotdog.ctbs.service.implementation.UserProfileImpl;
 
 // JSON deserialization imports.
@@ -43,7 +45,8 @@ import java.util.List;
 @RequestMapping("/admin/user-profile")
 public class AdminUserProfileReadController {
 
-    private final UserProfileImpl userProfileImpl;
+    private final UserAccountRepository userAccountRepo;
+    private final UserProfileRepository userProfileRepo;
     private final ObjectMapper objectMapper;
 
     public AdminUserProfileReadController(UserProfileImpl userProfileImpl)

@@ -25,35 +25,35 @@ public class Movie {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "uuid", nullable = false)
-    private UUID id;
+    protected UUID id;
 
     @Column(name = "is_active", nullable = false)
-    private boolean isActive;
+    protected boolean isActive;
 
     @Column(name = "title", nullable = false, length = Integer.MAX_VALUE)
-    private String title;
+    protected String title;
 
     @Column(name = "genre", nullable = false, length = Integer.MAX_VALUE)
-    private String genre;
+    protected String genre;
 
     @Column(name = "description", nullable = false, length = Integer.MAX_VALUE)
-    private String description;
+    protected String description;
 
     @Column(name = "release_date", nullable = false)
-    private LocalDate releaseDate;
+    protected LocalDate releaseDate;
 
     @Column(name = "image_url", length = Integer.MAX_VALUE)
-    private String imageUrl;
+    protected String imageUrl;
 
     @Column(name = "landscape_image_url", length = Integer.MAX_VALUE)
-    private String landscapeImageUrl;
+    protected String landscapeImageUrl;
 
     @Column(name = "content_rating", nullable = false, length = Integer.MAX_VALUE)
-    private String contentRating;
+    protected String contentRating;
 
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
-    private Set<Screening> screenings = new LinkedHashSet<>();
+    protected Set<Screening> screenings = new LinkedHashSet<>();
 
     @SneakyThrows
     @Override
