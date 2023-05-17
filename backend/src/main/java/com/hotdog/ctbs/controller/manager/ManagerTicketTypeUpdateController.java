@@ -52,18 +52,18 @@ public class ManagerTicketTypeUpdateController {
                                  final Double newTypePrice,
                                  final Boolean newIsActive)
      */
-    @PutMapping(value = "/update/{targetTicketTypeName}")
-    public String ManagerUpdateTicketType(@RequestBody String json, @PathVariable String targetTicketTypeName)
+    @PutMapping(value = "/update/{targettickettypename}")
+    public String ManagerUpdateTicketType(@RequestBody String json, @PathVariable String targettickettypename)
     {
         System.out.println("TicketTypeUpdateController.UpdateTicketType is called");
         try {
             JsonNode jsonNode = new ObjectMapper().readTree(json);
 
             ticketTypeImpl.updateTicketType(
-                    targetTicketTypeName,
-                    jsonNode.get("ticketTypeName").asText(),
-                    jsonNode.get("ticketTypePrice").asDouble(),
-                    jsonNode.get("ticketTypeIsActive").asBoolean()
+                    targettickettypename,
+                    jsonNode.get("tickettypename").asText(),
+                    jsonNode.get("tickettypeprice").asDouble(),
+                    jsonNode.get("tickettypeisactive").asBoolean()
             );
         }
         catch (Exception e){

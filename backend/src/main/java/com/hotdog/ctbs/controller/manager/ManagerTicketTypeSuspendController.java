@@ -21,10 +21,10 @@ public class ManagerTicketTypeSuspendController {
         this.ticketTypeImpl = ticketTypeImpl;
     }
 
-    @DeleteMapping("/suspend/{targetTypeName}")
-    public String Suspend(@PathVariable String targetTypeName) {
+    @DeleteMapping("/suspend/{targettypename}")
+    public String Suspend(@PathVariable String targettypename) {
         try {
-            ticketTypeImpl.suspend(targetTypeName);
+            ticketTypeImpl.suspend(targettypename);
             return "Success";
         } catch (Exception e) {
             return "Error: " + e.getMessage();
