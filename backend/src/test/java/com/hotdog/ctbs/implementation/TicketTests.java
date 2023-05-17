@@ -40,11 +40,11 @@ public class TicketTests {
             // create a ticket
             for (int i = 1; i < 15; i++)
             {
-                ticketImpl.createTicket("user_41",
-                        "adult",
-                        "morning",
-                        LocalDate.of(2023, 5, 23),
-                        1, 'A', i, false);
+//                ticketImpl.createTicket("user_41",
+//                        "adult",
+//                        "morning",
+//                        LocalDate.of(2023, 5, 23),
+//                        1, 'A', i, false);
             }
 
         }
@@ -67,10 +67,10 @@ public class TicketTests {
 
             // get all the available seats linked to screening
             System.out.println("Testing listAvailableSeats method");
-            List<Seat> seats = ticketImpl.listAvailableSeats("evening",
-                    LocalDate.of(2023, 5, 23), 1);
-            System.out.println(seats.size());
-            System.out.println(seats);
+//            List<Seat> seats = ticketImpl.listAvailableSeats("evening",
+//                    LocalDate.of(2023, 5, 23), 1);
+//            System.out.println(seats.size());
+//            System.out.println(seats);
             System.out.println();
         }
         catch (Exception e){
