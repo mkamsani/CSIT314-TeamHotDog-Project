@@ -1,5 +1,10 @@
 package com.hotdog.ctbs.controller.customer;
 
+/*
+TODO: convert this controller to the new format and remove its Implementation class.
+*/
+
+
 // Application imports.
 import com.hotdog.ctbs.entity.LoyaltyPoint;
 import com.hotdog.ctbs.service.implementation.LoyaltyPointImpl;
