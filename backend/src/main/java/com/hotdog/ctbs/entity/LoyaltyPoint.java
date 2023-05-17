@@ -2,6 +2,7 @@ package com.hotdog.ctbs.entity;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
@@ -33,6 +34,9 @@ public class LoyaltyPoint {
 
     @Column(name = "points_total", nullable = false)
     protected Integer pointsTotal;
+
+    @Transient
+    private static final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
     @SneakyThrows
     @Override

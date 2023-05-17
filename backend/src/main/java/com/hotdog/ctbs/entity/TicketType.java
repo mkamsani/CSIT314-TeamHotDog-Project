@@ -33,7 +33,8 @@ public class TicketType {
     @Column(name = "is_active")
     protected Boolean isActive;
 
-    public static ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
+    @Transient
+    private static final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
     public static void createTicketType(TicketTypeRepository ticketTypeRepository, String typeName, Double typePrice, Boolean isActive) {
         if (typeName == null)

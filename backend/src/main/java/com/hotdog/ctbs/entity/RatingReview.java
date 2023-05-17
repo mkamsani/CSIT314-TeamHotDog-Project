@@ -1,5 +1,7 @@
 package com.hotdog.ctbs.entity;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,4 +29,7 @@ public class RatingReview {
 
     @Column(name = "review", nullable = false, length = Integer.MAX_VALUE)
     protected String review;
+
+    @Transient
+    private static final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 }

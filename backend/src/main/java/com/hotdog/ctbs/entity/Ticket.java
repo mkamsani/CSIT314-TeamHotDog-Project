@@ -48,7 +48,7 @@ public class Ticket {
     protected OffsetDateTime purchaseDate;
 
     @Transient
-    public static ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
+    private static final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
     public static void createTicket(UserAccountRepository  userAccountRepository,
                                     TicketTypeRepository   ticketTypeRepository,

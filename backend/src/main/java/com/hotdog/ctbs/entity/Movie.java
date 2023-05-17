@@ -60,7 +60,7 @@ public class Movie {
     protected Set<Screening> screenings = new LinkedHashSet<>();
 
     @Transient
-    public static ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
+    private static final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
     @SneakyThrows
     @Override

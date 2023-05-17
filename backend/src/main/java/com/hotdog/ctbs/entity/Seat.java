@@ -3,6 +3,7 @@ package com.hotdog.ctbs.entity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -37,6 +38,9 @@ public class Seat {
 
     @OneToMany(mappedBy = "seat")
     protected Set<Ticket> tickets = new LinkedHashSet<>();
+
+    @Transient
+    private static final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
     @Override
     public String toString()

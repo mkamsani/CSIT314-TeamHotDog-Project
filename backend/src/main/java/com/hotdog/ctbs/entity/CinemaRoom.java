@@ -39,7 +39,7 @@ public class CinemaRoom {
     protected Set<Seat> seats = new LinkedHashSet<>();
 
     @Transient
-    public static ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
+    private static final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
     public String readCinemaRoom(CinemaRoomRepository cinemaRoomRepository, final String param) {
         List<CinemaRoom> cinemaRooms = null;
