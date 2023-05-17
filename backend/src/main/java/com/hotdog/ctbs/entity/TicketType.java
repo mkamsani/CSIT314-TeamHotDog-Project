@@ -64,16 +64,26 @@ public class TicketType {
         TicketType ticketType = ticketTypeRepository.findByTypeName(targetTypeName).orElse(null);
         if (ticketType == null)
             throw new IllegalArgumentException("Ticket Type not found");
+        if (newTypeName == null)
+            throw new IllegalArgumentException("Invalid Type Name");
+
+        if (newTypeName.equals("adult") ||
+                newTypeName.equals("child") ||
+                newTypeName.equals("senior") ||
+                newTypeName.equals("student") ||
+                newTypeName.equals("redemption")) {
+            throw new IllegalArgumentException("Reserved Ticket Types");
         }
 
-        if (newTypeName != null || newTypeName != "adult" || newTypeName != "child" || newTypeName != "senior" || newTypeName != "student" || newTypeName != "redemption") {
-            ticketType.typeName = newTypeName;
-        }
-        if (typePrice != null) {
-            ticketType.typePrice = typePrice;
-        }
+        for (String typeNameFromRepository : ticketTypeRepository.findAllTypeName())
+            if (newTypeName.equalsIgnoreCase(typeNameFromRepository))
+                throw new IllegalArgumentException("Type name already exists.");
 
-        ticketType.isActive = isActive;
+        if (typePrice == null || typePrice < 0)
+            throw new IllegalArgumentException();
+
+        ticketType.typePrice = typePrice;
+        ticketType.typeName = newTypeName;
 
         ticketTypeRepository.save(ticketType);
     }
@@ -99,7 +109,7 @@ public class TicketType {
 
         return arrayNode.toString();
     }
-
+    // suspend no issue
     public static void suspendTicketType(TicketTypeRepository ticketTypeRepository , String targettypename) {
         TicketType ticketType = ticketTypeRepository.findByTypeName(targettypename).orElseThrow(
                 () -> new IllegalArgumentException("Ticket Type not found.")

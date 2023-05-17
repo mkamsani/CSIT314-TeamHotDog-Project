@@ -1,13 +1,17 @@
 package com.hotdog.ctbs.entity;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.hotdog.ctbs.repository.*;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
+import java.time.LocalDate;
 
 @Builder
 @AllArgsConstructor
@@ -62,17 +66,50 @@ public class Ticket {
                                     int                    column,
                                     Boolean                isLoyaltyPointUsed)
     {
-        if (this == o) return true;
-        if (!(o instanceof Ticket that)) return false;
-        return id.equals(that.id) &&
-               screening.equals(that.screening) &&
-               seat.equals(that.seat);
-    }
+        UserAccount userAccount = userAccountRepository.findUserAccountByUsername(userName).orElse(null);
+        if (userAccount == null)
+            throw new IllegalArgumentException("Username is invalid");
 
-    @Override
-    public int hashCode()
-    {
-        return Objects.hash(id, screening, seat);
+        TicketType ticketType = ticketTypeRepository.findByTypeName(ticketTypeName).orElse(null);
+        if (ticketType == null)
+            throw new IllegalArgumentException("TicketType is invalid");
+
+        CinemaRoom cinemaRoom = cinemaRoomRepository.findById(cinemaRoomId).orElse(null);
+        if (cinemaRoom == null){
+            throw new IllegalArgumentException("CinemaRoomID is invalid");
+        }
+
+        Screening screening = screeningRepository.findScreeningByShowTimeAndAndShowDateAndAndCinemaRoom(showTime, showDate, cinemaRoomId).orElse(null);
+        if (screening == null) {
+            throw new IllegalArgumentException("Screening is invalid");
+        }
+
+        Seat seat = seatRepository.findSeatBySeatRowAndAndSeatColumnAndCinemaRoom(row.charAt(0), column, cinemaRoom);
+        if (seat == null)
+            throw new IllegalArgumentException("Seat is invalid");
+
+        // Earmarked to move to CustomerLoyaltyPointUpdate Controller
+        LoyaltyPoint loyaltyPointForUser = loyaltyPointRepository.findByUserAccountUsername(userName).orElse(null);
+        if (loyaltyPointForUser == null)
+            throw new IllegalArgumentException("User does not have any loyalty point");
+
+        if (isLoyaltyPointUsed) {
+            Double pointsBalance = Double.valueOf(loyaltyPointForUser.pointsBalance());
+            if (pointsBalance < ticketTypeRepository.findByTypeName("redemption").get().typePrice)
+                throw new IllegalArgumentException("Loyalty point is not enough");
+        }
+        else {
+            loyaltyPointForUser.setPointsTotal(loyaltyPointForUser.getPointsTotal() + 1);
+        }
+
+        Ticket ticket = new Ticket();
+        ticket.id = UUID.randomUUID();
+        ticket.customer = userAccount;
+        ticket.ticketType = ticketType;
+        ticket.screening = screening;
+        ticket.seat = seat;
+        ticket.purchaseDate = OffsetDateTime.now();
+        ticketRepository.save(ticket);
     }
 
     /**
