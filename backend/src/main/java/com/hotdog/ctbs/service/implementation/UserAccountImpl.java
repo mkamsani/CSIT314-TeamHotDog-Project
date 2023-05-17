@@ -4,7 +4,6 @@ import com.hotdog.ctbs.entity.UserAccount;
 import com.hotdog.ctbs.entity.UserProfile;
 import com.hotdog.ctbs.repository.UserAccountRepository;
 import com.hotdog.ctbs.repository.UserProfileRepository;
-import com.hotdog.ctbs.service.UserAccountService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-public class UserAccountImpl implements UserAccountService {
+public class UserAccountImpl {
 
     final UserAccountRepository userAccountRepo;
     final UserProfileRepository userProfileRepo;
@@ -26,32 +25,6 @@ public class UserAccountImpl implements UserAccountService {
         this.userProfileRepo = userProfileRepo;
     }
 
-    @Transactional
-    @Override
-    public String login(final String username,
-                        final String password)
-    {
-        UserAccount userAccount = userAccountRepo.findUserAccountByUsername(username).orElse(null);
-        if (userAccount == null || !userAccountRepo.existsUserAccountByUsernameAndPassword(username, password))
-            throw new IllegalArgumentException("Invalid username or password.");
-
-        if (!userAccount.getIsActive())
-            throw new IllegalArgumentException("Account suspended.");
-        String privilege = userAccount.getUserProfile().getPrivilege();
-        if (privilege == null)
-            throw new IllegalArgumentException("Invalid privilege.");
-        if (!privilege.equals("admin") && !privilege.equals("customer") &&
-            !privilege.equals("owner") && !privilege.equals("manager"))
-            throw new IllegalArgumentException("Invalid privilege.");
-
-        // Update last login time.
-        userAccount.setTimeLastLogin(OffsetDateTime.now());
-        userAccountRepo.save(userAccount);
-
-        return privilege; // "admin", "customer", "owner", or "manager"
-    }
-
-    @Override
     public void create(final String username,
                        final String password,
                        final String email,
@@ -94,7 +67,6 @@ public class UserAccountImpl implements UserAccountService {
     }
 
     @Transactional
-    @Override
     public void update(final String target,
                        final String username,
                        final String firstName,
@@ -135,7 +107,6 @@ public class UserAccountImpl implements UserAccountService {
         userAccountRepo.save(userAccount);
     }
 
-    @Override
     @Transactional
     public void suspend(final String target)
     {
@@ -151,7 +122,6 @@ public class UserAccountImpl implements UserAccountService {
 
     //////////////////////////////// Accessors ////////////////////////////////
 
-    @Override
     @Transactional
     public UserAccount getUserAccountByUsername(final String username)
     {
@@ -160,20 +130,17 @@ public class UserAccountImpl implements UserAccountService {
         );
     }
 
-    @Override
     public List<UserAccount> getAllUserAccounts()
     {
         return userAccountRepo.findAll();
     }
 
-    @Override
     public List<UserAccount> getActiveUserAccounts()
     {
         return userAccountRepo.findAll().stream().filter(UserAccount::getIsActive).toList();
     }
 
     @Transactional
-    @Override
     public List<UserAccount> getUserAccountsByPrivilege(String privilege)
     {
         if (!privilege.equals("admin") && !privilege.equals("customer") &&

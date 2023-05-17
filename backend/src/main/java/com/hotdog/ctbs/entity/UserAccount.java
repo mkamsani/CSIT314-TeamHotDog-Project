@@ -10,7 +10,6 @@ import lombok.*;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
-import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
@@ -65,67 +64,37 @@ public class UserAccount {
     @Fetch(FetchMode.JOIN)
     private UserProfile userProfile;
 
-    /**
-     * Returns a JSON string of the object.
-     * <p>
-     * To support Java 8 date types,
-     * {@link com.fasterxml.jackson.databind.ObjectMapper#registerModule(Module)} is used.<br />
-     * {@link java.time.OffsetDateTime} corresponds to Postgres'
-     * {@code TIMESTAMP WITH TIME ZONE}.
-     *
-     * @return JSON string of the user account.
-     * @see <a href="https://www.baeldung.com/jpa-java-time#after-java-8">
-     * Baeldung: Mapping Java 8 Date Types
-     * </a>
-     * @see <a href="https://www.baeldung.com/jackson-serialize-dates#java-8">
-     * Baeldung: Serialize Java 8 Date With Jackson
-     * </a>
-     */
-    @SneakyThrows
-    @Override
-    public String toString()
+    public static String login(UserAccountRepository userAccountRepo,
+                               String username,
+                               String password)
     {
-        return new ObjectMapper().registerModule(new JavaTimeModule())
-                                 .writeValueAsString(this);
-    }
-
-    @Override
-    public boolean equals(Object o)
-    {
-        if (this == o) return true;
-        if (!(o instanceof UserAccount that)) return false;
-        return id.equals(that.id) &&
-               username.equalsIgnoreCase(that.username) &&
-               email.equalsIgnoreCase(that.email);
-    }
-
-    @Override
-    public int hashCode()
-    {
-        return Objects.hash(id, username, email);
-    }
-
-    public String privilege()
-    {
-        return userProfile.getPrivilege();
-    }
-
-    public static String login(UserAccountRepository userAccountRepo, String username, String password)
-    {
-        UserAccount userAccount = userAccountRepo.findUserAccountByUsername(username).orElseThrow(
-                () -> new IllegalArgumentException("Invalid username or password.")
-        );
-        if (!userAccountRepo.existsUserAccountByUsernameAndPassword(username, password))
+        UserAccount userAccount = userAccountRepo.findUserAccountByUsernameAndPassword(username, password).orElse(null);
+        if (userAccount == null)
             throw new IllegalArgumentException("Invalid username or password.");
-        if (!userAccount.isActive) throw new IllegalArgumentException("Account suspended.");
-        String privilege = userAccount.privilege();
-        if (privilege == null) throw new IllegalArgumentException("Invalid privilege.");
-        if (!privilege.equals("admin") && !privilege.equals("customer") &&
-            !privilege.equals("owner") && !privilege.equals("manager"))
-            throw new IllegalArgumentException("Invalid privilege.");
-        userAccountRepo.save(userAccount);
-        userAccount.timeLastLogin = OffsetDateTime.now();
-
-        return privilege;
+        if (!userAccount.isActive)
+            throw new IllegalArgumentException("Account suspended.");
+        return switch (userAccount.userProfile.getPrivilege()) {
+            case "admin" -> {
+                userAccount.timeLastLogin = OffsetDateTime.now();
+                userAccountRepo.save(userAccount);
+                yield "admin";
+            }
+            case "owner" -> {
+                userAccount.timeLastLogin = OffsetDateTime.now();
+                userAccountRepo.save(userAccount);
+                yield "owner";
+            }
+            case "manager" -> {
+                userAccount.timeLastLogin = OffsetDateTime.now();
+                userAccountRepo.save(userAccount);
+                yield "manager";
+            }
+            case "customer" -> {
+                userAccount.timeLastLogin = OffsetDateTime.now();
+                userAccountRepo.save(userAccount);
+                yield "customer";
+            }
+            default -> throw new IllegalArgumentException("Invalid privilege.");
+        };
     }
 }

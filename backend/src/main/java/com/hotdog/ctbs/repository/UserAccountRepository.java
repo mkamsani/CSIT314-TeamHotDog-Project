@@ -15,15 +15,11 @@ public interface UserAccountRepository extends JpaRepository<UserAccount, UUID> 
 
     Optional<UserAccount> findUserAccountByEmail(final String email);
 
-    @Query(
-            value = """
-                    SELECT EXISTS
-                    (
-                        SELECT password_hash FROM user_account
-                        WHERE  username      = ?1
-                        AND    password_hash = crypt(?2, password_hash)
-                    )""",
-            nativeQuery = true
+    @Query(value = """
+            SELECT * FROM user_account
+            WHERE  username      = ?1
+            AND    password_hash = crypt(?2, password_hash)
+            """, nativeQuery = true
     )
-    boolean existsUserAccountByUsernameAndPassword(final String username, final String password);
+    Optional<UserAccount> findUserAccountByUsernameAndPassword(final String username, final String password);
 }
