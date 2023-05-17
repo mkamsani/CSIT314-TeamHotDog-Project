@@ -8,15 +8,38 @@
 <header>
     <h1>API Index: GET Requests</h1>
 </header>
-<ul>
-    <li>
-        Admin
-        <ul>
-            <li><a href="/api/admin/profiles">Get all user profiles</a></li>
-            <li><a href="/api/admin/users">Get all user accounts</a></li>
-            <li><a href="/api/admin/points">Get all loyalty points</a></li>
-        </ul>
-    </li>
-</ul>
+<main>
+    <ul>
+        <li>
+            AdminUserAccountReadController
+            <ul>
+                <li><a href="/api/admin/user-account/read/all">Get all user accounts</a></li>
+                <li><a href="/api/admin/user-account/read/active">Get active user accounts</a></li>
+                <li><a href="/api/admin/user-account/read/admin">Get admin user accounts</a></li>
+                <li><a href="/api/admin/user-account/read/owner">Get owner user accounts</a></li>
+                <li><a href="/api/admin/user-account/read/manager">Get manager user accounts</a></li>
+                <li><a href="/api/admin/user-account/read/customer">Get customer user accounts</a></li>
+                <li><a href="/api/admin/user-account/read/mscott">Get <strong>one</strong> user account by username, such as "mscott"</a></li>
+                <li><a href="/api/admin/user-account/read/dwallace">Get <strong>one</strong> user account by username, such as "dwallace"</a></li>
+                <li><a href="/api/admin/user-account/read/stonebraker">Get <strong>one</strong> user account by username, such as "stonebraker"</a></li>
+            </ul>
+        </li>
+        <li>
+            AdminUserProfileReadController
+            <ul>
+                <li><a href="/api/admin/user-profile/read/all">Get all user profiles</a></li>
+                <li><a href="/api/admin/user-profile/read/active">Get active user profiles</a></li>
+                <li><a href="/api/admin/user-profile/read/admin">Get admin user profiles</a></li>
+                <li><a href="/api/admin/user-profile/read/owner">Get owner user profiles</a></li>
+                <li><a href="/api/admin/user-profile/read/manager">Get manager user profiles</a></li>
+                <li><a href="/api/admin/user-profile/read/customer">Get customer user profiles</a></li>
+                <li><a href="/api/admin/user-profile/read/senior%20manager">Get <strong>one</strong> user profile by title, such as "senior manager"</a></li>
+                <li><a href="/api/admin/user-profile/read/senior%20admin">Get <strong>one</strong> user profile by title, such as "senior admin"</a></li>
+                <li><a href="/api/admin/user-profile/read/chief%20financial%20officer">Get <strong>one</strong> user profile by title, such as "chief financial officer"</a></li>
+                <li><a href="/api/admin/user-profile/read/customer">Get <strong>one</strong> user profile by title, such as "customer"</a></li>
+            </ul>
+        </li>
+    </ul>
+</main>
 </body>
 </html>
