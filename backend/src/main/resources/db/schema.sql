@@ -200,10 +200,21 @@ CREATE TABLE rating_review
   review TEXT    NOT NULL CHECK (LENGTH(review) > 0) -- e.g. "The cinema's popcorn is the best!"
 );
 
+-- Used for JPA to map an entity to a view.
+CREATE OR REPLACE VIEW revenue_report_base AS
+SELECT t.purchase_date::DATE AS t_purchase_date,
+       tt.type_name          AS t_type_name,
+       tt.type_price         AS t_type_price,
+       SUM(tt.type_price)    AS t_type_sum_revenue,
+       COUNT(tt.type_name)   AS t_total_tickets
+FROM ticket t
+JOIN ticket_type tt ON t.ticket_type = tt.type_name
+GROUP BY t.purchase_date, tt.type_price, tt.type_name;
+
 -- Last month's revenue report.
 CREATE OR REPLACE VIEW revenue_report_last_month AS
 SELECT t.purchase_date::DATE AS t_purchase_date,
-       tt.type_name          AS t_type,
+       tt.type_name          AS t_type_name,
        tt.type_price         AS t_type_price,
        SUM(tt.type_price)    AS t_type_sum_revenue,
        COUNT(tt.type_name)   AS t_total_tickets
@@ -213,20 +224,20 @@ WHERE t.purchase_date::DATE BETWEEN DATE_TRUNC('month', NOW()  - INTERVAL '1 mon
                             AND     DATE_TRUNC('month', NOW()) - INTERVAL '1 day'
 GROUP BY t.purchase_date, tt.type_price, tt.type_name
 UNION -- Get the total for last month.
-SELECT (DATE_TRUNC('month', NOW()))::DATE                          AS t_purchase_date,
-       'total'                                                     AS t_type,
-       0                                                           AS t_type_price,
-       SUM(ticket_type.type_price)                                 AS t_type_sum_revenue,
-       COUNT(ticket.ticket_type)                                   AS t_total_tickets
+SELECT (DATE_TRUNC('month', NOW()))::DATE AS t_purchase_date,
+       'total'                            AS t_type_name,
+       0                                  AS t_type_price,
+       SUM(ticket_type.type_price)        AS t_type_sum_revenue,
+       COUNT(ticket.ticket_type)          AS t_total_tickets
 FROM ticket JOIN ticket_type ON ticket.ticket_type = ticket_type.type_name
 WHERE purchase_date::DATE BETWEEN DATE_TRUNC('month', NOW()  - INTERVAL '1 month')
                           AND     DATE_TRUNC('month', NOW()) - INTERVAL '1 day'
-ORDER BY t_purchase_date, t_type;
+ORDER BY t_purchase_date, t_type_name;
 
 -- Last week's revenue report.
 CREATE OR REPLACE VIEW revenue_report_last_week AS
 SELECT t.purchase_date::DATE AS t_purchase_date,
-       tt.type_name          AS t_type,
+       tt.type_name          AS t_type_name,
        tt.type_price         AS t_type_price,
        SUM(tt.type_price)    AS t_type_sum_revenue,
        COUNT(tt.type_name)   AS t_total_tickets
@@ -237,19 +248,19 @@ WHERE t.purchase_date::DATE BETWEEN DATE_TRUNC('week', NOW()  - INTERVAL '1 week
 GROUP BY t.purchase_date, tt.type_price, tt.type_name
 UNION -- Get the total for last week.
 SELECT (DATE_TRUNC('week', NOW()))::DATE                           AS t_purchase_date,
-       'total'                                                     AS t_type,
+       'total'                                                     AS t_type_name,
        0                                                           AS t_type_price,
        SUM(ticket_type.type_price)                                 AS t_type_sum_revenue,
        COUNT(ticket.ticket_type)                                   AS t_total_tickets
 FROM ticket JOIN ticket_type ON ticket.ticket_type = ticket_type.type_name
 WHERE purchase_date::DATE BETWEEN DATE_TRUNC('week', NOW()  - INTERVAL '1 week')
                           AND     DATE_TRUNC('week', NOW()) - INTERVAL '1 day'
-ORDER BY t_purchase_date, t_type;
+ORDER BY t_purchase_date, t_type_name;
 
 -- Yesterday's revenue report.
 CREATE OR REPLACE VIEW revenue_report_yesterday AS
 SELECT t.purchase_date::DATE AS t_purchase_date,
-       tt.type_name          AS t_type,
+       tt.type_name          AS t_type_name,
        tt.type_price         AS t_type_price,
        SUM(tt.type_price)    AS t_type_sum_revenue,
        COUNT(tt.type_name)   AS t_total_tickets
@@ -259,13 +270,13 @@ WHERE t.purchase_date::DATE = DATE_TRUNC('day', NOW()  - INTERVAL '1 day')
 GROUP BY t.purchase_date, tt.type_price, tt.type_name
 UNION -- Get the total for yesterday.
 SELECT (DATE_TRUNC('day', NOW()))::DATE                            AS t_purchase_date,
-       'total'                                                     AS t_type,
+       'total'                                                     AS t_type_name,
        0                                                           AS t_type_price,
        SUM(ticket_type.type_price)                                 AS t_type_sum_revenue,
        COUNT(ticket.ticket_type)                                   AS t_total_tickets
 FROM ticket JOIN ticket_type ON ticket.ticket_type = ticket_type.type_name
 WHERE purchase_date::DATE = DATE_TRUNC('day', NOW()  - INTERVAL '1 day')
-ORDER BY t_purchase_date, t_type;
+ORDER BY t_purchase_date, t_type_name;
 
 CREATE OR REPLACE VIEW negative_rating_review_last_month AS
   SELECT username, rating, review

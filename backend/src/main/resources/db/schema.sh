@@ -41,14 +41,17 @@ fi
 # https://docs.docker.com/engine/reference/commandline/run/
 # https://docs.podman.io/en/latest/markdown/podman-run.1.html
 # https://github.com/containerd/nerdctl/blob/main/docs/command-reference.md#whale-blue_square-nerdctl-run
-"$oci" run --rm -d --net=host            \
--u=postgres                              \
---security-opt no-new-privileges         \
---name="pg"                              \
--e POSTGRES_PASSWORD="pg"                \
+"$oci" run --rm -d --net=host      \
+-u=postgres                        \
+--security-opt no-new-privileges   \
+--name="pg"                        \
+-e POSTGRES_PASSWORD="pg"          \
 cgr.dev/chainguard/postgres:latest
-# Allow time for postgres to start.
-sleep 5
+if test "$(hostname)" = "fedora"; then
+sleep 1 # Allow time for postgres to start.
+else
+sleep 5 # Allow more time for postgres on WSL2 to start.
+fi
 
 # Copy the schema.sql file to the container
 "$oci" cp "$(find "$(pwd)" -name "schema.sql"    -type f -exec realpath {} \;)" pg:/home/postgres
