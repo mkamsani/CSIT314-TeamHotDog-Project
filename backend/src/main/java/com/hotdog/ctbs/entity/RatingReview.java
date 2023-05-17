@@ -7,7 +7,6 @@ import lombok.*;
 
 import java.util.UUID;
 
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -32,4 +31,7 @@ public class RatingReview {
 
     @Transient
     private static final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
+
+    //////////////////////////////// Service /////////////////////////////////
+
 }

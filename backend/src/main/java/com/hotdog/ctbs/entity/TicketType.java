@@ -11,7 +11,6 @@ import lombok.*;
 import java.util.List;
 import java.util.UUID;
 
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -35,6 +34,8 @@ public class TicketType {
 
     @Transient
     private static final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
+
+    //////////////////////////////// Service /////////////////////////////////
 
     public static void createTicketType(TicketTypeRepository ticketTypeRepository, String typeName, Double typePrice, Boolean isActive) {
         if (typeName == null)
@@ -90,25 +91,23 @@ public class TicketType {
     }
 
     public static String readTicketType(TicketTypeRepository ticketTypeRepository, String param) {
-        List<TicketType> ticketTypeList = null;
-        if (param.equals("all")) {
+        List<TicketType> ticketTypeList;
+        if (param.equals("all"))
             ticketTypeList = ticketTypeRepository.findAll();
-        }
-        else if (param.equals("active")) {
-            ticketTypeList = ticketTypeRepository.findAll().stream()
-                    .filter(TicketType::getIsActive)
-                    .toList();
-        }
-        ArrayNode arrayNode = objectMapper.createArrayNode();
-        for (TicketType ticketType : ticketTypeList) {
-            ObjectNode objectNode = objectMapper.createObjectNode();
-            objectNode.put("typename", ticketType.getTypeName());
-            objectNode.put("typeprice", ticketType.getTypePrice());
-            objectNode.put("isactive", ticketType.getIsActive());
-            arrayNode.add(objectNode);
-        }
+        else if (param.equals("active"))
+            ticketTypeList = ticketTypeRepository.findAllByIsActiveTrue();
+        else
+            throw new IllegalArgumentException("Invalid parameter.");
 
-        return arrayNode.toString();
+        ArrayNode an = objectMapper.createArrayNode();
+        for (TicketType ticketType : ticketTypeList) {
+            ObjectNode on = objectMapper.createObjectNode();
+            on.put("typename", ticketType.typeName);
+            on.put("typeprice", ticketType.typePrice);
+            on.put("isactive", ticketType.isActive.toString());
+            an.add(on);
+        }
+        return an.toString();
     }
     // suspend no issue
     public static void suspendTicketType(TicketTypeRepository ticketTypeRepository , String targettypename) {

@@ -1,24 +1,14 @@
 package com.hotdog.ctbs.controller.manager;
 
-// Application imports.
-import com.hotdog.ctbs.entity.Movie;
-import com.hotdog.ctbs.repository.MovieRepository;
-
-// Java imports.
-import java.time.LocalDate;
-
-// JSON deserialization imports.
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-
-// Spring imports.
+import com.hotdog.ctbs.entity.Movie;
+import com.hotdog.ctbs.repository.MovieRepository;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")

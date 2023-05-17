@@ -2,17 +2,12 @@ package com.hotdog.ctbs.controller.manager;
 
 import com.hotdog.ctbs.entity.TicketType;
 import com.hotdog.ctbs.repository.TicketTypeRepository;
-import org.apache.coyote.Response;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 /**
  * The {@code ManagerTicketTypeSuspendController} class
  * exposes the {@code /api/manager/ticketType/suspend} endpoint
- *
  */
-
-
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/manager/ticketType")

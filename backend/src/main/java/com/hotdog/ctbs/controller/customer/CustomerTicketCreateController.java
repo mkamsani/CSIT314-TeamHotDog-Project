@@ -1,19 +1,12 @@
 package com.hotdog.ctbs.controller.customer;
 
-import com.hotdog.ctbs.entity.*;
-import com.hotdog.ctbs.repository.*;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-
+import com.hotdog.ctbs.entity.Ticket;
+import com.hotdog.ctbs.repository.*;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 
 @RestController

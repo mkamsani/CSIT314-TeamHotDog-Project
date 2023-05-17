@@ -1,16 +1,9 @@
 package com.hotdog.ctbs.controller.admin;
 
-// Application imports.
-import com.hotdog.ctbs.repository.UserAccountRepository;
 import com.hotdog.ctbs.entity.UserAccount;
-
-// Spring imports.
+import com.hotdog.ctbs.repository.UserAccountRepository;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * The {@code AdminUserAccountSuspendController} class exposes

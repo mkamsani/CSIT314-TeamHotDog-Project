@@ -1,9 +1,5 @@
 package com.hotdog.ctbs.controller.manager;
 
-// Java imports.
-import java.time.LocalDate;
-
-// Spring imports.
 import com.hotdog.ctbs.repository.ScreeningRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

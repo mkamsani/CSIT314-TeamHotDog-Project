@@ -8,8 +8,10 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.hotdog.ctbs.repository.UserAccountRepository;
 import com.hotdog.ctbs.repository.UserProfileRepository;
 import jakarta.persistence.*;
-import lombok.*;
-
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -151,6 +153,7 @@ public class UserAccount {
                 yield List.of(userAccount);
             }
         };
+
         ArrayNode an = objectMapper.createArrayNode();
         for (UserAccount ua : uaList) {
             ObjectNode on = objectMapper.createObjectNode();

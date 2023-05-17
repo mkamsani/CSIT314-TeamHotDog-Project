@@ -1,13 +1,9 @@
 package com.hotdog.ctbs.controller.manager;
 
-// Application imports.
-import com.hotdog.ctbs.repository.ScreeningRepository;
 import com.hotdog.ctbs.entity.Screening;
-
-// Spring imports.
+import com.hotdog.ctbs.repository.ScreeningRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.time.LocalDate;
 
 @RestController

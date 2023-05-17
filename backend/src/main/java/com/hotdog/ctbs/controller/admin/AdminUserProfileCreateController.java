@@ -1,15 +1,10 @@
 package com.hotdog.ctbs.controller.admin;
 
-// Application imports.
-import com.hotdog.ctbs.entity.UserProfile;
-import com.hotdog.ctbs.repository.UserProfileRepository;
-
-// JSON deserialization imports.
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-
-// Spring imports.
+import com.hotdog.ctbs.entity.UserProfile;
+import com.hotdog.ctbs.repository.UserProfileRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

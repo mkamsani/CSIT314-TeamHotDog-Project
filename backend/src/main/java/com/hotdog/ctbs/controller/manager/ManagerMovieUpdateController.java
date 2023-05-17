@@ -1,25 +1,14 @@
 package com.hotdog.ctbs.controller.manager;
 
-// Application imports.
-import com.hotdog.ctbs.entity.Movie;
-import com.hotdog.ctbs.repository.MovieRepository;
-
-// Java imports.
-import java.time.LocalDate;
-
-// JSON deserialization imports.
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-
-// Spring imports.
+import com.hotdog.ctbs.entity.Movie;
+import com.hotdog.ctbs.repository.MovieRepository;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -32,7 +21,6 @@ public class ManagerMovieUpdateController {
     public ManagerMovieUpdateController(MovieRepository movieRepo)
     {
         this.movieRepo = movieRepo;
-
         this.objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
     }
 
@@ -42,7 +30,7 @@ public class ManagerMovieUpdateController {
     {
         System.out.println("MovieUpdateController.UpdateMovie() is called!");
         try {
-            JsonNode jsonNode = new ObjectMapper().readTree(json);
+            JsonNode jsonNode = objectMapper.readTree(json);
 
             Movie.updateMovie(
                     movieRepo,

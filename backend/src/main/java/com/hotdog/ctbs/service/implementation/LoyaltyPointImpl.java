@@ -1,7 +1,8 @@
 package com.hotdog.ctbs.service.implementation;
 
 import com.hotdog.ctbs.entity.LoyaltyPoint;
-import com.hotdog.ctbs.repository.*;
+import com.hotdog.ctbs.repository.LoyaltyPointRepository;
+import com.hotdog.ctbs.repository.UserAccountRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

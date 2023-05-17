@@ -8,7 +8,10 @@ import com.hotdog.ctbs.repository.CinemaRoomRepository;
 import com.hotdog.ctbs.repository.MovieRepository;
 import com.hotdog.ctbs.repository.ScreeningRepository;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -49,6 +52,8 @@ public class Screening {
     @Transient
     private static final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
+    //////////////////////////////// Service /////////////////////////////////
+
     /**
      * Create a screening, the validation process is as follows:
      * <ol>
@@ -71,7 +76,7 @@ public class Screening {
         Movie movie = movieRepo.findMovieByTitle(movieTitle).orElse(null);
         if (movie == null)
             throw new IllegalArgumentException("Movie does not exist.");
-        if (!movie.isActive())
+        if (!movie.isActive)
             throw new IllegalArgumentException("Movie is not active.");
 
         // Screening's date cannot be in the past.

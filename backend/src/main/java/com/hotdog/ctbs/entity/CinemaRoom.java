@@ -2,8 +2,8 @@ package com.hotdog.ctbs.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.hotdog.ctbs.repository.CinemaRoomRepository;
@@ -12,11 +12,8 @@ import lombok.*;
 
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
-
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -41,25 +38,31 @@ public class CinemaRoom {
     @Transient
     private static final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
-    public String readCinemaRoom(CinemaRoomRepository cinemaRoomRepository, final String param) {
-        List<CinemaRoom> cinemaRooms = null;
-        if (param.matches("\\d+")){
-            cinemaRooms = List.of(cinemaRoomRepository.findById(Integer.parseInt(param)).orElse(null));
-        }
-        else
-        {
+    //////////////////////////////// Service /////////////////////////////////
+
+    public String readCinemaRoom(CinemaRoomRepository cinemaRoomRepository, final String param)
+    {
+        List<CinemaRoom> cinemaRooms;
+
+        if (param.matches("\\d+")) {
+            int id = Integer.parseInt(param);
+            CinemaRoom cinemaRoom = cinemaRoomRepository.findById(id).orElse(null);
+            if (cinemaRoom == null) throw new IllegalArgumentException("Cinema room with does not exist: " + param);
+            cinemaRooms = List.of(cinemaRoom);
+        } else if (param.equals("all")) {
             cinemaRooms = cinemaRoomRepository.findAll();
+        } else {
+            throw new IllegalArgumentException("Invalid parameter: " + param);
         }
 
-        ArrayNode arrayNode = objectMapper.createArrayNode();
-        for(CinemaRoom cinemaRoom : cinemaRooms) {
-            ObjectNode objectNode = objectMapper.createObjectNode();
-            objectNode.put("id", cinemaRoom.id);
-            objectNode.put("isActive", cinemaRoom.isActive);
-            objectNode.put("capacity", cinemaRoom.seats.size());
-            arrayNode.add(objectNode);
+        ArrayNode an = objectMapper.createArrayNode();
+        for (CinemaRoom cinemaRoom : cinemaRooms) {
+            ObjectNode on = objectMapper.createObjectNode();
+            on.put("id", cinemaRoom.id);
+            on.put("isActive", cinemaRoom.isActive.toString());
+            on.put("capacity", cinemaRoom.seats.size());
+            an.add(on);
         }
-
-        return arrayNode.toString();
+        return an.toString();
     }
 }

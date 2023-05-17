@@ -1,7 +1,6 @@
 package com.hotdog.ctbs.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -15,7 +14,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -44,15 +42,18 @@ public class UserProfile {
     @Transient
     private static final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
-    public static void createUserProfile(UserProfileRepository userProfileRepo, String privilege, String title)
+    //////////////////////////////// Service /////////////////////////////////
+
+    /** @see com.hotdog.ctbs.controller.admin.AdminUserProfileCreateController */
+    public static void createUserProfile(UserProfileRepository userProfileRepo,
+                                         String privilege,
+                                         String title)
     {
         List<UserProfile> userProfiles = userProfileRepo.findAll();
         for (String titles : userProfiles.stream().map(UserProfile::getTitle).toList())
-            if (titles.equalsIgnoreCase(title))
-                throw new IllegalArgumentException("Title already exists.");
+            if (titles.equalsIgnoreCase(title)) throw new IllegalArgumentException("Title already exists.");
         for (String titles : new String[]{"admin", "owner", "manager", "customer", "titles", "privileges", "active", "all"})
-            if (titles.equalsIgnoreCase(title))
-                throw new IllegalArgumentException("Reserved title.");
+            if (titles.equalsIgnoreCase(title)) throw new IllegalArgumentException("Reserved title.");
 
         switch (privilege) {
             case "admin", "owner", "manager":
@@ -77,38 +78,41 @@ public class UserProfile {
         userProfileRepo.save(userProfile);
     }
 
-    public static String readUserProfile(UserProfileRepository userProfileRepo, String param)
+    /** @see com.hotdog.ctbs.controller.admin.AdminUserProfileReadController */
+    public static String readUserProfile(UserProfileRepository userProfileRepo,
+                                         String param)
     {
         if (param.equals("titles"))
             return userProfileRepo.findAllTitles().toString();
         if (param.equals("privileges"))
             return userProfileRepo.findAllPrivileges().toString();
         List<UserProfile> userProfileList = switch (param) {
-            case "admin", "owner", "manager", "customer"
-                    -> userProfileRepo.findUserProfilesByPrivilege(param);
-            case "active"
-                    -> userProfileRepo.findUserProfilesByIsActiveTrue();
-            case "all"
-                    -> userProfileRepo.findAll();
+            case "admin", "owner", "manager", "customer" -> userProfileRepo.findUserProfilesByPrivilege(param);
+            case "active" -> userProfileRepo.findUserProfilesByIsActiveTrue();
+            case "all" -> userProfileRepo.findAll();
             default -> {
                 UserProfile userProfile = userProfileRepo.findUserProfileByTitle(param).orElse(null);
                 if (userProfile == null)
-                    throw new IllegalArgumentException("User profile not found.");
+                    throw new IllegalArgumentException("User profile not found: " + param);
                 yield List.of(userProfile);
             }
         };
-        JsonNode[] jsonNodes = new JsonNode[userProfileList.size()];
-        ArrayNode arrayNode = objectMapper.createArrayNode();
-        for (int i = userProfileList.size() - 1; i >= 0; i--) {
-            UserProfile userAccount = userProfileList.get(i);
-            jsonNodes[i] = objectMapper.valueToTree(userAccount);
-            ((ObjectNode) jsonNodes[i]).remove("id");
-            arrayNode.add(jsonNodes[i]);
+
+        ArrayNode an = objectMapper.createArrayNode();
+        for (UserProfile userProfile : userProfileList) {
+            ObjectNode on = objectMapper.createObjectNode();
+            on.put("title", userProfile.title);
+            on.put("privilege", userProfile.privilege);
+            on.put("isActive", userProfile.isActive.toString());
+            an.add(on);
         }
-        return arrayNode.toString();
+        return an.toString();
     }
 
-    public static void updateUserProfile(UserProfileRepository userProfileRepo, String targetTitle, String privilege,
+    /** @see com.hotdog.ctbs.controller.admin.AdminUserProfileUpdateController */
+    public static void updateUserProfile(UserProfileRepository userProfileRepo,
+                                         String targetTitle,
+                                         String privilege,
                                          String title)
     {
         UserProfile userProfile = userProfileRepo.findUserProfileByTitle(targetTitle).orElse(null);
@@ -117,7 +121,7 @@ public class UserProfile {
         if (title.equalsIgnoreCase("customer") ||
             targetTitle.equalsIgnoreCase("customer") ||
             userProfile.privilege.equalsIgnoreCase("customer"))
-            throw new IllegalArgumentException("Cannot modify Customer.");
+            throw new IllegalArgumentException("Cannot modify customer.");
 
         switch (privilege) {
             case "admin", "owner", "manager":
@@ -138,17 +142,25 @@ public class UserProfile {
         userProfileRepo.save(userProfile);
     }
 
-    public static void suspendUserProfile(UserProfileRepository userProfileRepo, String targetTitle)
+    /** @see com.hotdog.ctbs.controller.admin.AdminUserProfileSuspendController */
+    public static void suspendUserProfile(UserProfileRepository userProfileRepo,
+                                          String targetTitle)
     {
-        UserProfile userProfile = userProfileRepo.findUserProfileByTitle(targetTitle).orElse(null);
         if (targetTitle.equalsIgnoreCase("customer"))
-            throw new IllegalArgumentException("Cannot suspend Customer.");
-        if (userProfile == null)
-            throw new IllegalArgumentException("User profile not found.");
-        if (!userProfile.getIsActive())
-            throw new IllegalArgumentException("User profile is already suspended.");
+            throw new IllegalArgumentException("Cannot suspend customer profile.");
 
-        userProfile.setIsActive(false);
+        UserProfile userProfile = userProfileRepo.findUserProfileByTitle(targetTitle).orElse(null);
+        if (userProfile == null)
+            throw new IllegalArgumentException("User profile not found: " + targetTitle);
+
+        if (!userProfile.isActive)
+            throw new IllegalArgumentException("User profile is already suspended: " + targetTitle);
+
+        String privilege = userProfile.privilege;
+        if (userProfileRepo.findUserProfilesByPrivilege(privilege).size() == 1)
+            throw new IllegalArgumentException("Cannot suspend the last " + privilege + " profile: " + targetTitle);
+
+        userProfile.isActive = false;
         userProfileRepo.save(userProfile);
     }
 }

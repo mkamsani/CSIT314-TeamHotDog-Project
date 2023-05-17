@@ -1,21 +1,10 @@
 package com.hotdog.ctbs.controller.customer;
 
-// Application imports.
 import com.hotdog.ctbs.entity.Screening;
 import com.hotdog.ctbs.repository.MovieRepository;
 import com.hotdog.ctbs.repository.ScreeningRepository;
-
-// JSON serialization imports.
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-
-// Spring imports.
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")

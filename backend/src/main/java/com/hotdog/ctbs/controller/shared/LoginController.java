@@ -1,21 +1,11 @@
 package com.hotdog.ctbs.controller.shared;
 
-// Application imports.
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.hotdog.ctbs.entity.UserAccount;
-
-// JSON deserialization imports.
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-// Spring imports.
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.hotdog.ctbs.entity.UserAccount;
 import com.hotdog.ctbs.repository.UserAccountRepository;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
 
 /**
  * The {@code LoginController} class exposes

@@ -1,24 +1,14 @@
 package com.hotdog.ctbs.controller.customer;
 
-// Application imports.
-import com.hotdog.ctbs.entity.UserAccount;
-import com.hotdog.ctbs.repository.UserAccountRepository;
-import com.hotdog.ctbs.repository.UserProfileRepository;
-
-// Java imports.
-import java.time.LocalDate;
-
-// JSON deserialization imports.
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.hotdog.ctbs.entity.UserAccount;
+import com.hotdog.ctbs.repository.UserAccountRepository;
+import com.hotdog.ctbs.repository.UserProfileRepository;
+import org.springframework.web.bind.annotation.*;
 
-// Spring imports.
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import java.time.LocalDate;
 
 /**
  * The {@code CustomerAccountCreateController} class exposes

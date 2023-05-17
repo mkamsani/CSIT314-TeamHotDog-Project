@@ -1,6 +1,5 @@
 package com.hotdog.ctbs.controller.manager;
 
-// Application imports.
 import com.hotdog.ctbs.entity.Screening;
 import com.hotdog.ctbs.repository.MovieRepository;
 import com.hotdog.ctbs.repository.ScreeningRepository;

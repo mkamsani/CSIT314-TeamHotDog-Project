@@ -3,14 +3,8 @@ package com.hotdog.ctbs.controller.customer;
 import com.hotdog.ctbs.entity.Ticket;
 import com.hotdog.ctbs.repository.TicketRepository;
 import com.hotdog.ctbs.repository.UserAccountRepository;
-
-// Spring imports.
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")

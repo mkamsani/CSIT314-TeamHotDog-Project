@@ -1,11 +1,11 @@
 package com.hotdog.ctbs.controller.manager;
 
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.hotdog.ctbs.repository.TicketTypeRepository;
-import com.hotdog.ctbs.entity.TicketType;
-import org.springframework.web.bind.annotation.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.hotdog.ctbs.entity.TicketType;
+import com.hotdog.ctbs.repository.TicketTypeRepository;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * The {@code ManagerTicketTypeReadController} class
@@ -28,7 +28,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  *       ]
  *
  */
-
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/manager/ticketType")

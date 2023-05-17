@@ -1,11 +1,11 @@
 package com.hotdog.ctbs.controller.manager;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hotdog.ctbs.entity.TicketType;
 import com.hotdog.ctbs.repository.TicketTypeRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * The {@code ManagerTicketTypeReadController} class
@@ -38,7 +38,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  *   For now, update Method should allow user to update individual fields without having to update all fields.
  *   But this depends on whether json will allow passing null/empty values.
  */
-
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/manager/ticketType")

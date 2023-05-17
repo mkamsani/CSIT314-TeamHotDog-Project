@@ -1,6 +1,5 @@
 package com.hotdog.ctbs.controller.manager;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hotdog.ctbs.entity.CinemaRoom;
 import com.hotdog.ctbs.repository.CinemaRoomRepository;
 import org.springframework.http.ResponseEntity;

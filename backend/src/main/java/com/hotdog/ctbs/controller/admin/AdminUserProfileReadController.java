@@ -1,21 +1,9 @@
 package com.hotdog.ctbs.controller.admin;
 
-// Application imports.
 import com.hotdog.ctbs.entity.UserProfile;
 import com.hotdog.ctbs.repository.UserProfileRepository;
-
-// JSON deserialization imports.
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-
-// Spring imports.
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * The {@code AdminUserProfileReadController} class exposes
@@ -44,12 +32,10 @@ import java.util.List;
 public class AdminUserProfileReadController {
 
     private final UserProfileRepository userProfileRepo;
-    private final ObjectMapper objectMapper;
 
     public AdminUserProfileReadController(UserProfileRepository userProfileRepo)
     {
         this.userProfileRepo = userProfileRepo;
-        this.objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
     }
 
     @GetMapping("/read/{param}")

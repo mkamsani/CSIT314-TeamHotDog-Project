@@ -8,10 +8,8 @@ import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import java.util.Objects;
 import java.util.UUID;
 
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -38,19 +36,21 @@ public class LoyaltyPoint {
     @Transient
     private static final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
-    @SneakyThrows
-    @Override
-    public String toString(){
-        ObjectNode json = new ObjectMapper().createObjectNode();
+    @Override // TODO : Remove
+    public String toString()
+    {
+        ObjectNode json = objectMapper.createObjectNode();
         json.put("userName", userAccount.getUsername());
         json.put("pointsRedeemed", pointsRedeemed);
         json.put("pointsTotal", pointsTotal);
         return json.toString();
     }
 
-    public Integer pointsBalance()
+    protected Integer pointsBalance()
     {
         return pointsTotal - pointsRedeemed;
     }
+
+    //////////////////////////////// Service /////////////////////////////////
 
 }

@@ -1,6 +1,5 @@
 package com.hotdog.ctbs.controller.admin;
 
-// Application imports.
 import com.hotdog.ctbs.entity.UserAccount;
 import com.hotdog.ctbs.repository.UserAccountRepository;
 import org.springframework.http.ResponseEntity;

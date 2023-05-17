@@ -5,14 +5,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.LinkedHashSet;
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -42,31 +43,14 @@ public class Seat {
     @Transient
     private static final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
-    @Override
+    @Override // TODO : Remove
     public String toString()
     {
-        ObjectNode json = new ObjectMapper().createObjectNode();
+        ObjectNode json = objectMapper.createObjectNode();
         json.put("row", String.valueOf(seatRow));
         json.put("column", String.valueOf(seatColumn));
         json.put("room", cinemaRoom.getId().toString());
         json.put("seatCode", cinemaRoom.getId().toString() + seatRow + seatColumn);
         return json.toString();
-    }
-
-    @Override
-    public boolean equals(Object o)
-    {
-        if (this == o) return true;
-        if (!(o instanceof Seat that)) return false;
-        return id.equals(that.id) &&
-               cinemaRoom.equals(that.cinemaRoom) &&
-               seatRow == that.seatRow &&
-               seatColumn.equals(that.seatColumn);
-    }
-
-    @Override
-    public int hashCode()
-    {
-        return Objects.hash(id, cinemaRoom, seatRow, seatColumn);
     }
 }

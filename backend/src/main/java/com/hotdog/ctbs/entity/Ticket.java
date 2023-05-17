@@ -8,12 +8,11 @@ import com.hotdog.ctbs.repository.*;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
-import java.time.LocalDate;
 
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -50,6 +49,8 @@ public class Ticket {
     @Transient
     private static final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
+    //////////////////////////////// Service /////////////////////////////////
+
     public static void createTicket(UserAccountRepository  userAccountRepository,
                                     TicketTypeRepository   ticketTypeRepository,
                                     ScreeningRepository    screeningRepository,
@@ -57,7 +58,7 @@ public class Ticket {
                                     LoyaltyPointRepository loyaltyPointRepository,
                                     CinemaRoomRepository   cinemaRoomRepository,
                                     TicketRepository       ticketRepository,
-                                    String                 userName,
+                                    String                 username,
                                     String                 ticketTypeName,
                                     String                 showTime,
                                     LocalDate              showDate,
@@ -66,7 +67,7 @@ public class Ticket {
                                     int                    column,
                                     Boolean                isLoyaltyPointUsed)
     {
-        UserAccount userAccount = userAccountRepository.findUserAccountByUsername(userName).orElse(null);
+        UserAccount userAccount = userAccountRepository.findUserAccountByUsername(username).orElse(null);
         if (userAccount == null)
             throw new IllegalArgumentException("Username is invalid");
 
@@ -84,18 +85,19 @@ public class Ticket {
             throw new IllegalArgumentException("Screening is invalid");
         }
 
-        Seat seat = seatRepository.findSeatBySeatRowAndAndSeatColumnAndCinemaRoom(row.charAt(0), column, cinemaRoom);
+        Seat seat = seatRepository.findSeatBySeatRowAndSeatColumnAndCinemaRoom(row.charAt(0), column, cinemaRoom).orElse(null);
         if (seat == null)
             throw new IllegalArgumentException("Seat is invalid");
 
         // Earmarked to move to CustomerLoyaltyPointUpdate Controller
-        LoyaltyPoint loyaltyPointForUser = loyaltyPointRepository.findByUserAccountUsername(userName).orElse(null);
+        LoyaltyPoint loyaltyPointForUser = loyaltyPointRepository.findByUserAccountUsername(username).orElse(null);
         if (loyaltyPointForUser == null)
             throw new IllegalArgumentException("User does not have any loyalty point");
 
         if (isLoyaltyPointUsed) {
             Double pointsBalance = Double.valueOf(loyaltyPointForUser.pointsBalance());
-            if (pointsBalance < ticketTypeRepository.findByTypeName("redemption").get().typePrice)
+            TicketType ticketTypeRedemption = ticketTypeRepository.findByTypeName("redemption").orElse(null);
+            if (ticketTypeRedemption != null && pointsBalance < ticketTypeRedemption.typePrice)
                 throw new IllegalArgumentException("Loyalty point is not enough");
         }
         else {
@@ -139,6 +141,7 @@ public class Ticket {
             throw new IllegalArgumentException("Username is invalid");
 
         List<Ticket> tickets = ticketRepository.findTicketsByCustomer_Username(username);
+
         ArrayNode an = objectMapper.createArrayNode();
         for (Ticket ticket : tickets) {
             ObjectNode on = objectMapper.createObjectNode();

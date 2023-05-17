@@ -6,25 +6,17 @@ TODO: convert this controller to the new format and remove its Implementation cl
 
 
 // Application imports.
-import com.hotdog.ctbs.entity.LoyaltyPoint;
-import com.hotdog.ctbs.service.implementation.LoyaltyPointImpl;
 
-// Java imports.
-import java.util.List;
-
-// JSON serialization imports.
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.hotdog.ctbs.entity.LoyaltyPoint;
+import com.hotdog.ctbs.service.implementation.LoyaltyPointImpl;
+import org.springframework.web.bind.annotation.*;
 
-// Spring imports.
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import java.util.List;
 
 /**
  * The {@code LoyaltyPointReadController} class exposes
