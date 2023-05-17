@@ -1,15 +1,9 @@
 package com.hotdog.ctbs.controller.manager;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.hotdog.ctbs.entity.TicketType;
-import com.hotdog.ctbs.service.implementation.TicketTypeImpl;
+import com.hotdog.ctbs.repository.TicketTypeRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * The {@code ManagerTicketTypeReadController} class
@@ -52,13 +46,10 @@ import java.util.List;
 @RequestMapping("/manager/ticketType")
 public class ManagerTicketTypeReadController {
 
-    private final TicketTypeImpl ticketTypeImpl;
+    private final TicketTypeRepository TicketTypeRepository;
 
-    private final ObjectMapper objectMapper;
-
-    public ManagerTicketTypeReadController(TicketTypeImpl ticketTypeImpl) {
-        this.ticketTypeImpl = ticketTypeImpl;
-        this.objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
+    public ManagerTicketTypeReadController(TicketTypeRepository ticketTypeRepository) {
+        TicketTypeRepository = ticketTypeRepository;
     }
 
     /**
@@ -68,23 +59,8 @@ public class ManagerTicketTypeReadController {
     public ResponseEntity<String> Read(@PathVariable final String param)
     {
         try {
-            List<TicketType> ticketTypeList = switch(param) {
-                case "active" ->
-                        ticketTypeImpl.getAllTicketTypeIsActives();
-                case "all" ->
-                        ticketTypeImpl.getAllTicketTypes();
-                default ->
-                        List.of(ticketTypeImpl.getTicketTypeByName(param));
-            };
-            ArrayNode arrayNode = objectMapper.createArrayNode();
-            for (TicketType ticketType : ticketTypeList) {
-                ObjectNode objectNode = objectMapper.createObjectNode();
-                objectNode.put("typename", ticketType.getTypeName());
-                objectNode.put("typeprice", ticketType.getTypePrice());
-                objectNode.put("isactive", ticketType.getIsActive());
-                arrayNode.add(objectNode);
-            }
-            return ResponseEntity.ok(objectMapper.writeValueAsString(arrayNode));
+
+            return ResponseEntity.ok(TicketType.readTicketType(TicketTypeRepository, param));
 
         }
         catch (Exception e){

@@ -1,7 +1,8 @@
 package com.hotdog.ctbs.controller.manager;
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.hotdog.ctbs.service.implementation.TicketTypeImpl;
+import com.hotdog.ctbs.repository.TicketTypeRepository;
+import com.hotdog.ctbs.entity.TicketType;
 import org.springframework.web.bind.annotation.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,30 +34,28 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RequestMapping("/manager/ticketType")
 public class ManagerTicketTypeCreateController {
 
-    private final TicketTypeImpl ticketTypeImpl;
-
+    private final TicketTypeRepository ticketTypeRepository;
     private final ObjectMapper objectMapper;
 
-    public ManagerTicketTypeCreateController(TicketTypeImpl ticketTypeImpl) {
-        this.ticketTypeImpl = ticketTypeImpl;
+    public ManagerTicketTypeCreateController(TicketTypeRepository ticketTypeRepository) {
+        this.ticketTypeRepository = ticketTypeRepository;
         this.objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
     }
 
 
     /** Create a {@code TicketType} based on the given JSON. */
     @PostMapping("/create/ticketType")
-    public String CreateTicketType(@RequestBody final String json) {
+    public String Create(@RequestBody final String json) {
         try{
             JsonNode jsonNode = objectMapper.readTree(json);
             String typeName = jsonNode.get("typename").asText();
             Double typePrice = jsonNode.get("typeprice").asDouble();
             Boolean isactive = jsonNode.get("isactive").asBoolean();
-            ticketTypeImpl.createTicketType(typeName, typePrice, isactive);
+            return TicketType.createTicketType(ticketTypeRepository, typeName, typePrice, isactive);
         }
         catch (Exception e){
             return e.getMessage();
         }
-        return "Success creating ticketType";
     }
 
 }

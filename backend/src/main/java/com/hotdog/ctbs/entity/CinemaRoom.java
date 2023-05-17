@@ -4,10 +4,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.hotdog.ctbs.repository.CinemaRoomRepository;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -33,29 +36,26 @@ public class CinemaRoom {
     @JsonIgnore
     protected Set<Seat> seats = new LinkedHashSet<>();
 
-    @SneakyThrows
-    @Override
-    public String toString()
-    {
-        ObjectNode json = new ObjectMapper().createObjectNode();
-        json.put("id", id.toString());
-        json.put("isActive", isActive.toString());
-        json.put("capacity", seats.size()); // Number of seats linked cinema room.
-        return json.toString();
-    }
 
-    @Override
-    public boolean equals(Object o)
-    {
-        if (this == o) return true;
-        if (!(o instanceof CinemaRoom that)) return false;
-        return id.equals(that.id) &&
-               isActive.equals(that.isActive);
-    }
+    public String readCinemaRoom(CinemaRoomRepository cinemaRoomRepository, final String param) {
+        try {
+            List<CinemaRoom> cinemaRooms = null;
+            if (param.matches("\\d+")){
+                cinemaRooms = List.of(cinemaRoomRepository.findById(Integer.parseInt(param)).orElse(null));
+            }
+            else if (param.equals("capacity")) {
+                int seatCapacity = seats.size();
+                return String.valueOf(seatCapacity);
+            }
+            else
+            {
+                cinemaRooms = cinemaRoomRepository.findAll();
+            }
 
-    @Override
-    public int hashCode()
-    {
-        return Objects.hash(id, isActive);
+        }
+        catch(Exception e){
+            return e.getMessage();
+        }
+        return "Cinema Room read successfully";
     }
 }

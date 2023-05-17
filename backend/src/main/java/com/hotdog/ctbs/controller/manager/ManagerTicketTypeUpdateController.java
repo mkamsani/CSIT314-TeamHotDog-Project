@@ -1,6 +1,8 @@
 package com.hotdog.ctbs.controller.manager;
 
-import com.hotdog.ctbs.service.implementation.TicketTypeImpl;
+import com.hotdog.ctbs.entity.TicketType;
+import com.hotdog.ctbs.repository.TicketTypeRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -41,9 +43,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/manager/ticketType")
 public class ManagerTicketTypeUpdateController {
-    private final TicketTypeImpl ticketTypeImpl;
-    public ManagerTicketTypeUpdateController(TicketTypeImpl ticketTypeImpl) {
-        this.ticketTypeImpl = ticketTypeImpl;
+    private final TicketTypeRepository ticketTypeRepository;
+
+    public ManagerTicketTypeUpdateController(TicketTypeRepository ticketTypeRepository) {
+        this.ticketTypeRepository = ticketTypeRepository;
     }
     /*
       UpdateController Method will update a specific ticket type.
@@ -53,25 +56,28 @@ public class ManagerTicketTypeUpdateController {
                                  final Boolean newIsActive)
      */
     @PutMapping(value = "/update/{targettickettypename}")
-    public String ManagerUpdateTicketType(@RequestBody String json, @PathVariable String targettickettypename)
+    public ResponseEntity<String> ManagerUpdateTicketType(@RequestBody String json, @PathVariable String targettickettypename)
     {
         System.out.println("TicketTypeUpdateController.UpdateTicketType is called");
         try {
             JsonNode jsonNode = new ObjectMapper().readTree(json);
 
-            ticketTypeImpl.updateTicketType(
+            TicketType.updateTicketType(
+                    ticketTypeRepository,
+                    // old ticket type name
                     targettickettypename,
+                    // new ticket type name
                     jsonNode.get("tickettypename").asText(),
                     jsonNode.get("tickettypeprice").asDouble(),
                     jsonNode.get("tickettypeisactive").asBoolean()
             );
+            return ResponseEntity.ok("Ticket Type Updated");
         }
         catch (Exception e){
             // delete later
             System.out.println("updateTicketType() failed");
             //
-            return e.getMessage();
+            return ResponseEntity.badRequest().body("Ticket Type Update Failed");
         }
-        return "Ticket Type Updated";
     }
 }

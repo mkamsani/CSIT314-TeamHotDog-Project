@@ -1,6 +1,9 @@
 package com.hotdog.ctbs.controller.manager;
 
-import com.hotdog.ctbs.service.implementation.TicketTypeImpl;
+import com.hotdog.ctbs.entity.TicketType;
+import com.hotdog.ctbs.repository.TicketTypeRepository;
+import org.apache.coyote.Response;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -15,19 +18,18 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/manager/ticketType")
 public class ManagerTicketTypeSuspendController {
 
-    private final TicketTypeImpl ticketTypeImpl;
+    private final TicketTypeRepository TicketTypeRepository;
 
-    public ManagerTicketTypeSuspendController(TicketTypeImpl ticketTypeImpl) {
-        this.ticketTypeImpl = ticketTypeImpl;
+    public ManagerTicketTypeSuspendController(TicketTypeRepository ticketTypeRepository) {
+        this.TicketTypeRepository = ticketTypeRepository;
     }
 
     @DeleteMapping("/suspend/{targettypename}")
-    public String Suspend(@PathVariable String targettypename) {
+    public ResponseEntity<String>Suspend(@PathVariable String targettypename) {
         try {
-            ticketTypeImpl.suspend(targettypename);
-            return "Success";
+            return ResponseEntity.ok(TicketType.suspendTicketType(TicketTypeRepository, targettypename));
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }
