@@ -13,6 +13,13 @@
   curl_close($moviesDetailsCh);
   $moviesDetails = json_decode($moviesDetails, true);
 
+  $screeningCh = curl_init();
+  curl_setopt($screeningCh, CURLOPT_URL, "http://localhost:8000/api/manager/screening/read/all");
+  curl_setopt($screeningCh, CURLOPT_RETURNTRANSFER, 1);
+  $screening = curl_exec($screeningCh);
+  curl_close($screeningCh);
+  $screening = json_decode($screening, true);
+
   ?>
 <head>
     <style>
@@ -299,6 +306,7 @@ if (isset($_POST['delete']) ) {
             <th>Genre</th>
             <th>Poster</th>
             <th>Activity</th>
+            <th>Screening</th>
         </tr>
         </thead>
         <tbody>
@@ -318,11 +326,25 @@ if (isset($_POST['delete']) ) {
                 <td>
 
                     <img class="movie-poster" src="<?php echo $poster; ?>">
+                    <?php
 
+                    foreach($screening as $screeningDetails){
+
+                        $screeningTime = $screeningDetails['showTime'];
+                        $screeningMovieName = $screeningDetails['movie'];
+                        $movieName = $movie['title'];
+                        if ($screeningMovieName == $movieName) {
+                            echo $screeningTime;
+                        }
+
+                    } ?>
                 </td>
                 <td class="movie-isActive"><?php echo $isActive; ?></td>
             </tr>
-        <?php } ?>
+            <?php } ?>
+
+
+
         </tbody>
     </table>
 </div>
