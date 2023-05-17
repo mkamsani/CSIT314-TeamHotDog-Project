@@ -36,7 +36,10 @@ public class SeatImpl implements SeatService{
     @Override
     public Seat getSeatByRowAndColumnAndCinemaRoomId(char row, Integer column, Integer cinemaRoomId){
 
-        CinemaRoom cinemaRoom = cinemaRoomRepo.findCinemaRoomById(cinemaRoomId);
+        CinemaRoom cinemaRoom = cinemaRoomRepo.findById(cinemaRoomId).orElse(null);
+        if (cinemaRoom == null) {
+            // TODO: throw exception
+        }
         return seatRepo.findSeatBySeatRowAndAndSeatColumnAndCinemaRoom(row, column, cinemaRoom);
 
     }

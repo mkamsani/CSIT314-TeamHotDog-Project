@@ -44,18 +44,9 @@ public class LoyaltyPoint {
         return json.toString();
     }
 
-    @Override
-    public boolean equals(Object o)
+    public Integer pointsBalance()
     {
-        if (this == o) return true;
-        if (!(o instanceof LoyaltyPoint that)) return false;
-        return id.equals(that.id) &&
-               userAccount.equals(that.userAccount);
+        return pointsTotal - pointsRedeemed;
     }
 
-    @Override
-    public int hashCode()
-    {
-        return Objects.hash(id, userAccount);
-    }
 }

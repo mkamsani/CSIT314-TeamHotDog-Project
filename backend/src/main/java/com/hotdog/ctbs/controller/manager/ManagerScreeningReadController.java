@@ -1,17 +1,11 @@
 package com.hotdog.ctbs.controller.manager;
 
 // Application imports.
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.hotdog.ctbs.entity.Screening;
 import com.hotdog.ctbs.repository.MovieRepository;
 import com.hotdog.ctbs.repository.ScreeningRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")

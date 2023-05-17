@@ -177,7 +177,7 @@ CREATE TABLE ticket
   PRIMARY KEY (uuid),
   uuid          Uuid        NOT NULL DEFAULT    uuid_generate_v4(),
   customer      Uuid        NOT NULL REFERENCES user_account (uuid),
-  ticket_type   TEXT        NOT NULL REFERENCES ticket_type (type_name),
+  ticket_type   TEXT        NOT NULL REFERENCES ticket_type (type_name) ON UPDATE CASCADE ON DELETE CASCADE,
   screening     Uuid        NOT NULL REFERENCES screening (uuid),
   seat          Uuid        NOT NULL REFERENCES seat (uuid),
   purchase_date Timestamptz NOT NULL DEFAULT    NOW(),

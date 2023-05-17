@@ -38,6 +38,7 @@ public class CinemaRoom {
     @JsonIgnore
     protected Set<Seat> seats = new LinkedHashSet<>();
 
+    @Transient
     public static ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
     public String readCinemaRoom(CinemaRoomRepository cinemaRoomRepository, final String param) {

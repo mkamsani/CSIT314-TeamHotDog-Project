@@ -5,15 +5,8 @@ import com.hotdog.ctbs.entity.Screening;
 import com.hotdog.ctbs.repository.MovieRepository;
 import com.hotdog.ctbs.repository.ScreeningRepository;
 
-// Java imports.
-import java.time.LocalDate;
-import java.util.List;
-
 // JSON serialization imports.
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 // Spring imports.
@@ -49,7 +42,5 @@ public class CustomerScreeningReadController {
         catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-
     }
-
 }

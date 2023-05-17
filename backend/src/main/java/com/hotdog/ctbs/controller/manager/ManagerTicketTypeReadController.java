@@ -36,11 +36,7 @@ import org.springframework.web.bind.annotation.*;
  *      ]
  *      </pre></blockquote>
  * </p>
- *
- *
  */
-
-
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/manager/ticketType")
@@ -52,16 +48,12 @@ public class ManagerTicketTypeReadController {
         TicketTypeRepository = ticketTypeRepository;
     }
 
-    /**
-     * Read a JSON array of {@code TicketType} object(s)
-     */
+    /** Read a JSON array of {@code TicketType} object(s) */
     @GetMapping(value = "/read/{param}")
     public ResponseEntity<String> Read(@PathVariable final String param)
     {
         try {
-
             return ResponseEntity.ok(TicketType.readTicketType(TicketTypeRepository, param));
-
         }
         catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());

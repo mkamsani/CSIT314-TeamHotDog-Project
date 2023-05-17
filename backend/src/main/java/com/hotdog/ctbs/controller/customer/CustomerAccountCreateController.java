@@ -4,7 +4,6 @@ package com.hotdog.ctbs.controller.customer;
 import com.hotdog.ctbs.entity.UserAccount;
 import com.hotdog.ctbs.repository.UserAccountRepository;
 import com.hotdog.ctbs.repository.UserProfileRepository;
-import com.hotdog.ctbs.service.implementation.UserAccountImpl;
 
 // Java imports.
 import java.time.LocalDate;

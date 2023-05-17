@@ -14,7 +14,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -22,22 +21,23 @@ import java.util.UUID;
 @Entity
 @Table(name = "screening")
 public class Screening {
-
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "uuid", nullable = false)
     protected UUID id;
 
-    // @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    // @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "movie_id", nullable = false)
     protected Movie movie;
 
+    /** 'morning', 'afternoon', 'evening', 'midnight' */
     @Column(name = "show_time", nullable = false)
-    protected String showTime; // ONLY 'morning', 'afternoon', 'evening', 'midnight'
+    protected String showTime;
 
+    /** 'active', 'suspended', 'cancelled' */
     @Column(name = "status", nullable = false)
-    protected String status; // ONLY 'active', 'suspended', 'cancelled'
+    protected String status;
 
     @Column(name = "show_date", nullable = false)
     protected LocalDate showDate;
