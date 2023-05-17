@@ -182,7 +182,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
             <div class="mt-2 row g-1 mx-auto">
                 <div class="col-md">
                     <div class="form-floating">
-                        <input type="date" class="form-control" name="dateOfBirth" id="dateOfBirth" value="<?php echo $dateOfBirth; ?>">
+                        <input type="date" class="form-control" name="dateOfBirth" id="dateOfBirth" value="<?php echo date('Y-m-d', strtotime($user['dateOfBirth'])); ?>">
                         <label for="dateOfBirth">Date of Birth:</label>
                     </div>
                 </div>
