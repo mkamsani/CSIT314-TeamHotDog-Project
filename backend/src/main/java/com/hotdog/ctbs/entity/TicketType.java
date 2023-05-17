@@ -35,24 +35,34 @@ public class TicketType {
 
     public static ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
-
     public static void createTicketType(TicketTypeRepository ticketTypeRepository, String typeName, Double typePrice, Boolean isActive) {
-        TicketType ticketType = new TicketType();
-        if (typeName == null || typeName == "adult" || typeName == "child" || typeName == "senior" || typeName == "student" || typeName == "redemption") {
-            ticketType.typeName = typeName;
-            ticketType.typePrice = typePrice;
-            ticketType.isActive = isActive;
-            ticketTypeRepository.save(ticketType);
-        }
-        else {
-            throw new IllegalArgumentException("Invalid Ticket Type Name");
-        }
-    }
+        if (typeName == null)
+            throw new IllegalArgumentException("Type name cannot be null.");
 
-    public static void updateTicketType(TicketTypeRepository ticketTypeRepository, String targetTypeName, String newTypeName, Double typePrice, Boolean isActive ){
+        if (typeName.equals("adult") ||
+            typeName.equals("child") ||
+            typeName.equals("senior") ||
+            typeName.equals("student") ||
+            typeName.equals("redemption"))
+            throw new IllegalArgumentException("Type name is reserved.");
+
+        for (String typeNameFromRepository : ticketTypeRepository.findAllTypeName())
+            if (typeName.equalsIgnoreCase(typeNameFromRepository))
+                throw new IllegalArgumentException("Type name already exists.");
+
         TicketType ticketType = new TicketType();
-        ticketType = ticketTypeRepository.findByTypeName((targetTypeName)).orElse(null);
-        if(ticketType == null){
+        ticketType.typeName = typeName;
+        ticketType.typePrice = typePrice;
+        ticketType.isActive = isActive;
+        ticketTypeRepository.save(ticketType);
+    }
+    // typeName has issue
+    // if i update child to childUpdated while ticketPrice is different it will still update
+    // if new Type Name is blank when updating then it will turn black
+    // update do further testing
+    public static void updateTicketType(TicketTypeRepository ticketTypeRepository, String targetTypeName, String newTypeName, Double typePrice, Boolean isActive){
+        TicketType ticketType = ticketTypeRepository.findByTypeName(targetTypeName).orElse(null);
+        if (ticketType == null)
             throw new IllegalArgumentException("Ticket Type not found");
         }
 

@@ -63,12 +63,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping("/customer/loyalty-point")
-public class LoyaltyPointReadController {
+public class CustomerLoyaltyPointReadController {
 
     private final LoyaltyPointImpl loyaltyPointImpl;
     private final ObjectMapper objectMapper;
 
-    public LoyaltyPointReadController(LoyaltyPointImpl loyaltyPointImpl)
+    public CustomerLoyaltyPointReadController(LoyaltyPointImpl loyaltyPointImpl)
     {
         this.loyaltyPointImpl = loyaltyPointImpl;
         this.objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());

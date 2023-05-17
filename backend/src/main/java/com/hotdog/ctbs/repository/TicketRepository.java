@@ -20,6 +20,8 @@ public interface TicketRepository extends JpaRepository<Ticket, UUID>{
 
     List<Ticket> findTicketsByCustomer(UserAccount userAccount);
 
+    List<Ticket> findTicketsByCustomer_Username(String username);
+
     /*List<Ticket> findTicketsByPurchaseDateBetween(LocalDate startDate, LocalDate endDate);
 
     Optional<List<Ticket>> findTicketsByPurchaseDate(LocalDate date);

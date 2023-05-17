@@ -43,6 +43,38 @@ public class Ticket {
     @Column(name = "purchase_date", nullable = false)
     protected OffsetDateTime purchaseDate;
 
+    @Transient
+    public static ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
+
+    public static void createTicket(UserAccountRepository  userAccountRepository,
+                                    TicketTypeRepository   ticketTypeRepository,
+                                    ScreeningRepository    screeningRepository,
+                                    SeatRepository         seatRepository,
+                                    LoyaltyPointRepository loyaltyPointRepository,
+                                    CinemaRoomRepository   cinemaRoomRepository,
+                                    TicketRepository       ticketRepository,
+                                    String                 userName,
+                                    String                 ticketTypeName,
+                                    String                 showTime,
+                                    LocalDate              showDate,
+                                    int                    cinemaRoomId,
+                                    String                 row,
+                                    int                    column,
+                                    Boolean                isLoyaltyPointUsed)
+    {
+        if (this == o) return true;
+        if (!(o instanceof Ticket that)) return false;
+        return id.equals(that.id) &&
+               screening.equals(that.screening) &&
+               seat.equals(that.seat);
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(id, screening, seat);
+    }
+
     /**
      * Returns a JSON representation of the ticket.
      * <br />
@@ -61,36 +93,29 @@ public class Ticket {
      *     "movie":      "Wonder Woman" <br />
      * }</pre>
      */
-    @Override
-    public String toString()
+    public static String readTicket(UserAccountRepository userAccountRepository,
+                                    TicketRepository ticketRepository,
+                                    String username)
     {
-        ObjectNode json = new ObjectMapper().createObjectNode();
-        json.put("customer", customer.getUsername());
-        json.put("type", ticketType.getTypeName());
-        json.put("price", ticketType.getTypePrice());
-        json.put("movie", screening.getMovie().getTitle());
-        json.put("cinemaRoom", String.valueOf(seat.getCinemaRoom().getId()));
-        json.put("row", String.valueOf(seat.getSeatRow()));
-        json.put("column", seat.getSeatColumn());
-        json.put("showTime", screening.getShowTime());
-        json.put("showDate", screening.getShowDate().toString());
-        json.put("purchaseDate", purchaseDate.toString());
-        return json.toString();
-    }
+        UserAccount userAccount = userAccountRepository.findUserAccountByUsername(username).orElse(null);
+        if (userAccount == null)
+            throw new IllegalArgumentException("Username is invalid");
 
-    @Override
-    public boolean equals(Object o)
-    {
-        if (this == o) return true;
-        if (!(o instanceof Ticket that)) return false;
-        return id.equals(that.id) &&
-               screening.equals(that.screening) &&
-               seat.equals(that.seat);
-    }
-
-    @Override
-    public int hashCode()
-    {
-        return Objects.hash(id, screening, seat);
+        List<Ticket> tickets = ticketRepository.findTicketsByCustomer_Username(username);
+        ArrayNode an = objectMapper.createArrayNode();
+        for (Ticket ticket : tickets) {
+            ObjectNode on = objectMapper.createObjectNode();
+            on.put("type", ticket.ticketType.typeName);
+            on.put("price", ticket.ticketType.typePrice);
+            on.put("movie", ticket.screening.movie.title);
+            on.put("cinemaRoom", String.valueOf(ticket.seat.cinemaRoom.id));
+            on.put("row", String.valueOf(ticket.seat.seatRow));
+            on.put("column", ticket.seat.seatColumn);
+            on.put("showTime", ticket.screening.showTime);
+            on.put("showDate", ticket.screening.showDate.toString());
+            on.put("purchaseDate", ticket.purchaseDate.toString());
+            an.add(on);
+        }
+        return an.toString();
     }
 }

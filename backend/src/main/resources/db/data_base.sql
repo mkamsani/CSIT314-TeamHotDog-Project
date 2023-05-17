@@ -62,7 +62,7 @@ DO $$
     BEGIN
         WHILE i <= 100 LOOP
                 INSERT INTO cinema_room (id, is_active)
-                VALUES (i, 100);
+                VALUES (i, true);
                 i := i + 1;
             END LOOP;
     END
