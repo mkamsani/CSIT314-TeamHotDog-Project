@@ -4,17 +4,19 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.hotdog.ctbs.repository.UserAccountRepository;
 import jakarta.persistence.*;
 import lombok.*;
+
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -101,5 +103,29 @@ public class UserAccount {
     public int hashCode()
     {
         return Objects.hash(id, username, email);
+    }
+
+    public String privilege()
+    {
+        return userProfile.getPrivilege();
+    }
+
+    public static String login(UserAccountRepository userAccountRepo, String username, String password)
+    {
+        UserAccount userAccount = userAccountRepo.findUserAccountByUsername(username).orElseThrow(
+                () -> new IllegalArgumentException("Invalid username or password.")
+        );
+        if (!userAccountRepo.existsUserAccountByUsernameAndPassword(username, password))
+            throw new IllegalArgumentException("Invalid username or password.");
+        if (!userAccount.isActive) throw new IllegalArgumentException("Account suspended.");
+        String privilege = userAccount.privilege();
+        if (privilege == null) throw new IllegalArgumentException("Invalid privilege.");
+        if (!privilege.equals("admin") && !privilege.equals("customer") &&
+            !privilege.equals("owner") && !privilege.equals("manager"))
+            throw new IllegalArgumentException("Invalid privilege.");
+        userAccountRepo.save(userAccount);
+        userAccount.timeLastLogin = OffsetDateTime.now();
+
+        return privilege;
     }
 }
