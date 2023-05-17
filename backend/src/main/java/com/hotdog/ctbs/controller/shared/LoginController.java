@@ -10,7 +10,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 // Spring imports.
 import com.hotdog.ctbs.repository.UserAccountRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -47,7 +46,6 @@ public class LoginController {
         this.objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
     }
 
-    // curl -X POST -H "Content-Type: application/json" -d '{"username":"mscott","password":"password-employee"}' http://localhost:8080/api/login
     /** @return the privilege of the user, or an error message */
     @PostMapping("/login")
     String Login(@RequestBody String json)
@@ -56,7 +54,7 @@ public class LoginController {
             JsonNode jsonNode = objectMapper.readTree(json);
             String username = jsonNode.get("username").asText();
             String password = jsonNode.get("password").asText();
-            return UserAccount.login(userAccountRepository, username, password);
+            return UserAccount.validateLogin(userAccountRepository, username, password);
         } catch (Exception e) {
             return e.getMessage();
         }

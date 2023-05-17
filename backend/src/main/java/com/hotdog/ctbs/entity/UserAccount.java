@@ -1,9 +1,6 @@
 package com.hotdog.ctbs.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.databind.Module;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.hotdog.ctbs.repository.UserAccountRepository;
 import jakarta.persistence.*;
 import lombok.*;
@@ -13,7 +10,6 @@ import org.hibernate.annotations.FetchMode;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
-import java.util.Objects;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -64,35 +60,22 @@ public class UserAccount {
     @Fetch(FetchMode.JOIN)
     private UserProfile userProfile;
 
-    public static String login(UserAccountRepository userAccountRepo,
-                               String username,
-                               String password)
+    public static String validateLogin(UserAccountRepository userAccountRepo,
+                                       String username,
+                                       String password)
     {
         UserAccount userAccount = userAccountRepo.findUserAccountByUsernameAndPassword(username, password).orElse(null);
         if (userAccount == null)
             throw new IllegalArgumentException("Invalid username or password.");
         if (!userAccount.isActive)
             throw new IllegalArgumentException("Account suspended.");
-        return switch (userAccount.userProfile.getPrivilege()) {
-            case "admin" -> {
+        String privilege = userAccount.userProfile.getPrivilege();
+        return switch (privilege) {
+            case "admin", "owner", "manager", "customer" ->
+            {
                 userAccount.timeLastLogin = OffsetDateTime.now();
                 userAccountRepo.save(userAccount);
-                yield "admin";
-            }
-            case "owner" -> {
-                userAccount.timeLastLogin = OffsetDateTime.now();
-                userAccountRepo.save(userAccount);
-                yield "owner";
-            }
-            case "manager" -> {
-                userAccount.timeLastLogin = OffsetDateTime.now();
-                userAccountRepo.save(userAccount);
-                yield "manager";
-            }
-            case "customer" -> {
-                userAccount.timeLastLogin = OffsetDateTime.now();
-                userAccountRepo.save(userAccount);
-                yield "customer";
+                yield privilege;
             }
             default -> throw new IllegalArgumentException("Invalid privilege.");
         };
