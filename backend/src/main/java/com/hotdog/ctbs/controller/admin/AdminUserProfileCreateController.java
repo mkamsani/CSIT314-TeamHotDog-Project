@@ -1,9 +1,8 @@
 package com.hotdog.ctbs.controller.admin;
 
 // Application imports.
-import com.hotdog.ctbs.repository.UserAccountRepository;
+import com.hotdog.ctbs.entity.UserProfile;
 import com.hotdog.ctbs.repository.UserProfileRepository;
-import com.hotdog.ctbs.service.implementation.UserProfileImpl;
 
 // JSON deserialization imports.
 import com.fasterxml.jackson.databind.JsonNode;
@@ -34,13 +33,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/admin/user-profile")
 public class AdminUserProfileCreateController {
 
-    private final UserAccountRepository userAccountRepo;
     private final UserProfileRepository userProfileRepo;
     private final ObjectMapper objectMapper;
 
-    public AdminUserProfileCreateController(UserProfileImpl userProfileImpl)
+    public AdminUserProfileCreateController(UserProfileRepository userProfileRepo)
     {
-        this.userProfileImpl = userProfileImpl;
+        this.userProfileRepo = userProfileRepo;
         this.objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
     }
 
@@ -50,7 +48,8 @@ public class AdminUserProfileCreateController {
     {
         try {
             JsonNode jsonNode = objectMapper.readTree(json);
-            userProfileImpl.create(
+            UserProfile.createUserProfile(
+                    userProfileRepo,
                     jsonNode.get("privilege").asText(),
                     jsonNode.get("title").asText()
             );

@@ -87,18 +87,16 @@ public class AdminUserAccountCreateController {
         System.out.println("AdminUserAccountCreateController.Create() called.");
         try {
             JsonNode jsonNode = objectMapper.readTree(json);
-            String username = jsonNode.get("username").asText();
-            UserAccount.createUserAccount(
-                    userAccountRepo,
-                    userProfileRepo,
-                    username,
-                    jsonNode.get("password").asText(),
-                    jsonNode.get("email").asText(),
-                    jsonNode.get("firstName").asText(),
-                    jsonNode.get("lastName").asText(),
-                    jsonNode.get("address").asText(),
-                    LocalDate.parse(jsonNode.get("dateOfBirth").asText()),
-                    jsonNode.get("title").asText()
+            UserAccount.createUserAccount(userAccountRepo,
+                                          userProfileRepo,
+                                          jsonNode.get("username").asText(),
+                                          jsonNode.get("password").asText(),
+                                          jsonNode.get("email").asText(),
+                                          jsonNode.get("firstName").asText(),
+                                          jsonNode.get("lastName").asText(),
+                                          jsonNode.get("address").asText(),
+                                          LocalDate.parse(jsonNode.get("dateOfBirth").asText()),
+                                          jsonNode.get("title").asText()
             );
             return ResponseEntity.ok("Success");
         } catch (Exception e) {

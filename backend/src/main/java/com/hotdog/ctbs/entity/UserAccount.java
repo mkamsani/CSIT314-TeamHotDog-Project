@@ -1,6 +1,10 @@
 package com.hotdog.ctbs.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.hotdog.ctbs.repository.UserAccountRepository;
 import com.hotdog.ctbs.repository.UserProfileRepository;
 import jakarta.persistence.*;
@@ -11,6 +15,7 @@ import org.hibernate.annotations.FetchMode;
 
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -60,6 +65,9 @@ public class UserAccount {
     @JoinColumn(name = "user_profile", nullable = false)
     @Fetch(FetchMode.JOIN)
     protected UserProfile userProfile;
+
+    @Transient
+    private static final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
     //////////////////////////////// Service /////////////////////////////////
 
@@ -122,6 +130,97 @@ public class UserAccount {
         userAccount.lastName = lastName;
         userAccount.address = address;
         userAccount.dateOfBirth = dateOfBirth;
+        userAccountRepo.save(userAccount);
+    }
+
+    public static String readUserAccount(UserAccountRepository userAccountRepo,
+                                         String param)
+    {
+        List<UserAccount> uaList = switch (param) {
+            case "admin", "owner", "manager", "customer" ->
+                    userAccountRepo.findUserAccountsByUserProfile_Privilege(param);
+            case "active" ->
+                    userAccountRepo.findUserAccountsByIsActiveTrue();
+            case "all" ->
+                    userAccountRepo.findAll();
+            default -> {
+                UserAccount userAccount = userAccountRepo.findUserAccountByUsername(param)
+                                                         .orElse(null);
+                if (userAccount == null)
+                    throw new IllegalArgumentException("Invalid username.");
+                yield List.of(userAccount);
+            }
+        };
+        ArrayNode an = objectMapper.createArrayNode();
+        for (UserAccount ua : uaList) {
+            ObjectNode on = objectMapper.createObjectNode();
+            on.put("username",      ua.username);
+            on.put("email",         ua.email);
+            on.put("firstName",     ua.firstName);
+            on.put("lastName",      ua.lastName);
+            on.put("dateOfBirth",   ua.dateOfBirth.toString());
+            on.put("address",       ua.address);
+            on.put("isActive",      ua.isActive.toString());
+            on.put("timeCreated",   ua.timeCreated.toString());
+            on.put("timeLastLogin", ua.timeLastLogin.toString());
+            on.put("title",         ua.userProfile.title);
+            on.put("privilege",     ua.userProfile.privilege);
+            an.add(on);
+        }
+        return an.toString();
+    }
+
+    public static void updateUserAccount(final UserAccountRepository userAccountRepo,
+                                         final UserProfileRepository userProfileRepo,
+                                         final String targetUsername,
+                                         final String username,
+                                         final String firstName,
+                                         final String lastName,
+                                         final String email,
+                                         final String address,
+                                         final LocalDate dateOfBirth,
+                                         final String title)
+    {
+        UserAccount userAccount = userAccountRepo.findUserAccountByUsername(targetUsername).orElse(null);
+        if (userAccount == null)
+            throw new IllegalArgumentException("Invalid username.");
+        UserProfile userProfile = userProfileRepo.findUserProfileByTitle(title).orElse(null);
+        if (userProfile == null)
+            throw new IllegalArgumentException("Invalid title.");
+
+        if (userAccountRepo.findUserAccountByUsername(username).isPresent() &&
+            !userAccount.username.equals(username))
+            throw new IllegalArgumentException("Username already exists: " + username);
+        if (userAccountRepo.findUserAccountByEmail(email).isPresent() &&
+            !userAccount.email.equals(email))
+            throw new IllegalArgumentException("Email already exists: " + email);
+        if (!username.matches("[a-zA-Z0-9]+"))
+            throw new IllegalArgumentException("Username must be alphanumeric: " + username);
+        if (username.equals("admin") || username.equals("customer") ||
+            username.equals("owner") || username.equals("manager"))
+            throw new IllegalArgumentException("Username is reserved: " + username);
+        if (dateOfBirth.isAfter(LocalDate.now()))
+            throw new IllegalArgumentException("Invalid date of birth: " + dateOfBirth);
+
+        userAccount.username = username.toLowerCase();
+        userAccount.email = email.toLowerCase();
+        userAccount.firstName = firstName;
+        userAccount.lastName = lastName;
+        userAccount.address = address;
+        userAccount.dateOfBirth = dateOfBirth;
+        userAccount.userProfile = userProfile;
+        userAccountRepo.save(userAccount);
+    }
+
+    public static void suspendUserAccount(UserAccountRepository userAccountRepo,
+                                          String targetUsername)
+    {
+        UserAccount userAccount = userAccountRepo.findUserAccountByUsername(targetUsername).orElse(null);
+        if (userAccount == null)
+            throw new IllegalArgumentException("Invalid username: " + targetUsername);
+        if (!userAccount.getIsActive())
+            throw new IllegalArgumentException("User account is already suspended: " + targetUsername);
+        userAccount.isActive = false;
         userAccountRepo.save(userAccount);
     }
 }

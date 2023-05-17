@@ -1,19 +1,10 @@
 package com.hotdog.ctbs.controller.admin;
 
 // Application imports.
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.hotdog.ctbs.entity.UserAccount;
 import com.hotdog.ctbs.repository.UserAccountRepository;
-import com.hotdog.ctbs.repository.UserProfileRepository;
-import com.hotdog.ctbs.service.implementation.UserAccountImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * The {@code AdminUserAccountReadController} class exposes
@@ -71,13 +62,10 @@ import java.util.List;
 public class AdminUserAccountReadController {
 
     private final UserAccountRepository userAccountRepo;
-    private final UserProfileRepository userProfileRepo;
-    private final ObjectMapper objectMapper;
 
-    public AdminUserAccountReadController(UserAccountImpl userAccountImpl)
+    public AdminUserAccountReadController(final UserAccountRepository userAccountRepo)
     {
-        this.userAccountImpl = userAccountImpl;
-        this.objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
+        this.userAccountRepo = userAccountRepo;
     }
 
     /** Read a JSON array of {@code UserAccount} object(s). */
@@ -85,33 +73,8 @@ public class AdminUserAccountReadController {
     public ResponseEntity<String> Read(@PathVariable final String param)
     {
         try {
-            List<UserAccount> uaList = switch (param) {
-                case "admin", "owner", "manager", "customer" ->
-                        userAccountImpl.getUserAccountsByPrivilege(param);
-                case "active" ->
-                        userAccountImpl.getActiveUserAccounts();
-                case "all" ->
-                        userAccountImpl.getAllUserAccounts();
-                default ->
-                        List.of(userAccountImpl.getUserAccountByUsername(param));
-            };
-            ArrayNode an = objectMapper.createArrayNode();
-            for (UserAccount ua : uaList) {
-                ObjectNode on = objectMapper.createObjectNode();
-                on.put("username",      ua.getUsername());
-                on.put("email",         ua.getEmail());
-                on.put("firstName",     ua.getFirstName());
-                on.put("lastName",      ua.getLastName());
-                on.put("dateOfBirth",   ua.getDateOfBirth().toString());
-                on.put("address",       ua.getAddress());
-                on.put("isActive",      ua.getIsActive().toString());
-                on.put("timeCreated",   ua.getTimeCreated().toString());
-                on.put("timeLastLogin", ua.getTimeLastLogin().toString());
-                on.put("title",         ua.getUserProfile().getTitle());
-                on.put("privilege",     ua.getUserProfile().getPrivilege());
-                an.add(on);
-            }
-            return ResponseEntity.ok(objectMapper.writeValueAsString(an));
+            String json = UserAccount.readUserAccount(userAccountRepo, param);
+            return ResponseEntity.ok(json);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

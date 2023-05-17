@@ -1,10 +1,8 @@
 package com.hotdog.ctbs.controller.admin;
 
 // Application imports.
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hotdog.ctbs.repository.UserAccountRepository;
-import com.hotdog.ctbs.repository.UserProfileRepository;
-import com.hotdog.ctbs.service.implementation.UserAccountImpl;
+import com.hotdog.ctbs.entity.UserAccount;
 
 // Spring imports.
 import org.springframework.http.ResponseEntity;
@@ -31,12 +29,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class AdminUserAccountSuspendController {
 
     private final UserAccountRepository userAccountRepo;
-    private final UserProfileRepository userProfileRepo;
-    private final ObjectMapper objectMapper;
 
-    public AdminUserAccountSuspendController(UserAccountImpl userAccountImpl)
+    public AdminUserAccountSuspendController(UserAccountRepository userAccountRepo)
     {
-        this.userAccountImpl = userAccountImpl;
+        this.userAccountRepo = userAccountRepo;
     }
 
     /** Suspend a {@code UserAccount} based on the given {@code PathVariable}. */
@@ -44,7 +40,7 @@ public class AdminUserAccountSuspendController {
     public ResponseEntity<String> Suspend(@PathVariable String targetUsername)
     {
         try {
-            userAccountImpl.suspend(targetUsername);
+            UserAccount.suspendUserAccount(userAccountRepo, targetUsername);
             return ResponseEntity.ok("Success");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
