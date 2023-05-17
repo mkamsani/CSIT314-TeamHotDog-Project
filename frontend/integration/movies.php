@@ -85,6 +85,8 @@
 </head>
 
 
+
+
 <nav class="navbar navbar-expand-sm">
     <div class="container">
         <a class="navbar-brand" href="index.php">
@@ -249,6 +251,44 @@ if (isset($_POST['suspend'])) {
             </div>';
     }
 }
+
+
+if (isset($_POST['delete']) ) {
+    $deleteMovieName = str_replace(' ', '%20', $_POST['movies']);
+    $deleteMoviesCh = curl_init( 'http://localhost:8000/api/manager/movie/delete/'.$deleteMovieName);
+
+    curl_setopt($deleteMoviesCh, CURLOPT_CUSTOMREQUEST, "DELETE");
+    curl_setopt($deleteMoviesCh, CURLOPT_POSTFIELDS, $deleteMovieName);
+    curl_setopt($deleteMoviesCh, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($deleteMoviesCh, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+    $deleteResponse = curl_exec($deleteMoviesCh);
+    curl_close($deleteMoviesCh);
+    //print_r($deleteResponse);
+//    echo "<meta http-equiv='refresh' content='0'>";
+    if (strpos($deleteResponse, 'Success') !== false) //Show success message
+    {
+        echo '
+                    <div class="container mt-5">
+                        <div class="alert alert-success mb-3 mt-3" id="successMsg" style="width: 75%;">
+                        <strong>Success!</strong> Movie has been deleted. </a>
+                        to view Movies, or go <a href="" class="alert-link">blahblahblah</a>.
+                        </div>
+                    </div>';
+    }
+
+    else
+    {
+        // Error message
+        echo '
+            <div class="container mt-3">
+                <div class="alert alert-danger" style="width: 75%;">
+                    <strong>Error:</strong> ' . $deleteResponse . '
+                </div>
+            </div>';
+    }
+}
+
+
 ?>
 <div class="container mt-3 center movies-container">
     <div class="input-group mb-3" style="width: 40%; margin: auto;">
@@ -328,13 +368,6 @@ if (isset($_POST['suspend'])) {
                 <input type="text" class="form-control" name="landScapePoster" id="landScapePoster" placeholder="Enter landscape image URL">
             </div>
 
-            <div class="mt-3">
-                <select class="form-control" name="isActive" id="isActive">
-                    <option>Select Movie Activity</option>
-                    <option value="TRUE">Active</option>
-                    <option value="FALSE">Not Active</option>
-                </select>
-            </div>
 
             <select class="form-control" name="moviesCR" id="moviesCR">
                 <option>Select Content Rating</option>
@@ -352,6 +385,7 @@ if (isset($_POST['suspend'])) {
             <input type="submit" class="btn btn-primary" name="update" value="Update">
             <input type="submit" class="btn btn-primary" name="create" value="Create">
             <input type="submit" class="btn btn-outline-danger" name="suspend" value="Suspend">
+            <input type="submit" class="btn btn-outline-danger" name="delete" value="Delete">
 
 
         </div>
