@@ -55,7 +55,7 @@ public class TicketType {
         TicketType ticketType = new TicketType();
         ticketType.typeName = typeName;
         ticketType.typePrice = typePrice;
-        ticketType.isActive = isActive;
+        ticketType.isActive = isActive;       //
         ticketTypeRepository.save(ticketType);
     }
     // typeName has issue
