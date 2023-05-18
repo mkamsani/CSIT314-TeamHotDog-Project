@@ -49,13 +49,13 @@ public class TicketType {
             throw new IllegalArgumentException("Type name is reserved.");
 
         for (String typeNameFromRepository : ticketTypeRepository.findAllTypeName())
-            if (typeName.equalsIgnoreCase(typeNameFromRepository))
+            if (typeName.equalsIgnoreCase(typeNameFromRepository)) //
                 throw new IllegalArgumentException("Type name already exists.");
 
         TicketType ticketType = new TicketType();
         ticketType.typeName = typeName;
         ticketType.typePrice = typePrice;
-        ticketType.isActive = isActive;       //
+        ticketType.isActive = isActive;
         ticketTypeRepository.save(ticketType);
     }
     // typeName has issue
