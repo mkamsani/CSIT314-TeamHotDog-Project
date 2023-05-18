@@ -35,4 +35,23 @@ public interface TicketRepository extends JpaRepository<Ticket, UUID> {
     Optional<List<Ticket>> findTicketsByPurchaseDate(LocalDate date);
     Optional<List<Ticket>> findTicketsByPurchaseDateMonth(Integer month);
 */
+
+    // TODO : Remove and replace with native Java approach.
+    @Query(value = """
+            SELECT json_agg(json_build_object('seatRow', seat_row, 'seatColumn', seat_column, 'seatConcat', concat(seat_row, seat_column))) "seats"
+            FROM (SELECT seat_row, seat_column
+                  FROM seat
+                  INNER JOIN screening s ON s.cinema_room = seat.cinema_room
+                  WHERE s.show_date = ?1
+                    AND s.cinema_room = ?2
+                    AND s.show_time = ?3
+                    AND seat.uuid NOT IN
+                        (SELECT ticket.seat
+                         FROM ticket
+                         INNER JOIN screening ON screening.uuid = ticket.screening
+                         WHERE screening.uuid = s.uuid)
+                  ORDER BY seat_row, seat_column) AS seats
+                  """, nativeQuery = true
+    ) // LocalDate showDate, Integer cinemaRoomId, String showTime, returns an ArrayList of Strings
+    Object findAvailableSeats(LocalDate showDate, Integer cinemaRoomId, String showTime);
 }
