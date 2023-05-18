@@ -135,7 +135,7 @@ DECLARE
     dd integer;
 BEGIN
     select uuid from screening order by random() limit 1 into random_screening;
-    select uuid from seat order by random() limit 1 into random_seat;
+    select seat.uuid from seat INNER JOIN screening on seat.cinema_room = screening.cinema_room WHERE screening.uuid = random_screening order by random() limit 1 into random_seat;
     select uuid from user_account
                 where user_profile = (SELECT uuid FROM user_profile WHERE privilege = 'customer')
                 order by random() limit 1 into random_user_account;
