@@ -54,7 +54,7 @@ public class Movie {
     @Column(name = "content_rating", nullable = false, length = Integer.MAX_VALUE)
     protected String contentRating;
 
-    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "movie")
     @JsonIgnore
     protected Set<Screening> screenings = new LinkedHashSet<>();
 

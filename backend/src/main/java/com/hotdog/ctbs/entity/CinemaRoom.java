@@ -31,7 +31,7 @@ public class CinemaRoom {
     @JsonIgnore
     protected Boolean isActive;
 
-    @OneToMany(mappedBy = "cinemaRoom", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "cinemaRoom")
     @JsonIgnore
     protected Set<Seat> seats = new LinkedHashSet<>();
 

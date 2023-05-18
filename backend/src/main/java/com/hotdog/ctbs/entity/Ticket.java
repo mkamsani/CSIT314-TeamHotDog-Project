@@ -28,17 +28,14 @@ public class Ticket {
     @JoinColumn(name = "customer", nullable = false)
     protected UserAccount customer;
 
-    //@ManyToOne(fetch = FetchType.LAZY, optional = false)
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "ticket_type", nullable = false, referencedColumnName = "type_name")
     protected TicketType ticketType;
 
-    //@ManyToOne(fetch = FetchType.LAZY, optional = false)
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "screening", nullable = false)
     protected Screening screening;
 
-    //@ManyToOne(fetch = FetchType.LAZY, optional = false)
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "seat", nullable = false)
     protected Seat seat;
@@ -80,7 +77,7 @@ public class Ticket {
             throw new IllegalArgumentException("CinemaRoomID is invalid");
         }
 
-        Screening screening = screeningRepository.findScreeningByShowTimeAndAndShowDateAndAndCinemaRoom(showTime, showDate, cinemaRoomId).orElse(null);
+        Screening screening = screeningRepository.findScreeningByShowTimeAndShowDateAndCinemaRoom_Id(showTime, showDate, cinemaRoomId).orElse(null);
         if (screening == null) {
             throw new IllegalArgumentException("Screening is invalid");
         }

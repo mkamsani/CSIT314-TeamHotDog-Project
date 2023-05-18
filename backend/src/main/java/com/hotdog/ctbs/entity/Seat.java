@@ -32,7 +32,7 @@ public class Seat {
     protected CinemaRoom cinemaRoom;
 
     @Column(name = "seat_row", nullable = false, length = 1)
-    protected char seatRow;
+    protected Character seatRow;
 
     @Column(name = "seat_column", nullable = false)
     protected Integer seatColumn;

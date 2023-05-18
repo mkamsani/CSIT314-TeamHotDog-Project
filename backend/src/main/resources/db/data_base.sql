@@ -131,6 +131,8 @@ FROM ticket
          INNER JOIN user_account ON user_account.uuid = ticket.customer
          INNER JOIN ticket_type ON ticket_type.type_name = ticket.ticket_type
          INNER JOIN seat ON seat.uuid = ticket.seat
-         INNER JOIN screening ON screening.uuid = ticket.screening;
+         INNER JOIN screening ON screening.uuid = ticket.screening
+ORDER BY show_date, show_time, seat_row, seat_column;
+-- ORDER BY show_date, show_time, cinema_room, seat_row, seat_column;
 
 SELECT 'Success' AS result;

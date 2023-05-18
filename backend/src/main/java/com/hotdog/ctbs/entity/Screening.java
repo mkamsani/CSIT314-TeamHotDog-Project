@@ -15,10 +15,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -33,8 +30,7 @@ public class Screening {
     @Column(name = "uuid", nullable = false)
     protected UUID id;
 
-    // @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "movie_id", nullable = false)
     protected Movie movie;
 
@@ -49,7 +45,7 @@ public class Screening {
     @Column(name = "show_date", nullable = false)
     protected LocalDate showDate;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "cinema_room", nullable = false)
     protected CinemaRoom cinemaRoom;
 
@@ -60,12 +56,18 @@ public class Screening {
     protected Set<Ticket> tickets = new LinkedHashSet<>();
 
     /** @return available seats for this screening. */
-    public Set<Seat> getAvailableSeats()
+    public List<Seat> getAvailableSeats()
     {
         Set<Seat> seats = cinemaRoom.seats;
         for (Ticket ticket : tickets)
             seats.remove(ticket.seat);
-        return seats;
+        // Sort the seats by the seatRow, then seatColumn.
+        return seats.stream().sorted((s1, s2) -> {
+            if (s1.seatRow.equals(s2.seatRow))
+                return s1.seatColumn.compareTo(s2.seatColumn);
+            else
+                return s1.seatRow.compareTo(s2.seatRow);
+        }).toList();
     }
 
     //////////////////////////////// Service /////////////////////////////////
@@ -113,7 +115,7 @@ public class Screening {
             throw new IllegalArgumentException("Cinema room is not active.");
 
         // A cinema room only can have 4 showTime in a day.
-        List<Screening> screenings = screeningRepo.findScreeningsByShowDateAndCinemaRoom(showDate, cinemaRoomId);
+        List<Screening> screenings = screeningRepo.findScreeningsByShowDateAndCinemaRoom(showDate, cinemaRoom);
         if (screenings != null && screenings.size() >= 4) {
             throw new IllegalArgumentException("Cinema room is already full for the given date.");
         }
@@ -200,14 +202,49 @@ public class Screening {
             }
         };
 
+        // Sort the list by date, then a time of "morning", "afternoon", "evening", "midnight", then cinema room.
+        activeScreeningList.sort((Screening o1, Screening o2) -> {
+            if (o1.showDate.isBefore(o2.showDate)) return -1;
+            if (o1.showDate.isAfter(o2.showDate)) return 1;
+            if (o1.showTime.equals("morning") || o2.showTime.equals("morning"))
+                return o1.showTime.equals("morning") ? -1 : 1;
+            if (o1.showTime.equals("afternoon") || o2.showTime.equals("afternoon"))
+                return o1.showTime.equals("afternoon") ? -1 : 1;
+            if (o1.showTime.equals("evening") || o2.showTime.equals("evening"))
+                return o1.showTime.equals("evening") ? -1 : 1;
+            if (o1.showTime.equals("midnight") || o2.showTime.equals("midnight"))
+                return o1.showTime.equals("midnight") ? -1 : 1;
+            return o1.cinemaRoom.getId().compareTo(o2.cinemaRoom.getId());
+        });
+
         ArrayNode an = objectMapper.createArrayNode();
         for (Screening screening : activeScreeningList) {
             ObjectNode on = objectMapper.createObjectNode();
             on.put("movie", screening.movie.getTitle());
             on.put("showTime", screening.showTime);
-            on.put("status", screening.status);
             on.put("showDate", screening.showDate.toString());
             on.put("cinemaRoom", screening.cinemaRoom.getId());
+            an.add(on);
+        }
+        return an.toString();
+    }
+
+    public static String readScreeningSeatsCustomer(ScreeningRepository screeningRepo,
+                                                    final LocalDate showDate,
+                                                    final String showTime,
+                                                    final Integer cinemaRoomId)
+    {
+        Screening screening = screeningRepo.findScreeningByShowTimeAndShowDateAndCinemaRoom_Id(showTime, showDate, cinemaRoomId)
+                                           .orElse(null);
+        if (screening == null)
+            throw new IllegalArgumentException("Screening does not exist.");
+
+        ArrayNode an = objectMapper.createArrayNode();
+        for (Seat seat : screening.getAvailableSeats()) {
+            ObjectNode on = objectMapper.createObjectNode();
+            on.put("row", seat.seatRow.toString());
+            on.put("column", seat.seatColumn.toString());
+            on.put("concat", seat.seatRow.toString() + seat.seatColumn.toString());
             an.add(on);
         }
         return an.toString();
@@ -225,7 +262,7 @@ public class Screening {
                                        Integer newCinemaRoomId)
     {
         // find current screening objects first
-        Screening currentScreening = screeningRepo.findScreeningByShowTimeAndAndShowDateAndAndCinemaRoom(targetShowTime, targetShowDate, targetCinemaRoomId)
+        Screening currentScreening = screeningRepo.findScreeningByShowTimeAndShowDateAndCinemaRoom_Id(targetShowTime, targetShowDate, targetCinemaRoomId)
                                                   .orElse(null);
         if (currentScreening == null)
             throw new IllegalArgumentException();
@@ -273,7 +310,7 @@ public class Screening {
                                         LocalDate currentShowDate,
                                         Integer cinemaRoomId)
     {
-        Screening currentScreening = screeningRepo.findScreeningByShowTimeAndAndShowDateAndAndCinemaRoom(
+        Screening currentScreening = screeningRepo.findScreeningByShowTimeAndShowDateAndCinemaRoom_Id(
                 currentShowTime, currentShowDate, cinemaRoomId
         ).orElse(null);
 

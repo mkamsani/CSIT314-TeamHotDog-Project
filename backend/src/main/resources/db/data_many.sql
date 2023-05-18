@@ -198,6 +198,15 @@ VALUES
   ('The Last Samurai', 'action', 'An American soldier finds himself in Japan during the 1870s and is captured by samurai warriors.', '2003-12-05', 'https://www.themoviedb.org/t/p/w440_and_h660_face/tGI6kqOIDgTw4DhEhGhV542VGf3.jpg', 'https://www.themoviedb.org/t/p/w1066_and_h600_bestv2/4m0eLZzOr5W1BK9el9ASQrTwd0m.jpg', TRUE, 'r21'),
   ('Collateral', 'thriller', 'A cab driver finds himself the hostage of an engaging contract killer as he makes his rounds from hit to hit during one night in Los Angeles.', '2004-08-06', 'https://www.themoviedb.org/t/p/w440_and_h660_face/iOpi3ut5DhQIbrVVjlnmfy2U7dI.jpg', 'https://www.themoviedb.org/t/p/w1066_and_h600_bestv2/lEfZFNs5hr1Pgn4vpb7X31J927x.jpg', TRUE, 'r21');
 
+DO $$
+  DECLARE
+  BEGIN
+    WHILE (SELECT COUNT(*) FROM screening) < 495 LOOP
+        CALL random_screening();
+      END LOOP;
+  END
+$$;
+
 -- Insert a max of 500 random tickets
 DO $$
     DECLARE
@@ -206,15 +215,6 @@ DO $$
             CALL random_ticket();
             END LOOP;
     END
-$$;
-
-DO $$
-  DECLARE
-  BEGIN
-    WHILE (SELECT COUNT(*) FROM screening) < 495 LOOP
-            CALL random_screening();
-            END LOOP;
-  END
 $$;
 
 /*

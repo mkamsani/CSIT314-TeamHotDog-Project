@@ -48,8 +48,6 @@ TO-DO will not contain a hyphen in the actual comments below.
 | seat                   |  R    | In progress | 100% generated.
 | monthly_rating_report  |  R    | Not started | TODO.
 | monthly_revenue_report |  R    | Not started | TODO.
-| food_order             | CRUD  | Not started | Not implemented.
-| food_combo             | CRUD  | Not started | Not implemented.
 */
 
 DROP SCHEMA IF EXISTS public CASCADE;
@@ -118,34 +116,32 @@ CREATE TABLE movie
   uuid           Uuid         NOT NULL DEFAULT uuid_generate_v4(),
   is_active      BOOL         NOT NULL DEFAULT TRUE, -- Suspends a movie.
   title          VARCHAR(255) NOT NULL,
-  genre          VARCHAR(255) NOT NULL, -- .toLowerCase() wikipedia
+  genre          Citext       NOT NULL, -- .toLowerCase() wikipedia
   description    VARCHAR(255) NOT NULL,
   release_date   DATE         NOT NULL,
   image_url      VARCHAR(255) NOT NULL DEFAULT 'https://raw.githubusercontent.com/assets/default.jpg',
-  landscape_image_url VARCHAR(255) NOT NULL DEFAULT 'https://raw.githubusercontent.com/assets/default.jpg',
-  content_rating VARCHAR(255) NOT NULL,
+  landscape_image_url         VARCHAR(255) NOT NULL DEFAULT 'https://raw.githubusercontent.com/assets/default.jpg',
+  content_rating Citext NOT NULL,
   CHECK (content_rating IN ('g', 'pg', 'pg13', 'nc16', 'm18', 'r21'))
 );
 
 CREATE TABLE cinema_room
 (
   PRIMARY KEY (id),
-  id        INTEGER NOT NULL CHECK (id > 0 AND id <= 100), -- Room number, max 8.
+  id        INTEGER NOT NULL CHECK (id > 0 AND id <= 100),
   is_active BOOLEAN NOT NULL    DEFAULT TRUE             -- FALSE if room is under maintenance.
 );
 
+-- Java:     if (screening.getShowDate().isBefore(LocalDate.now())) { screening.setIsActive(false); }
 CREATE TABLE screening
 (
   PRIMARY KEY (uuid),
   uuid        Uuid         NOT NULL DEFAULT    uuid_generate_v4(),
   status      VARCHAR(9)   NOT NULL DEFAULT    'active' CHECK (status IN ('active', 'suspended', 'cancelled')),
   movie_id    Uuid         NOT NULL REFERENCES movie (uuid),
-  cinema_room INTEGER      NOT NULL REFERENCES cinema_room (id),
-
-  -- Java:     if (screening.getShowDate().isBefore(LocalDate.now())) { screening.setIsActive(false); }
-  -- Postgres: CREATE FUNCTION + CREATE TRIGGER TODO
-  show_date   DATE       NOT NULL,
-  show_time   VARCHAR(9) NOT NULL    CHECK      (show_time IN ('morning', 'afternoon', 'evening', 'midnight'))
+  show_date   DATE         NOT NULL,
+  show_time   VARCHAR(9)   NOT NULL CHECK (show_time IN ('morning', 'afternoon', 'evening', 'midnight')),
+  cinema_room INTEGER      NOT NULL REFERENCES cinema_room (id)
 );
 
 -- TRIGGER generates 280 seats, after every INSERT INTO cinema_room.
@@ -167,7 +163,7 @@ CREATE TABLE ticket_type
 (
   PRIMARY KEY (uuid),
   uuid       Uuid           NOT NULL DEFAULT uuid_generate_v4(),
-  type_name  TEXT           NOT NULL UNIQUE,                  -- Defaults: ('adult', 'student', 'child', 'senior')
+  type_name  Citext         NOT NULL UNIQUE,                  -- Defaults: ('adult', 'student', 'child', 'senior')
   type_price NUMERIC(10, 2) NOT NULL CHECK (type_price >= 0), -- e.g. 10.50
   is_active  BOOLEAN        NOT NULL DEFAULT TRUE
 );
@@ -176,9 +172,9 @@ CREATE TABLE ticket
 (
   PRIMARY KEY (uuid),
   uuid          Uuid        NOT NULL DEFAULT    uuid_generate_v4(),
-  customer      Uuid        NOT NULL REFERENCES user_account (uuid),
+  customer      Uuid        NOT NULL REFERENCES user_account (uuid)     ON UPDATE CASCADE ON DELETE CASCADE,
   ticket_type   TEXT        NOT NULL REFERENCES ticket_type (type_name) ON UPDATE CASCADE ON DELETE CASCADE,
-  screening     Uuid        NOT NULL REFERENCES screening (uuid),
+  screening     Uuid        NOT NULL REFERENCES screening (uuid)        ON UPDATE CASCADE ON DELETE CASCADE,
   seat          Uuid        NOT NULL REFERENCES seat (uuid),
   purchase_date Timestamptz NOT NULL DEFAULT    NOW(),
 
@@ -187,14 +183,10 @@ CREATE TABLE ticket
   UNIQUE (seat, screening)
 );
 
------------------------------------------------------------------------------------------------------------------------
--- Do not edit anything below until we are done with what's above.
------------------------------------------------------------------------------------------------------------------------
-
 -- Rating review will be done with along with loyalty.
 CREATE TABLE rating_review
 (
-  PRIMARY KEY (uuid),
+  PRIMARY KEY (uuid), -- TODO : give this table its own UUID
   uuid   Uuid    NOT NULL REFERENCES loyalty_point (uuid),
   rating INTEGER NOT NULL CHECK (rating > 0 AND rating <= 5),
   review TEXT    NOT NULL CHECK (LENGTH(review) > 0) -- e.g. "The cinema's popcorn is the best!"
@@ -300,12 +292,7 @@ reasons:
  owner should not change the values in the report.
  ^ justify why we use a view when asked in class.
  2
-*/
--- SELECT *
--- FROM monthly_revenue_report WHERE tickets.purchase_date::DATE > NOW() - INTERVAL '1 week' ;
--- FROM monthly_revenue_report WHERE tickets.purchase_date::DATE > NOW() - INTERVAL '1 day' ;
 
-/*
 for every ticket bought save the current date
 another table: for every month, check how many tickets are bought, have a counter: in this table or another table
 output this value to put into the report
