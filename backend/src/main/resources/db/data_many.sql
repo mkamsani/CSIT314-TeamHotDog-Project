@@ -207,3 +207,37 @@ DO $$
             END LOOP;
     END
 $$;
+
+DO $$
+  DECLARE
+  BEGIN
+    WHILE (SELECT COUNT(*) FROM screening) < 495 LOOP
+            CALL random_screening();
+            END LOOP;
+  END
+$$;
+
+/*
+DO $$
+  DECLARE
+    -- Declare an integer to hold the random number:
+    random_rating   INTEGER;
+    random_customer Uuid;
+    random_review   TEXT;
+  BEGIN
+    WHILE (SELECT COUNT(*) FROM rating_review) < 195
+      LOOP
+        -- Random rating between 1 and 5.
+        random_rating := FLOOR(RANDOM() * 5 + 1);
+        -- Random customer.
+        SELECT ua.uuid FROM user_account ua INNER JOIN user_profile up ON ua.user_profile = up.uuid
+        WHERE  up.privilege = 'customer' ORDER BY RANDOM() LIMIT 1 INTO random_customer;
+        -- Random review, a paragraph of 50 words. Each sentence has 5 words.
+        random_review := 'This is a random review with some randomly generated characters: ' || md5(random()::text);
+        -- Insert a random rating_review.
+        INSERT INTO rating_review (uuid, rating, review) VALUES (random_customer, random_rating, random_review);
+      END LOOP;
+  END
+$$;
+*/
+
