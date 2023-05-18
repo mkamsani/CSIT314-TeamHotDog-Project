@@ -1,5 +1,6 @@
 package com.hotdog.ctbs.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -14,7 +15,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -23,6 +26,7 @@ import java.util.UUID;
 @Setter
 @Entity
 @Table(name = "screening")
+@JsonIgnoreProperties({"seats"})
 public class Screening {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -51,6 +55,18 @@ public class Screening {
 
     @Transient
     private static final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
+
+    @OneToMany(mappedBy = "screening")
+    protected Set<Ticket> tickets = new LinkedHashSet<>();
+
+    /** @return available seats for this screening. */
+    public Set<Seat> getAvailableSeats()
+    {
+        Set<Seat> seats = cinemaRoom.seats;
+        for (Ticket ticket : tickets)
+            seats.remove(ticket.seat);
+        return seats;
+    }
 
     //////////////////////////////// Service /////////////////////////////////
 
