@@ -71,22 +71,53 @@ $$;
 
 -- Insert 5 default screenings, with a fixed date and time.
 INSERT INTO screening
-    (movie_id, cinema_room, show_date, show_time)
+    (movie_id, cinema_room, show_date, show_time, status)
 VALUES
-    ((SELECT uuid FROM movie WHERE title = 'Spider-Man'), 1, '2023-05-23', 'morning'),
-    ((SELECT uuid FROM movie WHERE title = 'Spider-Man'), 1, '2023-05-23', 'afternoon'),
-    ((SELECT uuid FROM movie WHERE title = 'Spider-Man'), 1, '2023-05-23', 'evening'),
-    ((SELECT uuid FROM movie WHERE title = 'Spider-Man'), 1, '2023-05-23', 'midnight'),
-    ((SELECT uuid FROM movie WHERE title = 'Spider-Man'), 5, '2023-01-01', 'afternoon');
+    ((SELECT uuid FROM movie WHERE title = 'Spider-Man'), 1, '2023-05-23', 'morning', 'active'),
+    ((SELECT uuid FROM movie WHERE title = 'Spider-Man'), 1, '2023-05-23', 'afternoon', 'active'),
+    ((SELECT uuid FROM movie WHERE title = 'Spider-Man'), 1, '2023-05-23', 'evening', 'active'),
+    ((SELECT uuid FROM movie WHERE title = 'Spider-Man'), 1, '2023-05-23', 'midnight', 'active'),
+    ((SELECT uuid FROM movie WHERE title = 'Spider-Man'), 5, '2023-01-01', 'afternoon','suspended'),
+    ((SELECT uuid FROM movie WHERE title = 'Inception'), 2, '2023-05-24', 'morning', 'active'),
+    ((SELECT uuid FROM movie WHERE title = 'Inception'), 2, '2023-05-24', 'afternoon', 'active'),
+    ((SELECT uuid FROM movie WHERE title = 'Inception'), 2, '2023-05-24', 'evening', 'active'),
+    ((SELECT uuid FROM movie WHERE title = 'Inception'), 2, '2023-05-24', 'midnight', 'active'),
+    ((SELECT uuid FROM movie WHERE title = 'Black Adam'), 3, '2023-05-25', 'morning', 'active'),
+    ((SELECT uuid FROM movie WHERE title = 'Black Adam'), 3, '2023-05-25', 'afternoon', 'active'),
+    ((SELECT uuid FROM movie WHERE title = 'Black Adam'), 3, '2023-05-25', 'evening', 'active'),
+    ((SELECT uuid FROM movie WHERE title = 'Black Adam'), 3, '2023-05-25', 'midnight', 'active'),
+    ((SELECT uuid FROM movie WHERE title = 'Avatar'), 4, '2023-05-31', 'morning', 'active'),
+    ((SELECT uuid FROM movie WHERE title = 'Avatar'), 4, '2023-05-31', 'afternoon', 'active'),
+    ((SELECT uuid FROM movie WHERE title = 'Avatar'), 4, '2023-05-31', 'evening', 'active'),
+    ((SELECT uuid FROM movie WHERE title = 'Avatar'), 4, '2023-05-31', 'midnight', 'active'),
+    ((SELECT uuid FROM movie WHERE title = 'Spider-Man'), 5, '2023-01-15', 'afternoon','suspended'),
+    ((SELECT uuid FROM movie WHERE title = 'Black Adam'), 3, '2023-05-26', 'morning', 'active'),
+    ((SELECT uuid FROM movie WHERE title = 'Black Adam'), 3, '2023-05-26', 'afternoon', 'active'),
+    ((SELECT uuid FROM movie WHERE title = 'Black Adam'), 3, '2023-05-26', 'evening', 'active'),
+    ((SELECT uuid FROM movie WHERE title = 'Black Adam'), 3, '2023-05-26', 'midnight', 'active'),
+    ((SELECT uuid FROM movie WHERE title = 'Avatar'), 4, '2023-05-27', 'morning', 'active'),
+    ((SELECT uuid FROM movie WHERE title = 'Avatar'), 4, '2023-05-27', 'afternoon', 'active'),
+    ((SELECT uuid FROM movie WHERE title = 'Avatar'), 4, '2023-05-27', 'evening', 'active'),
+    ((SELECT uuid FROM movie WHERE title = 'Avatar'), 4, '2023-05-27', 'midnight', 'active'),
+    ((SELECT uuid FROM movie WHERE title = 'Matrix'), 4, '2023-05-28', 'morning', 'active'),
+    ((SELECT uuid FROM movie WHERE title = 'Matrix'), 4, '2023-05-28', 'afternoon', 'active'),
+    ((SELECT uuid FROM movie WHERE title = 'Matrix'), 4, '2023-05-28', 'evening', 'active'),
+    ((SELECT uuid FROM movie WHERE title = 'Matrix'), 4, '2023-05-28', 'midnight', 'active'),
+    ((SELECT uuid FROM movie WHERE title = 'Spider-Man'), 4, '2023-05-28', 'morning', 'active'),
+    ((SELECT uuid FROM movie WHERE title = 'Spider-Man'), 4, '2023-05-28', 'afternoon', 'active'),
+    ((SELECT uuid FROM movie WHERE title = 'Spider-Man'), 4, '2023-05-28', 'evening', 'active'),
+    ((SELECT uuid FROM movie WHERE title = 'Spider-Man'), 4, '2023-05-28', 'midnight', 'active');
+
+
 -- Insert a maximum of 495 random screenings.
-/*DO $$
+DO $$
   DECLARE
   BEGIN
     WHILE (SELECT COUNT(*) FROM screening) < 495 LOOP
       CALL random_screening();
     END LOOP;
   END
-$$;*/
+$$;
 
 -- Insert default ticket types.
 INSERT INTO ticket_type
