@@ -207,12 +207,3 @@ DO $$
             END LOOP;
     END
 $$;
-
-DO $$
-  DECLARE
-  BEGIN
-    WHILE (SELECT COUNT(*) FROM screening) < 495 LOOP
-            CALL random_screening();
-            END LOOP;
-  END
-$$;
