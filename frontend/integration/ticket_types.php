@@ -106,7 +106,7 @@ if (isset($_POST['suspendTicket'])) {
             </li>
             &emsp;
             <li class="nav-item">
-                <a class="nav-link" href="cinema_screenings.php">Cinemas</a>
+                <a class=" nav-link" href="movie_screening.php">Screening</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link bg-danger active" href="ticket_types.php">Ticket Types</a>
