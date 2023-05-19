@@ -108,17 +108,21 @@ public class UserAccount {
         // This validation is only required when an admin creates a new user account.
         UserProfile userProfile = userProfileRepo.findUserProfileByTitle(title).orElse(null);
         if (userProfile == null)
-            throw new IllegalArgumentException("Invalid title.");
+            throw new IllegalArgumentException("Invalid title: " + title);
         // The following validations are required when an admin/customer creates a new user account.
         if (userAccountRepo.findUserAccountByUsername(username).isPresent())
-            throw new IllegalArgumentException("Username " + username + " already exists.");
+            throw new IllegalArgumentException("Username already exists: " + username);
         if (userAccountRepo.findUserAccountByEmail(email).isPresent())
-            throw new IllegalArgumentException("Email " + email + " already exists.");
+            throw new IllegalArgumentException("Email already exists: " + email);
         if (!username.matches("[a-zA-Z0-9]+"))
-            throw new IllegalArgumentException("Username " + username + " must only contain alphanumeric characters.");
+            throw new IllegalArgumentException("Username must be alphanumeric: " + username);
         if (username.equals("admin") || username.equals("customer") ||
             username.equals("owner") || username.equals("manager"))
-            throw new IllegalArgumentException("Username " + username + " is reserved.");
+            throw new IllegalArgumentException("Username is reserved: " + username);
+        if (dateOfBirth.isAfter(LocalDate.now()))
+            throw new IllegalArgumentException("Invalid date of birth: " + dateOfBirth);
+
+
         UserAccount userAccount = new UserAccount();
         userAccount.id = UUID.randomUUID();
         userAccount.isActive = true;
@@ -186,10 +190,10 @@ public class UserAccount {
     {
         UserAccount userAccount = userAccountRepo.findUserAccountByUsername(targetUsername).orElse(null);
         if (userAccount == null)
-            throw new IllegalArgumentException("Invalid username.");
+            throw new IllegalArgumentException("Invalid username: " + targetUsername);
         UserProfile userProfile = userProfileRepo.findUserProfileByTitle(title).orElse(null);
         if (userProfile == null)
-            throw new IllegalArgumentException("Invalid title.");
+            throw new IllegalArgumentException("Invalid title: " + title);
 
         if (userAccountRepo.findUserAccountByUsername(username).isPresent() &&
             !userAccount.username.equals(username))

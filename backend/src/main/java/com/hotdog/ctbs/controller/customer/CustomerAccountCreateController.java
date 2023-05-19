@@ -6,6 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.hotdog.ctbs.entity.UserAccount;
 import com.hotdog.ctbs.repository.UserAccountRepository;
 import com.hotdog.ctbs.repository.UserProfileRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -63,7 +64,7 @@ public class CustomerAccountCreateController {
 
     /** Create a customer {@code UserAccount} based on the given JSON. */
     @PostMapping("/create")
-    public String CreateCustomer(@RequestBody String json)
+    public ResponseEntity<String> CreateCustomer(@RequestBody String json)
     {
         try {
             JsonNode jsonNode = objectMapper.readTree(json);
@@ -80,9 +81,9 @@ public class CustomerAccountCreateController {
                     LocalDate.parse(jsonNode.get("dateOfBirth").asText()),
                     "customer"
             );
-            return "Registration for " + username + " is successful!";
+            return ResponseEntity.ok().body("Success");
         } catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }
