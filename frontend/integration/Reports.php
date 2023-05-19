@@ -53,7 +53,7 @@ include('header.php');
         <select class = "form-select" name="period" id="period">
             <option value = "daily">Daily</option>
             <option value = "weekly">Weekly</option>
-            <option value = "weekly">Monthly</option>
+            <option value = "monthly">Monthly</option>
         </select>
     </div>
 
@@ -67,18 +67,27 @@ include('header.php');
 // Function to retrieve the report data
 function retrieveReportData($period)
 {
-    // Replace this with your code to fetch report data from the database/API based on the selected time period
-    // You may use the $period variable to query the data accordingly
-    $reportData = array(
-        array("2023-05-01", "Adult", 10.00),
-        array("2023-05-01", "Child", 5.00),
-        array("2023-05-02", "Adult", 10.00),
-        array("2023-05-02", "Child", 5.00),
-        array("2023-05-03", "Adult", 10.00),
-        array("2023-05-03", "Child", 5.00),
-    );
+/*
+    http://localhost:8000/api/owner/revenue/daily/read
+    http://localhost:8000/api/owner/revenue/weekly/read
+    http://localhost:8000/api/owner/revenue/monthly/read
+    Example of data returned:
+    {"purchaseDate":"2023-04-01","typeName":"child","typePrice":"5.50","typeSumRevenue":"5.50","totalTickets":"1"}
 
-    return $reportData;
+    Relevant backend files:
+    backend/src/main/java/com/hotdog/ctbs/controller/owner/OwnerRevenueDailyReadController.java
+    backend/src/main/java/com/hotdog/ctbs/controller/owner/OwnerRevenueWeeklyReadController.java
+    backend/src/main/java/com/hotdog/ctbs/controller/owner/OwnerRevenueMonthlyReadController.java
+    backend/src/main/java/com/hotdog/ctbs/entity/RevenueReport.java
+    backend/src/main/java/com/hotdog/ctbs/entity/RevenueReportId.java
+    backend/src/main/java/com/hotdog/ctbs/repository/RevenueReportRepository.java
+*/
+
+    $ch = curl_init("http://localhost:8000/api/owner/revenue/" . $period . "/read");
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    $result = curl_exec($ch);
+    curl_close($ch);
+    return json_decode($result, true);
 }
 
 // Handle form submission
@@ -98,12 +107,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
     echo '<tbody>';
     foreach ($reportData as $row)
     {
+        if ($row['typeName'] == "total") {
+            $row['purchaseDate'] = "Total";
+            $row['typeName'] = "N/A";
+            $row['typePrice'] = "N/A";
+            if ($reportData[0]['typeName'] == "total") {
+                // If the first element is the total row,
+                // then there's no other data.
+                $row['typeSumRevenue'] = "$" . 0;
+                $row['totalTickets'] = 0;
+            }
+        } else {
+            $row['typePrice'] = "$" . $row['typePrice'];
+            $row['typeSumRevenue'] = "$" . $row['typeSumRevenue'];
+        }
         echo '<tr>';
-        echo '<td style="padding-bottom: 1%;">' . $row[0] . '</td>';
-        echo '<td style="padding-bottom: 1%;">' . $row[1] . '</td>';
-        echo '<td style="padding-bottom: 1%;">' . $row[2] . '</td>';
-        echo "<td>" . $totalRevenue . "</td>";
-        echo "<td>" . $totalTickets . "</td>";
+        echo '<td style="padding-bottom: 1%;">' . $row['purchaseDate'] . '</td>';
+        echo '<td style="padding-bottom: 1%;">' . $row['typeName'] . '</td>';
+        echo '<td style="padding-bottom: 1%;">' . $row['typePrice'] . '</td>';
+        echo "<td>" . $row['typeSumRevenue'] . "</td>";
+        echo "<td>" . $row['totalTickets'] . "</td>";
         echo '</tr>';
     }
     echo '</tbody>';
