@@ -43,7 +43,7 @@ if (isset($_POST['suspend'])) {
         echo '
                     <div class="container mt-5">
                         <div class="alert alert-success mb-3 mt-3" id="successMsg" style="width: 75%;">
-                        <strong>Success!</strong> Movie has been updated</a>.
+                        <strong>Success!</strong> Movie has been suspended</a>.
                         </div>
                     </div>';
     }
@@ -72,7 +72,7 @@ if (isset($_POST['update'])) {
     $updatedShowTime = $_POST['newShowTime'];
     $updatedShowDate = $_POST['newShowDate'];
     $updatedCinemaRoomID =  $_POST['newCinemaRoomID'];
-    $data = array('targetShowTime' => $currentShowTime, 'targetShowDate' => $currentShowDate, 'targetCinemaRoomId' => $currentCinemaRoomID, '$newMovieTitle' =>  $updatedShowName,
+    $data = array('targetShowTime' => $currentShowTime, 'targetShowDate' => $currentShowDate, 'targetCinemaRoomId' => $currentCinemaRoomID, 'newMovieTitle' =>  $updatedShowName,
         'newShowTime' => $updatedShowTime, 'newShowDate' => $updatedShowDate, 'newCinemaRoomId' => $updatedCinemaRoomID );
     $data_json = json_encode($data);
     print_r(  $data_json);
@@ -110,7 +110,8 @@ if (isset($_POST['update'])) {
 
 if (isset($_POST['create'])) {
 
-    $createMovieName = $_POST['createMovieName'];
+
+    $createMovieName = $_POST['createScreeningName'];
     $createShowTime= $_POST['createShowTime'];
     $createShowDate = $_POST['createShowDate'];
     $createCinemaRoomID = $_POST['createCinemaRoomID'];
@@ -149,26 +150,27 @@ if (isset($_POST['create'])) {
 }
 
 if (isset($_POST['cancel']) ) {
+
     $cancelShowTime= $_POST['cancelShowTime'];
     $cancelShowDate = $_POST['cancelShowDate'];
     $cancelCinemaRoomID = $_POST['cancelCinemaRoomID'];
-    $data = array('currentShowTime' => $cancelShowTime, 'currentShowDate' => $cancelShowDate, 'cinemaRoomId' => $cancelCinemaRoomID, 'CinemaRoomId' => $createCinemaRoomID);
+    $data = array('currentShowTime' => $cancelShowTime, 'currentShowDate' => $cancelShowDate, 'cinemaRoomId' => $cancelCinemaRoomID, 'CinemaRoomId' => $cancelCinemaRoomID);
     $data_json = json_encode($data);
+    print_r(  $data_json);
     $cancelScreeningCh = curl_init( 'http://localhost:8000/api/manager/screening/cancel/'.$cancelShowTime.'/'.$cancelShowDate.'/'.$cancelCinemaRoomID);
-    curl_setopt($cancelScreeningCh, CURLOPT_CUSTOMREQUEST, "DELETE");
+    curl_setopt($cancelScreeningCh, CURLOPT_CUSTOMREQUEST, "PUT");
     curl_setopt($cancelScreeningCh, CURLOPT_POSTFIELDS,  $data_json);
     curl_setopt($cancelScreeningCh, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($cancelScreeningCh, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
-    $deleteResponse = curl_exec($cancelScreeningCh);
+    $cancelResponse = curl_exec($cancelScreeningCh);
     curl_close($cancelScreeningCh);
-    //print_r($deleteResponse);
 //    echo "<meta http-equiv='refresh' content='0'>";
-    if (strpos($deleteResponse, 'Success') !== false) //Show success message
+    if (strpos($cancelResponse, 'Success') !== false) //Show success message
     {
         echo '
                     <div class="container mt-5">
                         <div class="alert alert-success mb-3 mt-3" id="successMsg" style="width: 75%;">
-                        <strong>Success!</strong> Movie has been deleted </a>.
+                        <strong>Success!</strong> Screening has been cancelled </a>.
                         </div>
                     </div>';
     }
@@ -179,7 +181,7 @@ if (isset($_POST['cancel']) ) {
         echo '
             <div class="container mt-3">
                 <div class="alert alert-danger" style="width: 75%;">
-                    <strong>Error:</strong> ' . $deleteResponse . '
+                    <strong>Error:</strong> ' . $cancelResponse . '
                 </div>
             </div>';
     }
@@ -369,34 +371,41 @@ if (isset($_POST['cancel']) ) {
             </div>
         </form>
 
-        <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" class="suspendScreening form-registration">
+        <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" class="createScreening form-registration">
             <div class="mt-2">
                 <h2 class="form-label text-white" style = "text-decoration: underline;">Create Screening:</h2>
-                <select class="form-control" name="suspendShowTime" id="suspendShowTime">
-                    <option>Select show Time</option>
-                    <?php
-                    $data = array("morning", "afternoon", "evening", "midnight");
-                    foreach ($data as $showTimeKey) {
-                        echo '<option>' . $showTimeKey . '</option>';
-                    }
-                    ?>
-                </select>
+
+                <div class="mt-2">
+                    <input type="text" step="1" class="form-control" name="createScreeningName" id="createScreeningName">
+                </div>
+
+                <div class="mt-2">
+                    <select class="form-control" name="createShowTime" id="createShowTime">
+                        <option>Select show Time</option>
+                        <?php
+                        $data = array("morning", "afternoon", "evening", "midnight");
+                        foreach ($data as $showTimeKey) {
+                            echo '<option>' . $showTimeKey . '</option>';
+                        }
+                        ?>
+                    </select>
+                </div>
             </div>
             <div class="mt-2">
-                <input type="date" class="form-control" name="suspendShowDate" id="suspendShowDate">
+                <input type="date" class="form-control" name="createShowDate" id="createShowDate">
             </div>
             <div class="mt-2">
-                <input type="number" step="1" class="form-control" name="suspendCinemaRoomID" id="suspendCinemaRoomID">
+                <input type="number" step="1" class="form-control" name="createCinemaRoomID" id="createCinemaRoomID">
             </div>
             <div class="mt-3">
                 <input type="submit" class="btn btn-primary" name="create" value="Create">
             </div>
         </form>
 
-        <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" class="suspendScreening form-registration">
+        <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" class="cancelScreening form-registration">
             <div class="mt-2">
                 <h2 class="form-label text-white" style = "text-decoration: underline;">Cancel Screening:</h2>
-                <select class="form-control" name="suspendShowTime" id="suspendShowTime">
+                <select class="form-control" name="cancelShowTime" id="cancelShowTime">
                     <option>Select show Time</option>
                     <?php
                     $data = array("morning", "afternoon", "evening", "midnight");
@@ -407,10 +416,10 @@ if (isset($_POST['cancel']) ) {
                 </select>
             </div>
             <div class="mt-2">
-                <input type="date" class="form-control" name="suspendShowDate" id="suspendShowDate">
+                <input type="date" class="form-control" name="cancelShowDate" id="cancelShowDate">
             </div>
             <div class="mt-2">
-                <input type="number" step="1" class="form-control" name="suspendCinemaRoomID" id="suspendCinemaRoomID">
+                <input type="number" step="1" class="form-control" name="cancelCinemaRoomID" id="cancelCinemaRoomID">
             </div>
             <div class="mt-3">
                 <input type="submit" class="btn btn-outline-danger" name="cancel" value="Cancel">
@@ -453,9 +462,6 @@ if (isset($_POST['cancel']) ) {
         </tbody>
     </table>
 
-    <?php
-
-    ?>
     <script>
         function tableSearch()
         {

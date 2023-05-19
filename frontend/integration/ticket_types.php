@@ -17,14 +17,14 @@ include('header.php');
 if (isset($_POST['updateTicket'])) {
 
     $ticketTypeName =  $_POST['updateTypeName'];
-    $newTicketTypeName = $_POST['updateNewTypeName'];
+    $newTicketTypeName = str_replace(' ', '%20', $_POST['updateNewTypeName']);
     $newPrice = $_POST['newPrice'];
 
 
     $updateTicketCh = curl_init();
     $data = array('tickettypename'=> $newTicketTypeName, 'tickettypeprice' => $newPrice);
     $data_json = json_encode($data);
-    //print_r($data_json);
+    print_r($data_json);
     curl_setopt($updateTicketCh, CURLOPT_URL, 'http://localhost:8000/api/manager/ticketType/update/'.$ticketTypeName);
     curl_setopt($updateTicketCh, CURLOPT_CUSTOMREQUEST, "PUT");
     curl_setopt($updateTicketCh, CURLOPT_POSTFIELDS, $data_json);
@@ -39,7 +39,7 @@ if (isset($_POST['updateTicket'])) {
 
 if (isset($_POST['createTicket'])) {
 
-    $ticketTypeName = $_POST['createTicketType'];
+    $ticketTypeName = str_replace(' ', '%20', $_POST['createTicketType']);
     $ticketTypePrice = $_POST['createTypePrice'];
     setlocale(LC_MONETARY, "zh_SG");
     $data = array('typename' => $ticketTypeName, 'typeprice' => $ticketTypePrice);
@@ -160,6 +160,9 @@ if (isset($_POST['suspendTicket'])) {
         <h1 >Create Ticket Form</h1>
         <div class="mt-3">
             <input type="text" class="form-control" name="createTicketType" id="createTicketType" placeholder="Enter ticket type">
+        </div>
+
+        <div class="mt-3">
             <input type="number" class="form-control" step="0.01" name="createTypePrice" id="createTypePrice" placeholder="Enter ticket price">
         </div>
 
