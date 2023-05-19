@@ -73,7 +73,7 @@ if (isset($_POST['update'])) {
     $updatedShowDate = $_POST['newShowDate'];
     $updatedCinemaRoomID =  $_POST['newCinemaRoomID'];
     $data = array('targetShowTime' => $currentShowTime, 'targetShowDate' => $currentShowDate, 'targetCinemaRoomId' => $currentCinemaRoomID, '$newMovieTitle' =>  $updatedShowName,
-    'newShowTime' => $updatedShowTime, 'newShowDate' => $updatedShowDate, 'newCinemaRoomId' => $updatedCinemaRoomID );
+        'newShowTime' => $updatedShowTime, 'newShowDate' => $updatedShowDate, 'newCinemaRoomId' => $updatedCinemaRoomID );
     $data_json = json_encode($data);
     print_r(  $data_json);
     $updateScreeningCh = curl_init( 'http://localhost:8000/api/manager/screening/update/'.$currentShowTime.'/'.$currentShowDate.'/'.$currentCinemaRoomID);
@@ -216,18 +216,21 @@ if (isset($_POST['cancel']) ) {
         }
 
         .fixed-forms-container {
-            position: fixed;
-            top: 16%;
-            left: 0;
-            width: 20%;
-            height: 100vh; /* Use 100vh for full screen height */
+            position: absolute;
+            left: 2%; /* Remove the 'right' property */
+            top: unset; /* Remove the 'top' property */
+            right: unset; /* Update the 'left' property to 'right' */
+            width: unset; /* Remove the 'width' property */
+            height: unset;
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
             justify-content: flex-start; /* Align forms to the top */
-            align-items: center;
             padding: 20px;
             background-color: rgba(255, 255, 255, 0);
             z-index: 999;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: flex-start;
         }
 
         .movies-container
@@ -296,7 +299,125 @@ if (isset($_POST['cancel']) ) {
         <span class="input-group-text" id="searchLbl">Search:</span>
         <input type="text" class="form-control" id="searchBox" onkeyup="tableSearch()">
     </div>
-    <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" class="screening text-white"">
+
+    <div class="mt-3 fixed-forms-container">
+        <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" class="suspendScreening form-registration">
+            <div class="mt-2">
+                <h2 class="form-label text-white" style = "text-decoration: underline;">Suspend Screening:</h2>
+                <select class="form-control" name="suspendShowTime" id="suspendShowTime">
+                    <option>Select show Time</option>
+                    <?php
+                    $data = array("morning", "afternoon", "evening", "midnight");
+                    foreach ($data as $showTimeKey) {
+                        echo '<option>' . $showTimeKey . '</option>';
+                    }
+                    ?>
+                </select>
+            </div>
+            <div class="mt-2">
+                <input type="date" class="form-control" name="suspendShowDate" id="suspendShowDate">
+            </div>
+            <div class="mt-2">
+                <input type="number" step="1" class="form-control" name="suspendCinemaRoomID" id="suspendCinemaRoomID">
+            </div>
+            <div class="mt-3">
+                <input type="submit" class="btn btn-primary" name="suspend" value="Suspend">
+            </div>
+        </form>
+
+        <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" class="updateScreening form-registration">
+            <div class="mt-3">
+                <h2 class="form-label text-white" style = "text-decoration: underline;">Update Screening:</h2>
+                <select class="form-control" name="showTime" id="showTime">
+                    <option>Select show Time</option>
+                    <?php
+                    $data = array("morning", "afternoon", "evening", "midnight");
+                    foreach ($data as $showTimeKey) {
+                        echo '<option>' . $showTimeKey . '</option>';
+                    }
+                    ?>
+                </select>
+            </div>
+            <div class="mt-3">
+                <input type="date" class="form-control" name="showDate" id="showDate">
+            </div>
+            <div class="mt-3">
+                <input type="number" step="1" class="form-control" name="cinemaRoomID" id="cinemaRoomID">
+            </div>
+            <div class="mt-3">
+                <input type="text" class="form-control" name="newMovieName" id="newMovieName" placeholder="Enter new Movie Name">
+            </div>
+            <div class="mt-3">
+                <select class="form-control" name="newShowTime" id="newShowTime">
+                    <option>Select new show Time</option>
+                    <?php
+                    $data = array("morning", "afternoon", "evening", "midnight");
+                    foreach ($data as $showTimeKey) {
+                        echo '<option>' . $showTimeKey . '</option>';
+                    }
+                    ?>
+                </select>
+            </div>
+            <div class="mt-3">
+                <input type="date" class="form-control" name="newShowDate" id="newShowDate">
+            </div>
+            <div class="mt-3">
+                <input type="number" step="1" class="form-control" name="newCinemaRoomID" id="newCinemaRoomID">
+            </div>
+            <div class="mt-3">
+                <input type="submit" class="btn btn-primary" name="update" value="Update">
+            </div>
+        </form>
+
+        <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" class="suspendScreening form-registration">
+            <div class="mt-2">
+                <h2 class="form-label text-white" style = "text-decoration: underline;">Create Screening:</h2>
+                <select class="form-control" name="suspendShowTime" id="suspendShowTime">
+                    <option>Select show Time</option>
+                    <?php
+                    $data = array("morning", "afternoon", "evening", "midnight");
+                    foreach ($data as $showTimeKey) {
+                        echo '<option>' . $showTimeKey . '</option>';
+                    }
+                    ?>
+                </select>
+            </div>
+            <div class="mt-2">
+                <input type="date" class="form-control" name="suspendShowDate" id="suspendShowDate">
+            </div>
+            <div class="mt-2">
+                <input type="number" step="1" class="form-control" name="suspendCinemaRoomID" id="suspendCinemaRoomID">
+            </div>
+            <div class="mt-3">
+                <input type="submit" class="btn btn-primary" name="create" value="Create">
+            </div>
+        </form>
+
+        <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" class="suspendScreening form-registration">
+            <div class="mt-2">
+                <h2 class="form-label text-white" style = "text-decoration: underline;">Cancel Screening:</h2>
+                <select class="form-control" name="suspendShowTime" id="suspendShowTime">
+                    <option>Select show Time</option>
+                    <?php
+                    $data = array("morning", "afternoon", "evening", "midnight");
+                    foreach ($data as $showTimeKey) {
+                        echo '<option>' . $showTimeKey . '</option>';
+                    }
+                    ?>
+                </select>
+            </div>
+            <div class="mt-2">
+                <input type="date" class="form-control" name="suspendShowDate" id="suspendShowDate">
+            </div>
+            <div class="mt-2">
+                <input type="number" step="1" class="form-control" name="suspendCinemaRoomID" id="suspendCinemaRoomID">
+            </div>
+            <div class="mt-3">
+                <input type="submit" class="btn btn-outline-danger" name="cancel" value="Cancel">
+            </div>
+        </form>
+    </div>
+
     <table id="moviesTable" class="table text-white" style="margin: auto; width: 100%; table-layout: fixed">
         <thead>
         <tr>
@@ -310,21 +431,21 @@ if (isset($_POST['cancel']) ) {
         <tbody>
         <?php
         foreach ($screening as $screeningDetails) {
-        $movieName = $screeningDetails['movie'];
-        $showTime = $screeningDetails['showTime'];
-        $status = $screeningDetails['status'];
-        $showDate = $screeningDetails['showDate'];
-        $CR = $screeningDetails['cinemaRoom'];
-        ?>
-        <tr>
-           <a>
-                <td class="movie-title text-white"><?php echo $movieName  ?></td>
-                <td class="show-Time text-white"><?php echo $showTime ?></td>
-                <td class="status text-white"><?php echo $status ?></td>
-                <td class="show-Date text-white"><?php echo $showDate ?></td>
-                <td class="Cinema Room text-white"><?php echo "Cinema Room" . " ". $CR ?></td>
-           </a>
-        </tr>
+            $movieName = $screeningDetails['movie'];
+            $showTime = $screeningDetails['showTime'];
+            $status = $screeningDetails['status'];
+            $showDate = $screeningDetails['showDate'];
+            $CR = $screeningDetails['cinemaRoom'];
+            ?>
+            <tr>
+                <a>
+                    <td class="movie-title text-white"><?php echo $movieName  ?></td>
+                    <td class="show-Time text-white"><?php echo $showTime ?></td>
+                    <td class="status text-white"><?php echo $status ?></td>
+                    <td class="show-Date text-white"><?php echo $showDate ?></td>
+                    <td class="Cinema Room text-white"><?php echo "Cinema Room" . " ". $CR ?></td>
+                </a>
+            </tr>
         <?php } ?>
 
 
@@ -335,114 +456,37 @@ if (isset($_POST['cancel']) ) {
     <?php
 
     ?>
-    <div class="mt-3 fixed-forms-container">
-        <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" class="suspendScreening form-registration">
-            <div class="mt-3">
-                <label class="form-label text-white" for="suspendScreening" >Suspend Screening:</label>
-                <select class="form-control" name="suspendShowTime" id="suspendShowTime">
-                    <option>Select show Time</option>
-                    <?php
-                    $data = array( "morning", "afternoon", "evening", "midnight");
-                    foreach ($data as $showTimeKey){
-                        echo '<option>' . $showTimeKey . '</option>';
-                    }
-                    ?>
-                </select>
-            </div>
-                <div class="mt-3">
-                    <input type="date" class="form-control" name="suspendShowDate" id="suspendShowDate">
-                </div>
-            <div class="mt-3">
-                <input type="number"  step = "1" class="form-control" name="suspendCinemaRoomID" id="suspendCinemaRoomID">
-            </div>
-
-
-            <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" class="updateScreening form-registration">
-                <div class="mt-3" >
-                    <label class="form-label text-white" for="updateScreening" >Update Screening:</label>
-                    <select class="form-control" name="showTime" id="showTime">
-                        <option>Select show Time</option>
-                        <?php
-                        $data = array( "morning", "afternoon", "evening", "midnight");
-                        foreach ($data as $showTimeKey){
-                            echo '<option>' . $showTimeKey . '</option>';
-                        }
-                        ?>
-                    </select>
-
-                </div>
-                <div class="mt-3">
-                    <input type="date" class="form-control" name="showDate" id="showDate">
-                </div>
-                <div class="mt-3">
-                    <input type="number"  step = "1" class="form-control" name="cinemaRoomID" id="cinemaRoomID">
-                </div>
-
-                <div class="mt-3">
-                    <input type="text" class="form-control" name="newMovieName" id="newMovieName" placeholder="Enter new Movie Name">
-                </div>
-                <div class="mt-3">
-                    <select class="form-control" name="newShowTime" id="newShowTime">
-                        <option>Select new show Time</option>
-                        <?php
-                        $data = array( "morning", "afternoon", "evening", "midnight");
-                        foreach ($data as $showTimeKey){
-                            echo '<option>' . $showTimeKey . '</option>';
-                        }
-                        ?>
-                    </select>
-
-                </div>
-                <div class="mt-3">
-                    <input type="date" class="form-control" name="newShowDate" id="newShowDate">
-                </div>
-
-                <div class="mt-3">
-                    <input type="number"  step = "1" class="form-control" name="newCinemaRoomID" id="newCinemaRoomID">
-                </div>
-
-                <div class="mt-3">
-                    <input type="submit" class="btn btn-primary" name="update" value="Update">
-                    <input type="submit" class="btn btn-outline-danger" name="suspend" value="Suspend">
-                    <input type="submit" class="btn btn-primary" name="create" value="Create">
-                    <input type="submit" class="btn btn-outline-danger" name="cancel" value="Cancel">
-                </div>
-            </form>
-
-
-        </form>
-    </div>
-<script>
-    function tableSearch()
-    {
-        // Declare variables
-        var input, filter, table, tr, td, i;
-        input = document.getElementById("searchBox");
-        filter = input.value.toUpperCase();
-        table = document.getElementById("moviesTable");
-        tr = table.getElementsByTagName("tr"),
-            th = table.getElementsByTagName("th");
-
-        // Loop through all table rows, and hide those who don't match the search query
-        for (i = 1; i < tr.length; i++)
+    <script>
+        function tableSearch()
         {
-            tr[i].style.display = "none";
-            for (var j = 0; j < th.length; j++)
+            // Declare variables
+            var input, filter, table, tr, td, i;
+            input = document.getElementById("searchBox");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("moviesTable");
+            tr = table.getElementsByTagName("tr"),
+                th = table.getElementsByTagName("th");
+
+            // Loop through all table rows, and hide those who don't match the search query
+            for (i = 1; i < tr.length; i++)
             {
-                td = tr[i].getElementsByTagName("td")[j];
-                if (td)
+                tr[i].style.display = "none";
+                for (var j = 0; j < th.length; j++)
                 {
-                    if (td.innerHTML.toUpperCase().indexOf(filter.toUpperCase()) > -1)
+                    td = tr[i].getElementsByTagName("td")[j];
+                    if (td)
                     {
-                        tr[i].style.display = "";
-                        break;
+                        if (td.innerHTML.toUpperCase().indexOf(filter.toUpperCase()) > -1)
+                        {
+                            tr[i].style.display = "";
+                            break;
+                        }
                     }
                 }
             }
         }
-    }
 
-</script>
+    </script>
 
 </div>
 </body>

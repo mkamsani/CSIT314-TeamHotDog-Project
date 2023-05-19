@@ -74,7 +74,7 @@ curl_close($ch);
             </li>
             &emsp;
             <li class="nav-item">
-                <a class="nav-link" href="cinema_screenings.php">Cinemas</a>
+                <a class="nav-link" href="movie_screening.php">Screening</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="ticket_types.php">Ticket Types</a>
