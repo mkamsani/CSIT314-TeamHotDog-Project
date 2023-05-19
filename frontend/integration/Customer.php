@@ -40,17 +40,20 @@ curl_close($ch);
         </a>
         <ul class="nav nav-pills">
             <li class="nav-item">
-                <a class="nav-link active bg-danger" href="movies.php">Home</a>
+                <a class="nav-link active bg-danger" href="Customer.php">Home</a>
             </li>
             &emsp;
             <li class="nav-item">
-                <a class="nav-link" href="food_orders.php">Movies</a>
+                <a class="nav-link" href="">Movies</a>
             </li>
             &emsp;
             <li class="nav-item">
-                <a class="nav-link" href="cinema_screenings.php">My Orders</a>
+                <a class="nav-link" href="">My Orders</a>
             </li>
-            &emsp;
+
+            &emsp;<li class="nav-item">
+                <a class="nav-link" href="CustomerReview.php">Customer Review</a>
+            </li>
             <form method = "get" class="d-flex">
                 <a class="btn btn-outline-danger" href="logout.php">Log Out</a>
             </form>
@@ -85,12 +88,12 @@ curl_close($ch);
         </div>
     </div>
 
-<div class="text-center mt-3">
-<!--    <a class="btn btn-danger" href="movies.php" role="button" style="margin-right: 2.7%">View Movies</a>-->
-<!--    <a class="btn btn-danger" href="food_orders.php" role="button">View Food Orders</a>-->
-<!--    <a class="btn btn-danger" href="cinema_screenings.php" role="button">View Cinema Screenings</a>-->
-<!--    <a class="btn btn-danger" href="ticket_types.php" role="button">View Ticket Types</a>-->
-</div>
+    <div class="text-center mt-3">
+        <a class="btn btn-danger" href="" role="button">Book a Movie</a>
+    </div>
+    <div class="text-center mt-3">
+        <a class="btn btn-danger" href="CustomerReview.php" role="button">Leave a Rating/Review</a>
+    </div>
 </body>
 
 <style>

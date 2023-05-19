@@ -107,7 +107,7 @@ $user_profiles = json_decode($userprofile, true);
                         <option value="owner">Owner</option>
                         <option value="admin">Admin</option>
                     </select>
-                    <label for="privilege">New Privilege:</label>
+                    <label for="privilege">Privilege:</label>
                 </div>
             </div>
 
