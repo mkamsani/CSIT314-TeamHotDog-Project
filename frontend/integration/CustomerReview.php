@@ -1,27 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 
-
 <?php
 session_start();
 include('header.php');
-
-$username = "";
-$privilege = "";
-
-if (isset($_SESSION["username"]))
-{
-    $username = $_SESSION["username"];
-    // Use the $username variable as needed
-}
-
-if (isset($_SESSION["privilege"]))
-{
-    $privilege = $_SESSION["privilege"];
-    // Use the $username variable as needed
-}
 ?>
-
 
 <nav class="navbar navbar-expand-sm">
     <div class="container">
@@ -40,9 +23,6 @@ if (isset($_SESSION["privilege"]))
             <li class="nav-item">
                 <a class="nav-link" href="">My Orders</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="CustAccountDetails.php">My Account</a>
-            </li>
             &emsp;<li class="nav-item">
                 <a class="nav-link active bg-danger" href="CustomerReview.php">Customer Review</a>
             </li>
@@ -55,11 +35,25 @@ if (isset($_SESSION["privilege"]))
 
 <body>
 <div class="container-fluid p-5 bg-danger text-white text-center">
-    <h1>Cinema Rating/Review</h1>
+    <h1>Leave a Rating/Review</h1>
 </div>
 
 <?php
-// PHP CURL CODE HERE for BARAQ
+if (isset($_POST['rating'])) {
+    $ch = curl_init("http://localhost:8000/api/customer/ratings/create");
+    $json = json_encode(array(
+        "username" => $_SESSION['username'],
+        "rating" => $_POST['rating'],
+        "review" => $_POST['review']
+    ));
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+    $result = curl_exec($ch);
+    curl_close($ch);
+    echo "<script>alert('$result');</script>"; // TODO change to a div or something
+}
 
 ?>
 
