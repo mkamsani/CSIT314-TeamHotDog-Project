@@ -126,47 +126,67 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST')
         $th5 = "";
     }
 
-    // Display the report table
-    echo '<table id="reportsTable" class="table table-hover-dark table-sm table-responsive text-white" style="width: 70%; margin: auto">';
-    echo "<thead><tr>{$th1}{$th2}{$th3}{$th4}{$th5}</tr></thead>";
-    echo '<tbody>';
-    foreach ($reportData as $row)
+    if (empty($reportData))
     {
-        // Declare an array called $td of size 5, an each element contains '<td>'
-        $td = array_fill(0, 5, "<td style=\"padding-bottom: 1%;\">");
-        if ($type == "revenue")
-        {
-            // Display date as "Sunday, 2 April".
-            $purchaseDate = $row['purchaseDate'];
-            if ($purchaseDate != "Total") {
-                $purchaseDate = date("l, j F", strtotime($purchaseDate));
-            }
-
-            $td[0] .= $purchaseDate . '</td>';
-            $td[1] .= $row['typeName'] . '</td>';
-            $td[2] .= $row['typePrice'] . '</td>';
-            $td[3] .= $row['typeSumRevenue'] . '</td>';
-            $td[4] .= $row['totalTickets'] . '</td>';
-        }
-        else
-        {
-            // Display date as "dd/mm".
-            $row['dateCreated'] = substr($row['dateCreated'], 8, 2) . "/" . substr($row['dateCreated'], 5, 2);
-            // Replace rating of 1 to 5 with the ⭐ symbol.
-            $rating = str_repeat("⭐", $row['rating']);
-            // Replace ". " in a review with ".<br />" to display each sentence in a new line.
-            $row['review'] = str_replace(". ", ".<br />", $row['review']);
-
-            $td[0] .= $row['dateCreated'] . '</td>';
-            $td[1] .= $rating . '</td>';
-            $td[2] .= $row['username'] . '</td>';
-            $td[3] .= $row['review'] . '</td>';
-            $td[4] = "";
-        }
-        echo "<tr>" . implode($td) . "</tr>";
+        echo '&nbsp';
+        echo '&nbsp';
+        echo '&nbsp';
+        echo '&nbsp';
+        echo '&nbsp';
+        echo '&nbsp';
+        echo '&nbsp';
+        echo '&nbsp';
+        echo '&nbsp';
+        echo '&nbsp';
+        echo '<h1 class = "text-white" style = "text-align:center;">No Report Data Available</h1>';
     }
-    echo '</tbody>';
-    echo '</table>';
+
+    else
+    {
+        // Display the report table
+        echo '<table id="reportsTable" class="table table-hover-dark table-sm table-responsive text-white" style="width: 70%; margin: auto">';
+        echo "<thead><tr>{$th1}{$th2}{$th3}{$th4}{$th5}</tr></thead>";
+        echo '<tbody>';
+
+        foreach ($reportData as $row)
+        {
+            // Declare an array called $td of size 5, an each element contains '<td>'
+            $td = array_fill(0, 5, "<td style=\"padding-bottom: 1%;\">");
+            if ($type == "revenue")
+            {
+                // Display date as "Sunday, 2 April".
+                $purchaseDate = $row['purchaseDate'];
+                if ($purchaseDate != "Total") {
+                    $purchaseDate = date("l, j F", strtotime($purchaseDate));
+                }
+
+                $td[0] .= $purchaseDate . '</td>';
+                $td[1] .= $row['typeName'] . '</td>';
+                $td[2] .= $row['typePrice'] . '</td>';
+                $td[3] .= $row['typeSumRevenue'] . '</td>';
+                $td[4] .= $row['totalTickets'] . '</td>';
+            }
+            else
+            {
+                // Display date as "dd/mm".
+                $row['dateCreated'] = substr($row['dateCreated'], 8, 2) . "/" . substr($row['dateCreated'], 5, 2);
+                // Replace rating of 1 to 5 with the ⭐ symbol.
+                $rating = str_repeat("⭐", $row['rating']);
+                // Replace ". " in a review with ".<br />" to display each sentence in a new line.
+                $row['review'] = str_replace(". ", ".<br />", $row['review']);
+
+                $td[0] .= $row['dateCreated'] . '</td>';
+                $td[1] .= $rating . '</td>';
+                $td[2] .= $row['username'] . '</td>';
+                $td[3] .= $row['review'] . '</td>';
+                $td[4] = "";
+            }
+            echo "<tr>" . implode($td) . "</tr>";
+        }
+        echo '</tbody>';
+        echo '</table>';
+    }
+
 }
 ?>
 

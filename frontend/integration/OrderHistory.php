@@ -40,7 +40,7 @@ curl_close($ch);
         </a>
         <ul class="nav nav-pills">
             <li class="nav-item">
-                <a class="nav-link active bg-danger" href="Customer.php">Home</a>
+                <a class="nav-link" href="Customer.php">Home</a>
             </li>
             &emsp;
             <li class="nav-item">
@@ -79,21 +79,26 @@ curl_close($ch);
 
     <?php
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, 'http://localhost:8000/api/customer/ticket/read');
+    curl_setopt($ch, CURLOPT_URL, 'http://localhost:8000/api/customer/ticket/read/' . $username);
     curl_setopt($ch, CURLOPT_HTTPGET, true);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     $result = curl_exec($ch);
     $data = json_decode($result, true);
-    $tableHtml = '<table id="accountsTable" class="table table-hover-dark table-sm table-responsive text-white">';
-    $tableHtml .= '<thead><tr><th>Username</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Address</th><th>Title</th></tr></thead>';
+
+    $tableHtml = '<table id="ordersTable" class="table table-hover-dark table-sm table-responsive text-white">';
+    $tableHtml .= '<thead><tr><th>Movie</th><th>Show Date</th><th>Show Time</th><th>Seat Row/Col<th>Cinema Room</th><th>Price</th><th>Ticket Type</th><th>Purchase Date</th></tr></thead>';
     foreach ($data as $row) {
+        $strpuchasedate = strtotime($row['purchaseDate']);
+        $strpuchasedate = date("Y-m-d h:i:s A", $strpuchasedate);
         $tableHtml .= '<tr>';
-        $tableHtml .= '<td><a href="UserDetails.php?username=' . $row['username'] . '">' . $row['username'] . '</a></td>';
-        $tableHtml .= '<td style="padding-bottom: 5%;">' . $row['firstName'] . '</td>';
-        $tableHtml .= '<td style="padding-bottom: 5%;">' . $row['lastName'] . '</td>';
-        $tableHtml .= '<td style="padding-bottom: 5%;">' . $row['email'] . '</td>';
-        $tableHtml .= '<td style="padding-bottom: 5%;">' . $row['address'] . '</td>';
-        $tableHtml .= '<td style="padding-bottom: 5%;">' . $row['title'] . '</td>';
+        $tableHtml .= '<td style="padding-bottom: 5%;">' . $row['movie'] . '</td>';
+        $tableHtml .= '<td style="padding-bottom: 5%;">' . $row['showDate'] . '</td>';
+        $tableHtml .= '<td style="padding-bottom: 5%;">' . $row['showTime'] . '</td>';
+        $tableHtml .= '<td style="padding-bottom: 5%;">' . $row['row'] . $row['column'] . '</td>';
+        $tableHtml .= '<td style="padding-bottom: 5%;">' . $row['cinemaRoom'] . '</td>';
+        $tableHtml .= '<td style="padding-bottom: 5%;">' . $row['price'] . '</td>';
+        $tableHtml .= '<td style="padding-bottom: 5%;">' . $row['type'] . '</td>';
+        $tableHtml .= '<td style="padding-bottom: 5%;">' . $strpuchasedate . '</td>';
         $tableHtml .= '</tr>';
 
     }
@@ -121,6 +126,36 @@ curl_close($ch);
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
     }
 </style>
+<script>
+    function tableSearch()
+    {
+        // Declare variables
+        var input, filter, table, tr, td, i;
+        input = document.getElementById("searchBox");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("ordersTable");
+        tr = table.getElementsByTagName("tr"),
+            th = table.getElementsByTagName("th");
+
+        // Loop through all table rows, and hide those who don't match the search query
+        for (i = 1; i < tr.length; i++)
+        {
+            tr[i].style.display = "none";
+            for (var j = 0; j < th.length; j++)
+            {
+                td = tr[i].getElementsByTagName("td")[j];
+                if (td)
+                {
+                    if (td.innerHTML.toUpperCase().indexOf(filter.toUpperCase()) > -1)
+                    {
+                        tr[i].style.display = "";
+                        break;
+                    }
+                }
+            }
+        }
+    }
+</script>
 <?php include('footer.php') ?>
 
 </html>

@@ -52,7 +52,17 @@ if (isset($_POST['rating'])) {
     curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
     $result = curl_exec($ch);
     curl_close($ch);
-    echo "<script>alert('$result');</script>"; // TODO change to a div or something
+
+    if ($result == "Success")
+    {
+        echo '
+                    <div class="container mt-5">
+                        <div class="alert alert-success mb-3 mt-3" id="successMsg" style="width: 75%;">
+                        <strong>Thank you for your cinema review! We appreciate your feedback and contribution.</strong> Head over to <a href="" class="alert-link">Book a Movie</a>
+                        to book a movie, or go back to <a href="Customer.php" class="alert-link">main page</a>.
+                        </div>
+                    </div>';
+    }
 }
 
 ?>
