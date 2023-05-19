@@ -1,37 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 
-
 <?php
 session_start();
 include('header.php');
-
-$username = "";
-$privilege = "";
-
-if (isset($_SESSION["username"]))
-{
-    $username = $_SESSION["username"];
-    // Use the $username variable as needed
-}
-
-if (isset($_SESSION["privilege"]))
-{
-    $privilege = $_SESSION["privilege"];
-    // Use the $username variable as needed
-}
-
-// Retrieve the user data from the API
-$ch = curl_init();
-curl_setopt($ch, CURLOPT_URL, 'http://localhost:8000/api/admin/user-account/read/' . $username);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-$result = curl_exec($ch);
-$data = json_decode($result, true);
-$user = $data[0];
-curl_close($ch);
-
 ?>
-
 
 <nav class="navbar navbar-expand-sm">
     <div class="container">
@@ -66,7 +39,21 @@ curl_close($ch);
 </div>
 
 <?php
-// PHP CURL CODE HERE for BARAQ
+if (isset($_POST['rating'])) {
+    $ch = curl_init("http://localhost:8000/api/customer/ratings/create");
+    $json = json_encode(array(
+        "username" => $_SESSION['username'],
+        "rating" => $_POST['rating'],
+        "review" => $_POST['review']
+    ));
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+    $result = curl_exec($ch);
+    curl_close($ch);
+    echo "<script>alert('$result');</script>"; // TODO change to a div or something
+}
 
 ?>
 
