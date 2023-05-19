@@ -84,7 +84,9 @@ public class RatingReview {
             }
             case "yesterday" -> {
                 LocalDate yesterday = LocalDate.now().minusDays(1);
-                yield ratingReviewRepo.findRatingReviewsByDateCreated(yesterday);
+                yield ratingReviewRepo.findRatingReviewByDateCreatedBetween(
+                        yesterday,
+                        LocalDate.now());
             }
             default -> throw new IllegalStateException("Unexpected value: " + when);
         };

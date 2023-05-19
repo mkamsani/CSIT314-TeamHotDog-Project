@@ -14,10 +14,7 @@ public interface RatingReviewRepository extends JpaRepository<RatingReview, UUID
 
     // findRatingReviews from the first day of the previous month, to the last day of the previous month
     List<RatingReview> findRatingReviewByDateCreatedBetween(LocalDate ld1,
-                                                                                    LocalDate ld2);
-
-    // findRatingReviews of yesterday
-    List<RatingReview> findRatingReviewsByDateCreated(LocalDate ld);
+                                                            LocalDate ld2);
 
     @Query("select u from UserAccount u where u.username = ?1")
     Optional<UserAccount> findUserAccountByUsername(String username);
