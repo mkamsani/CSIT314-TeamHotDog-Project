@@ -50,7 +50,9 @@ curl_close($ch);
             <li class="nav-item">
                 <a class="nav-link" href="">My Orders</a>
             </li>
-
+            <li class="nav-item">
+                <a class="nav-link" href="CustAccountDetails.php">My Account</a>
+            </li>
             &emsp;<li class="nav-item">
                 <a class="nav-link" href="CustomerReview.php">Customer Review</a>
             </li>
