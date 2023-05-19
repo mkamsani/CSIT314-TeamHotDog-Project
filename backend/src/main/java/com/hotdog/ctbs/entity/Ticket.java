@@ -139,6 +139,17 @@ public class Ticket {
 
         List<Ticket> tickets = ticketRepository.findTicketsByCustomer_Username(username);
 
+        tickets.sort((t1, t2) -> {
+            int result = t2.purchaseDate.compareTo(t1.purchaseDate);
+            if (result == 0)
+                result = t2.screening.showDate.compareTo(t1.screening.showDate);
+            if (result == 0)
+                result = t2.screening.showTime.compareTo(t1.screening.showTime);
+            if (result == 0)
+                result = t2.screening.movie.title.compareTo(t1.screening.movie.title);
+            return result;
+        });
+
         ArrayNode an = objectMapper.createArrayNode();
         for (Ticket ticket : tickets) {
             ObjectNode on = objectMapper.createObjectNode();
