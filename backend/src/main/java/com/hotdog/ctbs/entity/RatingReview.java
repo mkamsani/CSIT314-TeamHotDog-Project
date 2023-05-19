@@ -62,7 +62,7 @@ public class RatingReview {
         ratingReview.userAccount = userAccount;
         ratingReview.rating = rating;
         ratingReview.review = review;
-        ratingReview.dateCreated = LocalDate.now().minusWeeks(1);
+        ratingReview.dateCreated = LocalDate.now();
         ratingReviewRepo.save(ratingReview);
     }
 
