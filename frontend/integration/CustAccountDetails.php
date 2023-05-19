@@ -48,7 +48,7 @@ curl_close($ch);
             </li>
             &emsp;
             <li class="nav-item">
-                <a class="nav-link" href="">My Orders</a>
+                <a class="nav-link" href="OrderHistory.php">My Orders</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link active bg-danger" href="CustAccountDetails.php">My Account</a>
@@ -121,10 +121,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
             echo '
                     <div class="container mt-5">
                         <div class="alert alert-success mb-3 mt-3" id="successMsg" style="width: 75%;">
-                        <strong>Success!</strong> Account has been updated. Head over to the <a href="" class="alert-link">Book a Moive</a>
+                        <strong>Success!</strong> Account has been updated. Head over to the <a href="" class="alert-link">Book a Movie</a>
                         to book a movie, or go back to <a href="Customer.php" class="alert-link">main page</a>.
                         </div>
                     </div>';
+            $_SESSION["username"] = $_POST["username"];
         }
 
         else {

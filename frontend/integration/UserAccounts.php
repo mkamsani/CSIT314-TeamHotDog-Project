@@ -57,9 +57,8 @@ include('header.php');
     $result = curl_exec($ch);
     $data = json_decode($result, true);
     $tableHtml = '<table id="accountsTable" class="table table-hover-dark table-sm table-responsive text-white">';
-    $tableHtml.= '<thead><tr><th>Username</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Address</th><th>Title</th></tr></thead>';
-    foreach ($data as $row)
-    {
+    $tableHtml .= '<thead><tr><th>Username</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Address</th><th>Title</th></tr></thead>';
+    foreach ($data as $row) {
         $tableHtml .= '<tr>';
         $tableHtml .= '<td><a href="UserDetails.php?username=' . $row['username'] . '">' . $row['username'] . '</a></td>';
         $tableHtml .= '<td style="padding-bottom: 5%;">' . $row['firstName'] . '</td>';

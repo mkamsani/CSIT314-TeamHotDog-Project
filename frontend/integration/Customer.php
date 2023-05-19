@@ -48,7 +48,7 @@ curl_close($ch);
             </li>
             &emsp;
             <li class="nav-item">
-                <a class="nav-link" href="">My Orders</a>
+                <a class="nav-link" href="OrderHistory.php">My Orders</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="CustAccountDetails.php">My Account</a>
