@@ -261,44 +261,44 @@ echo '
 </div>';
 }
 }
-
-if (isset($_POST['cancel']) ) {
-
-$cancelShowTime= $_POST['cancelShowTime'];
-$cancelShowDate = $_POST['cancelShowDate'];
-$cancelCinemaRoomID = $_POST['cancelCinemaRoomID'];
-$data = array('currentShowTime' => $cancelShowTime, 'currentShowDate' => $cancelShowDate, 'cinemaRoomId' => $cancelCinemaRoomID, 'CinemaRoomId' => $cancelCinemaRoomID);
-$data_json = json_encode($data);
-//print_r(  $data_json);
-$cancelScreeningCh = curl_init( 'http://localhost:8000/api/manager/screening/cancel/'.$cancelShowTime.'/'.$cancelShowDate.'/'.$cancelCinemaRoomID);
-curl_setopt($cancelScreeningCh, CURLOPT_CUSTOMREQUEST, "PUT");
-curl_setopt($cancelScreeningCh, CURLOPT_POSTFIELDS,  $data_json);
-curl_setopt($cancelScreeningCh, CURLOPT_RETURNTRANSFER, 1);
-curl_setopt($cancelScreeningCh, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
-$cancelResponse = curl_exec($cancelScreeningCh);
-curl_close($cancelScreeningCh);
-//    echo "<meta http-equiv='refresh' content='0'>";
-if (strpos($cancelResponse, 'Success') !== false) //Show success message
-{
-echo '
-<div class="container mt-5" >
-    <div class="alert alert-success mb-3 mt-3" id="successMsg" style="width: 75%;" margin-left: 150px>
-        <strong>Success!</strong> Screening has been cancelled </a>.
-    </div>
-</div>';
-}
-
-else
-{
-// Error message
-echo '
-<div class="container mt-3">
-    <div class="alert alert-danger" style="width: 75%;" margin-left: 150px>
-        <strong>Error:</strong> ' . $cancelResponse . '
-    </div>
-</div>';
-}
-}
+//
+//if (isset($_POST['cancel']) ) {
+//
+//$cancelShowTime= $_POST['cancelShowTime'];
+//$cancelShowDate = $_POST['cancelShowDate'];
+//$cancelCinemaRoomID = $_POST['cancelCinemaRoomID'];
+//$data = array('currentShowTime' => $cancelShowTime, 'currentShowDate' => $cancelShowDate, 'cinemaRoomId' => $cancelCinemaRoomID, 'CinemaRoomId' => $cancelCinemaRoomID);
+//$data_json = json_encode($data);
+////print_r(  $data_json);
+//$cancelScreeningCh = curl_init( 'http://localhost:8000/api/manager/screening/cancel/'.$cancelShowTime.'/'.$cancelShowDate.'/'.$cancelCinemaRoomID);
+//curl_setopt($cancelScreeningCh, CURLOPT_CUSTOMREQUEST, "PUT");
+//curl_setopt($cancelScreeningCh, CURLOPT_POSTFIELDS,  $data_json);
+//curl_setopt($cancelScreeningCh, CURLOPT_RETURNTRANSFER, 1);
+//curl_setopt($cancelScreeningCh, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+//$cancelResponse = curl_exec($cancelScreeningCh);
+//curl_close($cancelScreeningCh);
+////    echo "<meta http-equiv='refresh' content='0'>";
+//if (strpos($cancelResponse, 'Success') !== false) //Show success message
+//{
+//echo '
+//<div class="container mt-5" >
+//    <div class="alert alert-success mb-3 mt-3" id="successMsg" style="width: 75%;" margin-left: 150px>
+//        <strong>Success!</strong> Screening has been cancelled </a>.
+//    </div>
+//</div>';
+//}
+//
+//else
+//{
+//// Error message
+//echo '
+//<div class="container mt-3">
+//    <div class="alert alert-danger" style="width: 75%;" margin-left: 150px>
+//        <strong>Error:</strong> ' . $cancelResponse . '
+//    </div>
+//</div>';
+//}
+//}
 ?>
 <div class="container mt-4" style="margin-left: 20%; width: 40%">
     <div class="input-group mb-3" style="width: 40%; margin: auto;">
@@ -422,29 +422,29 @@ echo '
             </div>
         </form>
 
-        <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" class="cancelScreening form-registration">
-            <div class="mt-2">
-                <h2 class="form-label text-white" style = "text-decoration: underline;">Cancel Screening:</h2>
-                <select class="form-control" name="cancelShowTime" id="cancelShowTime">
-                    <option>Select show Time</option>
-                    <?php
-                    $data = array("morning", "afternoon", "evening", "midnight");
-                    foreach ($data as $showTimeKey) {
-                        echo '<option>' . $showTimeKey . '</option>';
-                    }
-                    ?>
-                </select>
-            </div>
-            <div class="mt-2">
-                <input type="date" class="form-control" name="cancelShowDate" id="cancelShowDate">
-            </div>
-            <div class="mt-2">
-                <input type="number" step="1" class="form-control" name="cancelCinemaRoomID" id="cancelCinemaRoomID">
-            </div>
-            <div class="mt-3">
-                <input type="submit" class="btn btn-outline-danger" name="cancel" value="Cancel">
-            </div>
-        </form>
+<!--        <form action="--><?php //echo $_SERVER['PHP_SELF']; ?><!--" method="POST" class="cancelScreening form-registration">-->
+<!--            <div class="mt-2">-->
+<!--                <h2 class="form-label text-white" style = "text-decoration: underline;">Cancel Screening:</h2>-->
+<!--                <select class="form-control" name="cancelShowTime" id="cancelShowTime">-->
+<!--                    <option>Select show Time</option>-->
+<!--                    --><?php
+//                    $data = array("morning", "afternoon", "evening", "midnight");
+//                    foreach ($data as $showTimeKey) {
+//                        echo '<option>' . $showTimeKey . '</option>';
+//                    }
+//                    ?>
+<!--                </select>-->
+<!--            </div>-->
+<!--            <div class="mt-2">-->
+<!--                <input type="date" class="form-control" name="cancelShowDate" id="cancelShowDate">-->
+<!--            </div>-->
+<!--            <div class="mt-2">-->
+<!--                <input type="number" step="1" class="form-control" name="cancelCinemaRoomID" id="cancelCinemaRoomID">-->
+<!--            </div>-->
+<!--            <div class="mt-3">-->
+<!--                <input type="submit" class="btn btn-outline-danger" name="cancel" value="Cancel">-->
+<!--            </div>-->
+<!--        </form>-->
     </div>
 
     <table id="moviesTable" class="table text-white" style="width: 100%; table-layout: fixed; margin: auto auto auto 150px;">
