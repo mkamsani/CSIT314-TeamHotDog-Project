@@ -67,8 +67,7 @@ public class ManagerTicketTypeUpdateController {
                     targettickettypename,
                     // new ticket type name
                     jsonNode.get("tickettypename").asText(),
-                    jsonNode.get("tickettypeprice").asDouble(),
-                    jsonNode.get("tickettypeisactive").asBoolean()
+                    jsonNode.get("tickettypeprice").asDouble()
             );
             return ResponseEntity.ok("Ticket Type Updated");
         }

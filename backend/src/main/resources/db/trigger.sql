@@ -45,20 +45,20 @@ EXECUTE PROCEDURE loyalty_point_create();
  */
 CREATE OR REPLACE PROCEDURE random_screening()
     LANGUAGE plpgsql
-AS $$
+AS
+$$
 DECLARE
     random_movie uuid;
     random_cinema_room integer;
     random_show_date date;
     random_show_time varchar(20);
-    screening varchar(9);
+    set_status varchar(9);
     yyyy integer;
     mm integer;
     dd integer;
 BEGIN
     SELECT uuid FROM movie ORDER BY RANDOM() LIMIT 1 INTO random_movie;
     SELECT id FROM cinema_room ORDER BY RANDOM() LIMIT 1 INTO random_cinema_room;
-    screening  := 'active';
     yyyy := 2023;
     mm := CEIL(RANDOM() * 12);
     dd := CEIL(RANDOM() * 31);
@@ -73,6 +73,9 @@ BEGIN
                 WHEN RANDOM() < .75 THEN 'evening'
                 ELSE 'midnight'
                 END INTO random_show_time;
+    SELECT CASE WHEN yyyy >= 2023 AND mm >= 5 AND dd <= 31 THEN 'active'
+                ELSE 'suspended'
+                END INTO set_status;
     -- Abort the procedure if the screening already exists.
     -- A screening exists if it has the same cinema_room, show_date, show_time.
     IF EXISTS (SELECT * FROM screening
@@ -83,9 +86,9 @@ BEGIN
                      random_cinema_room, random_show_date, random_show_time;
     ELSE
         INSERT INTO screening
-            (movie_id, cinema_room, show_date, show_time)
+            (status, movie_id, cinema_room, show_date, show_time)
         VALUES
-            (random_movie, random_cinema_room, random_show_date, random_show_time);
+            (set_status, random_movie, random_cinema_room, random_show_date, random_show_time);
     END IF;
 END;
 $$;

@@ -49,8 +49,7 @@ public class ManagerTicketTypeCreateController {
             JsonNode jsonNode = objectMapper.readTree(json);
             String typeName = jsonNode.get("typename").asText();
             Double typePrice = jsonNode.get("typeprice").asDouble();
-            Boolean isactive = jsonNode.get("isactive").asBoolean();
-            TicketType.createTicketType(ticketTypeRepository, typeName, typePrice, isactive);
+            TicketType.createTicketType(ticketTypeRepository, typeName, typePrice);
         }
         catch (Exception e){
             System.out.println(e.getMessage());
