@@ -43,7 +43,8 @@ public class RevenueReport {
 
     //////////////////////////////// Service /////////////////////////////////
 
-    public static String readRevenueReport(RevenueReportRepository revenueReportRepository, String when)
+    public static String readRevenueReport(RevenueReportRepository revenueReportRepository,
+                                           String when)
     {
         List<RevenueReport> revenueReportList = switch (when) {
             case "lastMonth" -> revenueReportRepository.findRevenueReportLastMonth();
@@ -55,11 +56,18 @@ public class RevenueReport {
         ArrayNode an = objectMapper.createArrayNode();
         for (RevenueReport rr : revenueReportList) {
             ObjectNode on = objectMapper.createObjectNode();
-            on.put("purchaseDate", rr.id.purchaseDate.toString());
-            on.put("typeName", rr.id.typeName);
-            on.put("typePrice", rr.typePrice.toString());
-            on.put("typeSumRevenue", rr.typeSumRevenue.toString());
-            on.put("totalTickets", rr.totalTickets.toString());
+            String typeName = rr.id.typeName.equals("total") ? "N/A" : rr.id.typeName;
+            String purchaseDate = rr.id.typeName.equals("total") ? "Total" : rr.id.purchaseDate.toString();
+            String typePrice = rr.id.typeName.equals("total") ? "N/A" : rr.typePrice.toString();
+            String typeSumRevenue = rr.typeSumRevenue.toString();
+            String totalTickets = rr.totalTickets.toString();
+
+            on.put("typeName", typeName);
+            on.put("purchaseDate", purchaseDate);
+            on.put("typePrice", typePrice);
+            on.put("typeSumRevenue", typeSumRevenue);
+            on.put("totalTickets", totalTickets);
+
             an.add(on);
         }
         return an.toString();

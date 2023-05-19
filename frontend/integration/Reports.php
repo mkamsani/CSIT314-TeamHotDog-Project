@@ -65,7 +65,7 @@ include('header.php');
 </div>
 <?php
 // Function to retrieve the report data
-function retrieveReportData($period)
+function retrieveReportData($type, $period)
 {
 /*
     http://localhost:8000/api/owner/revenue/daily/read
@@ -74,16 +74,29 @@ function retrieveReportData($period)
     Example of data returned:
     {"purchaseDate":"2023-04-01","typeName":"child","typePrice":"5.50","typeSumRevenue":"5.50","totalTickets":"1"}
 
-    Relevant backend files:
+    http://localhost:8000/api/owner/ratings/daily/read
+    http://localhost:8000/api/owner/ratings/weekly/read
+    http://localhost:8000/api/owner/ratings/monthly/read
+    Example of data returned:
+    {"username":"user_09","rating":4,"review":"I had a great time at the cinema. The movie was fantastic, and the theater provided a top-notch audiovisual experience.","dateCreated":"2023-04-03"}
+
+    Relevant backend files for revenue:
     backend/src/main/java/com/hotdog/ctbs/controller/owner/OwnerRevenueDailyReadController.java
     backend/src/main/java/com/hotdog/ctbs/controller/owner/OwnerRevenueWeeklyReadController.java
     backend/src/main/java/com/hotdog/ctbs/controller/owner/OwnerRevenueMonthlyReadController.java
     backend/src/main/java/com/hotdog/ctbs/entity/RevenueReport.java
     backend/src/main/java/com/hotdog/ctbs/entity/RevenueReportId.java
     backend/src/main/java/com/hotdog/ctbs/repository/RevenueReportRepository.java
+
+    Relevant backend files for ratings/reviews:
+    backend/src/main/java/com/hotdog/ctbs/controller/owner/OwnerRatingsDailyReadController.java
+    backend/src/main/java/com/hotdog/ctbs/controller/owner/OwnerRatingsWeeklyReadController.java
+    backend/src/main/java/com/hotdog/ctbs/controller/owner/OwnerRatingsMonthlyReadController.java
+    backend/src/main/java/com/hotdog/ctbs/entity/RatingReview.java
+    backend/src/main/java/com/hotdog/ctbs/repository/RatingReviewRepository.java
 */
 
-    $ch = curl_init("http://localhost:8000/api/owner/revenue/" . $period . "/read");
+    $ch = curl_init("http://localhost:8000/api/owner/" . $type . "/" . $period . "/read");
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     $result = curl_exec($ch);
     curl_close($ch);
@@ -93,41 +106,64 @@ function retrieveReportData($period)
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST')
 {
+    $type = $_POST['type'];
     $period = $_POST['period'];
 
     // Retrieve the report data based on the selected time period
-    $reportData = retrieveReportData($period);
+    $reportData = retrieveReportData($type, $period);
 
-    $totalRevenue = 330;
-    $totalTickets = count($reportData);
+    if ($type == "revenue") {
+        $th1 = "<th>Ticket Purchase Date</th>";
+        $th2 = "<th>Ticket Type</th>";
+        $th3 = "<th>Ticket Type Price</th>";
+        $th4 = "<th>Total Revenue</th>";
+        $th5 = "<th>Total Tickets</th>";
+    } else {
+        $th1 = "<th>Date</th>";
+        $th2 = "<th>Rating</th>";
+        $th3 = "<th>Username</th>";
+        $th4 = "<th>Review</th>";
+        $th5 = "";
+    }
 
     // Display the report table
     echo '<table id="reportsTable" class="table table-hover-dark table-sm table-responsive text-white" style="width: 70%; margin: auto">';
-    echo '<thead><tr><th>Ticket Purchase Date</th><th>Ticket Type</th><th>Ticket Type Price</th><th>Total Revenue</th><th>Total Tickets</th></tr></thead>';
+    echo "<thead><tr>{$th1}{$th2}{$th3}{$th4}{$th5}</tr></thead>";
     echo '<tbody>';
     foreach ($reportData as $row)
     {
-        if ($row['typeName'] == "total") {
-            $row['purchaseDate'] = "Total";
-            $row['typeName'] = "N/A";
-            $row['typePrice'] = "N/A";
-            if ($reportData[0]['typeName'] == "total") {
-                // If the first element is the total row,
-                // then there's no other data.
-                $row['typeSumRevenue'] = "$" . 0;
-                $row['totalTickets'] = 0;
+        // Declare an array called $td of size 5, an each element contains '<td>'
+        $td = array_fill(0, 5, "<td style=\"padding-bottom: 1%;\">");
+        if ($type == "revenue")
+        {
+            // Display date as "Sunday, 2 April".
+            $purchaseDate = $row['purchaseDate'];
+            if ($purchaseDate != "Total") {
+                $purchaseDate = date("l, j F", strtotime($purchaseDate));
             }
-        } else {
-            $row['typePrice'] = "$" . $row['typePrice'];
-            $row['typeSumRevenue'] = "$" . $row['typeSumRevenue'];
+
+            $td[0] .= $purchaseDate . '</td>';
+            $td[1] .= $row['typeName'] . '</td>';
+            $td[2] .= $row['typePrice'] . '</td>';
+            $td[3] .= $row['typeSumRevenue'] . '</td>';
+            $td[4] .= $row['totalTickets'] . '</td>';
         }
-        echo '<tr>';
-        echo '<td style="padding-bottom: 1%;">' . $row['purchaseDate'] . '</td>';
-        echo '<td style="padding-bottom: 1%;">' . $row['typeName'] . '</td>';
-        echo '<td style="padding-bottom: 1%;">' . $row['typePrice'] . '</td>';
-        echo "<td>" . $row['typeSumRevenue'] . "</td>";
-        echo "<td>" . $row['totalTickets'] . "</td>";
-        echo '</tr>';
+        else
+        {
+            // Display date as "dd/mm".
+            $row['dateCreated'] = substr($row['dateCreated'], 8, 2) . "/" . substr($row['dateCreated'], 5, 2);
+            // Replace rating of 1 to 5 with the ⭐ symbol.
+            $rating = str_repeat("⭐", $row['rating']);
+            // Replace ". " in a review with ".<br />" to display each sentence in a new line.
+            $row['review'] = str_replace(". ", ".<br />", $row['review']);
+
+            $td[0] .= $row['dateCreated'] . '</td>';
+            $td[1] .= $rating . '</td>';
+            $td[2] .= $row['username'] . '</td>';
+            $td[3] .= $row['review'] . '</td>';
+            $td[4] = "";
+        }
+        echo "<tr>" . implode($td) . "</tr>";
     }
     echo '</tbody>';
     echo '</table>';

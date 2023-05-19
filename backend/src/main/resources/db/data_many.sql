@@ -217,27 +217,65 @@ DO $$
     END
 $$;
 
-/*
 DO $$
   DECLARE
     -- Declare an integer to hold the random number:
     random_rating   INTEGER;
     random_customer Uuid;
     random_review   TEXT;
+    random_date_created DATE;
   BEGIN
-    WHILE (SELECT COUNT(*) FROM rating_review) < 195
+    WHILE (SELECT COUNT(*) FROM rating_review) < 495
       LOOP
         -- Random rating between 1 and 5.
         random_rating := FLOOR(RANDOM() * 5 + 1);
+        -- Prefix random_review with a impression of the rating.
+        CASE random_rating
+        WHEN 1 THEN CASE FLOOR(RANDOM() * 5 + 1)
+                    WHEN 1 THEN random_review := 'My experience in the cinema was extremely disappointing. The movie was poorly directed, and the seats were uncomfortable. I regretted going.';
+                    WHEN 2 THEN random_review := 'The cinema was a complete letdown. The sound quality was terrible, and the picture was blurry. I could not wait for the movie to end.';
+                    when 3 then random_review := 'I had a horrible time at the cinema. The staff was rude, and the theater was dirty. I would not recommend it to anyone.';
+                    when 4 then random_review := 'The movie I watched was a disaster. The plot made no sense, and the acting was terrible. I wish I had chosen a different cinema.';
+                    when 5 then random_review := 'I had the worst cinema experience ever. The seats were broken, and there was a constant disturbance from other moviegoers. I will not be going back.';
+                    END CASE;
+        WHEN 2 THEN CASE FLOOR(RANDOM() * 5 + 1)
+                    WHEN 1 THEN random_review := 'My cinema experience was below average. The movie had some good moments, but overall, it was forgettable. I expected more.';
+                    WHEN 2 THEN random_review := 'The cinema was just okay. The sound and picture quality were average, and the seats were somewhat comfortable. It did not leave a lasting impression.';
+                    WHEN 3 THEN random_review := 'I had an average experience at the cinema. The movie was decent, but there was nothing exceptional about the theater itself.';
+                    WHEN 4 THEN random_review := 'The movie I watched was mediocre. It had its moments, but it did not live up to my expectations. The cinema could use some improvements.';
+                    WHEN 5 THEN random_review := 'My time at the cinema was average at best. The movie was alright, but the overall atmosphere lacked excitement. It was an average movie-going experience.';
+                    END CASE;
+        WHEN 3 THEN CASE FLOOR(RANDOM() * 5 + 1)
+                    WHEN 1 THEN random_review := 'The cinema experience was satisfactory. The movie had its moments, and the theater provided a comfortable environment.';
+                    WHEN 2 THEN random_review := 'I had a decent time at the cinema. The movie was enjoyable, and the theater had good sound and picture quality.';
+                    WHEN 3 THEN random_review := 'The cinema was satisfactory. The movie was entertaining, and the seats were comfortable enough to enjoy the experience.';
+                    WHEN 4 THEN random_review := 'I had a fairly good experience at the cinema. The movie was engaging, and the theater had a pleasant ambiance.';
+                    WHEN 5 THEN random_review := 'The movie I watched was decent, and the cinema provided a satisfactory experience. It met my expectations without exceeding them.';
+                    END CASE;
+        WHEN 4 THEN CASE FLOOR(RANDOM() * 5 + 1)
+                    WHEN 1 THEN random_review := 'I had a great time at the cinema. The movie was fantastic, and the theater provided a top-notch audiovisual experience.';
+                    WHEN 2 THEN random_review := 'The cinema experience was excellent. The movie exceeded my expectations, and the theater had comfortable seating and great amenities.';
+                    WHEN 3 THEN random_review := 'I had a wonderful time at the cinema. The movie was captivating, and the theater had excellent sound and picture quality.';
+                    WHEN 4 THEN random_review := 'The movie I watched was outstanding, and the cinema provided a superb experience. I was thoroughly entertained.';
+                    WHEN 5 THEN random_review := 'My cinema experience was fantastic. The movie was exceptional, and the theater created an immersive atmosphere. I would highly recommend it.';
+                    END CASE;
+        WHEN 5 THEN CASE FLOOR(RANDOM() * 5 + 1)
+                    WHEN 1 THEN random_review := 'The cinema experience was absolutely phenomenal. The movie was a masterpiece, and the theater provided an unforgettable experience.';
+                    WHEN 2 THEN random_review := 'I had an extraordinary time at the cinema. The movie was mind-blowing, and the theater offered a luxurious and immersive setting.';
+                    WHEN 3 THEN random_review := 'The cinema was outstanding. The movie left me speechless, and the theater had state-of-the-art technology that enhanced the experience.';
+                    WHEN 4 THEN random_review := 'I had an amazing experience at the cinema. The movie was flawless, and the theater created a magical environment that transported me into the story.';
+                    WHEN 5 THEN random_review := 'The movie I watched was a cinematic marvel, and the cinema experience was unparalleled. It was a true feast for the senses.';
+                    END CASE;
+        END CASE;
         -- Random customer.
-        SELECT ua.uuid FROM user_account ua INNER JOIN user_profile up ON ua.user_profile = up.uuid
-        WHERE  up.privilege = 'customer' ORDER BY RANDOM() LIMIT 1 INTO random_customer;
-        -- Random review, a paragraph of 50 words. Each sentence has 5 words.
-        random_review := 'This is a random review with some randomly generated characters: ' || md5(random()::text);
+        SELECT ua.uuid FROM user_account ua
+        INNER JOIN user_profile up ON ua.user_profile = up.uuid
+             WHERE up.privilege = 'customer' ORDER BY RANDOM() LIMIT 1 INTO random_customer;
+        -- Random date_created.
+        random_date_created := (CURRENT_DATE - (FLOOR(RANDOM() * 365 + 1) || ' days')::INTERVAL);
         -- Insert a random rating_review.
-        INSERT INTO rating_review (uuid, rating, review) VALUES (random_customer, random_rating, random_review);
+        INSERT INTO rating_review (user_account, rating, review, date_created) VALUES (random_customer, random_rating, random_review, random_date_created);
       END LOOP;
   END
 $$;
-*/
 

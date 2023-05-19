@@ -173,7 +173,7 @@ CREATE TABLE ticket
   PRIMARY KEY (uuid),
   uuid          Uuid        NOT NULL DEFAULT    uuid_generate_v4(),
   customer      Uuid        NOT NULL REFERENCES user_account (uuid)     ON UPDATE CASCADE ON DELETE CASCADE,
-  ticket_type   TEXT        NOT NULL REFERENCES ticket_type (type_name) ON UPDATE CASCADE ON DELETE CASCADE,
+  ticket_type   citext      NOT NULL REFERENCES ticket_type (type_name) ON UPDATE CASCADE ON DELETE CASCADE,
   screening     Uuid        NOT NULL REFERENCES screening (uuid)        ON UPDATE CASCADE ON DELETE CASCADE,
   seat          Uuid        NOT NULL REFERENCES seat (uuid),
   purchase_date Timestamptz NOT NULL DEFAULT    NOW(),
@@ -186,10 +186,12 @@ CREATE TABLE ticket
 -- Rating review will be done with along with loyalty.
 CREATE TABLE rating_review
 (
-  PRIMARY KEY (uuid), -- TODO : give this table its own UUID
-  uuid   Uuid    NOT NULL REFERENCES loyalty_point (uuid),
-  rating INTEGER NOT NULL CHECK (rating > 0 AND rating <= 5),
-  review TEXT    NOT NULL CHECK (LENGTH(review) > 0) -- e.g. "The cinema's popcorn is the best!"
+  PRIMARY KEY (uuid),
+  uuid         Uuid    NOT NULL DEFAULT uuid_generate_v4(),
+  user_account Uuid    NOT NULL REFERENCES user_account (uuid) ON UPDATE CASCADE ON DELETE CASCADE,
+  rating       INTEGER NOT NULL CHECK (rating > 0 AND rating <= 5),
+  review       TEXT    NOT NULL CHECK (LENGTH(review) > 0),
+  date_created DATE    NOT NULL DEFAULT NOW()
 );
 
 -- Used for JPA to map an entity to a view.
