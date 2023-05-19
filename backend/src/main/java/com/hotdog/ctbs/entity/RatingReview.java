@@ -45,6 +45,27 @@ public class RatingReview {
 
     //////////////////////////////// Service /////////////////////////////////
 
+    public static void createRatingReview(RatingReviewRepository ratingReviewRepo,
+                                          String username,
+                                          Integer rating,
+                                          String review)
+    {
+        UserAccount userAccount = ratingReviewRepo.findUserAccountByUsername(username).orElse(null);
+        if (userAccount == null)
+            throw new IllegalArgumentException("Username does not exist: " + username);
+        if (rating < 1 || rating > 5)
+            throw new IllegalArgumentException("Rating must be between 1 and 5: " + rating);
+        if (review == null || review.isBlank())
+            throw new IllegalArgumentException("Review cannot be empty");
+        RatingReview ratingReview = new RatingReview();
+        ratingReview.id = UUID.randomUUID();
+        ratingReview.userAccount = userAccount;
+        ratingReview.rating = rating;
+        ratingReview.review = review;
+        ratingReview.dateCreated = LocalDate.now().minusWeeks(1);
+        ratingReviewRepo.save(ratingReview);
+    }
+
     public static String readRatingReview(RatingReviewRepository ratingReviewRepo,
                                           String when)
     {
