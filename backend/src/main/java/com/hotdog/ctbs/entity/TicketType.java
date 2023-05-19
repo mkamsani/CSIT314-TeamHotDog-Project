@@ -69,7 +69,12 @@ public class TicketType {
         if (newTypeName == null)
             throw new IllegalArgumentException("Invalid Type Name");
 
-        if (newTypeName.equals("adult") ||
+        if (targetTypeName.equals("adult") ||
+                targetTypeName.equals("child") ||
+                targetTypeName.equals("senior") ||
+                targetTypeName.equals("student") ||
+                targetTypeName.equals("redemption")||
+                newTypeName.equals("adult") ||
                 newTypeName.equals("child") ||
                 newTypeName.equals("senior") ||
                 newTypeName.equals("student") ||
