@@ -21,7 +21,7 @@ include('header.php');
             </li>
             &emsp;
             <li class="nav-item">
-                <a class="nav-link" href="">My Orders</a>
+                <a class="nav-link" href="OrderHistory.php">My Orders</a>
             </li>
             &emsp;<li class="nav-item">
                 <a class="nav-link active bg-danger" href="CustomerReview.php">Customer Review</a>
