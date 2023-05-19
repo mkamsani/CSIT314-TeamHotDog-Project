@@ -58,42 +58,42 @@ include('idx_nav.php');
     <section id="registration">
         <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" class="form-registration">
             <div class="mt-3">
-                <label for="username" class="form-label">Username:</label>
+                <label for="username" class="form-label text-white">Username:</label>
                 <input type="text" class="form-control" name="username" id="username" placeholder="Enter your username for login" required>
             </div>
 
             <div class="mt-3">
-                <label for="email" class="form-label">Email:</label>
+                <label for="email" class="form-label text-white">Email:</label>
                 <input type="email" class="form-control" name="email" id="email" placeholder="Enter your email eg. seanissofunn@gmail.com" required>
             </div>
 
             <div class="mt-3">
-                <label for="password" class="form-label">Password:</label>
+                <label for="password" class="form-label text-white">Password:</label>
                 <input type="password" class="form-control" name="password" id="password" placeholder="Enter your password minimum 6 characters" required>
             </div>
 
             <div class="mt-3">
-                <label for="password-confirm" class="form-label">Confirm Password:</label>
+                <label for="password-confirm" class="form-label text-white">Confirm Password:</label>
                 <input type="password" class="form-control" name="password" id="password-confirm" placeholder="Confirm password" required>
             </div>
 
             <div class="mt-3">
-                <label for="firstName" class="form-label">First Name:</label>
+                <label for="firstName" class="form-label text-white">First Name:</label>
                 <input type="text" class="form-control" name="firstName" id="firstName" placeholder="Enter your first name" required>
             </div>
 
             <div class="mt-3">
-                <label for="lastName" class="form-label">Last Name:</label>
+                <label for="lastName" class="form-label text-white">Last Name:</label>
                 <input type="text" class="form-control" name="lastName" id="lastName" placeholder="Enter your last name" required>
             </div>
 
             <div class="mt-3">
-                <label for="dateOfBirth" class="form-label">Date of Birth:</label>
+                <label for="dateOfBirth" class="form-label text-white">Date of Birth:</label>
                 <input type="date" class="form-control" name="dateOfBirth" id="dateOfBirth" placeholder="Select date of birth" required>
             </div>
 
             <div class="mt-3">
-                <label for="address" class="form-label">Address:</label>
+                <label for="address" class="form-label text-white">Address:</label>
                 <textarea name="address" class="form-control" id="address" placeholder="Enter your address" cols="30" rows="10" required></textarea>
             </div>
 
