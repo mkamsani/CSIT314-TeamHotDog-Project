@@ -19,16 +19,10 @@ if (isset($_POST['updateTicket'])) {
     $ticketTypeName =  $_POST['updateTypeName'];
     $newTicketTypeName = $_POST['updateNewTypeName'];
     $newPrice = $_POST['newPrice'];
-    $ticketActivity = $_POST['updateIsActive'];
-    if(  $ticketActivity == "TRUE"){
-        $ticketActivity = true;
-    }
-    else if($ticketActivity == "FALSE"){
-        $ticketActivity = false; //php returns nothing if its false
-    }
+
 
     $updateTicketCh = curl_init();
-    $data = array('tickettypename'=> $newTicketTypeName, 'tickettypeprice' => $newPrice, 'tickettypeisactive' => $ticketActivity);
+    $data = array('tickettypename'=> $newTicketTypeName, 'tickettypeprice' => $newPrice);
     $data_json = json_encode($data);
     //print_r($data_json);
     curl_setopt($updateTicketCh, CURLOPT_URL, 'http://localhost:8000/api/manager/ticketType/update/'.$ticketTypeName);
@@ -47,17 +41,10 @@ if (isset($_POST['createTicket'])) {
 
     $ticketTypeName = $_POST['createTicketType'];
     $ticketTypePrice = $_POST['createTypePrice'];
-    $isActive = $_POST['createIsActive'];
-    if(  $isActive == "TRUE"){
-        $isActive = true;
-    }
-    else if($isActive == "FALSE"){
-        $isActive = false;
-    }
     setlocale(LC_MONETARY, "zh_SG");
-    $data = array('typename' => $ticketTypeName, 'typeprice' => $ticketTypePrice, 'isactive' => $isActive);
+    $data = array('typename' => $ticketTypeName, 'typeprice' => $ticketTypePrice);
     $data_json = json_encode($data);
-    //print_r($data_json);
+    print_r($data_json);
     $ticketTypeCh = curl_init("http://localhost:8000/api/manager/ticketType/create/ticketType");
     curl_setopt($ticketTypeCh, CURLOPT_POST, "1");
     curl_setopt($ticketTypeCh, CURLOPT_POSTFIELDS, $data_json);
@@ -177,14 +164,6 @@ if (isset($_POST['suspendTicket'])) {
         </div>
 
         <div class="mt-3">
-            <select class = "form-select" name="createIsActive" id="createIsActive">
-                <option>Select ticket type Activity</option>
-                <option value="TRUE">Active</option>
-                <option value="FALSE">Not Active</option>
-            </select>
-        </div>
-
-        <div class="mt-3">
             <input type="submit" name="createTicket" class = "btn btn-primary" value="Create Ticket">
         </div>
     </form>
@@ -217,14 +196,6 @@ if (isset($_POST['suspendTicket'])) {
 
         <div class="mt-3">
             <input type="number" class = "form-control" name="newPrice" step = "0.01" id="newPrice" placeholder="Enter new price">
-        </div>
-
-        <div class="mt-3">
-            <select name="updateIsActive" class = "form-select" id="updateIsActive">
-                <option> Select ticket Activity </option>
-                <option value = "TRUE"> Active </option>
-                <option value = "FALSE"> Not Active </option>
-            </select>
         </div>
 
         <div class="mt-3">

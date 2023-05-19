@@ -37,7 +37,7 @@ public class TicketType {
 
     //////////////////////////////// Service /////////////////////////////////
 
-    public static void createTicketType(TicketTypeRepository ticketTypeRepository, String typeName, Double typePrice, Boolean isActive) {
+    public static void createTicketType(TicketTypeRepository ticketTypeRepository, String typeName, Double typePrice) {
         if (typeName == null)
             throw new IllegalArgumentException("Type name cannot be null.");
 
@@ -55,14 +55,11 @@ public class TicketType {
         TicketType ticketType = new TicketType();
         ticketType.typeName = typeName;
         ticketType.typePrice = typePrice;
-        ticketType.isActive = isActive;
+        ticketType.isActive = true;
         ticketTypeRepository.save(ticketType);
     }
-    // typeName has issue
-    // if i update child to childUpdated while ticketPrice is different it will still update
-    // if new Type Name is blank when updating then it will turn black
-    // update do further testing
-    public static void updateTicketType(TicketTypeRepository ticketTypeRepository, String targetTypeName, String newTypeName, Double typePrice, Boolean isActive){
+
+    public static void updateTicketType(TicketTypeRepository ticketTypeRepository, String targetTypeName, String newTypeName, Double typePrice){
         TicketType ticketType = ticketTypeRepository.findByTypeName(targetTypeName).orElse(null);
         if (ticketType == null)
             throw new IllegalArgumentException("Ticket Type not found");
@@ -86,11 +83,16 @@ public class TicketType {
             if (newTypeName.equalsIgnoreCase(typeNameFromRepository))
                 throw new IllegalArgumentException("Type name already exists.");
 
+        System.out.println(typePrice);
         if (typePrice == null || typePrice < 0)
             throw new IllegalArgumentException();
+        else if(typePrice == 0.0)
+            System.out.println("No change to typePrice");
+        else
+            ticketType.typePrice = typePrice;
 
-        ticketType.typePrice = typePrice;
         ticketType.typeName = newTypeName;
+
 
         ticketTypeRepository.save(ticketType);
     }

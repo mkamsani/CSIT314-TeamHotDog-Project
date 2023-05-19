@@ -14,6 +14,6 @@ public interface TicketTypeRepository extends JpaRepository<TicketType, UUID> {
 
     List<TicketType> findAllByIsActiveTrue();
 
-    @Query(value = "SELECT type_name FROM ticket_type\n", nativeQuery = true)
+    @Query(value = "SELECT typeName FROM TicketType\n")
     List<String> findAllTypeName();
 }
