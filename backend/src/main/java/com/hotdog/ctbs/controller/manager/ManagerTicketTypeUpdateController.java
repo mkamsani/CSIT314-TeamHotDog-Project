@@ -44,6 +44,7 @@ import org.springframework.web.bind.annotation.*;
 public class ManagerTicketTypeUpdateController {
     private final TicketTypeRepository ticketTypeRepository;
 
+
     public ManagerTicketTypeUpdateController(TicketTypeRepository ticketTypeRepository) {
         this.ticketTypeRepository = ticketTypeRepository;
     }
@@ -54,6 +55,8 @@ public class ManagerTicketTypeUpdateController {
                                  final Double newTypePrice,
                                  final Boolean newIsActive)
      */
+
+
     @PutMapping(value = "/update/{targettickettypename}")
     public ResponseEntity<String> ManagerUpdateTicketType(@RequestBody String json, @PathVariable String targettickettypename)
     {
