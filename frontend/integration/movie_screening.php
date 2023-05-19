@@ -21,172 +21,6 @@ $moviesDetails = json_decode($moviesDetails, true);
 
 
 
-if (isset($_POST['suspend'])) {
-
-    $suspendShowTime = $_POST['suspendShowTime'];
-    $suspendShowDate = $_POST['suspendShowDate'];
-    $suspendCinemaRoomID = $_POST['suspendCinemaRoomID'];
-    $data = array('currentShowTime' => $suspendShowTime, 'currentShowDate' => $suspendShowDate, 'cinemaRoomId' => $suspendCinemaRoomID);
-    $data_json = json_encode($data);
-    print_r(  $data_json);
-    $suspendScreeningCh = curl_init( 'http://localhost:8000/api/manager/screening/suspend/'.$suspendShowTime.'/'.$suspendShowDate.'/'.$suspendCinemaRoomID);
-    curl_setopt($suspendScreeningCh, CURLOPT_CUSTOMREQUEST, "PUT");
-    curl_setopt($suspendScreeningCh, CURLOPT_POSTFIELDS, $data_json);
-    curl_setopt($suspendScreeningCh, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($suspendScreeningCh, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
-
-    $suspendResponse = curl_exec($suspendScreeningCh);
-    curl_close($suspendScreeningCh);
-    echo $suspendResponse;
-    if (strpos($suspendResponse, 'Success') !== false) //Show success message
-    {
-        echo '
-                    <div class="container mt-5">
-                        <div class="alert alert-success mb-3 mt-3" id="successMsg" style="width: 75%;">
-                        <strong>Success!</strong> Movie has been suspended</a>.
-                        </div>
-                    </div>';
-    }
-
-    else
-    {
-        // Error message
-        echo '
-            <div class="container mt-3">
-                <div class="alert alert-danger" style="width: 75%;">
-                    <strong>Error:</strong> ' . $suspendResponse . '
-                </div>
-            </div>';
-    }
-
-}
-
-
-
-if (isset($_POST['update'])) {
-
-    $currentShowTime = $_POST['showTime'];
-    $currentShowDate = $_POST['showDate'];
-    $currentCinemaRoomID = $_POST['cinemaRoomID'];
-    $updatedShowName = $_POST['newMovieName'];
-    $updatedShowTime = $_POST['newShowTime'];
-    $updatedShowDate = $_POST['newShowDate'];
-    $updatedCinemaRoomID =  $_POST['newCinemaRoomID'];
-    $data = array('targetShowTime' => $currentShowTime, 'targetShowDate' => $currentShowDate, 'targetCinemaRoomId' => $currentCinemaRoomID, 'newMovieTitle' =>  $updatedShowName,
-        'newShowTime' => $updatedShowTime, 'newShowDate' => $updatedShowDate, 'newCinemaRoomId' => $updatedCinemaRoomID );
-    $data_json = json_encode($data);
-    print_r(  $data_json);
-    $updateScreeningCh = curl_init( 'http://localhost:8000/api/manager/screening/update/'.$currentShowTime.'/'.$currentShowDate.'/'.$currentCinemaRoomID);
-    curl_setopt($updateScreeningCh, CURLOPT_CUSTOMREQUEST, "PUT");
-    curl_setopt($updateScreeningCh, CURLOPT_POSTFIELDS, $data_json);
-    curl_setopt($updateScreeningCh, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($updateScreeningCh, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
-
-    $updateResponse = curl_exec($updateScreeningCh);
-    curl_close($updateScreeningCh);
-
-    if (strpos($updateResponse, 'Success') !== false) //Show success message
-    {
-        echo '
-                    <div class="container mt-5">
-                        <div class="alert alert-success mb-3 mt-3" id="successMsg" style="width: 75%;">
-                        <strong>Success!</strong> Movie has been updated</a>.
-                        </div>
-                    </div>';
-    }
-
-    else
-    {
-        // Error message
-        echo '
-            <div class="container mt-3">
-                <div class="alert alert-danger" style="width: 75%;">
-                    <strong>Error:</strong> ' . $updateResponse . '
-                </div>
-            </div>';
-    }
-
-}
-
-if (isset($_POST['create'])) {
-
-
-    $createMovieName = $_POST['createScreeningName'];
-    $createShowTime= $_POST['createShowTime'];
-    $createShowDate = $_POST['createShowDate'];
-    $createCinemaRoomID = $_POST['createCinemaRoomID'];
-    $data = array('MovieTitle' => $createMovieName, 'ShowTime' => $createShowTime, 'ShowDate' => $createShowDate, 'CinemaRoomId' => $createCinemaRoomID);
-    $data_json = json_encode($data);
-    print_r(  $data_json);
-    $createScreeningCh = curl_init("http://localhost:8000/api/manager/screening/create/screening");
-    curl_setopt($createScreeningCh, CURLOPT_POST, "1");
-    curl_setopt($createScreeningCh, CURLOPT_POSTFIELDS, $data_json);
-    curl_setopt($createScreeningCh, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($createScreeningCh, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
-
-    $createResponse = curl_exec($createScreeningCh);
-    curl_close($createScreeningCh);
-    //print_r ($createResponse);
-    if (strpos($createResponse, 'Success') !== false) //Show success message
-    {
-        echo '
-                    <div class="container mt-5">
-                        <div class="alert alert-success mb-3 mt-3" id="successMsg" style="width: 75%;">
-                        <strong>Success!</strong> Movie has been created</a>.
-                        </div>
-                    </div>';
-    }
-
-    else
-    {
-        // Error message
-        echo '
-            <div class="container mt-3">
-                <div class="alert alert-danger" style="width: 75%;">
-                    <strong>Error:</strong> ' . $createResponse . '
-                </div>
-            </div>';
-    }
-}
-
-if (isset($_POST['cancel']) ) {
-
-    $cancelShowTime= $_POST['cancelShowTime'];
-    $cancelShowDate = $_POST['cancelShowDate'];
-    $cancelCinemaRoomID = $_POST['cancelCinemaRoomID'];
-    $data = array('currentShowTime' => $cancelShowTime, 'currentShowDate' => $cancelShowDate, 'cinemaRoomId' => $cancelCinemaRoomID, 'CinemaRoomId' => $cancelCinemaRoomID);
-    $data_json = json_encode($data);
-    print_r(  $data_json);
-    $cancelScreeningCh = curl_init( 'http://localhost:8000/api/manager/screening/cancel/'.$cancelShowTime.'/'.$cancelShowDate.'/'.$cancelCinemaRoomID);
-    curl_setopt($cancelScreeningCh, CURLOPT_CUSTOMREQUEST, "PUT");
-    curl_setopt($cancelScreeningCh, CURLOPT_POSTFIELDS,  $data_json);
-    curl_setopt($cancelScreeningCh, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($cancelScreeningCh, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
-    $cancelResponse = curl_exec($cancelScreeningCh);
-    curl_close($cancelScreeningCh);
-//    echo "<meta http-equiv='refresh' content='0'>";
-    if (strpos($cancelResponse, 'Success') !== false) //Show success message
-    {
-        echo '
-                    <div class="container mt-5">
-                        <div class="alert alert-success mb-3 mt-3" id="successMsg" style="width: 75%;">
-                        <strong>Success!</strong> Screening has been cancelled </a>.
-                        </div>
-                    </div>';
-    }
-
-    else
-    {
-        // Error message
-        echo '
-            <div class="container mt-3">
-                <div class="alert alert-danger" style="width: 75%;">
-                    <strong>Error:</strong> ' . $cancelResponse . '
-                </div>
-            </div>';
-    }
-}
-
 ?>
 <head>
     <style>
@@ -258,6 +92,8 @@ if (isset($_POST['cancel']) ) {
             color: #e50914;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         }
+
+
     </style>
 </head>
 
@@ -296,6 +132,174 @@ if (isset($_POST['cancel']) ) {
 
 </div>
 
+<?php
+
+if (isset($_POST['suspend'])) {
+
+$suspendShowTime = $_POST['suspendShowTime'];
+$suspendShowDate = $_POST['suspendShowDate'];
+$suspendCinemaRoomID = $_POST['suspendCinemaRoomID'];
+$data = array('currentShowTime' => $suspendShowTime, 'currentShowDate' => $suspendShowDate, 'cinemaRoomId' => $suspendCinemaRoomID);
+$data_json = json_encode($data);
+//print_r(  $data_json);
+$suspendScreeningCh = curl_init( 'http://localhost:8000/api/manager/screening/suspend/'.$suspendShowTime.'/'.$suspendShowDate.'/'.$suspendCinemaRoomID);
+curl_setopt($suspendScreeningCh, CURLOPT_CUSTOMREQUEST, "PUT");
+curl_setopt($suspendScreeningCh, CURLOPT_POSTFIELDS, $data_json);
+curl_setopt($suspendScreeningCh, CURLOPT_RETURNTRANSFER, 1);
+curl_setopt($suspendScreeningCh, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+
+$suspendResponse = curl_exec($suspendScreeningCh);
+curl_close($suspendScreeningCh);
+echo $suspendResponse;
+if (strpos($suspendResponse, 'Success') !== false) //Show success message
+{
+echo '
+<div class="container mt-5">
+    <div class="alert alert-success mb-3 mt-3" id="successMsg" style="width: 75%; margin-left: 150px">
+        <strong>Success!</strong> screening has been suspended</a>.
+    </div>
+</div>';
+}
+
+else
+{
+// Error message
+echo '
+<div class="container mt-3">
+    <div class="alert alert-danger" style="width: 75%; margin-left: 150px">
+        <strong>Error:</strong> ' . $suspendResponse . '
+    </div>
+</div>';
+}
+
+}
+
+
+
+if (isset($_POST['update'])) {
+
+$currentShowTime = $_POST['showTime'];
+$currentShowDate = $_POST['showDate'];
+$currentCinemaRoomID = $_POST['cinemaRoomID'];
+$updatedShowName = $_POST['newMovieName'];
+$updatedShowTime = $_POST['newShowTime'];
+$updatedShowDate = $_POST['newShowDate'];
+$updatedCinemaRoomID =  $_POST['newCinemaRoomID'];
+$data = array('targetShowTime' => $currentShowTime, 'targetShowDate' => $currentShowDate, 'targetCinemaRoomId' => $currentCinemaRoomID, 'newMovieTitle' =>  $updatedShowName,
+'newShowTime' => $updatedShowTime, 'newShowDate' => $updatedShowDate, 'newCinemaRoomId' => $updatedCinemaRoomID );
+$data_json = json_encode($data);
+//print_r(  $data_json);
+$updateScreeningCh = curl_init( 'http://localhost:8000/api/manager/screening/update/'.$currentShowTime.'/'.$currentShowDate.'/'.$currentCinemaRoomID);
+curl_setopt($updateScreeningCh, CURLOPT_CUSTOMREQUEST, "PUT");
+curl_setopt($updateScreeningCh, CURLOPT_POSTFIELDS, $data_json);
+curl_setopt($updateScreeningCh, CURLOPT_RETURNTRANSFER, 1);
+curl_setopt($updateScreeningCh, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+
+$updateResponse = curl_exec($updateScreeningCh);
+curl_close($updateScreeningCh);
+
+if (strpos($updateResponse, 'Success') !== false) //Show success message
+{
+echo '
+<div class="container mt-5">
+    <div class="alert alert-success mb-3 mt-3" id="successMsg" style="width: 75%;margin-left: 150px">
+        <strong>Success!</strong>  screening has been updated</a>.
+    </div>
+</div>';
+}
+
+else
+{
+// Error message
+echo '
+<div class="container mt-3">
+    <div class="alert alert-danger" style="width: 75%; margin-left: 150px">
+        <strong>Error:</strong> ' . $updateResponse . '
+    </div>
+</div>';
+}
+
+}
+
+if (isset($_POST['create'])) {
+
+
+$createMovieName = $_POST['createScreeningName'];
+$createShowTime= $_POST['createShowTime'];
+$createShowDate = $_POST['createShowDate'];
+$createCinemaRoomID = $_POST['createCinemaRoomID'];
+$data = array('MovieTitle' => $createMovieName, 'ShowTime' => $createShowTime, 'ShowDate' => $createShowDate, 'CinemaRoomId' => $createCinemaRoomID);
+$data_json = json_encode($data);
+print_r(  $data_json);
+$createScreeningCh = curl_init("http://localhost:8000/api/manager/screening/create/screening");
+curl_setopt($createScreeningCh, CURLOPT_POST, "1");
+curl_setopt($createScreeningCh, CURLOPT_POSTFIELDS, $data_json);
+curl_setopt($createScreeningCh, CURLOPT_RETURNTRANSFER, 1);
+curl_setopt($createScreeningCh, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+
+$createResponse = curl_exec($createScreeningCh);
+curl_close($createScreeningCh);
+//print_r ($createResponse);
+if (strpos($createResponse, 'Success') !== false) //Show success message
+{
+echo '
+<div class="container mt-5">
+    <div class="alert alert-success mb-3 mt-3" id="successMsg" style="width: 75%; margin-left: 150px">
+        <strong>Success!</strong> screening has been created</a>.
+    </div>
+</div>';
+}
+
+else
+{
+// Error message
+echo '
+<div class="container mt-3">
+    <div class="alert alert-danger" style="width: 75%; margin-left: 150px">
+        <strong>Error:</strong> ' . $createResponse . '
+    </div>
+</div>';
+}
+}
+
+if (isset($_POST['cancel']) ) {
+
+$cancelShowTime= $_POST['cancelShowTime'];
+$cancelShowDate = $_POST['cancelShowDate'];
+$cancelCinemaRoomID = $_POST['cancelCinemaRoomID'];
+$data = array('currentShowTime' => $cancelShowTime, 'currentShowDate' => $cancelShowDate, 'cinemaRoomId' => $cancelCinemaRoomID, 'CinemaRoomId' => $cancelCinemaRoomID);
+$data_json = json_encode($data);
+//print_r(  $data_json);
+$cancelScreeningCh = curl_init( 'http://localhost:8000/api/manager/screening/cancel/'.$cancelShowTime.'/'.$cancelShowDate.'/'.$cancelCinemaRoomID);
+curl_setopt($cancelScreeningCh, CURLOPT_CUSTOMREQUEST, "PUT");
+curl_setopt($cancelScreeningCh, CURLOPT_POSTFIELDS,  $data_json);
+curl_setopt($cancelScreeningCh, CURLOPT_RETURNTRANSFER, 1);
+curl_setopt($cancelScreeningCh, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+$cancelResponse = curl_exec($cancelScreeningCh);
+curl_close($cancelScreeningCh);
+//    echo "<meta http-equiv='refresh' content='0'>";
+if (strpos($cancelResponse, 'Success') !== false) //Show success message
+{
+echo '
+<div class="container mt-5" >
+    <div class="alert alert-success mb-3 mt-3" id="successMsg" style="width: 75%;" margin-left: 150px>
+        <strong>Success!</strong> Screening has been cancelled </a>.
+    </div>
+</div>';
+}
+
+else
+{
+// Error message
+echo '
+<div class="container mt-3">
+    <div class="alert alert-danger" style="width: 75%;" margin-left: 150px>
+        <strong>Error:</strong> ' . $cancelResponse . '
+    </div>
+</div>';
+}
+}
+?>
 <div class="container mt-4" style="margin-left: 20%; width: 40%">
     <div class="input-group mb-3" style="width: 40%; margin: auto;">
         <span class="input-group-text" id="searchLbl">Search:</span>
@@ -320,7 +324,7 @@ if (isset($_POST['cancel']) ) {
                 <input type="date" class="form-control" name="suspendShowDate" id="suspendShowDate">
             </div>
             <div class="mt-2">
-                <input type="number" step="1" class="form-control" name="suspendCinemaRoomID" id="suspendCinemaRoomID">
+                <input type="number" step="1" class="form-control" name="suspendCinemaRoomID" id="suspendCinemaRoomID" placeholder="Enter Cinema Room">
             </div>
             <div class="mt-3">
                 <input type="submit" class="btn btn-primary" name="suspend" value="Suspend">
@@ -344,10 +348,18 @@ if (isset($_POST['cancel']) ) {
                 <input type="date" class="form-control" name="showDate" id="showDate">
             </div>
             <div class="mt-3">
-                <input type="number" step="1" class="form-control" name="cinemaRoomID" id="cinemaRoomID">
+                <input type="number" step="1" class="form-control" name="cinemaRoomID" id="cinemaRoomID" placeholder="Enter Cinema Room">
             </div>
             <div class="mt-3">
-                <input type="text" class="form-control" name="newMovieName" id="newMovieName" placeholder="Enter new Movie Name">
+                <select class="form-control" name="newMovieName" id="newMovieName">
+                    <option>Enter Movie Name</option>
+                    <?php
+                    foreach ($moviesDetails as $movie) {
+                        $movieName = $movie['title'];
+                        echo '<option>' . $movieName . '</option>';
+                    }
+                    ?>
+                </select>
             </div>
             <div class="mt-3">
                 <select class="form-control" name="newShowTime" id="newShowTime">
@@ -364,7 +376,7 @@ if (isset($_POST['cancel']) ) {
                 <input type="date" class="form-control" name="newShowDate" id="newShowDate">
             </div>
             <div class="mt-3">
-                <input type="number" step="1" class="form-control" name="newCinemaRoomID" id="newCinemaRoomID">
+                <input type="number" step="1" class="form-control" name="newCinemaRoomID" id="newCinemaRoomID" placeholder="Enter new Cinema Room">
             </div>
             <div class="mt-3">
                 <input type="submit" class="btn btn-primary" name="update" value="Update">
@@ -376,7 +388,15 @@ if (isset($_POST['cancel']) ) {
                 <h2 class="form-label text-white" style = "text-decoration: underline;">Create Screening:</h2>
 
                 <div class="mt-2">
-                    <input type="text" step="1" class="form-control" name="createScreeningName" id="createScreeningName">
+                    <select class="form-control" name="createScreeningName" id="createScreeningName">
+                        <option>Enter Movie Name</option>
+                        <?php
+                        foreach ($moviesDetails as $movie) {
+                            $movieName = $movie['title'];
+                            echo '<option>' . $movieName . '</option>';
+                        }
+                        ?>
+                    </select>
                 </div>
 
                 <div class="mt-2">
@@ -395,7 +415,7 @@ if (isset($_POST['cancel']) ) {
                 <input type="date" class="form-control" name="createShowDate" id="createShowDate">
             </div>
             <div class="mt-2">
-                <input type="number" step="1" class="form-control" name="createCinemaRoomID" id="createCinemaRoomID">
+                <input type="number" step="1" class="form-control" name="createCinemaRoomID" id="createCinemaRoomID" placeholder="Enter Cinema Room">
             </div>
             <div class="mt-3">
                 <input type="submit" class="btn btn-primary" name="create" value="Create">
@@ -427,7 +447,7 @@ if (isset($_POST['cancel']) ) {
         </form>
     </div>
 
-    <table id="moviesTable" class="table text-white" style="margin: auto; width: 100%; table-layout: fixed">
+    <table id="moviesTable" class="table text-white" style="width: 100%; table-layout: fixed; margin: auto auto auto 150px;">
         <thead>
         <tr>
             <th>Movie Title</th>

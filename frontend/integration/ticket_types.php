@@ -14,65 +14,6 @@ include('header.php');
     //print_r($ticketDetails);
 
 
-if (isset($_POST['updateTicket'])) {
-
-    $ticketTypeName =  $_POST['updateTypeName'];
-    $newTicketTypeName = str_replace(' ', '%20', $_POST['updateNewTypeName']);
-    $newPrice = $_POST['newPrice'];
-
-
-    $updateTicketCh = curl_init();
-    $data = array('tickettypename'=> $newTicketTypeName, 'tickettypeprice' => $newPrice);
-    $data_json = json_encode($data);
-    print_r($data_json);
-    curl_setopt($updateTicketCh, CURLOPT_URL, 'http://localhost:8000/api/manager/ticketType/update/'.$ticketTypeName);
-    curl_setopt($updateTicketCh, CURLOPT_CUSTOMREQUEST, "PUT");
-    curl_setopt($updateTicketCh, CURLOPT_POSTFIELDS, $data_json);
-    curl_setopt($updateTicketCh, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($updateTicketCh, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
-    $updateTicket = curl_exec($updateTicketCh);
-    curl_close($updateTicketCh);
-    $updateTicket = json_decode($updateTicket, true);
-    print_r($updateTicket);
-}
-
-
-if (isset($_POST['createTicket'])) {
-
-    $ticketTypeName = str_replace(' ', '%20', $_POST['createTicketType']);
-    $ticketTypePrice = $_POST['createTypePrice'];
-    setlocale(LC_MONETARY, "zh_SG");
-    $data = array('typename' => $ticketTypeName, 'typeprice' => $ticketTypePrice);
-    $data_json = json_encode($data);
-    print_r($data_json);
-    $ticketTypeCh = curl_init("http://localhost:8000/api/manager/ticketType/create/ticketType");
-    curl_setopt($ticketTypeCh, CURLOPT_POST, "1");
-    curl_setopt($ticketTypeCh, CURLOPT_POSTFIELDS, $data_json);
-    curl_setopt($ticketTypeCh, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($ticketTypeCh, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
-
-    $response = curl_exec($ticketTypeCh);
-    curl_close($ticketTypeCh);
-    print_r($response);
-
-}
-
-
-if (isset($_POST['suspendTicket'])) {
-
-    $suspendTicketTypeName =  str_replace(' ', '%20',$_POST['updateTypeName']);
-    print_r($suspendTicketTypeName);
-    $suspendTicketTypeCh = curl_init('http://localhost:8000/api/manager/ticketType/suspend/'.$suspendTicketTypeName);
-    curl_setopt($suspendTicketTypeCh, CURLOPT_CUSTOMREQUEST, "DELETE");
-    curl_setopt($suspendTicketTypeCh, CURLOPT_POSTFIELDS, $suspendTicketTypeName);
-    curl_setopt($suspendTicketTypeCh, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($suspendTicketTypeCh, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
-    $response = curl_exec($suspendTicketTypeCh);
-    curl_close($suspendTicketTypeCh);
-    print_r($response);
-
-}
-
 
 ?>
 
@@ -111,7 +52,127 @@ if (isset($_POST['suspendTicket'])) {
     <h1>Ticket Types</h1>
 <!--    <p>Admin ID: --><?php //echo $_SESSION["userId"] ?><!--</p>-->
 </div>
+<?php
+if (isset($_POST['updateTicket'])) {
 
+$ticketTypeName =  str_replace(' ', '%20', $_POST['updateTypeName']);
+$newTicketTypeName = $_POST['updateNewTypeName'];
+$newPrice = $_POST['newPrice'];
+
+
+$updateTicketCh = curl_init();
+$data = array('tickettypename'=> $newTicketTypeName, 'tickettypeprice' => $newPrice);
+$data_json = json_encode($data);
+print_r($data_json);
+curl_setopt($updateTicketCh, CURLOPT_URL, 'http://localhost:8000/api/manager/ticketType/update/'.$ticketTypeName);
+curl_setopt($updateTicketCh, CURLOPT_CUSTOMREQUEST, "PUT");
+curl_setopt($updateTicketCh, CURLOPT_POSTFIELDS, $data_json);
+curl_setopt($updateTicketCh, CURLOPT_RETURNTRANSFER, 1);
+curl_setopt($updateTicketCh, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+$updateResponse = curl_exec($updateTicketCh);
+curl_close($updateTicketCh);
+//    $updateTicket = json_decode($updateResponse, true);
+if (strpos($updateResponse, 'Updated') !== false) //Show success message
+{
+echo '
+<div class="container mt-5">
+    <div class="alert alert-success mb-3 mt-3" id="successMsg" style="width: 75%;">
+        <strong>Success!</strong> Ticket has been updated</a>.
+    </div>
+</div>';
+}
+
+else
+{
+// Error message
+echo '
+<div class="container mt-3">
+    <div class="alert alert-danger" style="width: 75%;">
+        <strong>Error:</strong> ' . $updateResponse . '
+    </div>
+</div>';
+}
+
+
+}
+
+
+if (isset($_POST['createTicket'])) {
+
+$ticketTypeName = $_POST['createTicketType'];
+$ticketTypePrice = $_POST['createTypePrice'];
+setlocale(LC_MONETARY, "zh_SG");
+$data = array('typename' => $ticketTypeName, 'typeprice' => $ticketTypePrice);
+$data_json = json_encode($data);
+print_r($data_json);
+$ticketTypeCh = curl_init("http://localhost:8000/api/manager/ticketType/create/ticketType");
+curl_setopt($ticketTypeCh, CURLOPT_POST, "1");
+curl_setopt($ticketTypeCh, CURLOPT_POSTFIELDS, $data_json);
+curl_setopt($ticketTypeCh, CURLOPT_RETURNTRANSFER, 1);
+curl_setopt($ticketTypeCh, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+
+$createResponse = curl_exec($ticketTypeCh);
+curl_close($ticketTypeCh);
+if (strpos($createResponse, 'Success') !== false) //Show success message
+{
+echo '
+<div class="container mt-5">
+    <div class="alert alert-success mb-3 mt-3" id="successMsg" style="width: 75%;">
+        <strong>Success!</strong> Ticket has been created</a>.
+    </div>
+</div>';
+}
+
+else
+{
+// Error message
+echo '
+<div class="container mt-3">
+    <div class="alert alert-danger" style="width: 75%;">
+        <strong>Error:</strong> ' . $createResponse . '
+    </div>
+</div>';
+}
+
+
+}
+
+
+if (isset($_POST['suspendTicket'])) {
+
+$suspendTicketTypeName =  str_replace(' ', '%20',$_POST['updateTypeName']);
+print_r($suspendTicketTypeName);
+$suspendTicketTypeCh = curl_init('http://localhost:8000/api/manager/ticketType/suspend/'.$suspendTicketTypeName);
+curl_setopt($suspendTicketTypeCh, CURLOPT_CUSTOMREQUEST, "DELETE");
+curl_setopt($suspendTicketTypeCh, CURLOPT_POSTFIELDS, $suspendTicketTypeName);
+curl_setopt($suspendTicketTypeCh, CURLOPT_RETURNTRANSFER, 1);
+curl_setopt($suspendTicketTypeCh, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
+$suspenseResponse = curl_exec($suspendTicketTypeCh);
+curl_close($suspendTicketTypeCh);
+if (strpos($suspenseResponse, 'Success') !== false) //Show success message
+{
+echo '
+<div class="container mt-5">
+    <div class="alert alert-success mb-3 mt-3" id="successMsg" style="width: 75%;">
+        <strong>Success!</strong> Ticket has been suspended</a>.
+    </div>
+</div>';
+}
+
+else
+{
+// Error message
+echo '
+<div class="container mt-3">
+    <div class="alert alert-danger" style="width: 75%;">
+        <strong>Error:</strong> ' . $suspenseResponse . '
+    </div>
+</div>';
+}
+
+
+}
+?>
 
 <div class="container mt-4" style="margin-left: 20%; width: 40%">
     <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" class="showTicket text-white"">

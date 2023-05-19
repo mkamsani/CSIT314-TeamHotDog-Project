@@ -70,7 +70,7 @@ public class TicketType {
 
         for (String typeNameFromRepository : ticketTypeRepository.findAll().stream().map(TicketType::getTypeName).toList())
             if (newTypeName.equalsIgnoreCase(typeNameFromRepository))
-                throw new IllegalArgumentException("Type name already exists.");
+                throw new IllegalArgumentException("Ticket Type already exists.");
 
 
         // for reserved targetticketTypes, if newTypeName is empty, check if typePrice is valid, if valid change only typePrice

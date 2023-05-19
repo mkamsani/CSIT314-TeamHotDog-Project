@@ -78,7 +78,7 @@ public class ManagerTicketTypeUpdateController {
             // delete later
             System.out.println("updateTicketType() failed");
             //
-            return ResponseEntity.badRequest().body("Ticket Type Update Failed");
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }
