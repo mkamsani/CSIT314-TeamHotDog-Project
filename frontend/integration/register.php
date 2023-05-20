@@ -28,7 +28,7 @@ include('idx_nav.php');
         $result = curl_exec($ch);
         curl_close($ch);
 
-        if (stripos($result, "successful") == true)
+        if ($result == "Success")
         {
             echo '
                     <div class="container mt-5">

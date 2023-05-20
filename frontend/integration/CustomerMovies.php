@@ -21,17 +21,7 @@ if (isset($_SESSION["privilege"]))
     // Use the $username variable as needed
 }
 
-// Retrieve the user data from the API
-$ch = curl_init();
-curl_setopt($ch, CURLOPT_URL, 'http://localhost:8000/api/admin/user-account/read/' . $username);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-$result = curl_exec($ch);
-$data = json_decode($result, true);
-$user = $data[0];
-curl_close($ch);
-
 ?>
-
 
 <nav class="navbar navbar-expand-sm">
     <div class="container">
@@ -44,14 +34,14 @@ curl_close($ch);
             </li>
             &emsp;
             <li class="nav-item">
-                <a class="nav-link" href="CustomerMovies.php">Movies</a>
+                <a class="nav-link active bg-danger" href="CustomerMovies.php">Movies</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="Booking.php">Book a Movie</a>
             </li>
             &emsp;
             <li class="nav-item">
-                <a class="nav-link active bg-danger" href="OrderHistory.php">My Bookings</a>
+                <a class="nav-link" href="OrderHistory.php">My Bookings</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="CustAccountDetails.php">My Account</a>
@@ -68,49 +58,108 @@ curl_close($ch);
 
 <body>
 <div class="container-fluid p-5 bg-danger text-white text-center">
-    <h1>Booking History</h1>
+    <h1>Movies</h1>
+    <p>Username: <?php echo $username; ?></p>
 </div>
-<div class="container mt-3 text-white">
-    <div class="input-group mb-3" style="margin: auto; width: 50%">
+
+<div class="container mt-3 center movies-container">
+    <div class="input-group mb-3" style="width: 40%; margin: auto;">
         <span class="input-group-text" id="searchLbl">Search:</span>
         <input type="text" class="form-control" id="searchBox" onkeyup="tableSearch()">
-        &nbsp;
-        &nbsp;
-        &nbsp;
-        &nbsp;
     </div>
+    <table id="moviesTable" class="table text-white" style="margin: auto; width: 100%; table-layout: fixed">
+        <thead>
+        <tr>
+            <th>Movie Title</th>
+            <th>Movie Description</th>
+            <th>Genre</th>
+            <th>Poster</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php
+        $moviesDetailsCh = curl_init();
+        curl_setopt($moviesDetailsCh, CURLOPT_URL, "http://localhost:8000/api/customer/movie/read/active");
+        curl_setopt($moviesDetailsCh, CURLOPT_RETURNTRANSFER, 1);
+        $moviesDetails = curl_exec($moviesDetailsCh);
+        $moviesDetails = json_decode($moviesDetails, true);
+        curl_close($moviesDetailsCh);
 
-    <?php
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, 'http://localhost:8000/api/customer/ticket/read/' . $username);
-    curl_setopt($ch, CURLOPT_HTTPGET, true);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    $result = curl_exec($ch);
-    $data = json_decode($result, true);
+        foreach ($moviesDetails as $movie)
+        {
+            $title = $movie['title'];
+            $description = $movie['description'];
+            $genre = $movie['genre'];
+            $poster = $movie['imageUrl'];
+            $CR = $movie['contentRating'];
+            ?>
+            <tr>
+                <td class="movie-title text-white"><?php echo $title ." (" .$CR .")"; ?></td>
+                <td class="movie-description text-white"><?php echo $description; ?></td>
+                <td class="movie-genre text-white"><?php echo $genre; ?></td>
+                <td>
 
-    $tableHtml = '<table id="ordersTable" class="table table-hover-dark table-sm table-responsive text-white">';
-    $tableHtml .= '<thead><tr><th>Movie</th><th>Show Date</th><th>Show Time</th><th>Seat Row/Col<th>Cinema Room</th><th>Price</th><th>Ticket Type</th><th>Purchase Date</th></tr></thead>';
-    foreach ($data as $row) {
-        $strpuchasedate = strtotime($row['purchaseDate']);
-        $strpuchasedate = date("Y-m-d h:i:s A", $strpuchasedate);
-        $tableHtml .= '<tr>';
-        $tableHtml .= '<td style="padding-bottom: 5%;">' . $row['movie'] . '</td>';
-        $tableHtml .= '<td style="padding-bottom: 5%;">' . $row['showDate'] . '</td>';
-        $tableHtml .= '<td style="padding-bottom: 5%;">' . $row['showTime'] . '</td>';
-        $tableHtml .= '<td style="padding-bottom: 5%;">' . $row['row'] . $row['column'] . '</td>';
-        $tableHtml .= '<td style="padding-bottom: 5%;">' . $row['cinemaRoom'] . '</td>';
-        $tableHtml .= '<td style="padding-bottom: 5%;">' . $row['price'] . '</td>';
-        $tableHtml .= '<td style="padding-bottom: 5%;">' . $row['type'] . '</td>';
-        $tableHtml .= '<td style="padding-bottom: 5%;">' . $strpuchasedate . '</td>';
-        $tableHtml .= '</tr>';
+                    <img class="movie-poster" src="<?php echo $poster; ?>">
+                </td>
+            </tr>
+        <?php } ?>
 
-    }
-    $tableHtml .= '</table>';
-    echo $tableHtml;
-    ?>
+
+
+        </tbody>
+    </table>
+</div>
 </body>
 
 <style>
+    .movie-title {
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    .movie-description {
+        font-size: 18px;
+        font-family: "Arial", sans-serif;
+        color: #555555;
+    }
+
+    .movie-genre {
+        font-size: 16px;
+        font-family: "Arial", sans-serif;
+        color: #888888;
+        text-transform: uppercase;
+    }
+
+    .movie-poster {
+        width: 200px;
+        height: 300px;
+    }
+
+    .movie-poster-title {
+        font-weight: bold;
+    }
+
+    .fixed-forms-container {
+        position: fixed;
+        top: 16%;
+        left: 0;
+        width: 20%;
+        height: 100vh; /* Use 100vh for full screen height */
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start; /* Align forms to the top */
+        align-items: center;
+        padding: 20px;
+        background-color: rgba(255, 255, 255, 0);
+        z-index: 999;
+    }
+
+    .movies-container
+    {
+        margin-left: 25%;
+        width: 75%;
+    }
+
     .navbar .nav-link
     {
         color: white;
@@ -136,7 +185,7 @@ curl_close($ch);
         var input, filter, table, tr, td, i;
         input = document.getElementById("searchBox");
         filter = input.value.toUpperCase();
-        table = document.getElementById("ordersTable");
+        table = document.getElementById("moviesTable");
         tr = table.getElementsByTagName("tr"),
             th = table.getElementsByTagName("th");
 

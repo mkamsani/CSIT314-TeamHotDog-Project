@@ -17,11 +17,16 @@ include('header.php');
             </li>
             &emsp;
             <li class="nav-item">
-                <a class="nav-link" href="">Movies</a>
+                <a class="nav-link" href="CustomerMovies.php">Movies</a>
             </li>
-            &emsp;
+            &emsp;<li class="nav-item">
+                <a class="nav-link" href="Booking.php">Book a Movie</a>
+            </li>
             <li class="nav-item">
                 <a class="nav-link" href="OrderHistory.php">My Bookings</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="CustAccountDetails.php">My Account</a>
             </li>
             &emsp;<li class="nav-item">
                 <a class="nav-link active bg-danger" href="CustomerReview.php">Customer Review</a>
