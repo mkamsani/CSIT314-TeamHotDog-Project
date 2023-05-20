@@ -30,8 +30,5 @@ public class CustomerMovieReadController {
 
                 return ResponseEntity.badRequest().body(e.getMessage());
             }
-
     }
-
-
 }

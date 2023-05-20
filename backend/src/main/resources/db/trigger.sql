@@ -3,6 +3,8 @@
  * or a user_account with updated password.
  * Prerequisites: user_profile and user_account TABLE must be created.
  */
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
 CREATE OR REPLACE FUNCTION password_crypt()
     RETURNS TRIGGER
     LANGUAGE plpgsql
