@@ -60,7 +60,7 @@ DECLARE
     dd integer;
 BEGIN
     SELECT uuid FROM movie ORDER BY RANDOM() LIMIT 1 INTO random_movie;
-    SELECT id FROM cinema_room ORDER BY RANDOM() LIMIT 1 INTO random_cinema_room;
+    SELECT id FROM cinema_room where is_active = true ORDER BY RANDOM() LIMIT 1 INTO random_cinema_room;
     yyyy := 2023;
     mm := CEIL(RANDOM() * 12);
     dd := CEIL(RANDOM() * 31);

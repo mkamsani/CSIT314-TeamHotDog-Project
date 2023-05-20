@@ -292,11 +292,15 @@ public class Screening {
             throw new IllegalArgumentException("New cinema room is not active.");
 
         // showTime, cinemaRoom, showDate cannot be equal to each other.
-        for (Screening screening : screeningRepo.findAll())
-            if (screening.getShowTime().equals(newShowTime)
-                    && screening.getCinemaRoom().equals(newCinemaRoom)
-                    && screening.getShowDate().equals(newShowDate))
-                throw new IllegalArgumentException("You cannot update to a screening that already exists.");
+        for (Screening screening : screeningRepo.findAll()) {
+            if (screening.showTime.equals(newShowTime) && screening.cinemaRoom.equals(newCinemaRoom) && screening.showDate.equals(newShowDate)) {
+                if (currentScreening.showTime.equals(newShowTime) && currentScreening.cinemaRoom.equals(newCinemaRoom) && currentScreening.showDate.equals(newShowDate)) {
+                    // Allow whatever changes need to be changed.
+                } else {
+                    throw new IllegalArgumentException("You cannot update to a screening that already exists.");
+                }
+            }
+        }
 
         currentScreening.movie = newMovie;
         currentScreening.showTime = newShowTime;

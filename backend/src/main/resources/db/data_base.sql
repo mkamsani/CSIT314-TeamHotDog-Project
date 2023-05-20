@@ -51,20 +51,22 @@ VALUES
                                             'who fight against Thanos to prevent the destruction of the universe.',                                                                                  '2018-04-27', 'https://www.themoviedb.org/t/p/original/rcV5bQjDoPNfI4wRpWAgZXtE0ON.jpg', 'https://www.themoviedb.org/t/p/original/lmZFxXgJE3vgrciwuDib0N8CfQo.jpg', TRUE, 'pg13');
 
 
-
-
-
 -- Insert 100 default cinema rooms.
 -- No further cinema rooms can be added.
 DO $$
     DECLARE
         i INTEGER := 1;
     BEGIN
-        WHILE i <= 100 LOOP
+        WHILE i <= 30 LOOP
                 INSERT INTO cinema_room (id, is_active)
                 VALUES (i, true);
                 i := i + 1;
-            END LOOP;
+        END LOOP;
+        WHILE i <= 100 LOOP
+                INSERT INTO cinema_room (id, is_active)
+                VALUES (i, false);
+                i := i + 1;
+        END LOOP;
     END
 $$;
 
