@@ -87,19 +87,19 @@ public class Ticket {
             throw new IllegalArgumentException("Seat is invalid: " + row.charAt(0) + column);
 
         // Earmarked to move to CustomerLoyaltyPointUpdate Controller
-        LoyaltyPoint loyaltyPointForUser = loyaltyPointRepository.findByUserAccountUsername(username).orElse(null);
-        if (loyaltyPointForUser == null)
-            throw new IllegalArgumentException("User does not have any loyalty point");
+//        LoyaltyPoint loyaltyPointForUser = loyaltyPointRepository.findByUserAccountUsername(username).orElse(null);
+//        if (loyaltyPointForUser == null)
+//            throw new IllegalArgumentException("User does not have any loyalty point");
 
-        if (isLoyaltyPointUsed) {
-            Double pointsBalance = Double.valueOf(loyaltyPointForUser.pointsBalance());
-            TicketType ticketTypeRedemption = ticketTypeRepository.findByTypeName("redemption").orElse(null);
-            if (ticketTypeRedemption != null && pointsBalance < ticketTypeRedemption.typePrice)
-                throw new IllegalArgumentException("Loyalty point is not enough: " + pointsBalance);
-        }
-        else {
-            loyaltyPointForUser.setPointsTotal(loyaltyPointForUser.getPointsTotal() + 1);
-        }
+//        if (isLoyaltyPointUsed) {
+//            Double pointsBalance = Double.valueOf(loyaltyPointForUser.pointsBalance());
+//            TicketType ticketTypeRedemption = ticketTypeRepository.findByTypeName("redemption").orElse(null);
+//            if (ticketTypeRedemption != null && pointsBalance < ticketTypeRedemption.typePrice)
+//                throw new IllegalArgumentException("Loyalty point is not enough: " + pointsBalance);
+//        }
+//        else {
+//            loyaltyPointForUser.setPointsTotal(loyaltyPointForUser.getPointsTotal() + 1);
+//        }
 
         Ticket ticket = new Ticket();
         ticket.id = UUID.randomUUID();
