@@ -77,11 +77,14 @@ public class Movie {
         // the content rating must be in lowercase form (2nd check)
         // the content rating must be one of the valid content rating (3rd check)
 
+        if (title.equals("all") || title.equals("screening"))
+            throw new IllegalArgumentException("Title is reserved: " + title);
+
         if (movieRepo.findAllTitles().contains(title.toLowerCase()))
             throw new IllegalArgumentException("Title already exists: " + title);
 
         if (!contentRating.equals(contentRating.toLowerCase()))
-            throw new IllegalArgumentException("Content rating must be in lowercase.");
+            throw new IllegalArgumentException("Content rating must be in lowercase: " + contentRating);
 
         if (!movieRepo.findAllContentRatings().contains(contentRating))
             throw new IllegalArgumentException("Content rating is invalid: " + contentRating);
