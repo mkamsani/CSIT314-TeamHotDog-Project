@@ -127,48 +127,6 @@ public class TicketType {
                 }
             }
         }
-
-
-//
-//
-//        switch(targetTypeName){
-//            case "adult", "child", "senior", "student", "redemption" -> {
-//                switch(newTypeName){
-//                    case "" -> {
-//                        if (typePrice == null || typePrice < 0)
-//                            throw new IllegalArgumentException();
-//                        else {
-//                            ticketType.typePrice = typePrice;
-//                            ticketTypeRepository.save(ticketType);
-//                            return;
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//
-//        switch(newTypeName){
-//            case "adult", "child", "senior", "student", "redemption" -> {
-//                throw new IllegalArgumentException("Reserved Ticket Types");
-//            }
-//        }
-//
-//        for (String typeNameFromRepository : ticketTypeRepository.findAll().stream().map(TicketType::getTypeName).toList())
-//            if (newTypeName.equalsIgnoreCase(typeNameFromRepository))
-//                throw new IllegalArgumentException("Type name already exists.");
-//
-//        if (typePrice == null || typePrice < 0)
-//            throw new IllegalArgumentException();
-//        else if(typePrice == 0.0) {
-//            System.out.println("No change to typePrice");
-//            ticketType.typeName = newTypeName;
-//        }
-//        else {
-//            ticketType.typePrice = typePrice;
-//            ticketType.typeName = newTypeName;
-//        }
-//
-//        ticketTypeRepository.save(ticketType);
     }
 
     public static String readTicketType(TicketTypeRepository ticketTypeRepository, String param) {
