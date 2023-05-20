@@ -134,14 +134,14 @@ public class TicketType {
         List<TicketType> ticketTypeList;
         if (param.equals("all"))
             ticketTypeList = ticketTypeRepository.findAll();
-        else if (param.equals("active"))
+        else if (param.equals("active")) // Used by customer.
             ticketTypeList = ticketTypeRepository.findAllByIsActiveTrue();
         else
             throw new IllegalArgumentException("Invalid parameter.");
 
         ArrayNode an = objectMapper.createArrayNode();
         for (TicketType ticketType : ticketTypeList) {
-            if (param.equals("active") && ticketType.typeName.equals("redemption")) continue;
+            if (param.equals("active") && ticketType.typeName.equals("redemption")) continue; // Customer should not see redemption ticket type.
             ObjectNode on = objectMapper.createObjectNode();
             on.put("typename", ticketType.typeName);
             on.put("typeprice", ticketType.typePrice);
