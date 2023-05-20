@@ -135,6 +135,7 @@ public class Movie {
     {
         List<Movie> activeMovieList = switch (param) {
             case "all" -> movieRepo.findAll().stream().filter(Movie::getIsActive).toList();
+            case "active" -> movieRepo.findCustomerMovies(); // TODO
             default -> {
                 Movie movie = movieRepo.findMovieByTitleAndIsActiveTrue(param).orElse(null);
                 if (movie == null)
