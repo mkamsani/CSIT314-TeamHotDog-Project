@@ -102,11 +102,7 @@ VALUES
     ((SELECT uuid FROM movie WHERE title = 'Matrix'), 4, '2023-05-28', 'morning', 'active'),
     ((SELECT uuid FROM movie WHERE title = 'Matrix'), 4, '2023-05-28', 'afternoon', 'active'),
     ((SELECT uuid FROM movie WHERE title = 'Matrix'), 4, '2023-05-28', 'evening', 'active'),
-    ((SELECT uuid FROM movie WHERE title = 'Matrix'), 4, '2023-05-28', 'midnight', 'active'),
-    ((SELECT uuid FROM movie WHERE title = 'Spider-Man'), 4, '2023-05-28', 'morning', 'active'),
-    ((SELECT uuid FROM movie WHERE title = 'Spider-Man'), 4, '2023-05-28', 'afternoon', 'active'),
-    ((SELECT uuid FROM movie WHERE title = 'Spider-Man'), 4, '2023-05-28', 'evening', 'active'),
-    ((SELECT uuid FROM movie WHERE title = 'Spider-Man'), 4, '2023-05-28', 'midnight', 'active');
+    ((SELECT uuid FROM movie WHERE title = 'Matrix'), 4, '2023-05-28', 'midnight', 'active');
 
 -- Insert a maximum of 495 random screenings.
 DO $$
