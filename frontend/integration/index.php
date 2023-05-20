@@ -44,55 +44,54 @@ if(isset($_SESSION['privilege']))
 {
     switch ($_SESSION["privilege"] )
     {
-        case 'admin':
-            header("location: UserAdmin.php");
-            echo "<script>document.getElementById('result').innerHTML = '" . $_SESSION["privilege"] . "';</script>";
-            break;
-        case 'owner':
-            header("location: CinemaOwner.php");
-            echo "<script>document.getElementById('result').innerHTML = '" . $_SESSION["privilege"] . "';</script>";
-            break;
-        case 'manager': header("location: CinemaManager.php");
-            echo "<script>document.getElementById('result').innerHTML = '" . $_SESSION["privilege"] . "';</script>";
-            break;
-        case 'customer': header("location: Customer.php");
-            echo "<script>document.getElementById('result').innerHTML = '" . $_SESSION["privilege"] . "';</script>";
-            break;
+        // Redirect to the corresponding page based on the user privilege.
+        case 'admin':    header("location: UserAdmin.php");     break;
+        case 'owner':    header("location: CinemaOwner.php");   break;
+        case 'manager':  header("location: CinemaManager.php"); break;
+        case 'customer': header("location: Customer.php");      break;
         default:
             echo "<script>document.getElementById('result').innerHTML = '" . $_SESSION["privilege"] . "';</script>";
             break;
     }
 }
-
 ?>
 
 <input type="text" name = "result" value = $result hidden>
 
 <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" style="margin-left: 20%; width: 60%">
+    <?php
+    $ch = curl_init("http://localhost:8000/api/customer/movie/read/active");
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    $carousel = curl_exec($ch);
+    $http_status_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+    $carousel = json_decode($carousel, true); // {"title":"Spider-Man","genre":"action","description":"Spider-Man follows the story of Peter Parker (Tobey Maguire), a high school student who gains spider-like abilities and transforms into the superhero Spider-Man. He battles the Green Goblin (Willem Dafoe) to save New York City.","releaseDate":"2002-05-03","imageUrl":"https://www.themoviedb.org/t/p/original/gh4cZbhZxyTbgxQPxD0dOudNPTn.jpg","landscapeImageUrl":"https://www.themoviedb.org/t/p/original/gkINAPOuwUFo2Qphs3OUUbjUKUZ.jpg","isActive":"true","contentRating":"pg13"}
+    ?>
     <div class="carousel-indicators">
-        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active"
-                aria-current="true" aria-label="Slide 1"></button>
-        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1"
-                aria-label="Slide 2"></button>
-        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2"
-                aria-label="Slide 3"></button>
+        <?php
+        for ($i = 0; $i < count($carousel); $i++) {
+            if ($i == 0) {
+                // Append 'class="active" aria-current="true"' to the first carousel indicator
+                echo '<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>';
+            } else {
+                echo '<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="' . $i . "\" aria-label=\"Slide $i\"></button>";
+            }
+        }
+        ?>
     </div>
     <div class="carousel-inner">
-        <div class="carousel-item active" data-bs-interval="3000">
-            <img src="Pics\carousel-2.png" class="d-block w-100" alt="...">
-            <div class="carousel-caption d-none d-md-block">
-            </div>
-        </div>
-        <div class="carousel-item" data-bs-interval="3000">
-            <img src="Pics\carousel-1.png" class="d-block w-100" alt="...">
-            <div class="carousel-caption d-none d-md-block">
-            </div>
-        </div>
-        <div class="carousel-item" data-bs-interval="3000">
-            <img src="Pics\carousel-3.png" class="d-block w-100" alt="...">
-            <div class="carousel-caption d-none d-md-block">
-            </div>
-        </div>
+        <?php
+        for ($i = 0; $i < count($carousel); $i++) {
+            $title = $carousel[$i]['title'];
+            $landscapeImageUrl = $carousel[$i]['landscapeImageUrl'];
+            if ($i == 0)
+                echo "<div class='carousel-item active' data-bs-interval='3000'>";
+            else
+                echo "<div class='carousel-item' data-bs-interval='3000'>";
+            echo "<img src='$landscapeImageUrl' class='d-block w-100' alt='$title'>";
+            echo "<div class='carousel-caption d-none d-md-block'>" . $title . "</div>" . "</div>";
+        }
+        ?>
     </div>
     <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators"
             data-bs-slide="prev">
