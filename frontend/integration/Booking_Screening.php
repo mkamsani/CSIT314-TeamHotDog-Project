@@ -7,8 +7,8 @@ $privilege = "";
 $sessionVariables = ['movie', 'date', 'time', 'ticketType'];
 
 // Booking1ChooseMovie.php
-// Booking2ChooseScreening.php
-// Booking3ChooseSeatRedeemLoyaltyPointCheckout.php
+// Booking_Screening.php
+// Booking_Checkout.php
 
 
 $moviesDetailsCh = curl_init();
@@ -30,13 +30,10 @@ $screeningDetails = json_decode($screeningDetails, true);
 
 if (isset($_SESSION["username"])) $username = $_SESSION["username"];
 if (isset($_SESSION["privilege"])) $privilege = $_SESSION["privilege"];
-
 if (isset($_POST["movie"])) {
     $_SESSION["movie"] = $_POST['movie'];
 }
 if (isset($_SESSION["movie"])) {
-
-
     $title = $_SESSION['movie'];
     $url = "http://localhost:8000/api/customer/screening/read/" . $title;
     $url = str_replace(' ', '%20', $url);
@@ -45,27 +42,9 @@ if (isset($_SESSION["movie"])) {
     $screenings = curl_exec($ch);
     curl_close($ch);
     $screenings = json_decode($screenings, true); // {"movie":"Black Adam","showTime":"evening","showDate":"2023-05-21","cinemaRoom":57}
-
-    $rooms = array();
-    foreach ($screenings as $screening) {
-        $rooms[] = $screening["cinemaRoom"]; // Push all room numbers into the array.
-    }
-    $random_room = $rooms[array_rand($rooms)]; // Select a random room from $rooms.
-
-    $values = array();
-    foreach ($screenings as $screening) {
-//        $values[] = $screening["showDate"] . "/" . $screening["showTime"] . "/" . $screening["cinemaRoom"];
-        $values[] = $screening["showDate"] . "/" . $screening["showTime"];
-    }
-
 } else {
     header("location: Booking.php"); // Redirect because customer haven't choose a movie.
 }
-echo "<select>";
-foreach ($values as $value) echo "<option value=\"$value\">$value</option>";
-echo "</select>";
-
-
 ?>
 
 <nav class="navbar navbar-expand-sm">
@@ -108,7 +87,7 @@ echo "</select>";
 </div>
 
 <div class="container mt-4" style="width: 40%;">
-        <form action="Booking3ChooseSeatRedeemLoyaltyPointCheckout.php" method="post">
+        <form action="Booking_Checkout.php" method="post">
             <div class="mt-3 row g-1 mx-auto">
                 <div class="col-md">
                     <div class="form-floating">

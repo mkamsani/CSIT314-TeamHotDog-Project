@@ -94,7 +94,7 @@ curl_close($ch);
     </div>
 
     <div class="text-center mt-3">
-        <a class="btn btn-danger" href="" role="button">Book a Movie</a>
+        <a class="btn btn-danger" href="Booking.php" role="button">Book a Movie</a>
     </div>
     <div class="text-center mt-3">
         <a class="btn btn-danger" href="CustomerReview.php" role="button">Leave a Rating/Review</a>

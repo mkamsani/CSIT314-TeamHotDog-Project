@@ -69,6 +69,7 @@ curl_close($ch);
 <body>
 <div class="container-fluid p-5 bg-danger text-white text-center">
     <h1>Booking History</h1>
+    <p>Username: <?php echo $username; ?></p>
 </div>
 <div class="container mt-3 text-white">
     <div class="input-group mb-3" style="margin: auto; width: 50%">

@@ -129,7 +129,7 @@ curl_close($ch);
 
 <div class="text-center mt-3">
     <a class="btn btn-danger" href="movies.php" role="button" style="margin-right: 2.7%">View Movies</a>
-    <a class="btn btn-danger" href="cinema_screenings.php" role="button">View Cinema Screenings</a>
+    <a class="btn btn-danger" href="movie_screening.php" role="button">View Cinema Screenings</a>
     <a class="btn btn-danger" href="ticket_types.php" role="button">View Ticket Types</a>
 </div>
 

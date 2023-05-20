@@ -21,16 +21,6 @@ if (isset($_SESSION["privilege"]))
     // Use the $username variable as needed
 }
 
-// Bhone's code
-//$sessionVariables = ['movie', 'date', 'time', 'ticketType'];
-//$moviesDetailsCh = curl_init();
-//curl_setopt($moviesDetailsCh, CURLOPT_URL, "http://localhost:8000/api/customer/movie/read/active");
-//curl_setopt($moviesDetailsCh, CURLOPT_RETURNTRANSFER, 1);
-//$moviesDetails = curl_exec($moviesDetailsCh);
-//curl_close($moviesDetailsCh);
-//$moviesDetails = json_decode($moviesDetails, true);
-// End of Bhone's code
-
 if (isset($_POST["dateScreening"], $_POST["movie"], $_POST["ticketType"])) {
     $dateScreening = $_POST["dateScreening"];
     $dateScreening = explode("/", $dateScreening);
@@ -68,7 +58,6 @@ if (isset($_SESSION["date"], $_SESSION["time"])) {
     foreach ($screenings as $screening) {
         if ($screening["showDate"] == $date && $screening["showTime"] == $time) {
             $cinemaRooms[] = intval($screening["cinemaRoom"]);
-            echo "<p>Cinema Room: " . intval($screening["cinemaRoom"]) . "</p>"; // DEBUGGING
         }
     }
     // Pick a random cinema room from the array.
@@ -77,8 +66,6 @@ if (isset($_SESSION["date"], $_SESSION["time"])) {
     // Generate a random number between 0 and $size - 1
     $randomIndex = rand(0, $size - 1);
     $randomCinemaRoom = $cinemaRooms[$randomIndex];
-    echo "<p>Total number of cinema rooms for this movie is $size</p>"; // DEBUGGING
-    echo "<p>The randomly selected room is $randomCinemaRoom</p>";      // DEBUGGING
 
     // Retrieve Seats available:
     $url = "http://localhost:8000/api/customer/screening/seats/read/" . $date . "/" . $time . "/" . $randomCinemaRoom;
@@ -87,7 +74,6 @@ if (isset($_SESSION["date"], $_SESSION["time"])) {
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     $seats = curl_exec($ch);
     curl_close($ch);
-    echo "<a href\"$url\">$url</a>";        // DEBUGGING
     $seats = json_decode($seats, true); // {"movie":"Black Adam","showTime":"evening","showDate":"2023-05-21","cinemaRoom":57}
 }
 else {
@@ -113,6 +99,7 @@ curl_setopt($ticketTypesCh, CURLOPT_RETURNTRANSFER, 1);
 $ticketTypes = curl_exec($ticketTypesCh);
 curl_close($ticketTypesCh);
 $ticketTypes = json_decode($ticketTypes, true);
+$moviePrice = '';
 foreach ($ticketTypes as $eachTicketType)
 {
     if ($eachTicketType['typename'] == $_SESSION['ticketType']) {
@@ -131,32 +118,6 @@ curl_close($loyaltyCh);
 $loyalty = json_decode($loyalty, true);
 $totalLoyaltyPoints =  $loyalty['pointsBalance']; // Integrate this
 $hasRedeemedPoint = false; // becomes true if user has enough points and clicked redeem button.
-
-// Bhone code below:
-//$moviePrice = 9.00;
-//switch ($_SESSION['ticketType']) {
-//    case 'adult': // http://localhost:8000/api/manager/ticketType/read/active
-//        $ticketPrice = $moviePrice;
-//        break;
-//    case 'student':
-//        $ticketPrice = $moviePrice * 0.8;
-//        break;
-//    case 'senior':
-//        $ticketPrice = $moviePrice * 0.7;
-//        break;
-//    case 'child':
-//        $ticketPrice = $moviePrice * 0.6;
-//        break;
-//    default:
-//        $ticketPrice = 0;
-//}
-// for ($moviesDetails as $movies)
-// {
-// 	echo $movies['imageUrl'];
-// }
-
-
-
 ?>
 
 
@@ -222,7 +183,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
             "isLoyaltyPointUsed" => $hasRedeemedPoint,
         );
         $jsonData = json_encode($ticketArray);
-        echo "<h1>$jsonData</h1>";
         // Confirm button curl
         $ch = curl_init("http://localhost:8000/api/customer/ticket/create");
         curl_setopt($ch, CURLOPT_POST, 1);

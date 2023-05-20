@@ -95,7 +95,7 @@ $ticketTypeDetails = json_decode($ticketTypeDetails, true);
 
 <div class="container mt-4" style="width: 40%; margin-left: 20%">
     <main>
-        <form action="Booking2ChooseScreening.php" method="post">
+        <form action="Booking_Screening.php" method="post">
             <fieldset>
                 <legend class="text-white">Choose a movie</legend>
 
