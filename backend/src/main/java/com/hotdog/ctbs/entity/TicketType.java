@@ -141,6 +141,7 @@ public class TicketType {
 
         ArrayNode an = objectMapper.createArrayNode();
         for (TicketType ticketType : ticketTypeList) {
+            if (param.equals("active") && ticketType.typeName.equals("redemption")) continue;
             ObjectNode on = objectMapper.createObjectNode();
             on.put("typename", ticketType.typeName);
             on.put("typeprice", ticketType.typePrice);
