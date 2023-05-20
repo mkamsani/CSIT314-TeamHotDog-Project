@@ -265,7 +265,7 @@ public class Screening {
         Screening currentScreening = screeningRepo.findScreeningByShowTimeAndShowDateAndCinemaRoom_Id(targetShowTime, targetShowDate, targetCinemaRoomId)
                                                   .orElse(null);
         if (currentScreening == null)
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Screening does not exist.");
         if (currentScreening.showDate.isBefore(LocalDate.now()))
             throw new IllegalArgumentException("Cannot update a screening that has already passed.");
         if (currentScreening.status.equals("suspended"))

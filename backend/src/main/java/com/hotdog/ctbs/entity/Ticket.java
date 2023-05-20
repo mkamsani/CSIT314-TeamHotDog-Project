@@ -84,7 +84,7 @@ public class Ticket {
 
         Seat seat = seatRepository.findSeatBySeatRowAndSeatColumnAndCinemaRoom(row.charAt(0), column, cinemaRoom).orElse(null);
         if (seat == null)
-            throw new IllegalArgumentException("Seat is invalid");
+            throw new IllegalArgumentException("Seat is invalid: " + row.charAt(0) + column);
 
         // Earmarked to move to CustomerLoyaltyPointUpdate Controller
         LoyaltyPoint loyaltyPointForUser = loyaltyPointRepository.findByUserAccountUsername(username).orElse(null);
@@ -95,7 +95,7 @@ public class Ticket {
             Double pointsBalance = Double.valueOf(loyaltyPointForUser.pointsBalance());
             TicketType ticketTypeRedemption = ticketTypeRepository.findByTypeName("redemption").orElse(null);
             if (ticketTypeRedemption != null && pointsBalance < ticketTypeRedemption.typePrice)
-                throw new IllegalArgumentException("Loyalty point is not enough");
+                throw new IllegalArgumentException("Loyalty point is not enough: " + pointsBalance);
         }
         else {
             loyaltyPointForUser.setPointsTotal(loyaltyPointForUser.getPointsTotal() + 1);
@@ -135,7 +135,7 @@ public class Ticket {
     {
         UserAccount userAccount = userAccountRepository.findUserAccountByUsername(username).orElse(null);
         if (userAccount == null)
-            throw new IllegalArgumentException("Username is invalid");
+            throw new IllegalArgumentException("Username is invalid: " + username);
 
         List<Ticket> tickets = ticketRepository.findTicketsByCustomer_Username(username);
 
