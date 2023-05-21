@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.hotdog.ctbs.entity.TicketType;
 import com.hotdog.ctbs.repository.TicketTypeRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -44,16 +45,18 @@ public class ManagerTicketTypeCreateController {
 
     /** Create a {@code TicketType} based on the given JSON. */
     @PostMapping("/create/ticketType")
-    public void Create(@RequestBody final String json) {
+    public ResponseEntity<String> Create(@RequestBody final String json) {
         try{
             JsonNode jsonNode = objectMapper.readTree(json);
             String typeName = jsonNode.get("typename").asText();
             Double typePrice = jsonNode.get("typeprice").asDouble();
             TicketType.createTicketType(ticketTypeRepository, typeName, typePrice);
+            return ResponseEntity.ok("Success! Ticket has been created");
         }
         catch (Exception e){
-            System.out.println(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
+
     }
 
 }
