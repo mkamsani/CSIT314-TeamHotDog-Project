@@ -58,7 +58,7 @@ public class ManagerTicketTypeUpdateController {
 
 
     @PutMapping(value = "/update/{targettickettypename}")
-    public ResponseEntity<String> ManagerUpdateTicketType(@RequestBody String json, @PathVariable String targettickettypename)
+    public ResponseEntity<String> Update(@RequestBody String json, @PathVariable String targettickettypename)
     {
         System.out.println("TicketTypeUpdateController.UpdateTicketType is called");
         try {
