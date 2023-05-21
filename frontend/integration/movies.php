@@ -191,7 +191,7 @@ if (isset($_POST['create'])) {
     $movieActive = $_POST['isActive'];
     $movieRating = $_POST['moviesCR'];
     $data = array('title' => $movieName, 'genre' => $movieGenre, 'description' => $movieDesc, 'releaseDate' => $movieDate,
-        'imageUrl' => $moviePoster, 'landscapeImageUrl' =>$movieLandScapePoster , 'isActive' => $movieActive, 'contentRating' => $movieRating);
+        'imageUrl' => $moviePoster, 'landscapeImageUrl' =>$movieLandScapePoster , 'contentRating' => $movieRating);
     $data_json = json_encode($data);
     //print_r(  $data_json);
     $createMoviesCh = curl_init('http://localhost:8000/api/manager/movie/create/movie');
