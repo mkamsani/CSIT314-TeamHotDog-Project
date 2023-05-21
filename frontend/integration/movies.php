@@ -188,7 +188,6 @@ if (isset($_POST['create'])) {
     $movieDate = $_POST['movieRD'];
     $moviePoster = $_POST['moviePoster'];
     $movieLandScapePoster = $_POST['landScapePoster'];
-    $movieActive = $_POST['isActive'];
     $movieRating = $_POST['moviesCR'];
     $data = array('title' => $movieName, 'genre' => $movieGenre, 'description' => $movieDesc, 'releaseDate' => $movieDate,
         'imageUrl' => $moviePoster, 'landscapeImageUrl' =>$movieLandScapePoster , 'contentRating' => $movieRating);
