@@ -93,6 +93,9 @@ $moviesDetails = json_decode($moviesDetails, true);
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         }
 
+        .d-flex{
+            margin-left: 10px;
+        }
 
     </style>
 </head>
@@ -118,7 +121,11 @@ $moviesDetails = json_decode($moviesDetails, true);
             <li class="nav-item">
                 <a class="nav-link" href="ticket_types.php">Ticket Types</a>
             </li>
-            &emsp;
+
+            <li class="nav-item">
+                <a class="nav-link" href="viewCinemaRoom.php">Cinema Rooms</a>
+            </li>&emsp;
+
             <form class="d-flex">
                 <a class="btn btn-outline-danger" href="logout.php">Log Out</a>
             </form>

@@ -39,7 +39,10 @@ include('header.php');
             <li class="nav-item">
                 <a class="nav-link bg-danger active" href="ticket_types.php">Ticket Types</a>
             </li>
-            &emsp;
+            <li class="nav-item">
+                <a class="nav-link" href="viewCinemaRoom.php">Cinema Rooms</a>
+            </li>&emsp;
+
             <form class="d-flex">
                 <a class="btn btn-outline-danger" href="logout.php">Log Out</a>
             </form>
@@ -286,6 +289,10 @@ echo '
         font-size: 36px;
         color: #e50914;
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .d-flex{
+        margin-left: 10px;
     }
 </style>
 
