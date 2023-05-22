@@ -41,3 +41,4 @@ jobs:
           ssh    -i ~/.ssh/id_rsa ubuntu@ec2-52-221-189-102.ap-southeast-1.compute.amazonaws.com "printf \"%s\\n\" \"Actual write test: $(date)\" >> /home/ubuntu/ctbs/testfile.txt"
           scp    -i ~/.ssh/id_rsa target/backend-1.0.0-SNAPSHOT.jar ubuntu@ec2-52-221-189-102.ap-southeast-1.compute.amazonaws.com:/home/ubuntu/ctbs
           scp -r -i ~/.ssh/id_rsa ../frontend/integration ubuntu@ec2-52-221-189-102.ap-southeast-1.compute.amazonaws.com:/home/ubuntu/ctbs
+          ssh    -i ~/.ssh/id_rsa ubuntu@ec2-52-221-189-102.ap-southeast-1.compute.amazonaws.com /home/ubuntu/ctbs/aws_push.sh

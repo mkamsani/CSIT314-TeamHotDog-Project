@@ -6,6 +6,7 @@
 # It should not be executed by a GitHub runner.
 #
 
+# Install the necessary software
 sudo apt update -y
 sudo apt upgrade -y
 sudo apt install -y nginx php php-fpm postgresql libapache2-mod-php php-curl php-gd php-json php-zip
@@ -13,6 +14,10 @@ sudo apt install -y nginx php php-fpm postgresql libapache2-mod-php php-curl php
 sudo apt install -y openjdk-17-jdk
 sudo systemctl enable --now nginx.service
 sudo systemctl enable --now postgresql.service
+
+# Create the necessary folders
+mkdir -p ~/bin
+mkdir -p ~/ctbs # Cinema Ticket Booking System
 
 tee /etc/systemd/system/my-webapp.service <<EOF
 [Unit]
