@@ -24,9 +24,18 @@ jobs:
         working-directory: ./backend
         run: mvn -B package -Dmaven.test.skip --file pom.xml && mv target/*.jar ../
 
+        # Requires SECRETS_AWS from https://github.com/username/repo/settings/secrets/actions
       - name: Connect to AWS and copy the JAR file to S3
         working-directory: ../
         run: |
-          whoami
-          
-          
+          mkdir -p ~/.ssh/
+          printf %s\\n "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          printf %s\\n "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/id_rsa
+          chmod 644 ~/.ssh/known_hosts
+          ssh -i ~/.ssh/id_rsa "ubuntu@${AWS_DOMAIN}" "sudo printf %s%s\\n 'Manual write test: ' $(date) >> /home/ubuntu/testfile.txt"
+          shell: bash
+          env:
+          DOMAIN: ${{ secrets.AWS_DOMAIN }}
+          SSH_PRIVATE_KEY: ${{ secrets.SECRETS_AWS }}
+          SSH_KNOWN_HOSTS: ${{ secrets.SECRETS_AWS_KNOWN_HOSTS }}
