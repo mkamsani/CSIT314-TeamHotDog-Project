@@ -29,7 +29,5 @@ else
 printf "%s: %s\n" "No integration folder found" "$(date)" >> ~/ctbs/log.txt
 fi
 
-# TODO: Restart nginx and SpringBoot.
-#  sudo service whatever start
-#  sudo service nginx restart 
+sudo systemctl restart spring-boot-app
 exit 0
