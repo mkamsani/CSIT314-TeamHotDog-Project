@@ -30,5 +30,5 @@ fi
 
 # TODO: Restart nginx and SpringBoot.
 #  sudo service whatever start
-#  sudo service nginx restart
+#  sudo service nginx restart 
 exit 0
