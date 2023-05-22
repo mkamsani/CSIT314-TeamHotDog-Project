@@ -29,19 +29,20 @@ jobs:
         # ${{ secrets.AWS_PRIVATE_KEY }}
         # ${{ secrets.AWS_KNOWN_HOSTS }}
       - name: Connect to AWS and copy the JAR file to S3
-        working-directory: ../
+        working-directory: ./backend
         shell: bash
         env: # use the environment from Build Actions
           SSH_PRIVATE_KEY: ${{ secrets.AWS_PRIVATE_KEY }}
           SSH_KNOWN_HOSTS: ${{ secrets.AWS_KNOWN_HOSTS }}
         run: |
           set -x
+          pwd
           mkdir -p ~/.ssh/
           printf %s\\n "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           printf %s\\n "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
           chmod 600 ~/.ssh/id_rsa
           chmod 644 ~/.ssh/known_hosts
           ssh -i ~/.ssh/id_rsa ubuntu@ec2-52-221-189-102.ap-southeast-1.compute.amazonaws.com "printf \"%s\\n\" \"Actual write test: $(date)\" >> /home/ubuntu/testfile.txt"
-          scp -i ~/.ssh/id_rsa ./backend/target/backend-0.0.5-SNAPSHOT.jar ubuntu@ec2-52-221-189-102.ap-southeast-1.compute.amazonaws.com:/home/ubuntu/
+          scp -i ~/.ssh/id_rsa target/backend-0.0.5-SNAPSHOT.jar ubuntu@ec2-52-221-189-102.ap-southeast-1.compute.amazonaws.com:/home/ubuntu/
 
 
