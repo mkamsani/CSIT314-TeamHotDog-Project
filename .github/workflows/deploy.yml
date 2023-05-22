@@ -22,7 +22,7 @@ jobs:
 
       - name: Build with Maven
         working-directory: ./backend
-        run: mvn -B package -Dmaven.test.skip --file pom.xml && mv target/*.jar ../
+        run: mvn -B package -Dmaven.test.skip --file pom.xml
 
         # Requires SECRETS_AWS from https://github.com/username/repo/settings/secrets/actions
         # The environment is called "Build Actions" which contains the two secrets. We need to specify this in our "env" section below.
@@ -42,6 +42,6 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           chmod 644 ~/.ssh/known_hosts
           ssh -i ~/.ssh/id_rsa ubuntu@ec2-52-221-189-102.ap-southeast-1.compute.amazonaws.com "printf \"%s\\n\" \"Actual write test: $(date)\" >> /home/ubuntu/testfile.txt"
-          scp -i ~/.ssh/id_rsa ./0.0.5-SNAPSHOT.jar ubuntu@ec2-52-221-189-102.ap-southeast-1.compute.amazonaws.com:/home/ubuntu/
+          scp -i ~/.ssh/id_rsa ./backend/target/cinema-ticket-booking-system-0.0.5-SNAPSHOT.jar ubuntu@ec2-52-221-189-102.ap-southeast-1.compute.amazonaws.com:/home/ubuntu/
 
 
