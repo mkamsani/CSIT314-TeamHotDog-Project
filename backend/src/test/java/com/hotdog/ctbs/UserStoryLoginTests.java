@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-class CinemaTicketBookingSystemApplicationTests {
+class UserStoryLoginTests {
 
     @Autowired
     MockMvc mockMvc;
