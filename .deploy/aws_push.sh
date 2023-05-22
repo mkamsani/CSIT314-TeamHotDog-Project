@@ -14,7 +14,8 @@ test -d ~/bin || mkdir ~/bin
 # Move backend application to bin folder.
 if test -f ~/bin/backend-1.0.0-SNAPSHOT.jar; then
 rm -f ~/bin/backend-1.0.0-SNAPSHOT.jar
-mv -f ~/ctbs/backend-1.0.0-SNAPSHOT.jar ~/bin
+cp -f ~/ctbs/backend-1.0.0-SNAPSHOT.jar ~/bin
+rm -f ~/ctbs/backend-1.0.0-SNAPSHOT.jar
 else
 printf "%s: %s\n" "No backend-1.0.0-SNAPSHOT.jar file found" "$(date)" >> ~/ctbs/log.txt
 fi
