@@ -29,36 +29,23 @@ mkdir -p ~/ctbs # Cinema Ticket Booking System
 
 # TODO Change /etc/nginx/sites-available/default to allow PHP files.
 
-# TODO convert this to the Java service
-#  Rename the variables in this tee command to the ones required for our Java application
-tee /etc/systemd/system/my-webapp.service <<EOF
 [Unit]
-Description=My Webapp Java REST Service
+Description=My SpringBootApp Java REST Service
 [Service]
 User=ubuntu
 # The configuration file application.properties should be here:
-
 #change this to your workspace
-WorkingDirectory=/home/ubuntu/workspace
-
+WorkingDirectory=/home/ubuntu/ctbs
 #path to executable.
 #executable is a bash script which calls jar file
-ExecStart=/home/ubuntu/bin/spring-boot-app
+ExecStart=/usr/bin/java -jar backend-1.0.0-SNAPSHOT.jar
 
 SuccessExitStatus=143
 TimeoutStopSec=10
 Restart=on-failure
 RestartSec=5
-
 [Install]
 WantedBy=multi-user.target
-EOF
-
-# Create a Bash Script to Call Your Java Service
-sudo tee ~/bin/spring-boot-app <<EOF
-#!/bin/sh
-sudo /usr/bin/java -jar backend-1.0.0-SNAPSHOT.jar server config.yml
-EOF
 # TODO figure out what is server and config.yml
 #  server refers to the server class in the backend
 #  config.yml is the configuration file for the server
