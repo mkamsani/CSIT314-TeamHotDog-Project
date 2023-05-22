@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.hotdog</groupId>
     <artifactId>backend</artifactId>
-    <version>0.0.5-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>cinema-ticket-booking-system</name>
     <description>cinema-ticket-booking-system</description>
     <properties>
