@@ -16,7 +16,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Tests for LoginController, done as part of CI/CD component of the project.
  */
 @WebMvcTest(controllers = LoginController.class)
-@SpringBootTest
 class CinemaTicketBookingSystemApplicationTests {
 
     /**
