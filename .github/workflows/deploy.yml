@@ -25,6 +25,9 @@ jobs:
         run: mvn -B package -Dmaven.test.skip --file pom.xml && mv target/*.jar ../
 
         # Requires SECRETS_AWS from https://github.com/username/repo/settings/secrets/actions
+        # The environment is called "Build Actions"
+        # ${{ secrets.AWS_PRIVATE_KEY }}
+        # ${{ secrets.AWS_KNOWN_HOSTS }}
       - name: Connect to AWS and copy the JAR file to S3
         working-directory: ../
         run: |
@@ -34,9 +37,9 @@ jobs:
           printf %s\\n "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
           chmod 600 ~/.ssh/id_rsa
           chmod 644 ~/.ssh/known_hosts
-          ssh -i ~/.ssh/id_rsa "$DOMAIN" "sudo printf %s%s\\n 'Manual write test: ' $(date) >> /home/ubuntu/testfile.txt"
-          shell: bash
-          env:
-          DOMAIN: ${{ secrets.SECRETS_AWS_DOMAIN }}
-          SSH_PRIVATE_KEY: ${{ secrets.SECRETS_AWS }}
-          SSH_KNOWN_HOSTS: ${{ secrets.SECRETS_AWS_KNOWN_HOSTS }}
+          ssh -i ~/.ssh/id_rsa ubuntu@ec2-52-221-189-102.ap-southeast-1.compute.amazonaws.com "sudo printf %s%s\\n 'Actual write test: ' $(date) >> /home/ubuntu/testfile.txt"
+        shell: bash
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.AWS_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.AWS_KNOWN_HOSTS }}
+
