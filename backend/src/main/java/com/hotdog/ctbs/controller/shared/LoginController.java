@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.hotdog.ctbs.entity.UserAccount;
 import com.hotdog.ctbs.repository.UserAccountRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -38,15 +39,16 @@ public class LoginController {
 
     /** @return the privilege of the user, or an error message */
     @PostMapping("/login")
-    String Login(@RequestBody String json)
+    ResponseEntity<String> Login(@RequestBody String json)
     {
         try {
             JsonNode jsonNode = objectMapper.readTree(json);
             String username = jsonNode.get("username").asText();
             String password = jsonNode.get("password").asText();
-            return UserAccount.validateLogin(userAccountRepository, username, password);
+            String response = UserAccount.validateLogin(userAccountRepository, username, password);
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
-            return e.getMessage();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }
