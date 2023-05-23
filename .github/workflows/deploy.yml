@@ -51,7 +51,6 @@ jobs:
           printf %s\\n "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
           chmod 600 ~/.ssh/id_rsa
           chmod 644 ~/.ssh/known_hosts
-          ssh    -i ~/.ssh/id_rsa ubuntu@ec2-52-221-189-102.ap-southeast-1.compute.amazonaws.com "printf \"%s\\n\" \"Actual write test: $(date)\" >> /home/ubuntu/ctbs/testfile.txt"
           scp    -i ~/.ssh/id_rsa target/backend-1.0.0-SNAPSHOT.jar ubuntu@ec2-52-221-189-102.ap-southeast-1.compute.amazonaws.com:/home/ubuntu/ctbs
           scp    -i ~/.ssh/id_rsa ../database/schema.sql ubuntu@ec2-52-221-189-102.ap-southeast-1.compute.amazonaws.com:/home/ubuntu/ctbs
           scp    -i ~/.ssh/id_rsa ../database/trigger.sql ubuntu@ec2-52-221-189-102.ap-southeast-1.compute.amazonaws.com:/home/ubuntu/ctbs
@@ -59,4 +58,3 @@ jobs:
           scp    -i ~/.ssh/id_rsa ../database/data_many.sql ubuntu@ec2-52-221-189-102.ap-southeast-1.compute.amazonaws.com:/home/ubuntu/ctbs
           scp -r -i ~/.ssh/id_rsa ../frontend ubuntu@ec2-52-221-189-102.ap-southeast-1.compute.amazonaws.com:/home/ubuntu/ctbs
           ssh    -i ~/.ssh/id_rsa ubuntu@ec2-52-221-189-102.ap-southeast-1.compute.amazonaws.com /home/ubuntu/ctbs/aws_push.sh
-          ssh    -i ~/.ssh/id_rsa ubuntu@ec2-52-221-189-102.ap-southeast-1.compute.amazonaws.com /home/ubuntu/ctbs/aws_db.sh

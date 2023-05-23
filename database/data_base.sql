@@ -40,7 +40,6 @@ VALUES
   ('I am Number Four',       'sci-fi',    'Starring Alex Pettyfer, "I am Number Four" is a science fiction action film about a teenager named John Smith, who possesses extraordinary powers and must evade those who seek to harm him.',                                                              '2011-02-18', 'https://image.tmdb.org/t/p/original/70qx2gTHvmqtKkJb56dNbVW2aB7.jpg', 'https://image.tmdb.org/t/p/original/lR8eHumEoL8FkszpDvbEUZRXVt5.jpg', TRUE, 'pg13'),
   ('Avengers: Infinity War', 'adventure', 'The superhero blockbuster "Avengers: Infinity War" features Robert Downey Jr., Chris Hemsworth, and Chris Evans as the Avengers, who fight against Thanos to prevent the destruction of the universe.',                                                     '2018-04-27', 'https://image.tmdb.org/t/p/original/rcV5bQjDoPNfI4wRpWAgZXtE0ON.jpg', 'https://image.tmdb.org/t/p/original/lmZFxXgJE3vgrciwuDib0N8CfQo.jpg', TRUE, 'pg13');
 
-
 -- Insert 100 default cinema rooms.
 -- No further cinema rooms can be added.
 DO $$
@@ -59,7 +58,6 @@ DO $$
         END LOOP;
     END
 $$;
-
 
 -- Insert 5 default screenings, with a fixed date and time.
 INSERT INTO screening
@@ -115,42 +113,5 @@ VALUES
   ('senior',  6.50,  TRUE),
   ('student', 8.50,  TRUE),
   ('redemption',    10.00, TRUE);
-
--- Development views, to present data in a more readable format.
-/*CREATE OR REPLACE VIEW dev_screening_view AS
-SELECT TO_CHAR(show_date, 'Mon DD') AS show_date, cinema_room, show_time, title
-FROM screening
-INNER JOIN movie ON movie.uuid = screening.movie_id
-WHERE screening.is_active = TRUE
-ORDER BY show_date, cinema_room, show_time, title;*/
-
-CREATE OR REPLACE VIEW dev_cinema_room_view AS
-SELECT id, is_active, COUNT(seat.*) AS total_seats
-FROM cinema_room
-INNER JOIN seat ON cinema_room.id = seat.cinema_room
-GROUP BY is_active, id
-ORDER BY id;
-
-CREATE OR REPLACE VIEW dev_user_account_view AS
-SELECT username, email, title, privilege,
-       user_account.is_active active_account,
-       user_profile.is_active active_title,
-       CONCAT(user_account.first_name, ' ', user_account.last_name) full_name,
-       TO_CHAR(user_account.time_created,    'DD Mon YYYY HH24:MI:SS') created_at,
-       TO_CHAR(user_account.time_last_login, 'DD Mon YYYY HH24:MI:SS') last_login_at
-FROM user_account
-INNER JOIN user_profile ON user_profile.uuid = user_account.user_profile
-ORDER BY user_account.username;
-
-CREATE OR REPLACE VIEW dev_ticket_view AS
-SELECT ticket.uuid, username, screening.cinema_room, show_date, show_time, concat(seat_row, seat_column) seat_concat,
-       type_name t_type, type_price price, purchase_date
-FROM ticket
-         INNER JOIN user_account ON user_account.uuid = ticket.customer
-         INNER JOIN ticket_type ON ticket_type.type_name = ticket.ticket_type
-         INNER JOIN seat ON seat.uuid = ticket.seat
-         INNER JOIN screening ON screening.uuid = ticket.screening
-ORDER BY show_date, show_time, seat_row, seat_column;
--- ORDER BY show_date, show_time, cinema_room, seat_row, seat_column;
 
 SELECT 'Success' AS result;

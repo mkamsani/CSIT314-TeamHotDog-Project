@@ -1,55 +1,3 @@
-/**
-This file is the SSOT (Single Source of Truth) for the application.
-It contains the tables for the database, to be converted to Java entities.
-
-Datatypes will conform to SQL standard, with the following exceptions:
--- UUID        is used instead of CHAR(36).
--- Timestamptz is used instead of TIMESTAMP WITH TIME ZONE.
-Reference:
-https://www.postgresql.org/docs/current/datatype.html#DATATYPE-TABLE
-http://www.contrib.andrew.cmu.edu/~shadow/sql/sql1992.txt (Ctrl + F "4.1  Data types")
-https://www.depesz.com/2010/03/02/charx-vs-varcharx-vs-varchar-vs-text/
-
-For standardisation of date and time, TIMESTAMP WITH TIME ZONE is used for
-for all date and time related fields. Where time is not required, the time
-will be truncated in Java.
-Reference:
-https://www.baeldung.com/jpa-java-time
-https://www.cockroachlabs.com/blog/time-data-types-postgresql/#conclusion
-
-All table names are in lowercase:     'ticket',      not 'Ticket'.
-All table names are in snake_case:    'ticket_type', not 'ticketType'.
-All table names are in singular form: 'ticket_type', not 'ticket_types'.
-In Java, the table name will be converted to camelCase: 'ticketType'.
-Reference:
-https://www.oracle.com/java/technologies/javase/codeconventions-namingconventions.html
-https://www.postgresql.org/docs/current/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS
-
-All CHECK/UNIQUE constraints are also validated in Java.
-This is to fulfil the requirement of the project,
-which is to handle all logic in the backend.
-
-Certain CREATE TRIGGER and CREATE FUNCTION statements (or part of the statement) are temporary,
-and will be removed once the Java code is implemented.
-These statements will be marked with a 'TO-DO: Convert to Spring Boot'.
-TO-DO will not contain a hyphen in the actual comments below.
-
-| TABLE/VIEW             | CRUD  | Status      | Notes
-|------------------------|-------|-------------|--------------------------------
-| user_profile           | CRUS  | In progress |
-| user_account           | CRUS  | In progress | Delete == is_active FALSE.
-| loyalty_point          |  R    | Not started | 100% generated. Java update.
-| rating_review          | CRUD  | Not started | Depends on loyalty_point.
-| movie                  | CRUD  | In progress |
-| cinema_room            |  RUS  | In progress | Create when db is initialised.
-| screening              | CRUD  | In progress | Depends on movie, cinema_room
-| ticket_type            | CRUS  | In progress | Create when db is initialised.
-| ticket                 | CRUD  | In progress | Depends on screening, seat
-| seat                   |  R    | In progress | 100% generated.
-| monthly_rating_report  |  R    | Not started | TODO.
-| monthly_revenue_report |  R    | Not started | TODO.
-*/
-
 DROP SCHEMA IF EXISTS public CASCADE;
 CREATE SCHEMA public;
 -- Import extension for uuid_generate_v4()
@@ -57,18 +5,6 @@ CREATE SCHEMA public;
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 CREATE EXTENSION IF NOT EXISTS citext;
-
-/*
- * In schema.sh,
- *   "-e POSTGRES_INITDB_ARGS" is used to set the locale.
- *   "-e TZ"                   is used to set the timezone.
- * Here, we confirm that the timezone and locale are set correctly.
- * A SELECT on the CURRENT_SETTING() function is used to get the value.
- * Alternatively, we can use: SHOW TIMEZONE; SHOW lc_time; SHOW lc_monetary;
- */
-SELECT CURRENT_SETTING('TIMEZONE')    AS timezone,
-       CURRENT_SETTING('lc_time')     AS lc_time,
-       CURRENT_SETTING('lc_monetary') AS lc_monetary;
 
 CREATE TABLE user_profile
 (
@@ -132,7 +68,6 @@ CREATE TABLE cinema_room
   is_active BOOLEAN NOT NULL    DEFAULT TRUE             -- FALSE if room is under maintenance.
 );
 
--- Java:     if (screening.getShowDate().isBefore(LocalDate.now())) { screening.setIsActive(false); }
 CREATE TABLE screening
 (
   PRIMARY KEY (uuid),
@@ -286,27 +221,3 @@ CREATE OR REPLACE VIEW negative_rating_review_last_month AS
                                     AND     DATE_TRUNC('month', NOW()) - INTERVAL '1 day'
         )
     );
-
-/*
-reasons:
- 1
- for not implementing as a table/ java entity:
- owner should not change the values in the report.
- ^ justify why we use a view when asked in class.
- 2
-
-for every ticket bought save the current date
-another table: for every month, check how many tickets are bought, have a counter: in this table or another table
-output this value to put into the report
-person generating can put from month to month, this number will be in the report
-
-purpose:
-- which month has the most customers,
-- knowing which month
-- certain months has lower customer
-- boss can launch promotional events/sales
-- e.g. customer buys more in X month
-
-non-purpose:
-- which movie is most popular
-*/

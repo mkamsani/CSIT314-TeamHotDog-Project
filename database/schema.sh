@@ -5,7 +5,7 @@ set -eux
 # -u : Treat unset variables as an error when substituting.
 # -x : Print commands and their arguments as they are executed.
 
-# Prerequisites:
+# Prerequisites for WSL2:
 # sudo usermod -aG docker $(id -nu 1000) && exit
 # Run the above command, then run this script again.
 
@@ -34,8 +34,6 @@ fi
 # --name                  : Assign a name to the container.
 # -e                      : Set environment variables.
 # -e POSTGRES_PASSWORD    : Set the password for the default user.
-# -e POSTGRES_INITDB_ARGS : See https://www.postgresql.org/docs/current/app-initdb.html
-# -e TZ                   : Set the timezone.
 # Reference:
 # https://hub.docker.com/_/postgres
 # https://docs.docker.com/engine/reference/commandline/run/
@@ -47,11 +45,7 @@ fi
 --name="pg"                        \
 -e POSTGRES_PASSWORD="pg"          \
 cgr.dev/chainguard/postgres:latest
-if test "$(hostname)" = "fedora"; then
-sleep 1 # Allow time for postgres to start.
-else
 sleep 5 # Allow more time for postgres on WSL2 to start.
-fi
 
 # Copy the schema.sql file to the container
 "$oci" cp "$(find "$(pwd)" -name "schema.sql"    -type f -exec realpath {} \;)" pg:/home/postgres
@@ -62,8 +56,6 @@ fi
 "$oci" exec pg psql -U postgres -f /home/postgres/schema.sql
 "$oci" exec pg psql -U postgres -f /home/postgres/trigger.sql
 "$oci" exec pg psql -U postgres -f /home/postgres/data_base.sql
-# (Optionally) insert large amounts of data.
 "$oci" exec pg psql -U postgres -f /home/postgres/data_many.sql
-
 # Unset variables from the environment.
 unset oci

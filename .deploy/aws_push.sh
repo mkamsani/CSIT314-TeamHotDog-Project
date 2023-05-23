@@ -5,8 +5,7 @@
 # each time a new version of the application is deployed.
 #
 
-# TODO: Stop SpringBoot.
-#  sudo service whatever stop
+sudo systemctl stop spring-boot-app
 
 # Create bin folder if it does not exist.
 test -d ~/bin || mkdir ~/bin
@@ -29,5 +28,5 @@ else
 printf "%s: %s\n" "No integration folder found" "$(date)" >> ~/ctbs/log.txt
 fi
 
-sudo systemctl restart spring-boot-app
+sudo systemctl start spring-boot-app
 exit 0

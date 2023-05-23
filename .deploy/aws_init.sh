@@ -13,13 +13,11 @@ sudo apt install -y nginx \
                     openjdk-17-jdk openjdk-17-jre-headless default-jre \
                     wget ca-certificates
 
-# TODO check if there's some intermediate steps
 wget -qO- https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
 sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" >> /etc/apt/sources.list.d/pgdg.list'
 sudo apt update -y && sudo apt upgrade -y
 sudo apt install -y postgresql postgresql-contrib
 sudo service postgresql status
-# TODO check if there's some intermediate steps
 sudo systemctl enable --now nginx.service
 sudo systemctl enable --now postgresql.service
 
