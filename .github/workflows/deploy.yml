@@ -24,10 +24,10 @@ jobs:
         run: |
           docker run --name="pg" -u=postgres -e POSTGRES_PASSWORD="pg" -d --net=host cgr.dev/chainguard/postgres:latest
           sleep 5
-          docker cp ./backend/src/main/resources/db/schema.sql pg:/home/postgres
-          docker cp ./backend/src/main/resources/db/trigger.sql pg:/home/postgres
-          docker cp ./backend/src/main/resources/db/data_base.sql pg:/home/postgres
-          docker cp ./backend/src/main/resources/db/data_many.sql pg:/home/postgres
+          docker cp ./database/schema.sql pg:/home/postgres
+          docker cp ./database/trigger.sql pg:/home/postgres
+          docker cp ./database/data_base.sql pg:/home/postgres
+          docker cp ./database/data_many.sql pg:/home/postgres
           docker exec pg psql -U postgres -f /home/postgres/schema.sql
           docker exec pg psql -U postgres -f /home/postgres/trigger.sql
           docker exec pg psql -U postgres -f /home/postgres/data_base.sql
@@ -53,10 +53,10 @@ jobs:
           chmod 644 ~/.ssh/known_hosts
           ssh    -i ~/.ssh/id_rsa ubuntu@ec2-52-221-189-102.ap-southeast-1.compute.amazonaws.com "printf \"%s\\n\" \"Actual write test: $(date)\" >> /home/ubuntu/ctbs/testfile.txt"
           scp    -i ~/.ssh/id_rsa target/backend-1.0.0-SNAPSHOT.jar ubuntu@ec2-52-221-189-102.ap-southeast-1.compute.amazonaws.com:/home/ubuntu/ctbs
-          scp    -i ~/.ssh/id_rsa src/main/resources/db/schema.sql ubuntu@ec2-52-221-189-102.ap-southeast-1.compute.amazonaws.com:/home/ubuntu/ctbs
-          scp    -i ~/.ssh/id_rsa src/main/resources/db/trigger.sql ubuntu@ec2-52-221-189-102.ap-southeast-1.compute.amazonaws.com:/home/ubuntu/ctbs
-          scp    -i ~/.ssh/id_rsa src/main/resources/db/data_base.sql ubuntu@ec2-52-221-189-102.ap-southeast-1.compute.amazonaws.com:/home/ubuntu/ctbs
-          scp    -i ~/.ssh/id_rsa src/main/resources/db/data_many.sql ubuntu@ec2-52-221-189-102.ap-southeast-1.compute.amazonaws.com:/home/ubuntu/ctbs
+          scp    -i ~/.ssh/id_rsa ../database/schema.sql ubuntu@ec2-52-221-189-102.ap-southeast-1.compute.amazonaws.com:/home/ubuntu/ctbs
+          scp    -i ~/.ssh/id_rsa ../database/trigger.sql ubuntu@ec2-52-221-189-102.ap-southeast-1.compute.amazonaws.com:/home/ubuntu/ctbs
+          scp    -i ~/.ssh/id_rsa ../database/data_base.sql ubuntu@ec2-52-221-189-102.ap-southeast-1.compute.amazonaws.com:/home/ubuntu/ctbs
+          scp    -i ~/.ssh/id_rsa ../database/data_many.sql ubuntu@ec2-52-221-189-102.ap-southeast-1.compute.amazonaws.com:/home/ubuntu/ctbs
           scp -r -i ~/.ssh/id_rsa ../frontend/integration ubuntu@ec2-52-221-189-102.ap-southeast-1.compute.amazonaws.com:/home/ubuntu/ctbs
           ssh    -i ~/.ssh/id_rsa ubuntu@ec2-52-221-189-102.ap-southeast-1.compute.amazonaws.com /home/ubuntu/ctbs/aws_push.sh
           ssh    -i ~/.ssh/id_rsa ubuntu@ec2-52-221-189-102.ap-southeast-1.compute.amazonaws.com /home/ubuntu/ctbs/aws_db.sh

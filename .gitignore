@@ -33,3 +33,4 @@ backend/pom.xml.tag
 backend/pom.xml.versionsBackup
 backend/release.properties
 /backend/.mvn/wrapper/maven-wrapper.jar
+/.jpb/

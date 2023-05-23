@@ -10,7 +10,7 @@ set -eux
 # Run the above command, then run this script again.
 
 # Exit if script is not run from the source directory.
-test "$(basename "$(pwd)")" = "db" || exit 1
+test "$(basename "$(pwd)")" = "database" || exit 1
 # Exit if no OCI runtime is found.
 test "$(command -v nerdctl && nerdctl -v | grep nerdctl)" && oci=nerdctl
 test "$(command -v podman  && podman  -v | grep podman)"  && oci=podman
