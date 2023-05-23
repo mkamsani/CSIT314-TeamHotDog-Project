@@ -55,8 +55,8 @@ CREATE TABLE movie
   genre          Citext       NOT NULL, -- .toLowerCase() wikipedia
   description    VARCHAR(255) NOT NULL,
   release_date   DATE         NOT NULL,
-  image_url      VARCHAR(255) NOT NULL DEFAULT 'https://raw.githubusercontent.com/assets/default.jpg',
-  landscape_image_url         VARCHAR(255) NOT NULL DEFAULT 'https://raw.githubusercontent.com/assets/default.jpg',
+  image_url      VARCHAR(255) NOT NULL DEFAULT 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Popcorn_up_close_salted_and_air_popped.jpg/1280px-Popcorn_up_close_salted_and_air_popped.jpg',
+  landscape_image_url         VARCHAR(255) NOT NULL DEFAULT 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Popcorn_up_close_salted_and_air_popped.jpg/1280px-Popcorn_up_close_salted_and_air_popped.jpg',
   content_rating Citext NOT NULL,
   CHECK (content_rating IN ('g', 'pg', 'pg13', 'nc16', 'm18', 'r21'))
 );
