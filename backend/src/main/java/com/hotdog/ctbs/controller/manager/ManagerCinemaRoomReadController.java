@@ -14,7 +14,8 @@ public class ManagerCinemaRoomReadController {
 
     private final CinemaRoomRepository cinemaRoomRepository;
 
-    public ManagerCinemaRoomReadController(CinemaRoomRepository cinemaRoomRepository) {
+    public ManagerCinemaRoomReadController(CinemaRoomRepository cinemaRoomRepository)
+    {
         this.cinemaRoomRepository = cinemaRoomRepository;
         this.cinemaRoom = new CinemaRoom();
     }
@@ -24,13 +25,13 @@ public class ManagerCinemaRoomReadController {
      */
 
     @GetMapping("/read/{param}")
-    public ResponseEntity<String> Read(@PathVariable final String param) {
-        try{
+    public ResponseEntity<String> Read(@PathVariable final String param)
+    {
+        try {
             // return json string from readCinemaRoom method
             String json = cinemaRoom.readCinemaRoom(cinemaRoomRepository, param);
             return ResponseEntity.ok(json);
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

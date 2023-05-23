@@ -12,8 +12,4 @@ public interface TicketTypeRepository extends JpaRepository<TicketType, UUID> {
     Optional<TicketType> findByTypeName(String typeName);
 
     List<TicketType> findAllByIsActiveTrue();
-
-    default List<String> findAllTypeName() {
-        return findAll().stream().map(TicketType::getTypeName).toList();
-    }
 }

@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface LoyaltyPointRepository extends JpaRepository<LoyaltyPoint, UUID>{
+public interface LoyaltyPointRepository extends JpaRepository<LoyaltyPoint, UUID> {
 
     Optional<LoyaltyPoint> findByUserAccountUsername(String username);
 

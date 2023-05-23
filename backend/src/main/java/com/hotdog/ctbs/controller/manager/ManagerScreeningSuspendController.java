@@ -23,7 +23,8 @@ public class ManagerScreeningSuspendController {
     @PutMapping("/suspend/{currentShowTime}/{currentShowDate}/{cinemaRoomId}")
     public ResponseEntity<String> Suspend(@PathVariable String currentShowTime,
                                           @PathVariable String currentShowDate,
-                                          @PathVariable Integer cinemaRoomId) {
+                                          @PathVariable Integer cinemaRoomId)
+    {
         try {
             Screening.suspendScreening(
                     screeningRepo,

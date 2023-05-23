@@ -23,12 +23,11 @@ public class CustomerMovieReadController {
     @GetMapping(value = "/read/{param}")
     public ResponseEntity<String> CustomerReadMovie(@PathVariable final String param)
     {
-            try {
-                return ResponseEntity.ok().body(Movie.readMovieCustomer(movieRepo, param));
-            }
-            catch (Exception e){
+        try {
+            return ResponseEntity.ok().body(Movie.readMovieCustomer(movieRepo, param));
+        } catch (Exception e) {
 
-                return ResponseEntity.badRequest().body(e.getMessage());
-            }
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

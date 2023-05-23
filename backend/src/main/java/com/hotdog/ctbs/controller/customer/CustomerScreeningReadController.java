@@ -27,8 +27,7 @@ public class CustomerScreeningReadController {
         try {
             String json = Screening.readScreeningCustomer(screeningRepo, movieRepo, param);
             return ResponseEntity.ok().body(json);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

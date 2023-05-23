@@ -16,12 +16,14 @@ public class ManagerTicketTypeSuspendController {
 
     private final TicketTypeRepository TicketTypeRepository;
 
-    public ManagerTicketTypeSuspendController(TicketTypeRepository ticketTypeRepository) {
+    public ManagerTicketTypeSuspendController(TicketTypeRepository ticketTypeRepository)
+    {
         this.TicketTypeRepository = ticketTypeRepository;
     }
 
     @DeleteMapping("/suspend/{targettypename}")
-    public ResponseEntity<String> Suspend(@PathVariable String targettypename) {
+    public ResponseEntity<String> Suspend(@PathVariable String targettypename)
+    {
         try {
             TicketType.suspendTicketType(TicketTypeRepository, targettypename);
             return ResponseEntity.ok("ticket type suspended successfully");

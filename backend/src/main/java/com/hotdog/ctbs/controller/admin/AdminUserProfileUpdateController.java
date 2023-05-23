@@ -39,7 +39,8 @@ public class AdminUserProfileUpdateController {
 
     /** Update a {@code UserProfile} based on the given JSON. */
     @PutMapping("/update/{targetTitle}")
-    public ResponseEntity<String> Update(@RequestBody String json, @PathVariable String targetTitle)
+    public ResponseEntity<String> Update(@RequestBody String json,
+                                         @PathVariable String targetTitle)
     {
         try {
             JsonNode jsonNode = objectMapper.readTree(json);

@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.*;
  * exposes the {@code /api/manager/ticketType/read} endpoint
  *
  * <p>
- *     The returned JSON format is:
- *     <blockquote><pre>
+ * The returned JSON format is:
+ * <blockquote><pre>
  *     [
  *      {
  *          "typename": "adult",
@@ -25,8 +25,8 @@ import org.springframework.web.bind.annotation.*;
  *        }
  *       ]
  *     </pre></blockquote>
- *     A singular TicketType object would be wrapped in an array:
- *     <blockquote><pre>
+ * A singular TicketType object would be wrapped in an array:
+ * <blockquote><pre>
  *     [
  *         {
  *         "typename": "adult",
@@ -44,7 +44,8 @@ public class ManagerTicketTypeReadController {
 
     private final TicketTypeRepository TicketTypeRepository;
 
-    public ManagerTicketTypeReadController(TicketTypeRepository ticketTypeRepository) {
+    public ManagerTicketTypeReadController(TicketTypeRepository ticketTypeRepository)
+    {
         TicketTypeRepository = ticketTypeRepository;
     }
 
@@ -54,8 +55,7 @@ public class ManagerTicketTypeReadController {
     {
         try {
             return ResponseEntity.ok(TicketType.readTicketType(TicketTypeRepository, param));
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

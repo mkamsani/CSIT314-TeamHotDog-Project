@@ -30,7 +30,8 @@ public class CustomerAccountUpdateController {
 
     /** Update a {@code UserAccount} based on the given JSON. */
     @PutMapping("/update/{targetUsername}")
-    public ResponseEntity<String> Update(@RequestBody String json, @PathVariable String targetUsername)
+    public ResponseEntity<String> Update(@RequestBody String json,
+                                         @PathVariable String targetUsername)
     {
         try {
             JsonNode jsonNode = objectMapper.readTree(json);

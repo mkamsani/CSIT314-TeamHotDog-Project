@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.*;
  * exposes the {@code /api/manager/ticketType/read} endpoint
  *
  * <p>
- *     The returned JSON format is:
- *     <blockquote><pre>
+ * The returned JSON format is:
+ * <blockquote><pre>
  *     [
  *      {
  *          "typename": "adult",
@@ -27,16 +27,16 @@ import org.springframework.web.bind.annotation.*;
  *        }
  *       ]
  *   </pre></blockquote>
- *   </p>
+ * </p>
  *
  *
- *   updateTicketType method will look for the targetTypeName and update all the fields of the ticket type.
- *   If the targetTypeName is not found, it will return an error message.
- *   If the targetTypeName is found, it will update the ticket type and return a success message.
- *   Adult, Child, Student, Senior and Redemption Types are not allowed to have their typeNames changed.
- *   If the targetTypeName is one of the above, it will return an error message.
- *   For now, update Method should allow user to update individual fields without having to update all fields.
- *   But this depends on whether json will allow passing null/empty values.
+ * updateTicketType method will look for the targetTypeName and update all the fields of the ticket type.
+ * If the targetTypeName is not found, it will return an error message.
+ * If the targetTypeName is found, it will update the ticket type and return a success message.
+ * Adult, Child, Student, Senior and Redemption Types are not allowed to have their typeNames changed.
+ * If the targetTypeName is one of the above, it will return an error message.
+ * For now, update Method should allow user to update individual fields without having to update all fields.
+ * But this depends on whether json will allow passing null/empty values.
  */
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -45,7 +45,8 @@ public class ManagerTicketTypeUpdateController {
     private final TicketTypeRepository ticketTypeRepository;
 
 
-    public ManagerTicketTypeUpdateController(TicketTypeRepository ticketTypeRepository) {
+    public ManagerTicketTypeUpdateController(TicketTypeRepository ticketTypeRepository)
+    {
         this.ticketTypeRepository = ticketTypeRepository;
     }
     /*
@@ -58,7 +59,8 @@ public class ManagerTicketTypeUpdateController {
 
 
     @PutMapping(value = "/update/{targettickettypename}")
-    public ResponseEntity<String> Update(@RequestBody String json, @PathVariable String targettickettypename)
+    public ResponseEntity<String> Update(@RequestBody String json,
+                                         @PathVariable String targettickettypename)
     {
         System.out.println("TicketTypeUpdateController.UpdateTicketType is called");
         try {
@@ -73,8 +75,7 @@ public class ManagerTicketTypeUpdateController {
                     jsonNode.get("tickettypeprice").asDouble()
             );
             return ResponseEntity.ok("Ticket Type Updated");
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             // delete later
             System.out.println("updateTicketType() failed");
             //

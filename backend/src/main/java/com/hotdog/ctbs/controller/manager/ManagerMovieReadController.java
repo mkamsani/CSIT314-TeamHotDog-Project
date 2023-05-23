@@ -25,8 +25,7 @@ public class ManagerMovieReadController {
     {
         try {
             return ResponseEntity.ok().body(Movie.readMovieManager(movieRepo, param));
-        }
-        catch (Exception e){
+        } catch (Exception e) {
 
             return ResponseEntity.badRequest().body(e.getMessage());
         }

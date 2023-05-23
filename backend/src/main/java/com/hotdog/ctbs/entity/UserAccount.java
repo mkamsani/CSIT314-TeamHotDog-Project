@@ -145,10 +145,8 @@ public class UserAccount {
         List<UserAccount> uaList = switch (param) {
             case "admin", "owner", "manager", "customer" ->
                     userAccountRepo.findUserAccountsByUserProfile_Privilege(param);
-            case "active" ->
-                    userAccountRepo.findUserAccountsByIsActiveTrue();
-            case "all" ->
-                    userAccountRepo.findAll();
+            case "active" -> userAccountRepo.findUserAccountsByIsActiveTrue();
+            case "all" -> userAccountRepo.findAll();
             default -> {
                 UserAccount userAccount = userAccountRepo.findUserAccountByUsername(param)
                                                          .orElse(null);
@@ -161,17 +159,17 @@ public class UserAccount {
         ArrayNode an = objectMapper.createArrayNode();
         for (UserAccount ua : uaList) {
             ObjectNode on = objectMapper.createObjectNode();
-            on.put("username",      ua.username);
-            on.put("email",         ua.email);
-            on.put("firstName",     ua.firstName);
-            on.put("lastName",      ua.lastName);
-            on.put("dateOfBirth",   ua.dateOfBirth.toString());
-            on.put("address",       ua.address);
-            on.put("isActive",      ua.isActive.toString());
-            on.put("timeCreated",   ua.timeCreated.toString());
+            on.put("username", ua.username);
+            on.put("email", ua.email);
+            on.put("firstName", ua.firstName);
+            on.put("lastName", ua.lastName);
+            on.put("dateOfBirth", ua.dateOfBirth.toString());
+            on.put("address", ua.address);
+            on.put("isActive", ua.isActive.toString());
+            on.put("timeCreated", ua.timeCreated.toString());
             on.put("timeLastLogin", ua.timeLastLogin.toString());
-            on.put("title",         ua.userProfile.title);
-            on.put("privilege",     ua.userProfile.privilege);
+            on.put("title", ua.userProfile.title);
+            on.put("privilege", ua.userProfile.privilege);
             an.add(on);
         }
         return an.toString();

@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.*;
  * exposes the {@code /api/manager/ticketType/read} endpoint
  *
  * <p>
- *     The returned JSON format is:
- *     <blockquote><pre>
+ * The returned JSON format is:
+ * <blockquote><pre>
  *     [
  *      {
  *          "typename": "adult",
@@ -27,7 +27,6 @@ import org.springframework.web.bind.annotation.*;
  *           "isactive": true
  *        }
  *       ]
- *
  */
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -37,7 +36,8 @@ public class ManagerTicketTypeCreateController {
     private final TicketTypeRepository ticketTypeRepository;
     private final ObjectMapper objectMapper;
 
-    public ManagerTicketTypeCreateController(TicketTypeRepository ticketTypeRepository) {
+    public ManagerTicketTypeCreateController(TicketTypeRepository ticketTypeRepository)
+    {
         this.ticketTypeRepository = ticketTypeRepository;
         this.objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
     }
@@ -45,15 +45,15 @@ public class ManagerTicketTypeCreateController {
 
     /** Create a {@code TicketType} based on the given JSON. */
     @PostMapping("/create/ticketType")
-    public ResponseEntity<String> Create(@RequestBody final String json) {
-        try{
+    public ResponseEntity<String> Create(@RequestBody final String json)
+    {
+        try {
             JsonNode jsonNode = objectMapper.readTree(json);
             String typeName = jsonNode.get("typename").asText();
             Double typePrice = jsonNode.get("typeprice").asDouble();
             TicketType.createTicketType(ticketTypeRepository, typeName, typePrice);
             return ResponseEntity.ok("Success! Ticket has been created");
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
 

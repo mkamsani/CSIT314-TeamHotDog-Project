@@ -52,7 +52,8 @@ public class AdminUserAccountUpdateController {
 
     /** Update a {@code UserAccount} based on the given JSON. */
     @PutMapping("/update/{targetUsername}")
-    public ResponseEntity<String> Update(@RequestBody String json, @PathVariable String targetUsername)
+    public ResponseEntity<String> Update(@RequestBody String json,
+                                         @PathVariable String targetUsername)
     {
         System.out.println("AdminUserAccountUpdateController.Update() called.");
         try {

@@ -144,6 +144,7 @@ public class Screening {
 
     /**
      * ManagerReadScreeningController
+     *
      * @return a JSON array of all movie screenings.
      */
     public static String readScreeningManager(ScreeningRepository screeningRepo,
@@ -151,8 +152,7 @@ public class Screening {
                                               final String param)
     {
         List<Screening> screeningList = switch (param) {
-            case "all" ->
-                    screeningRepo.findAll();
+            case "all" -> screeningRepo.findAll();
 
             default -> {
                 Movie movie = movieRepo.findMovieByTitle(param).orElse(null);
@@ -181,6 +181,7 @@ public class Screening {
 
     /**
      * CustomerReadScreeningController
+     *
      * @return a JSON array of all active movie screenings after {@code LocalDate.now()}.
      */
     public static String readScreeningCustomer(ScreeningRepository screeningRepo,
@@ -190,7 +191,7 @@ public class Screening {
         List<Screening> activeScreeningList = switch (param) {
             case "all" -> {
                 List<Screening> activeScreenings = screeningRepo.findActiveScreeningsLaterOrEqual(LocalDate.now());
-                if ( activeScreenings == null ||activeScreenings.isEmpty())
+                if (activeScreenings == null || activeScreenings.isEmpty())
                     throw new IllegalArgumentException("No active screenings found.");
                 yield activeScreenings;
             }
@@ -198,8 +199,10 @@ public class Screening {
                 Movie movie = movieRepo.findMovieByTitle(param).orElse(null);
                 if (movie == null)
                     throw new IllegalArgumentException("Movie does not exist.");
-                List<Screening> activeScreeningsForMovie = screeningRepo.findActiveScreeningsForMovieAndLaterOrEqual(LocalDate.now(), movie);
-                if (activeScreeningsForMovie == null ||activeScreeningsForMovie.isEmpty())
+                List<Screening> activeScreeningsForMovie = screeningRepo.findActiveScreeningsForMovieAndLaterOrEqual(
+                        LocalDate.now(),
+                        movie);
+                if (activeScreeningsForMovie == null || activeScreeningsForMovie.isEmpty())
                     throw new IllegalArgumentException("No active screenings found for the specified movie.");
                 yield activeScreeningsForMovie;
             }
@@ -237,7 +240,9 @@ public class Screening {
                                                     final String showTime,
                                                     final Integer cinemaRoomId)
     {
-        Screening screening = screeningRepo.findScreeningByShowTimeAndShowDateAndCinemaRoom_Id(showTime, showDate, cinemaRoomId)
+        Screening screening = screeningRepo.findScreeningByShowTimeAndShowDateAndCinemaRoom_Id(showTime,
+                                                                                               showDate,
+                                                                                               cinemaRoomId)
                                            .orElse(null);
         if (screening == null)
             throw new IllegalArgumentException("Screening does not exist.");
@@ -265,7 +270,9 @@ public class Screening {
                                        Integer newCinemaRoomId)
     {
         // find current screening objects first
-        Screening currentScreening = screeningRepo.findScreeningByShowTimeAndShowDateAndCinemaRoom_Id(targetShowTime, targetShowDate, targetCinemaRoomId)
+        Screening currentScreening = screeningRepo.findScreeningByShowTimeAndShowDateAndCinemaRoom_Id(targetShowTime,
+                                                                                                      targetShowDate,
+                                                                                                      targetCinemaRoomId)
                                                   .orElse(null);
         if (currentScreening == null)
             throw new IllegalArgumentException("Screening does not exist.");
@@ -283,9 +290,9 @@ public class Screening {
             throw new IllegalArgumentException("Cannot set the date to past.");
 
         if (!newShowTime.equals("morning") &&
-                !newShowTime.equals("afternoon") &&
-                !newShowTime.equals("evening") &&
-                !newShowTime.equals("midnight"))
+            !newShowTime.equals("afternoon") &&
+            !newShowTime.equals("evening") &&
+            !newShowTime.equals("midnight"))
             throw new IllegalArgumentException("Invalid time.");
 
         CinemaRoom newCinemaRoom = cinemaRoomRepo.findById(newCinemaRoomId).orElse(null);
@@ -296,8 +303,10 @@ public class Screening {
 
         // showTime, cinemaRoom, showDate cannot be equal to each other.
         for (Screening screening : screeningRepo.findAll()) {
-            if (screening.showTime.equals(newShowTime) && screening.cinemaRoom.equals(newCinemaRoom) && screening.showDate.equals(newShowDate)) {
-                if (currentScreening.showTime.equals(newShowTime) && currentScreening.cinemaRoom.equals(newCinemaRoom) && currentScreening.showDate.equals(newShowDate)) {
+            if (screening.showTime.equals(newShowTime) && screening.cinemaRoom.equals(newCinemaRoom) && screening.showDate.equals(
+                    newShowDate)) {
+                if (currentScreening.showTime.equals(newShowTime) && currentScreening.cinemaRoom.equals(newCinemaRoom) && currentScreening.showDate.equals(
+                        newShowDate)) {
                     // Allow whatever changes need to be changed.
                 } else {
                     throw new IllegalArgumentException("You cannot update to a screening that already exists.");

@@ -32,8 +32,7 @@ public class CustomerScreeningSeatsReadController {
                     Integer.parseInt(room)
             );
             return ResponseEntity.ok().body(json);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

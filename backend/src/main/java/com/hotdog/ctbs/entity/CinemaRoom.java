@@ -43,7 +43,8 @@ public class CinemaRoom {
 
     //////////////////////////////// Service /////////////////////////////////
 
-    public String readCinemaRoom(CinemaRoomRepository cinemaRoomRepository, final String param)
+    public String readCinemaRoom(CinemaRoomRepository cinemaRoomRepository,
+                                 final String param)
     {
         List<CinemaRoom> cinemaRooms;
 

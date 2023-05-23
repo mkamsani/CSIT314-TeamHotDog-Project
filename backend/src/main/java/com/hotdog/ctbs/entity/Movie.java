@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.hotdog.ctbs.repository.MovieRepository;
-import com.hotdog.ctbs.repository.ScreeningRepository;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -106,7 +105,8 @@ public class Movie {
     }
 
     /** @see com.hotdog.ctbs.controller.manager.ManagerMovieReadController */
-    public static String readMovieManager(MovieRepository movieRepo, final String param)
+    public static String readMovieManager(MovieRepository movieRepo,
+                                          final String param)
     {
         List<Movie> movieList = switch (param) {
             case "all" -> movieRepo.findAll();
@@ -134,7 +134,8 @@ public class Movie {
     }
 
     /** @see com.hotdog.ctbs.controller.customer.CustomerMovieReadController */
-    public static String readMovieCustomer(MovieRepository movieRepo, final String param)
+    public static String readMovieCustomer(MovieRepository movieRepo,
+                                           final String param)
     {
         List<Movie> activeMovieList = switch (param) {
             case "all" -> movieRepo.findAll().stream().filter(Movie::getIsActive).toList();
@@ -197,7 +198,8 @@ public class Movie {
     }
 
     /** @see com.hotdog.ctbs.controller.manager.ManagerMovieSuspendController */
-    public static void suspendMovie(MovieRepository movieRepo, String targetTitle)
+    public static void suspendMovie(MovieRepository movieRepo,
+                                    String targetTitle)
     {
         for (Movie existingMovie : movieRepo.findAll()) {
             if (existingMovie.title.equalsIgnoreCase(targetTitle)) {
@@ -207,28 +209,5 @@ public class Movie {
             }
         }
         throw new IllegalArgumentException("Movie does not exist: " + targetTitle);
-    }
-
-    public static void deleteMovie(MovieRepository movieRepo, ScreeningRepository screeningRepo, String targetTitle)
-    {
-        Movie movie = null;
-        for (Movie existingMovie : movieRepo.findAll())
-            if (existingMovie.title.equalsIgnoreCase(targetTitle))
-                movie = existingMovie;
-
-        if (movie == null)
-            throw new IllegalArgumentException("Movie does not exist: " + targetTitle);
-
-        for (Screening existingScreening : screeningRepo.findAll()) {
-            if (existingScreening.movie.title.equalsIgnoreCase(targetTitle)) {
-                LocalDate showDate = existingScreening.getShowDate();
-                if (showDate.isAfter(LocalDate.now()))
-                    throw new IllegalArgumentException("Movie has the screening in the future: " + targetTitle);
-                if (showDate.isAfter(LocalDate.now().minusDays(30)))
-                    throw new IllegalArgumentException("Movie has the screening in the past 30 days: " + targetTitle);
-            }
-        }
-
-        movieRepo.delete(movie);
     }
 }

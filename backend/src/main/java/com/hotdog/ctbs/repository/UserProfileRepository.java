@@ -12,10 +12,14 @@ import java.util.UUID;
 @Repository
 public interface UserProfileRepository extends JpaRepository<UserProfile, UUID> {
     Optional<UserProfile> findUserProfileByTitle(String s);
+
     List<UserProfile> findUserProfilesByPrivilege(String privilege);
+
     List<UserProfile> findUserProfilesByIsActiveTrue();
+
     @Query(value = "SELECT title FROM user_profile\n", nativeQuery = true)
     List<String> findAllTitles();
+
     @Query(value = "SELECT DISTINCT privilege FROM user_profile\n", nativeQuery = true)
     List<String> findAllPrivileges();
 }

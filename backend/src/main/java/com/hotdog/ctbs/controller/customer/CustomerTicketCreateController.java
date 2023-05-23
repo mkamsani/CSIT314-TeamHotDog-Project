@@ -29,10 +29,15 @@ public class CustomerTicketCreateController {
     private final LoyaltyPointRepository loyaltyPointRepository;
     private final TicketRepository ticketRepository;
 
-    public CustomerTicketCreateController(UserAccountRepository userAccountRepository, TicketTypeRepository ticketTypeRepository, ScreeningRepository screeningRepository, SeatRepository seatRepository
-                                  , CinemaRoomRepository cinemaRoomRepository,
+    public CustomerTicketCreateController(UserAccountRepository userAccountRepository,
+                                          TicketTypeRepository ticketTypeRepository,
+                                          ScreeningRepository screeningRepository,
+                                          SeatRepository seatRepository
+            ,
+                                          CinemaRoomRepository cinemaRoomRepository,
                                           LoyaltyPointRepository loyaltyPointRepository,
-                                          TicketRepository ticketRepository){
+                                          TicketRepository ticketRepository)
+    {
         this.userAccountRepository = userAccountRepository;
         this.ticketTypeRepository = ticketTypeRepository;
         this.screeningRepository = screeningRepository;
@@ -44,19 +49,28 @@ public class CustomerTicketCreateController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<String> Create(@RequestBody final String json){
+    public ResponseEntity<String> Create(@RequestBody final String json)
+    {
         System.out.println("CustomerTickerCreateController.Create() called");
-        try{
+        try {
             JsonNode jsonNode = objectMapper.readTree(json);
-            Ticket.createTicket(userAccountRepository, ticketTypeRepository,
-                            screeningRepository, seatRepository, loyaltyPointRepository,
-                            cinemaRoomRepository,ticketRepository, jsonNode.get("userName").asText(),
-                            jsonNode.get("ticketTypeName").asText(), jsonNode.get("showTime").asText(),
-                            LocalDate.parse(jsonNode.get("showDate").asText()), jsonNode.get("cinemaRoomId").asInt(),
-                            jsonNode.get("row").asText(), jsonNode.get("column").asInt(), jsonNode.get("isLoyaltyPointUsed").asBoolean());
+            Ticket.createTicket(userAccountRepository,
+                                ticketTypeRepository,
+                                screeningRepository,
+                                seatRepository,
+                                loyaltyPointRepository,
+                                cinemaRoomRepository,
+                                ticketRepository,
+                                jsonNode.get("userName").asText(),
+                                jsonNode.get("ticketTypeName").asText(),
+                                jsonNode.get("showTime").asText(),
+                                LocalDate.parse(jsonNode.get("showDate").asText()),
+                                jsonNode.get("cinemaRoomId").asInt(),
+                                jsonNode.get("row").asText(),
+                                jsonNode.get("column").asInt(),
+                                jsonNode.get("isLoyaltyPointUsed").asBoolean());
             return ResponseEntity.ok("Success.");
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

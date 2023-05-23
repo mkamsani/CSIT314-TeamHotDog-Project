@@ -26,5 +26,6 @@ public interface UserAccountRepository extends JpaRepository<UserAccount, UUID> 
             AND    password_hash = crypt(?2, password_hash)
             """, nativeQuery = true
     )
-    Optional<UserAccount> findUserAccountByUsernameAndPassword(final String username, final String password);
+    Optional<UserAccount> findUserAccountByUsernameAndPassword(final String username,
+                                                               final String password);
 }

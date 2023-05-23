@@ -1,7 +1,5 @@
 package com.hotdog.ctbs.controller.admin;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.hotdog.ctbs.entity.UserProfile;
 import com.hotdog.ctbs.repository.UserProfileRepository;
 import org.springframework.http.ResponseEntity;
@@ -24,12 +22,10 @@ import org.springframework.web.bind.annotation.*;
 public class AdminUserProfileSuspendController {
 
     private final UserProfileRepository userProfileRepo;
-    private final ObjectMapper objectMapper;
 
     public AdminUserProfileSuspendController(UserProfileRepository userProfileRepo)
     {
         this.userProfileRepo = userProfileRepo;
-        this.objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
     }
 
     /** Suspend a {@code UserProfile} based on the given {@code PathVariable}. */

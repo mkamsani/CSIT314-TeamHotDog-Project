@@ -14,7 +14,8 @@ public class CustomerTicketReadController {
     private final TicketRepository ticketRepo;
     private final UserAccountRepository userAccountRepo;
 
-    public CustomerTicketReadController(TicketRepository ticketRepo, UserAccountRepository userAccountRepo)
+    public CustomerTicketReadController(TicketRepository ticketRepo,
+                                        UserAccountRepository userAccountRepo)
     {
         this.ticketRepo = ticketRepo;
         this.userAccountRepo = userAccountRepo;
@@ -26,8 +27,7 @@ public class CustomerTicketReadController {
         try {
             String json = Ticket.readTicket(userAccountRepo, ticketRepo, param);
             return ResponseEntity.ok().body(json);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

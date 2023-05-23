@@ -1,7 +1,5 @@
 package com.hotdog.ctbs.controller.customer;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.hotdog.ctbs.entity.LoyaltyPoint;
 import com.hotdog.ctbs.repository.LoyaltyPointRepository;
 import org.springframework.http.ResponseEntity;
@@ -47,12 +45,10 @@ import org.springframework.web.bind.annotation.*;
 public class CustomerLoyaltyPointReadController {
 
     private final LoyaltyPointRepository loyaltyPointRepo;
-    private final ObjectMapper objectMapper;
 
     public CustomerLoyaltyPointReadController(LoyaltyPointRepository loyaltyPointRepo)
     {
         this.loyaltyPointRepo = loyaltyPointRepo;
-        this.objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
     }
 
     @GetMapping("/read/{param}")

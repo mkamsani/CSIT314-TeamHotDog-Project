@@ -49,13 +49,12 @@ public class LoyaltyPoint {
 
     //////////////////////////////// Service /////////////////////////////////
 
-    public static String readLoyaltyPoint(LoyaltyPointRepository loyaltyPointRepo, String param)
+    public static String readLoyaltyPoint(LoyaltyPointRepository loyaltyPointRepo,
+                                          String param)
     {
         List<LoyaltyPoint> loyaltyPointList = switch (param) {
-            case "all" ->
-                    loyaltyPointRepo.findAll();
-            case "active" ->
-                    loyaltyPointRepo.findAllByUserAccountIsActiveTrue();
+            case "all" -> loyaltyPointRepo.findAll();
+            case "active" -> loyaltyPointRepo.findAllByUserAccountIsActiveTrue();
             default -> {
                 LoyaltyPoint tmp = loyaltyPointRepo.findByUserAccountUsername(param).orElse(null);
                 if (tmp == null)
