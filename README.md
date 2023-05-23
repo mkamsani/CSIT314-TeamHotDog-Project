@@ -7,13 +7,15 @@ See its [README.txt](./development-files/README.txt) for more information.
 
 ## Stack and Tooling
 
-* [Java Spring Boot 3](./backend)
-    * [main](./backend/src/main/java/com/hotdog/ctbs/)
-    * [test](./backend/src/test/java/com/hotdog/ctbs/CinemaTicketBookingSystemApplicationTests.java)
-* [Postgres 15](./database)
-* [PHP](./frontend/)
+* [Controller & Entity: Java Spring Boot 3](./backend)
+    * [entities](./backend/src/main/java/com/hotdog/ctbs/entity)
+    * [controllers](./backend/src/main/java/com/hotdog/ctbs/controller)
+    * [main source folder](./backend/src/main/java/com/hotdog/ctbs/)
+* [Database: Postgres 15](./database)
+* [Boundary: PHP](./frontend/)
 * [CI/CD: GitHub](./.github/workflows/deploy.yml)
 * [CI/CD: AWS Deployment](./.deploy/aws_push.sh)
+* [CI/CD: Test controller of one user story](./backend/src/test/java/com/hotdog/ctbs/UserStoryLoginTests.java)
 
 ## License
 
