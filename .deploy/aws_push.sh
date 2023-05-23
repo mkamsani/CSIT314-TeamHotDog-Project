@@ -18,12 +18,12 @@ printf "%s: %s\n" "No backend-1.0.0-SNAPSHOT.jar file found" "$(date)" >> ~/ctbs
 fi
 
 # Move frontend files to nginx folder.
-if test -d ~/ctbs/integration; then
+if test -d ~/ctbs/frontend; then
 sudo rm -rf /var/www/html/*
-sudo mv -f ~/ctbs/integration/* /var/www/html
-rmdir ~/ctbs/integration
+sudo mv -f ~/ctbs/frontend/* /var/www/html
+rmdir ~/ctbs/frontend
 else
-printf "%s: %s\n" "No integration folder found" "$(date)" >> ~/ctbs/log.txt
+printf "%s: %s\n" "No frontend folder found" "$(date)" >> ~/ctbs/log.txt
 fi
 
 sudo systemctl restart spring-boot-app
