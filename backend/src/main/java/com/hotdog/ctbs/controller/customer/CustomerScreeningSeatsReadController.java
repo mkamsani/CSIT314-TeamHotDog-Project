@@ -4,6 +4,7 @@ import com.hotdog.ctbs.entity.Screening;
 import com.hotdog.ctbs.repository.ScreeningRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.time.LocalDate;
 
 @RestController

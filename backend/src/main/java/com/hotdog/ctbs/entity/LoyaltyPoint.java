@@ -1,13 +1,15 @@
 package com.hotdog.ctbs.entity;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.hotdog.ctbs.repository.LoyaltyPointRepository;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -39,16 +41,6 @@ public class LoyaltyPoint {
 
     @Transient
     private static final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
-
-    @Override // TODO : Remove
-    public String toString()
-    {
-        ObjectNode json = objectMapper.createObjectNode();
-        json.put("userName", userAccount.getUsername());
-        json.put("pointsRedeemed", pointsRedeemed);
-        json.put("pointsTotal", pointsTotal);
-        return json.toString();
-    }
 
     protected Integer pointsBalance()
     {

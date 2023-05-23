@@ -2,7 +2,6 @@ package com.hotdog.ctbs.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -42,15 +41,4 @@ public class Seat {
 
     @Transient
     private static final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
-
-    @Override // TODO : Remove
-    public String toString()
-    {
-        ObjectNode json = objectMapper.createObjectNode();
-        json.put("row", String.valueOf(seatRow));
-        json.put("column", String.valueOf(seatColumn));
-        json.put("room", cinemaRoom.getId().toString());
-        json.put("seatCode", cinemaRoom.getId().toString() + seatRow + seatColumn);
-        return json.toString();
-    }
 }

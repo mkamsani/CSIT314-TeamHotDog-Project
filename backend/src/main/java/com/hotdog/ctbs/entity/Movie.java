@@ -9,7 +9,10 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.hotdog.ctbs.repository.MovieRepository;
 import com.hotdog.ctbs.repository.ScreeningRepository;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
@@ -135,7 +138,7 @@ public class Movie {
     {
         List<Movie> activeMovieList = switch (param) {
             case "all" -> movieRepo.findAll().stream().filter(Movie::getIsActive).toList();
-            case "active" -> movieRepo.findCustomerMovies(); // TODO
+            case "active" -> movieRepo.findCustomerMovies();
             default -> {
                 Movie movie = movieRepo.findMovieByTitleAndIsActiveTrue(param).orElse(null);
                 if (movie == null)
