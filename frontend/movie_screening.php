@@ -237,7 +237,7 @@ $createShowDate = $_POST['createShowDate'];
 $createCinemaRoomID = $_POST['createCinemaRoomID'];
 $data = array('MovieTitle' => $createMovieName, 'ShowTime' => $createShowTime, 'ShowDate' => $createShowDate, 'CinemaRoomId' => $createCinemaRoomID);
 $data_json = json_encode($data);
-print_r(  $data_json);
+
 $createScreeningCh = curl_init("http://localhost:8000/api/manager/screening/create/screening");
 curl_setopt($createScreeningCh, CURLOPT_POST, "1");
 curl_setopt($createScreeningCh, CURLOPT_POSTFIELDS, $data_json);

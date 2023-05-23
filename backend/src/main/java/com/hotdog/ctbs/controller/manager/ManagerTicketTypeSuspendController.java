@@ -26,7 +26,7 @@ public class ManagerTicketTypeSuspendController {
     {
         try {
             TicketType.suspendTicketType(TicketTypeRepository, targettypename);
-            return ResponseEntity.ok("ticket type suspended successfully");
+            return ResponseEntity.ok("Success");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

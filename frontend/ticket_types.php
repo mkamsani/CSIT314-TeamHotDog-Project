@@ -66,7 +66,6 @@ $newPrice = $_POST['newPrice'];
 $updateTicketCh = curl_init();
 $data = array('tickettypename'=> $newTicketTypeName, 'tickettypeprice' => $newPrice);
 $data_json = json_encode($data);
-print_r($data_json);
 curl_setopt($updateTicketCh, CURLOPT_URL, 'http://localhost:8000/api/manager/ticketType/update/'.$ticketTypeName);
 curl_setopt($updateTicketCh, CURLOPT_CUSTOMREQUEST, "PUT");
 curl_setopt($updateTicketCh, CURLOPT_POSTFIELDS, $data_json);
@@ -107,7 +106,6 @@ $ticketTypePrice = $_POST['createTypePrice'];
 setlocale(LC_MONETARY, "zh_SG");
 $data = array('typename' => $ticketTypeName, 'typeprice' => $ticketTypePrice);
 $data_json = json_encode($data);
-print_r($data_json);
 $ticketTypeCh = curl_init("http://localhost:8000/api/manager/ticketType/create/ticketType");
 curl_setopt($ticketTypeCh, CURLOPT_POST, "1");
 curl_setopt($ticketTypeCh, CURLOPT_POSTFIELDS, $data_json);
@@ -144,7 +142,6 @@ echo '
 if (isset($_POST['suspendTicket'])) {
 
 $suspendTicketTypeName =  str_replace(' ', '%20',$_POST['updateTypeName']);
-print_r($suspendTicketTypeName);
 $suspendTicketTypeCh = curl_init('http://localhost:8000/api/manager/ticketType/suspend/'.$suspendTicketTypeName);
 curl_setopt($suspendTicketTypeCh, CURLOPT_CUSTOMREQUEST, "DELETE");
 curl_setopt($suspendTicketTypeCh, CURLOPT_POSTFIELDS, $suspendTicketTypeName);

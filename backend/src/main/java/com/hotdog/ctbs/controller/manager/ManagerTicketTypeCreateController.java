@@ -52,7 +52,7 @@ public class ManagerTicketTypeCreateController {
             String typeName = jsonNode.get("typename").asText();
             Double typePrice = jsonNode.get("typeprice").asDouble();
             TicketType.createTicketType(ticketTypeRepository, typeName, typePrice);
-            return ResponseEntity.ok("Success! Ticket has been created");
+            return ResponseEntity.ok("Success");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

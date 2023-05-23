@@ -74,11 +74,8 @@ public class ManagerTicketTypeUpdateController {
                     jsonNode.get("tickettypename").asText(),
                     jsonNode.get("tickettypeprice").asDouble()
             );
-            return ResponseEntity.ok("Ticket Type Updated");
+            return ResponseEntity.ok("Success");
         } catch (Exception e) {
-            // delete later
-            System.out.println("updateTicketType() failed");
-            //
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
