@@ -56,5 +56,6 @@ jobs:
           scp    -i ~/.ssh/id_rsa ../database/trigger.sql ubuntu@ec2-52-221-189-102.ap-southeast-1.compute.amazonaws.com:/home/ubuntu/ctbs
           scp    -i ~/.ssh/id_rsa ../database/data_base.sql ubuntu@ec2-52-221-189-102.ap-southeast-1.compute.amazonaws.com:/home/ubuntu/ctbs
           scp    -i ~/.ssh/id_rsa ../database/data_many.sql ubuntu@ec2-52-221-189-102.ap-southeast-1.compute.amazonaws.com:/home/ubuntu/ctbs
+          scp    -i ~/.ssh/id_rsa ../.deploy/aws_push.sh ubuntu@ec2-52-221-189-102.ap-southeast-1.compute.amazonaws.com:/home/ubuntu/ctbs
           scp -r -i ~/.ssh/id_rsa ../frontend ubuntu@ec2-52-221-189-102.ap-southeast-1.compute.amazonaws.com:/home/ubuntu/ctbs
           ssh    -i ~/.ssh/id_rsa ubuntu@ec2-52-221-189-102.ap-southeast-1.compute.amazonaws.com /home/ubuntu/ctbs/aws_push.sh
