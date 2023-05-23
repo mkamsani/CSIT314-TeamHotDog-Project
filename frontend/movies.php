@@ -169,6 +169,7 @@ if (isset($_POST['update'])) {
 
     else
     {
+        $updateResponse = "Please Enter Movie Title";
         // Error message
         echo '
             <div class="container mt-3">
@@ -201,7 +202,7 @@ if (isset($_POST['create'])) {
 
     $createResponse = curl_exec($createMoviesCh);
     curl_close($createMoviesCh);
-    //print_r ($createResponse);
+
     if (strpos($createResponse, 'Success') !== false) //Show success message
     {
         echo '
@@ -214,6 +215,7 @@ if (isset($_POST['create'])) {
 
     else
     {
+        $createResponse = "Please Enter Movie Title";
         // Error message
         echo '
             <div class="container mt-3">
@@ -328,16 +330,16 @@ if (isset($_POST['suspend'])) {
             </div>
 
             <div class="mt-3">
-                <textarea class="form-control" name="movieDesc" id="movieDesc" placeholder="Enter Movie Description"></textarea>
+                <textarea class="form-control" name="movieDesc" id="movieDesc" placeholder="Enter Movie Description" ></textarea>
             </div>
 
             <div class="mt-3">
-                <input type="date" class="form-control" name="movieRD" id="movieRD">
+                <input type="date" class="form-control" name="movieRD" id="movieRD" >
             </div>
 
             <div class="mt-3">
-                <input type="text" class="form-control" name="moviePoster" id="moviePoster" placeholder="Enter image URL">
-                <input type="text" class="form-control" name="landScapePoster" id="landScapePoster" placeholder="Enter landscape image URL">
+                <input type="text" class="form-control" name="moviePoster" id="moviePoster" placeholder="Enter image URL" >
+                <input type="text" class="form-control" name="landScapePoster" id="landScapePoster" placeholder="Enter landscape image URL" >
             </div>
 
 

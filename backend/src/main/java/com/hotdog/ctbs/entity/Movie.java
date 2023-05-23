@@ -175,6 +175,10 @@ public class Movie {
                                    String newLandscapeImageUrl,
                                    String newContentRating)
     {
+
+        if(newTitle.isBlank() || targetTitle.isBlank()) {
+            throw new IllegalArgumentException("Please Enter Movie Title");
+        }
         // make sure new movie title is not same as other existing movie titles
         for (String existingMovieTitle : movieRepo.findAll().stream().map(Movie::getTitle).toList())
             if (existingMovieTitle.equalsIgnoreCase(newTitle))
@@ -194,6 +198,7 @@ public class Movie {
                 return; // End the method here.
             }
         }
+
         throw new IllegalArgumentException("Movie does not exist: " + targetTitle);
     }
 

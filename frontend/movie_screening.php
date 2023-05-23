@@ -294,7 +294,7 @@ echo '
                 <input type="date" class="form-control" name="suspendShowDate" id="suspendShowDate">
             </div>
             <div class="mt-2">
-                <input type="number" step="1" class="form-control" name="suspendCinemaRoomID" id="suspendCinemaRoomID" placeholder="Enter Cinema Room">
+                <input type="number" step="1" class="form-control" name="suspendCinemaRoomID" id="suspendCinemaRoomID" placeholder="Enter Cinema Room" required>
             </div>
             <div class="mt-3">
                 <input type="submit" class="btn btn-primary" name="suspend" value="Suspend">
@@ -318,7 +318,7 @@ echo '
                 <input type="date" class="form-control" name="showDate" id="showDate">
             </div>
             <div class="mt-3">
-                <input type="number" step="1" class="form-control" name="cinemaRoomID" id="cinemaRoomID" placeholder="Enter Cinema Room">
+                <input type="number" step="1" class="form-control" name="cinemaRoomID" id="cinemaRoomID" placeholder="Enter Cinema Room" required>
             </div>
             <div class="mt-3">
                 <select class="form-control" name="newMovieName" id="newMovieName">
@@ -346,7 +346,7 @@ echo '
                 <input type="date" class="form-control" name="newShowDate" id="newShowDate">
             </div>
             <div class="mt-3">
-                <input type="number" step="1" class="form-control" name="newCinemaRoomID" id="newCinemaRoomID" placeholder="Enter new Cinema Room">
+                <input type="number" step="1" class="form-control" name="newCinemaRoomID" id="newCinemaRoomID" placeholder="Enter new Cinema Room" required>
             </div>
             <div class="mt-3">
                 <input type="submit" class="btn btn-primary" name="update" value="Update">
@@ -385,7 +385,7 @@ echo '
                 <input type="date" class="form-control" name="createShowDate" id="createShowDate">
             </div>
             <div class="mt-2">
-                <input type="number" step="1" class="form-control" name="createCinemaRoomID" id="createCinemaRoomID" placeholder="Enter Cinema Room">
+                <input type="number" step="1" class="form-control" name="createCinemaRoomID" id="createCinemaRoomID" placeholder="Enter Cinema Room" required>
             </div>
             <div class="mt-3">
                 <input type="submit" class="btn btn-primary" name="create" value="Create">

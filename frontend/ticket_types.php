@@ -74,7 +74,9 @@ curl_setopt($updateTicketCh, CURLOPT_HTTPHEADER, array('Content-Type:application
 $updateResponse = curl_exec($updateTicketCh);
 curl_close($updateTicketCh);
 //    $updateTicket = json_decode($updateResponse, true);
-if (strpos($updateResponse, 'Updated') !== false) //Show success message
+if (curl_getinfo($updateTicketCh, CURLINFO_HTTP_CODE) === 200)
+
+//Show success message
 {
 echo '
 <div class="container mt-5">
@@ -113,8 +115,7 @@ curl_setopt($ticketTypeCh, CURLOPT_RETURNTRANSFER, 1);
 curl_setopt($ticketTypeCh, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
 
 $createResponse = curl_exec($ticketTypeCh);
-curl_close($ticketTypeCh);
-if (strpos($createResponse, 'Success') !== false) //Show success message
+if (curl_getinfo($ticketTypeCh, CURLINFO_HTTP_CODE) === 200) //Show success message
 {
 echo '
 <div class="container mt-5">
@@ -135,7 +136,7 @@ echo '
 </div>';
 }
 
-
+    curl_close($ticketTypeCh);
 }
 
 
@@ -149,7 +150,7 @@ curl_setopt($suspendTicketTypeCh, CURLOPT_RETURNTRANSFER, 1);
 curl_setopt($suspendTicketTypeCh, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
 $suspenseResponse = curl_exec($suspendTicketTypeCh);
 curl_close($suspendTicketTypeCh);
-if (strpos($suspenseResponse, 'Success') !== false) //Show success message
+if (curl_getinfo($suspendTicketTypeCh, CURLINFO_HTTP_CODE) === 200) //Show success message
 {
 echo '
 <div class="container mt-5">
@@ -220,15 +221,15 @@ echo '
         <br>
         <h1 >Create Ticket Form</h1>
         <div class="mt-3">
-            <input type="text" class="form-control" name="createTicketType" id="createTicketType" placeholder="Enter ticket type">
+            <input type="text" class="form-control" name="createTicketType" id="createTicketType" placeholder="Enter ticket type" required>
         </div>
 
         <div class="mt-3">
-            <input type="number" class="form-control" step="0.01" name="createTypePrice" id="createTypePrice" placeholder="Enter ticket price">
+            <input type="number" class="form-control" step="0.01" name="createTypePrice" id="createTypePrice" placeholder="Enter ticket price" required>
         </div>
 
         <div class="mt-3">
-            <input type="submit" name="createTicket" class = "btn btn-primary" value="Create Ticket">
+            <input type="submit" name="createTicket" class = "btn btn-primary" value="Create Ticket" >
         </div>
     </form>
 

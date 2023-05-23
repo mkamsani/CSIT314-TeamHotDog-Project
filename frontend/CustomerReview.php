@@ -80,7 +80,7 @@ if (isset($_POST['rating'])) {
             &nbsp;
             &nbsp;
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="rating" id="rating1" value="1">
+                <input class="form-check-input" type="radio" name="rating" id="rating1" value="1" checked>
                 <label class="form-check-label" for="rating1">1</label>
             </div>
             <div class="form-check form-check-inline">
@@ -104,7 +104,7 @@ if (isset($_POST['rating'])) {
 
         <div class="form-group mt-3" style="text-align: center">
             <label for="review">Review:</label><br>
-            <textarea class="form-control" name="review" rows="4" cols="50" placeholder="Write your review here..."></textarea>
+            <textarea class="form-control" name="review" rows="4" cols="50" placeholder="Write your review here..." required></textarea>
         </div>
 
         <div class="form-group mt-3" style="text-align: center">
