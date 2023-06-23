@@ -1,1 +1,0 @@
-This folder contains files that execute PHP code, without any HTML markup.

@@ -1,9 +1,9 @@
 #!/bin/sh
 
 #
-# This script is intended to be run on a fresh Ubuntu 20.04 LTS instance
-# to install and configure the necessary software to run the My Webapp.
-# It should not be executed by a GitHub runner.
+# 1) Set up a fresh Ubuntu 20.04 LTS instance.
+# 2) Copy database/*.sql files into the instance home directory.
+# 3) Run this script.
 #
 
 # Install the necessary software.
@@ -23,6 +23,13 @@ sudo systemctl enable --now postgresql.service
 
 # Create the necessary folders.
 mkdir -p ~/bin ~/ctbs
+
+# Deploy the database.
+mv ~/*.sql ~/ctbs
+sudo -u postgres psql -f ~/ctbs/schema.sql
+sudo -u postgres psql -f ~/ctbs/trigger.sql
+sudo -u postgres psql -f ~/ctbs/data_base.sql
+sudo -u postgres psql -f ~/ctbs/data_many.sql
 
 # Replace the default nginx configuration with a new one.
 printf "%s\n" 'server {'                                                            > /etc/nginx/sites-available/default
@@ -48,10 +55,10 @@ Description=My SpringBootApp Java REST Service
 User=ubuntu
 
 # The configuration file application.properties should be here:
-#change this to your workspace
+# Change this to your workspace.
 WorkingDirectory=/home/ubuntu/ctbs
 
-#Path to executable, points straight to the jar file
+# Path to executable, points straight to the jar file:
 ExecStart=/usr/bin/java -jar backend-1.0.0-SNAPSHOT.jar
 
 SuccessExitStatus=143
@@ -66,5 +73,3 @@ EOF
 sudo systemctl daemon-reload
 sudo systemctl enable --now spring-boot-app
 sudo systemctl status spring-boot-app
-# List all enabled systemd services.
-# systemctl list-unit-files --state=enabled

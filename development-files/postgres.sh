@@ -1,16 +1,15 @@
 #!/bin/sh
 set -eux
-# -eux means:
 # -e : Terminate if a command exits with a non-zero status.
 # -u : Treat unset variables as an error when substituting.
 # -x : Print commands and their arguments as they are executed.
 
 # Prerequisites for WSL2:
-# sudo usermod -aG docker $(id -nu 1000) && exit
-# Run the above command, then run this script again.
+# 1) sudo usermod -aG docker $(id -nu 1000) && exit
+# 2) This file should be saved with Unix line endings (LF).
 
 # Exit if script is not run from the source directory.
-test "$(basename "$(pwd)")" = "database" || exit 1
+test "$(basename "$(pwd)")" = "development-files" || exit 1
 # Exit if no OCI runtime is found.
 test "$(command -v nerdctl && nerdctl -v | grep nerdctl)" && oci=nerdctl
 test "$(command -v podman  && podman  -v | grep podman)"  && oci=podman
@@ -24,16 +23,9 @@ if test "$("$oci" container list -a | grep pg)"; then
 "$oci" kill pg
 "$oci" rm -f pg
 fi
+set -e
 
 # Start the container in the background.
-# --rm                    : Automatically remove the container when it exits.
-# -d                      : Run container in the background and print container ID.
-# --net=host              : Use the host's network stack.
-# -u=postgres             : https://medium.com/nttlabs/dont-use-host-network-namespace-f548aeeef575
-# --security-opt          : https://docs.podman.io/en/latest/markdown/podman-run.1.html#security-opt-option
-# --name                  : Assign a name to the container.
-# -e                      : Set environment variables.
-# -e POSTGRES_PASSWORD    : Set the password for the default user.
 # Reference:
 # https://hub.docker.com/_/postgres
 # https://docs.docker.com/engine/reference/commandline/run/
@@ -45,13 +37,13 @@ fi
 --name="pg"                        \
 -e POSTGRES_PASSWORD="pg"          \
 cgr.dev/chainguard/postgres:latest
-sleep 5 # Allow more time for postgres on WSL2 to start.
+sleep 5
 
 # Copy the schema.sql file to the container
-"$oci" cp "$(find "$(pwd)" -name "schema.sql"    -type f -exec realpath {} \;)" pg:/home/postgres
-"$oci" cp "$(find "$(pwd)" -name "trigger.sql"   -type f -exec realpath {} \;)" pg:/home/postgres
-"$oci" cp "$(find "$(pwd)" -name "data_base.sql" -type f -exec realpath {} \;)" pg:/home/postgres
-"$oci" cp "$(find "$(pwd)" -name "data_many.sql" -type f -exec realpath {} \;)" pg:/home/postgres
+"$oci" cp "$(find "$(pwd)/../database" -name "schema.sql"    -type f -exec realpath {} \;)" pg:/home/postgres
+"$oci" cp "$(find "$(pwd)/../database" -name "trigger.sql"   -type f -exec realpath {} \;)" pg:/home/postgres
+"$oci" cp "$(find "$(pwd)/../database" -name "data_base.sql" -type f -exec realpath {} \;)" pg:/home/postgres
+"$oci" cp "$(find "$(pwd)/../database" -name "data_many.sql" -type f -exec realpath {} \;)" pg:/home/postgres
 # Enter the container and create the schema.
 "$oci" exec pg psql -U postgres -f /home/postgres/schema.sql
 "$oci" exec pg psql -U postgres -f /home/postgres/trigger.sql
